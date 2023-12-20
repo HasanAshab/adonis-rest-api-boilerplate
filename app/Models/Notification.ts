@@ -1,6 +1,6 @@
 import { model, Model, QueryWithHelpers, HydratedDocument, Schema, Document } from "mongoose";
 import HasFactory, { HasFactoryModel } from "App/Plugins/HasFactory";
-import DocumentNotFoundException from "App/Exceptions/DocumentNotFoundException";
+//import DocumentNotFoundException from "App/Exceptions/DocumentNotFoundException";
 
 const NotificationSchema = new Schema<NotificationDocument, Model<NotificationDocument>, {}, NotificationQueryHelpers>({
   userId: {

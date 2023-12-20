@@ -1,11 +1,9 @@
 /*
 |--------------------------------------------------------------------------
-| Routes
+| Preloaded File
 |--------------------------------------------------------------------------
-| This file is dedicated for defining HTTP routes.
+|
+| Any code written inside this file will be executed during the application
+| boot.
+|
 */
-
-import Route from '@ioc:Adonis/Core/Route'
-
-
-Route.post("auth", "V1/AuthController.register");

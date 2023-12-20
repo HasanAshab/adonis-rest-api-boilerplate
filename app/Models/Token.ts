@@ -1,6 +1,6 @@
 import { model, Schema, Document, Model } from "mongoose";
 import crypto from "crypto";
-import InvalidTokenException from "App/Exceptions/InvalidTokenException";
+//import InvalidTokenException from "App/Exceptions/InvalidTokenException";
 
 const TokenSchema = new Schema<TokenDocument, TokenModel>({
   key: {

@@ -1,9 +1,8 @@
+import Hash from '@ioc:Adonis/Core/Hash';
 import { Schema, Document } from "mongoose";
-import Config from "Config";
-import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import EmailVerificationNotification from "~/app/notifications/EmailVerificationNotification";
-import ForgotPasswordNotification from "~/app/notifications/ForgotPasswordNotification";
+//import EmailVerificationNotification from "~/app/notifications/EmailVerificationNotification";
+//import ForgotPasswordNotification from "~/app/notifications/ForgotPasswordNotification";
 
 export interface AuthenticatableDocument extends Document {
   attempt(password: string): Promise<boolean>;
@@ -16,11 +15,11 @@ export interface AuthenticatableDocument extends Document {
 
 export default (schema: Schema) => {
   schema.methods.attempt = function (password: string) {
-    return bcrypt.compare(password, this.password);
+    return Hash.verify(this.password, password);
   }
 
   schema.methods.setPassword = async function (password: string) {
-    this.password = await bcrypt.hash(password, Config.get<number>("bcrypt.rounds"));
+    this.password = await Hash.make(password);
   }
   
   schema.methods.sendVerificationNotification = async function(version: string) {
@@ -38,7 +37,7 @@ export default (schema: Schema) => {
       const generateCode = async () => {
         const code = crypto.randomBytes(8).toString('hex');
         rawCodes.push(code);
-        this.recoveryCodes = await bcrypt.hash(code, Config.get("bcrypt.rounds"));
+        this.recoveryCodes = await Hash.make(code);
       }
       promises.push(generateCode());
     }
@@ -50,7 +49,7 @@ export default (schema: Schema) => {
   schema.methods.verifyRecoveryCode = async function(code: string) {
     for (let i = 0; i < this.recoveryCodes.length; i++) {
       const hashedCode = this.recoveryCodes[i];
-      if (await bcrypt.compare(code, hashedCode)) {
+      if (await Hash.verify(hashedCode, code)) {
         this.recoveryCodes.splice(i, 1);
         await this.save();
         return true;

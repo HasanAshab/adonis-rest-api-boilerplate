@@ -1,7 +1,7 @@
 import { Schema, Document, QueryWithHelpers } from "mongoose";
-import NotificationClass from "~/core/abstract/Notification";
-import Notification from "Notification";
-import NotificationModel, { NotificationDocument, NotificationQueryHelpers } from "~/app/models/Notification";
+//import NotificationClass from "~/core/abstract/Notification";
+//import Notification from "Notification";
+import NotificationModel, { NotificationDocument, NotificationQueryHelpers } from "App/Models/Notification";
 
 export interface NotifiableDocument<DocType extends NotifiableDocument<any> = any> extends Document {
   notifications: QueryWithHelpers<NotificationDocument[], NotificationDocument, NotificationQueryHelpers>;

@@ -7,11 +7,14 @@ export default class RegisterValidator {
   public schema = schema.create({
     email: schema.string([
       rules.email(),
-      rules.unique({ table: 'users', column: 'email' })
+      rules.unique('User', 'email')
     ]),
-    username: schema.string([rules.alpha()]),
+    username: schema.string([
+      rules.alpha(),
+      rules.unique('User', 'username')
+    ]),
     password: schema.string([
-     // rules.password()
+      rules.password("strong")
     ]),
   });
 

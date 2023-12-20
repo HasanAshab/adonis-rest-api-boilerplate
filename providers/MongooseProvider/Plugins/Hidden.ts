@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+import { types } from "@ioc:Adonis/Core/Helpers";
 
 /**
  * Search fields that have a options `{ hide: true }` in the schema
@@ -7,7 +8,7 @@ function searchHiddenFields(schema: Schema) {
   const hiddenFields: string[] = [];
   for(const field in schema.obj) {
     const fieldData = schema.obj[field];
-    if(isPureObject(fieldData) && fieldData.hide) {
+    if(types.isObject(fieldData) && fieldData.hide) {
       hiddenFields.push(field);
     }
   }

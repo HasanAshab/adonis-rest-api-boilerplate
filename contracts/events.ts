@@ -1,3 +1,6 @@
+import { UserDocument } from "App/Models/User";
+
+
 /**
  * Contract source: https://git.io/JfefG
  *
@@ -25,6 +28,10 @@ declare module '@ioc:Adonis/Core/Event' {
   |
   */
   interface EventsList {
-    //
+    "registered": { 
+      user: UserDocument;
+      version: string;
+      method: "internal" | "social";
+    }
   }
 }

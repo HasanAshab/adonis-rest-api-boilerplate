@@ -7,7 +7,7 @@ import { ConnectOptions } from "mongoose";
 |--------------------------------------------------------------------------
 | Wether to connect to database or not
 */
-export const connect: boolean = true;
+export const connect: boolean = false;
 
 
 /*
@@ -17,15 +17,6 @@ export const connect: boolean = true;
 | Wether to syncronize database indexes or not
 */
 export const syncIndexes: boolean = true;
-
-
-/*
-|--------------------------------------------------------------------------
-|  Load Models
-|--------------------------------------------------------------------------
-| Wether to load models or not
-*/
-export const loadModels: boolean = true;
 
 
 /*

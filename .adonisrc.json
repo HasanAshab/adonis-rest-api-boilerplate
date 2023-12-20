@@ -3,7 +3,8 @@
   "commands": [
     "./commands",
     "@adonisjs/core/build/commands/index.js",
-    "@adonisjs/repl/build/commands"
+    "@adonisjs/repl/build/commands",
+    "@adonisjs/bouncer/build/commands"
   ],
   "namespaces": {
     "httpControllers": "App/Http/Controllers",
@@ -19,12 +20,28 @@
   },
   "preloads": [
     "./start/routes",
-    "./start/kernel"
+    "./start/kernel",
+    "./start/bouncer",
+    {
+      "file": "./start/validator",
+      "environment": [
+        "web",
+        "test"
+      ]
+    },
+    {
+      "file": "./start/events",
+      "environment": [
+        "web",
+        "test"
+      ]
+    }
   ],
   "providers": [
     "./providers/AppProvider",
     "@adonisjs/core",
-    "./providers/MongooseProvider"
+    "./providers/MongooseProvider",
+    "@adonisjs/bouncer"
   ],
   "aceProviders": [
     "@adonisjs/repl"

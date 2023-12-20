@@ -1,5 +1,5 @@
 import { Schema, Model, Document, Query } from "mongoose";
-import DocumentNotFoundException from "~/app/exceptions/DocumentNotFoundException";
+//import DocumentNotFoundException from "~/app/exceptions/DocumentNotFoundException";
 
 interface AssertedQuery<TRawDocType, TQueryHelpers = {}> extends Query<TRawDocType, TRawDocType, TQueryHelpers> {};
 

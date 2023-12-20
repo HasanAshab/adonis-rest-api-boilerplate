@@ -2,9 +2,9 @@
 
 import { Schema, Document } from "mongoose";
 import { UploadedFile } from "express-fileupload";
-import Storage from "Storage";
-import Media, { IMedia, MediaDocument } from "~/app/models/Media";
-import URL from "URL";
+import Route from '@ioc:Adonis/Core/Route'
+import Drive from '@ioc:Adonis/Core/Drive'
+import Media, { IMedia, MediaDocument } from "App/Models/Media";
 
 export interface ReplaceOptions {
   storagePath?: string;
@@ -49,18 +49,17 @@ export default (schema: Schema) => {
         let storeLinkIn = null;
         
         const attachMedia = (onFulfill, onReject) => {
-          console.log(storagePath)
-          Storage.putFile(storagePath, file).then(path => {
+          Drive.putFile(storagePath, file).then(path => {
             Media.create({ path, visibility, ...filter }).catch(onReject).then(media => {
               if(storeRefIn) {
                 this[storeRefIn] = media._id;
               }
               if(storeLinkIn) {
                 if (visibility === "private") {
-                  this[storeLinkIn] = URL.signedRoute("v1_media.serve", { rawMedia: media._id });
+                  this[storeLinkIn] = Route.makeSignedUrl("v1_media.serve", [media._id]);
                 } 
                 else {
-                  this[storeLinkIn] = URL.route("v1_media.serve", { rawMedia: media._id });
+                  this[storeLinkIn] = Route.makeUrl("v1_media.serve", [media._id]);
                 }
               }
               onFulfill(media);
@@ -88,13 +87,13 @@ export default (schema: Schema) => {
       
       const replaceBy = async (file: UploadedFile) => {
         const media = await Media.findOneOrFail(filter);
-        await Storage.put(media.path, file.data);
+        await Drive.put(media.path, file.data);
       };
 
       const detach = async () => {
         const media = await Media.find(filter);
         const paths = media.map((item) => item.path);
-        await Storage.delete(paths);
+        await Drive.delete(paths);
         return Media.deleteMany(filter);
       };
 
