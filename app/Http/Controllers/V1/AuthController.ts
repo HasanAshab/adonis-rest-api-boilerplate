@@ -10,7 +10,7 @@ export default class AuthController {
   constructor(private authService: AuthService) {}
   
   async register({ request, response }: HttpContextContract) {
-    const { email, username, password } = request.validate(RegisterValidator);
+    const { email, username, password } = await request.validate(RegisterValidator);
     const user = await this.authService.register(email, username, password, request.file("profile"));
     
     Event.emit("user:registered", { 
@@ -29,4 +29,7 @@ export default class AuthController {
     });
   }
   
+  redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {
+    Socialite.driver(params.provider).redirect(res);
+  }
 }

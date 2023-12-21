@@ -1,25 +1,47 @@
-import { validator } from '@ioc:Adonis/Core/Validator'
+import { validator, schema } from '@ioc:Adonis/Core/Validator'
 import { string } from '@ioc:Adonis/Core/Helpers'
 import { model } from 'mongoose';
 
+validator.rule('slug', (value, _, options) => {
+  if(/^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/.test(value)) return;
+    
+  return options.errorReporter.report(
+    options.pointer,
+    'slug',
+    '{{ field }} must be a valid slug',
+    options.arrayExpressionPointer
+  );
+});
 
 validator.rule('password', 
   (value, { strength }, options) => {
     const passwordPatterns = {
-      strong: /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/,
-      medium: /(?=.*[a-zA-Z])(?=.*[0-9])(?=.{6,})/,
-      weak: /(?=.{6,})/
+      strong: {
+        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/,
+        message: 'must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one digit, and one special character (@ $ ! % * ? &)',
+      },
+      medium: {
+        pattern: /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/,
+        message: 'must be at least 6 characters long and include both letters and numbers',
+      },
+      weak: {
+        pattern: /^.{6,}$/,
+        message: 'must be at least 6 characters long',
+      }
     };
-    const isValid = passwordPatterns[strength].test(value);
-    if(!isValid) {
+    
+    const { pattern, message } = passwordPatterns[strength]
+    
+    if(!pattern.test(value)) {
       return options.errorReporter.report(
         options.pointer,
-        'password',
-        'pass error msg',
+        `password.${strength}`,
+        message,
         options.arrayExpressionPointer
       );
     }
   },
+  
   (options) => ({
     compiledOptions: {
       strength: options[0] || "medium"
@@ -38,8 +60,8 @@ validator.rule('exists',
     if(!exists) {
       return options.errorReporter.report(
         options.pointer,
-        'unique',
-        'must be unique',
+        'exists',
+        '{{ field }} does not exist in the database.',
         options.arrayExpressionPointer
       );
     }
@@ -59,7 +81,7 @@ validator.rule('unique',
       return options.errorReporter.report(
         options.pointer,
         'unique',
-        'must be unique',
+        '{{ field }} has already been taken.',
         options.arrayExpressionPointer
       );
     }

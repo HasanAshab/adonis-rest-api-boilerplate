@@ -41,7 +41,8 @@
     "./providers/AppProvider",
     "@adonisjs/core",
     "./providers/MongooseProvider",
-    "@adonisjs/bouncer"
+    "@adonisjs/bouncer",
+    "@adonisjs/ally"
   ],
   "aceProviders": [
     "@adonisjs/repl"
