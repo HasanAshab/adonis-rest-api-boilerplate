@@ -42,7 +42,8 @@
     "@adonisjs/core",
     "./providers/MongooseProvider",
     "@adonisjs/bouncer",
-    "@adonisjs/ally"
+    "@adonisjs/ally",
+    "./providers/PasswordStrategyProvider"
   ],
   "aceProviders": [
     "@adonisjs/repl"

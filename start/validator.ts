@@ -1,4 +1,5 @@
 import { validator, schema } from '@ioc:Adonis/Core/Validator'
+import { PasswordStrategyManager } from '@ioc:Adonis/Core/Validator/Rules/Password'
 import { string } from '@ioc:Adonis/Core/Helpers'
 import { model } from 'mongoose';
 
@@ -13,40 +14,21 @@ validator.rule('slug', (value, _, options) => {
   );
 });
 
+
 validator.rule('password', 
-  (value, { strength }, options) => {
-    const passwordPatterns = {
-      strong: {
-        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/,
-        message: 'must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one digit, and one special character (@ $ ! % * ? &)',
-      },
-      medium: {
-        pattern: /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/,
-        message: 'must be at least 6 characters long and include both letters and numbers',
-      },
-      weak: {
-        pattern: /^.{6,}$/,
-        message: 'must be at least 6 characters long',
-      }
-    };
+  async (value, [strategyName], options) => {
+    const strategy = PasswordStrategyManager.get(strategyName);
+
+    if(await strategy.validate(value)) return;
     
-    const { pattern, message } = passwordPatterns[strength]
-    
-    if(!pattern.test(value)) {
-      return options.errorReporter.report(
-        options.pointer,
-        `password.${strength}`,
-        message,
-        options.arrayExpressionPointer
-      );
-    }
+    return options.errorReporter.report(
+      options.pointer,
+      `password.${strategyName}`,
+      strategy.message,
+      options.arrayExpressionPointer
+    );
   },
-  
-  (options) => ({
-    compiledOptions: {
-      strength: options[0] || "medium"
-    }
-  })
+  () => ({ async: true })
 );
 
 

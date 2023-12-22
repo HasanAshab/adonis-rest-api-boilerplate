@@ -30,6 +30,7 @@ export default class AuthController {
   }
   
   redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {
-    Socialite.driver(params.provider).redirect(res);
+    return ally.use(params.provider).redirect();
   }
+  
 }

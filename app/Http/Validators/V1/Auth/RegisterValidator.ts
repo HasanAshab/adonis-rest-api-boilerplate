@@ -12,7 +12,7 @@ export default class RegisterValidator extends Validator {
       rules.unique('User', 'username')
     ]),
     password: schema.string([
-      rules.password("strong")
+      rules.password("medium")
     ]),
   });
 }

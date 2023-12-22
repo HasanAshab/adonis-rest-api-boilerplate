@@ -1,3 +1,2 @@
-*: social auth
-
-L: Custom user provider
+*: pass valid regex {8, 0 kat}, social auth
+L: Binding type (Ally)

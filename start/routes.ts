@@ -10,3 +10,5 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.post("auth", "V1/AuthController.register");
 
+
+Route.get("auth/:provider", "V1/AuthController.redirectToSocialLoginProvider").where('provider', /google|facebook/);
