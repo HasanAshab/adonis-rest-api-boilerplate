@@ -32,5 +32,4 @@ export default class AuthController {
   redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {
     return ally.use(params.provider).redirect();
   }
-  
 }

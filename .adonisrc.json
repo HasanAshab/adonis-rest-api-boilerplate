@@ -43,7 +43,7 @@
     "./providers/MongooseProvider",
     "@adonisjs/bouncer",
     "@adonisjs/ally",
-    "./providers/PasswordStrategyProvider"
+    "./providers/PasswordValidationProvider"
   ],
   "aceProviders": [
     "@adonisjs/repl"
