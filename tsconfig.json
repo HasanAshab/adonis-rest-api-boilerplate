@@ -30,7 +30,10 @@
       "@adonisjs/repl",
       "@japa/preset-adonis/build/adonis-typings",
       "@adonisjs/bouncer",
-      "@adonisjs/ally"
+      "@adonisjs/ally",
+      "@adonisjs/auth",
+      "@adonisjs/lucid",
+      "adonis5-jwt"
     ]
   }
 }

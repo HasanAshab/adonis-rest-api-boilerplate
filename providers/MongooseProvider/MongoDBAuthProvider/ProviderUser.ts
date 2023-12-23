@@ -1,8 +1,7 @@
 import type { HashContract } from '@ioc:Adonis/Core/Hash'
 import type { ProviderUserContract } from '@ioc:Adonis/Addons/Auth'
-import type { IUser } from 'App/Models/User'
 
-export default class ProviderUser implements ProviderUserContract<IUser> {
+export default class ProviderUser<IUser extends object> implements ProviderUserContract<IUser> {
   constructor(public user: IUser | null, private hash: HashContract) {}
 
   public getId() {

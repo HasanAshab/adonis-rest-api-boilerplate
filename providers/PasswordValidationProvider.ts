@@ -26,6 +26,7 @@ export default class PasswordValidationProvider {
         return options.errorReporter.report(
           options.pointer,
           `password.${strategyName}`,
+          strategy.message.replace("{{ field }}", options.field),
           strategy.message,
           options.arrayExpressionPointer
         );

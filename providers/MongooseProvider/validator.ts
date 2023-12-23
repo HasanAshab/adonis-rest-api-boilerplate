@@ -12,12 +12,12 @@ validator.rule('exists',
       return options.errorReporter.report(
         options.pointer,
         'exists',
-        '{{ field }} does not exist in the database.',
+        `${options.field} does not exist.`,
         options.arrayExpressionPointer
       );
     }
   },
-  () => ({ async: false })
+  () => ({ async: true })
 )
 
 
@@ -32,10 +32,10 @@ validator.rule('unique',
       return options.errorReporter.report(
         options.pointer,
         'unique',
-        '{{ field }} has already been taken.',
+        `${options.field} has already been taken.`,
         options.arrayExpressionPointer
       );
     }
   },
-  () => ({ async: false })
+  () => ({ async: true })
 )

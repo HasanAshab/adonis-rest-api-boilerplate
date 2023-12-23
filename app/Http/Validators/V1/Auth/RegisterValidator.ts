@@ -7,12 +7,20 @@ export default class RegisterValidator extends Validator {
       rules.email(),
       rules.unique('User', 'email')
     ]),
+    
     username: schema.string([
       rules.alphaNum(),
+      rules.minLength(3),
       rules.unique('User', 'username')
     ]),
+    
     password: schema.string([
       rules.password("medium")
     ]),
+    
+    profile: schema.file.optional({
+      size: '1mb',
+      extnames: ['jpg', 'png']
+    })
   });
 }

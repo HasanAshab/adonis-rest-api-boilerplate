@@ -1,4 +1,7 @@
-*: social auth
+Fallback: StrongPassStra -> ComplexPassStra
+
+*: validator msg, social auth
 L: Binding type (Ally)
 L: Exception
-T: Auth 
+T: is not nessesary adonisjs/auth? Y
+I: Refresh Token

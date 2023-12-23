@@ -2,8 +2,8 @@
 
 import { Schema, Document } from "mongoose";
 import { UploadedFile } from "express-fileupload";
-import Route from '@ioc:Adonis/Core/Route'
-import Drive from '@ioc:Adonis/Core/Drive'
+//import Route from '@ioc:Adonis/Core/Route'
+//import Drive from '@ioc:Adonis/Core/Drive'
 import Media, { IMedia, MediaDocument } from "App/Models/Media";
 
 export interface ReplaceOptions {

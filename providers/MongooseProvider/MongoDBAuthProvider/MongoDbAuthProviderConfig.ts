@@ -1,6 +1,7 @@
-import type { IUser } from 'App/Models/User'
+import { Model } from "mongoose"
 
-export type MongoDbAuthProviderConfig = {
+export interface MongoDbAuthProviderConfig<IUser> = {
   driver: 'mongo';
-  uid: keyof IUser;
+  uids: keyof IUser[];
+  model(): Model | Promise<Model>;
 }

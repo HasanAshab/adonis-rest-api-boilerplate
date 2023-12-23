@@ -1,5 +1,8 @@
 import { model, Schema, Document, Model } from "mongoose";
-import notificationConfig from "~/config/notification";
+//import notificationConfig from "~/config/notification";
+
+//TODO
+const notificationConfig = {channels: [], types: []}
 
 const { channels, types } = notificationConfig;
 

@@ -1,7 +1,6 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application';
 import Logger from '@ioc:Adonis/Core/Logger';
 import Config from '@ioc:Adonis/Core/Config';
-import MongoDbAuthProvider from './MongoDbAuthProvider'
 import mongoose from 'mongoose';
 import Helpers from './Plugins/Helpers';
 //import Assertable from './Plugins/Assertable';
@@ -28,7 +27,7 @@ export default class MongooseProvider {
     
     await import('./validator');
     
-    this.registerUserProvider();
+    await this.registerUserProvider();
   }
 
   private setConfig() {
@@ -46,12 +45,14 @@ export default class MongooseProvider {
     }
   }
   
-  private registerUserProvider() {
+  private async registerUserProvider() {
+    const { default: MongoDBAuthProvider } = await import('./MongoDBAuthProvider');
+
     const Auth = this.app.container.resolveBinding('Adonis/Addons/Auth');
     const Hash = this.app.container.resolveBinding('Adonis/Core/Hash');
 
     Auth.extend('provider', 'mongo', (_, __, config) => {
-      return new MongoDbAuthProvider(config, Hash)
+      return new MongoDBAuthProvider(config, Hash)
     });
   }
 

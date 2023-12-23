@@ -1,6 +1,6 @@
 import { Schema, Document } from "mongoose";
 //import Config from "Config";
-//import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 export interface HasApiTokensDocument extends Document {
   tokenVersion: number;

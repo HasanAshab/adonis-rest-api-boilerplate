@@ -4,7 +4,8 @@
     "./commands",
     "@adonisjs/core/build/commands/index.js",
     "@adonisjs/repl/build/commands",
-    "@adonisjs/bouncer/build/commands"
+    "@adonisjs/bouncer/build/commands",
+    "@adonisjs/lucid/build/commands"
   ],
   "namespaces": {
     "httpControllers": "App/Http/Controllers",
@@ -40,9 +41,12 @@
   "providers": [
     "./providers/AppProvider",
     "@adonisjs/core",
-    "./providers/MongooseProvider",
     "@adonisjs/bouncer",
     "@adonisjs/ally",
+    "@adonisjs/lucid",
+    "@adonisjs/auth",
+    "adonis5-jwt",
+    "./providers/MongooseProvider",
     "./providers/PasswordValidationProvider"
   ],
   "aceProviders": [

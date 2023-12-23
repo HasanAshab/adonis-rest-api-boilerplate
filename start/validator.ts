@@ -6,8 +6,7 @@ validator.rule('slug', (value, _, options) => {
   return options.errorReporter.report(
     options.pointer,
     'slug',
-    '{{ field }} must be a valid slug',
+    `${options.field} must be a valid slug`,
     options.arrayExpressionPointer
   );
 });
-

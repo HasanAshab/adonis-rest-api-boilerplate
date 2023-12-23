@@ -6,7 +6,7 @@ import HasApiTokens, { HasApiTokensDocument } from "App/Plugins/HasApiTokens";
 import Notifiable, { NotifiableDocument } from "App/Plugins/Notifiable";
 import Mediable, { MediableDocument } from "App/Plugins/Mediable";
 //import Billable, { BillableDocument } from "App/Plugins/Billable";
-//import Settings, { SettingsDocument } from "App/Models/Settings";
+import Settings, { SettingsDocument } from "App/Models/Settings";
 import UserPolicy from "App/Policies/UserPolicy";
 
 const UserSchema = new Schema<UserDocument>({

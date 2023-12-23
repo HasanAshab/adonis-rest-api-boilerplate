@@ -9,6 +9,7 @@ export default class Validator {
   public messages: CustomMessages = {
     required: "{{ field }} is required",
     requiredIf: '{{ field }} is required based on other criteria.',
+    file: '{{ field }} must be a file.',
     alpha: '{{ field }} must contain only alphabetic characters.',
     alphaNum: '{{ field }} must contain alpha-numeric characters only.',
     confirmed: '{{ field }} confirmation does not match.',
@@ -29,6 +30,6 @@ export default class Validator {
     url: '{{ field }} must be a valid URL.',
     equalTo: '{{ field }} must be equal to {{ options.equalTo }}.',
     escape: '{{ field }} must not contain HTML or special characters.',
-    trim: '{{ field }} must not contain leading or trailing spaces.'
+    trim: '{{ field }} must not contain leading or trailing spaces.',
   }
 }
