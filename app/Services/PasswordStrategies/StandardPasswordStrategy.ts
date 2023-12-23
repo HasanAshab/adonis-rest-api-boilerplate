@@ -1,6 +1,7 @@
 import { PasswordValidationStrategy } from '@ioc:Adonis/Core/Validator/Rules/Password'
 
-export default class MediumPasswordStrategy implements PasswordValidationStrategy {
+export default class StandardPasswordStrategy implements PasswordValidationStrategy {
+  name = "standard";
   message = '{{ field }} must be at least 6 characters long and include both letters and numbers';
   protected pattern = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/;
 

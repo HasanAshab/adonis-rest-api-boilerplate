@@ -17,6 +17,7 @@ export default class AuthController {
     const { email, username, password } = await request.validate(RegisterValidator);
     const user = await this.authService.register(email, username, password, request.file("profile"));
     console.log(user)
+    
     Event.emit("user:registered", {
       version: "v1",
       method: "internal",

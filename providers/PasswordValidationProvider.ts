@@ -1,14 +1,20 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import PasswordStrategyManager from "App/Services/PasswordStrategies/PasswordStrategyManager"
+import ComplexPasswordStrategy from "App/Services/PasswordStrategies/ComplexPasswordStrategy"
+import StandardPasswordStrategy from "App/Services/PasswordStrategies/StandardPasswordStrategy"
+import WeakPasswordStrategy from "App/Services/PasswordStrategies/WeakPasswordStrategy"
+
 
 export default class PasswordValidationProvider {
   private passwordStrategyManager = new PasswordStrategyManager;
 
-  constructor(protected app: ApplicationContract) {
-    this.app = app;
-  }
+  constructor(protected app: ApplicationContract) {}
 
   public register() {
+    this.passwordStrategyManager.register(new ComplexPasswordStrategy);
+    this.passwordStrategyManager.register(new StandardPasswordStrategy);
+    this.passwordStrategyManager.register(new WeakPasswordStrategy);
+    
     this.app.container.singleton('Adonis/Core/Validator/Rules/Password', () => ({
       PasswordStrategyManager: this.passwordStrategyManager
     }));

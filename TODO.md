@@ -1,7 +1,9 @@
-Fallback: StrongPassStra -> ComplexPassStra
+R: adonisjs/auth is not nessesary
 
-*: validator msg, social auth
+
+Fallback: solve type
+
+*: Auth, SocialAuthService, Route
 L: Binding type (Ally)
 L: Exception
-T: is not nessesary adonisjs/auth? Y
 I: Refresh Token

@@ -2,7 +2,7 @@ import type PasswordStrategyManagerContract from "App/Services/PasswordStrategie
 import { Model as MongooseModel } from 'mongoose';
 
 declare module '@ioc:Adonis/Core/Validator' {
-  type PasswordStrategy = "strong" | "medium" | "weak";
+  type PasswordStrategy = "complex" | "standard" | "weak";
   
   interface Rules {
     slug(): Rule;
