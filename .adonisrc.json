@@ -7,6 +7,9 @@
     "@adonisjs/bouncer/build/commands",
     "@adonisjs/lucid/build/commands"
   ],
+  "directories": {
+    "providers": "app/Providers"
+  },
   "namespaces": {
     "httpControllers": "App/Http/Controllers",
     "validators": "App/Http/Validators",
@@ -39,15 +42,18 @@
     }
   ],
   "providers": [
-    "./providers/AppProvider",
+    "./app/Providers/AppProvider",
     "@adonisjs/core",
+    "@kaperskyguru/adonis-cache",
     "@adonisjs/bouncer",
     "@adonisjs/ally",
     "@adonisjs/lucid",
     "@adonisjs/auth",
     "adonis5-jwt",
-    "./providers/MongooseProvider",
-    "./providers/PasswordValidationProvider"
+    "./app/Providers/MongooseProvider",
+    "./app/Providers/PasswordValidationProvider",
+    "./app/Providers/LockProvider",
+    "@adonisjs/redis"
   ],
   "aceProviders": [
     "@adonisjs/repl"

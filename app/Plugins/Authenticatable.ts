@@ -57,5 +57,4 @@ export default (schema: Schema) => {
     }
     return false;
   };
-
 };

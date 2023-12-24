@@ -12,6 +12,9 @@ import type { LoggerConfig } from '@ioc:Adonis/Core/Logger'
 import type { ProfilerConfig } from '@ioc:Adonis/Core/Profiler'
 import type { ValidatorConfig } from '@ioc:Adonis/Core/Validator'
 
+
+export const name: string = Env.get('APP_NAME');
+
 /*
 |--------------------------------------------------------------------------
 | Application secret key

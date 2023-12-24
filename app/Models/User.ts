@@ -58,6 +58,15 @@ UserSchema.method("createDefaultSettings", function() {
   return Settings.create({ userId: this._id });
 });
 
+UserSchema.static("internals", function() {
+  return this.find({ password: { $ne: null }});
+});
+
+UserSchema.static("internal", function() {
+  return this.findOne({ password: { $ne: null }});
+});
+
+
 
 UserSchema.plugin(Authenticatable);
 UserSchema.plugin(HasFactory);

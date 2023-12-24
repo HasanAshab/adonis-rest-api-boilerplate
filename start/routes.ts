@@ -8,7 +8,9 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 
-Route.post("auth", "V1/AuthController.register");
+Route.post("/api/v1/auth/register", "V1/AuthController.register");
+
+Route.post("/api/v1/auth/login", "V1/AuthController.login");
 
 
 Route.get("users/:id", "V1/AuthController.redirectToSocialLoginProvider").as("v1_users.show")

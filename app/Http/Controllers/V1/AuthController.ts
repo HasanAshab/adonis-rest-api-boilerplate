@@ -4,9 +4,7 @@ import Event from '@ioc:Adonis/Core/Event'
 import { inject } from "@adonisjs/fold"
 import AuthService from "App/Services/Auth/AuthService";
 import RegisterValidator from "App/Http/Validators/V1/Auth/RegisterValidator";
-
-import User, { UserDocument } from "App/Models/User";
-
+import LoginValidator from "App/Http/Validators/V1/Auth/LoginValidator";
 
 @inject()
 export default class AuthController {
@@ -16,22 +14,29 @@ export default class AuthController {
   async register({ request, response, auth }: HttpContextContract) {
     const { email, username, password } = await request.validate(RegisterValidator);
     const user = await this.authService.register(email, username, password, request.file("profile"));
-    console.log(user)
-    
+
     Event.emit("user:registered", {
       version: "v1",
       method: "internal",
       user
     });
-    
+
     const profileUrl = Route.makeUrl("v1_users.show", [user.username]);
     
     response.header("Location", profileUrl).created({
+      message: "Verification email sent!",
       token: user.createToken(),
-      data: { user },
-      //expiration: Date.now() + Config.get("jwt.expiration"),
-      message: "Verification email sent!"
+      data: { user }
     });
+  }
+  
+  async login({ request, response }: HttpContextContract) {
+    const { email, password, otp } = await request.validate(LoginValidator);
+    const token = await this.authService.login(email, password, otp);
+    return {
+      message: "Logged in successfully!",
+      token
+    }
   }
   
   redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {
@@ -61,5 +66,5 @@ export default class AuthController {
     
     return Route.makeClientUrl(`/login/social/${params.provider}/final-step/${externalUser.id}/${token}?fields=${fields}`);
   }
-  
+ 
 }

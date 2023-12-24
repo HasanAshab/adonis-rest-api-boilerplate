@@ -33,7 +33,9 @@
       "@adonisjs/ally",
       "@adonisjs/auth",
       "@adonisjs/lucid",
-      "adonis5-jwt"
+      "adonis5-jwt",
+      "@kaperskyguru/adonis-cache",
+      "@adonisjs/redis"
     ]
   }
 }
