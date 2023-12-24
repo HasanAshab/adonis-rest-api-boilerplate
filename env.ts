@@ -17,13 +17,13 @@ export default Env.rules({
 
   TWILIO_SID: Env.schema.string(),
   TWILIO_AUTH_TOKEN: Env.schema.string(),
-  TWILIO_FROM: Env.schema.string(),
-
-  REDIS_URL: Env.schema.string(),
-  REDIS_HOST: Env.schema.string(),
+  
+  //REDIS_URL: Env.schema.string(),
+  REDIS_CONNECTION: Env.schema.enum(['local'] as const),
+  REDIS_HOST: Env.schema.string({ format: 'host' }),
   REDIS_PORT: Env.schema.number(),
-  REDIS_PASSWORD: Env.schema.string(),
-
+  REDIS_PASSWORD: Env.schema.string.optional(),
+  
   MAIL_HOST: Env.schema.string(),
   MAIL_PORT: Env.schema.number(),
   MAIL_USERNAME: Env.schema.string(),
@@ -35,9 +35,4 @@ export default Env.rules({
 
   FACEBOOK_CLIENT_ID: Env.schema.string(),
   FACEBOOK_CLIENT_SECRET: Env.schema.string(),
-  
-  REDIS_CONNECTION: Env.schema.enum(['local'] as const),
-  REDIS_HOST: Env.schema.string({ format: 'host' }),
-  REDIS_PORT: Env.schema.number(),
-  REDIS_PASSWORD: Env.schema.string.optional(),
 });

@@ -1,11 +1,10 @@
 T: reg, log -> test
-N: 12->sun
-R: adonisjs/auth is not nessesary
 
-T: inject service in service
+N: 12->sunnah
+R: adonisjs/auth is not nessesary
 
 Fallback: solve type
 
-*: Mutex, Jwt as module ( payload...), Auth, SocialAuthService, Route
+*: Jwt as module ( payload...), Auth, SocialAuthService, Route
 T: Route.discover
 I: Refresh Token

@@ -52,8 +52,8 @@
     "adonis5-jwt",
     "./app/Providers/MongooseProvider",
     "./app/Providers/PasswordValidationProvider",
-    "./app/Providers/LockProvider",
-    "@adonisjs/redis"
+    "@adonisjs/redis",
+    "./app/Providers/TwilioProvider"
   ],
   "aceProviders": [
     "@adonisjs/repl"

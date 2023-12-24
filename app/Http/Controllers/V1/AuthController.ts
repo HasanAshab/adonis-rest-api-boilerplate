@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { inject } from "@adonisjs/fold"
 import Route from '@ioc:Adonis/Core/Route'
 import Event from '@ioc:Adonis/Core/Event'
-import { inject } from "@adonisjs/fold"
 import AuthService from "App/Services/Auth/AuthService";
 import RegisterValidator from "App/Http/Validators/V1/Auth/RegisterValidator";
 import LoginValidator from "App/Http/Validators/V1/Auth/LoginValidator";
@@ -9,7 +9,7 @@ import LoginValidator from "App/Http/Validators/V1/Auth/LoginValidator";
 @inject()
 export default class AuthController {
   //constructor(private authService: AuthService, private socialAuthService: SocialAuthService) {}
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
   
   async register({ request, response, auth }: HttpContextContract) {
     const { email, username, password } = await request.validate(RegisterValidator);

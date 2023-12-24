@@ -1,15 +1,21 @@
+import { inject } from "@adonisjs/fold"
+import Cache from '@ioc:Kaperskyguru/Adonis-Cache'
 import { UserDocument } from "App/Models/User";
 import Settings, { ISettings } from "App/Models/Settings";
 import Token from "App/Models/Token";
 import TwilioService from "App/Services/TwilioService";
-import Config from "Config";
 import speakeasy from "speakeasy";
-import PhoneNumberRequiredException from "App/Exceptions/PhoneNumberRequiredException";
-import InvalidOtpException from "App/Exceptions/InvalidOtpException";
+// import PhoneNumberRequiredException from "App/Exceptions/PhoneNumberRequiredException";
+// import InvalidOtpException from "App/Exceptions/InvalidOtpException";
 
+@inject()
 export default class TwoFactorAuthService {
   constructor(private readonly twilioService: TwilioService) {}
   
+  generateOTPCode() {
+    return Math.floor(100000 + Math.random() * 900000);
+  }
+
   async enable(user: UserDocument, method?: ISettings["twoFactorAuth"]["method"]) {
     if (!user.phoneNumber && method !== "app")
       throw new PhoneNumberRequiredException();
@@ -76,10 +82,6 @@ export default class TwoFactorAuthService {
     
     if(!isValid)
       throw new InvalidOtpException();
-  }
-  
-  generateOTPCode() {
-    return Math.floor(100000 + Math.random() * 900000);
   }
   
   async createToken(user: UserDocument) {

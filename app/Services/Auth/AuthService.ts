@@ -1,6 +1,5 @@
 // import { UploadedFile } from "express-fileupload";
 // import URL from "URL";
-// import { singleton } from "tsyringe";
 // import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService";
 // import Socialite, { ExternalUser } from "Socialite";
 // import Settings from "App/Models/Settings";
@@ -8,13 +7,13 @@
 // import InvalidOtpException from "App/Exceptions/InvalidOtpException";
 
 import { inject } from "@adonisjs/fold"
-//import Cache from '@ioc:Kaperskyguru/Adonis-Cache'
 import { Mutex } from 'async-mutex';
-import User, { UserDocument } from "App/Models/User";
-import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService";
-import InvalidCredentialException from "App/Exceptions/InvalidCredentialException";
-//import LoginAttemptLimitExceededException from "App/Exceptions/LoginAttemptLimitExceededException";
-//import OtpRequiredException from "App/Exceptions/OtpRequiredException";
+import Cache from '@ioc:Kaperskyguru/Adonis-Cache'
+import User, { UserDocument } from "App/Models/User"
+import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
+import InvalidCredentialException from "App/Exceptions/InvalidCredentialException"
+//import LoginAttemptLimitExceededException from "App/Exceptions/LoginAttemptLimitExceededException"
+//import OtpRequiredException from "App/Exceptions/OtpRequiredException"
 
 @inject()
 export default class AuthService {
@@ -50,6 +49,8 @@ export default class AuthService {
     await this.resetFailedAttempts(email);
     return user.createToken();
   }
+  
+  
   
   async loginWithSocialProvider(provider: string, code: string) {
     const externalUser = await Socialite.driver(provider).user(code);
@@ -94,6 +95,7 @@ export default class AuthService {
     });
   }
 
+ 
   private getFailedAttemptCacheKey(email: string) {
     return `$_LOGIN_FAILED_ATTEMPTS(${email})`;
   }
@@ -111,9 +113,8 @@ export default class AuthService {
   }
   
   private async assertFailedAttemptLimitNotExceed(email: string) {
-    console.log(this)
     const key = this.getFailedAttemptCacheKey(email);
-   // await this.mutex.acquire();
+    await this.mutex.acquire();
     let failedAttemptsCount = await Cache.get(key) ?? 0;
     this.mutex.release();
     if(failedAttemptsCount > 3)
