@@ -12,7 +12,7 @@ export default (schema: Schema) => {
     tokenVersion: {
       type: Number,
       default: 0
-    },
+    }
   });
 
   schema.methods.createToken = function () {

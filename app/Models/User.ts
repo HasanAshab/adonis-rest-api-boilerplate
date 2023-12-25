@@ -5,9 +5,9 @@ import HasPolicy, { HasPolicyDocument } from "App/Plugins/HasPolicy";
 import HasApiTokens, { HasApiTokensDocument } from "App/Plugins/HasApiTokens";
 import Notifiable, { NotifiableDocument } from "App/Plugins/Notifiable";
 import Mediable, { MediableDocument } from "App/Plugins/Mediable";
-//import Billable, { BillableDocument } from "App/Plugins/Billable";
 import Settings, { SettingsDocument } from "App/Models/Settings";
 import UserPolicy from "App/Policies/UserPolicy";
+//import Billable, { BillableDocument } from "App/Plugins/Billable";
 
 const UserSchema = new Schema<UserDocument>({
   name: String,
@@ -94,6 +94,9 @@ export interface UserDocument extends Document, IUser, AuthenticatableDocument, 
   createDefaultSettings(): Promise<SettingsDocument>;
 };
 
-interface UserModel extends Model<UserDocument>, HasFactoryModel {};
+interface UserModel extends Model<UserDocument>, HasFactoryModel {
+  internals(): Query<UserDocument[], UserDocument>;
+  internal(): Query<UserDocument | null, UserDocument>;
+};
 
 export default model<UserDocument, UserModel>("User", UserSchema);

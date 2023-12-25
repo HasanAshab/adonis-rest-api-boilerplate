@@ -10,11 +10,11 @@ export default (schema: Schema) => {
   
   function importFactoryOnce(modelName: string) {
     if(!Factory)
-      Factory = require(`~/database/factories/${modelName}Factory`).default;
+      Factory = require(`Database/factories/${modelName}Factory`).default;
   }
   
   schema.statics.factory = function(options?: object) {
-    importFactoryOnce(this.modelName)
+    importFactoryOnce(this.modelName);
     const factory = new Factory(this, options);
     factory.configure?.();
     return factory;

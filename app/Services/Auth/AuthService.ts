@@ -1,11 +1,4 @@
-// import { UploadedFile } from "express-fileupload";
-// import URL from "URL";
-// import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService";
-// import Socialite, { ExternalUser } from "Socialite";
-// import Settings from "App/Models/Settings";
-// import Token from "App/Models/Token";
-// import InvalidOtpException from "App/Exceptions/InvalidOtpException";
-
+import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
 import { inject } from "@adonisjs/fold"
 import { Mutex } from 'async-mutex';
 import Cache from '@ioc:Kaperskyguru/Adonis-Cache'
@@ -19,7 +12,7 @@ import InvalidCredentialException from "App/Exceptions/InvalidCredentialExceptio
 export default class AuthService {
   constructor(private readonly twoFactorAuthService: TwoFactorAuthService, private readonly mutex: Mutex) {}
   
-  async register(email: string, username: string, password: string, profile?: UploadedFile){
+  async register(email: string, username: string, password: string, profile?: MultipartFileContract){
     const user = new User({ email, username });
     await user.setPassword(password);
     
@@ -49,52 +42,6 @@ export default class AuthService {
     await this.resetFailedAttempts(email);
     return user.createToken();
   }
-  
-  
-  
-  async loginWithSocialProvider(provider: string, code: string) {
-    const externalUser = await Socialite.driver(provider).user(code);
-    console.log(externalUser)
-    const user = await User.findOneAndUpdate(
-      { [`externalId.${provider}`]: externalUser.id },
-      { 
-        name: externalUser.name,
-        email: externalUser.email,
-        verified: true,
-        profile: externalUser.picture
-      },
-      { new: true }
-    );
-    if(user) {
-      return URL.client(`/login/social/${provider}/success/${user.createToken()}`);
-    }
-    const fields = externalUser.email ? "username" : "email,username";
-    const token = await this.createSocialLoginFinalStepToken(provider, externalUser);
-    return URL.client(`/login/social/${provider}/final-step/${externalUser.id}/${token}?fields=${fields}`);
-  }
-  
-  async createSocialLoginFinalStepToken(provider: string, externalUser: ExternalUser) {
-    const { secret } = await Token.create({
-      key: externalUser.id,
-      type: provider + "Login",
-      data: externalUser,
-      expiresAt: Date.now() + 25920000
-    });
-    return secret;
-  }
-  
-  async externalLoginFinalStep(provider: string, externalId: string, token: string, username: string, email?: string) {
-    const externalUser = await Token.verify<ExternalUser>(externalId, provider + "Login", token);
-    return await User.create({
-      [`externalId.${provider}`]: externalUser.id,
-      name: externalUser.name,
-      email: externalUser.email ?? email,
-      username,
-      verified: true,
-      profile: externalUser.picture
-    });
-  }
-
  
   private getFailedAttemptCacheKey(email: string) {
     return `$_LOGIN_FAILED_ATTEMPTS(${email})`;
@@ -117,8 +64,9 @@ export default class AuthService {
     await this.mutex.acquire();
     let failedAttemptsCount = await Cache.get(key) ?? 0;
     this.mutex.release();
-    if(failedAttemptsCount > 3)
+    if(failedAttemptsCount > 3) {
       throw new LoginAttemptLimitExceededException();
+    }
   }
   
   private async incrementFailedAttempt(email: string) {

@@ -4,10 +4,10 @@ export default Env.rules({
   APP_NAME: Env.schema.string(),
   APP_KEY: Env.schema.string(),
 
-  NODE_ENV: Env.schema.enum(['development', 'production']),
+  NODE_ENV: Env.schema.enum(['development', 'test', 'production'] as const),
   PORT: Env.schema.number(),
 
-  DRIVE_DISK: Env.schema.enum(['local', 's3']),
+  DRIVE_DISK: Env.schema.enum(['local', 's3'] as const),
 
   DATABASE_URL: Env.schema.string(),
   STRIPE_KEY: Env.schema.string(),
