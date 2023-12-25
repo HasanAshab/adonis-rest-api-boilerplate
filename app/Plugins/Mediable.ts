@@ -28,8 +28,6 @@ export interface MediableDocument extends Document {
 
 export default (schema: Schema) => {
   schema.methods.media = function (this: MediableDocument) {
-console.log(Route.makeUrl("v1_users.show", [1]))
-
     const metadata = {
       mediableId: this._id,
       mediableType: this.constructor.modelName,
@@ -51,14 +49,12 @@ console.log(Route.makeUrl("v1_users.show", [1]))
         
         const attachMedia = (onFulfill, onReject) => {
           file.moveToDisk(storagePath).then(() => {
-            console.log(file.fileName)
             const path = join(storagePath, file.fileName);
             
             Media.create({ path, visibility, ...filter }).catch(onReject).then(media => {
               if(storeRefIn) {
                 this[storeRefIn] = media._id;
               }
-              
               if(storeLinkIn) {
                 if (visibility === "private") {
                   this[storeLinkIn] = Route.makeSignedUrl("v1_media.serve", [media._id]);
@@ -67,7 +63,6 @@ console.log(Route.makeUrl("v1_users.show", [1]))
                   this[storeLinkIn] = Route.makeUrl("v1_media.serve", [media._id]);
                 }
               }
-              
               onFulfill(media);
             });
           });

@@ -130,6 +130,25 @@ test.group('Auth', group => {
     expect(response.status).toReturnWith(401);
     expect(response.body()).not.toHaveProperty("token");
   });
+  
+  test("should prevent Brute Force login", { user: true }, async () => {
+    const limit = 4;
+    const payload = {
+      email: user.email,
+      password: "wrong-pass"
+    };
+    const responses = [];
+    
+    for (let i = 0; i < limit; i++) {
+      const response = await client.post("/api/v1/auth/login").json(payload);
+      responses.push(response);
+    }
+    
+    const lockedResponse = await client.post("/api/v1/auth/login").json(payload);
+    
+    expect(responses.every(res => res.status() === 401)).toBe(true);
+    expect(lockedResponse.status).toReturnWith(429);
+  });
 
   test("Login should flag for otp if not provided in (2FA)", async () => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
@@ -138,16 +157,10 @@ test.group('Auth', group => {
       password: "password"
     });
     
-    
-    
-    header mar
-    
-    
     expect(response.status).toReturnWith(200);
     expect(response.body().data.twoFactorAuthRequired).toBe(true);
     expect(response.body()).not.toHaveProperty("token");
   });
-
 })
 
 /*
@@ -180,22 +193,6 @@ describe("Auth", () => {
     expect(response.body()).not.toHaveProperty("body");
   });
   
-  test("should prevent Brute Force login", { user: true }, async () => {
-    const payload = {
-      email: user.email,
-      password: "wrong-pass"
-    };
-    const responses = [];
-    for (let i = 0; i < 5; i++) {
-      const response = await request.post("/api/v1/auth/login").send(payload);
-      responses.push(response);
-    }
-    expect(responses[0].statusCode).toBe(401);
-    expect(responses[1].statusCode).toBe(401);
-    expect(responses[2].statusCode).toBe(401);
-    expect(responses[3].statusCode).toBe(401);
-    expect(responses[4].statusCode).toBe(429);
-  });
   
   test("should login a user with valid recovery code", async () => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
