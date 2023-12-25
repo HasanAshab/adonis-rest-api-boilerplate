@@ -45,16 +45,16 @@
   "providers": [
     "./app/Providers/AppProvider",
     "@adonisjs/core",
+    "@adonisjs/redis",
     "@kaperskyguru/adonis-cache",
     "@adonisjs/bouncer",
     "@adonisjs/ally",
     "@adonisjs/lucid",
     "@adonisjs/auth",
     "adonis5-jwt",
+    "./app/Providers/TwilioProvider",
     "./app/Providers/MongooseProvider",
-    "./app/Providers/PasswordValidationProvider",
-    "@adonisjs/redis",
-    "./app/Providers/TwilioProvider"
+    "./app/Providers/PasswordValidationProvider"
   ],
   "aceProviders": [
     "@adonisjs/repl"

@@ -14,7 +14,7 @@ export default class UserFactory extends Factory<IUser, UserDocument> {
       role: "novice" as const,
       profile: null,
       recoveryCodes: [],
-      externalId: {}
+      socialId: {}
     };
   }
   
@@ -25,9 +25,10 @@ export default class UserFactory extends Factory<IUser, UserDocument> {
     });
   }
   
-  oauth() {
+  social(provider = "google", id = "100020") {
     return this.state((user: IUser) => {
       user.password = null;
+      user.socialId[provider] = id;
       return user;
     });
   }
@@ -39,13 +40,13 @@ export default class UserFactory extends Factory<IUser, UserDocument> {
     });
   }
   
-  hasSettings(mfa = false) {
+  hasSettings(enableTwoFactorAuth = false) {
     return this.external(async (users: UserDocument[]) => {
       const settingsData: any[] = [];
       for(const user of users){
         settingsData.push({
           userId: user._id,
-          "twoFactorAuth.enabled": mfa
+          "twoFactorAuth.enabled": enableTwoFactorAuth
         });
       }
       await Settings.insertMany(settingsData);

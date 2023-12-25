@@ -7,6 +7,14 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
+import Env from '@ioc:Adonis/Core/Env'
+import { hostname } from "os"
+
+Route.makeFullUrl = function(...args) {
+  const path = this.makeUrl(...args);
+  return `https://${hostname()}:${Env.get('PORT')}${path}`;
+}
+
 
 Route.post("/api/v1/auth/register", "V1/AuthController.register");
 

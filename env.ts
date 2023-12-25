@@ -7,7 +7,7 @@ export default Env.rules({
   NODE_ENV: Env.schema.enum(['development', 'test', 'production'] as const),
   PORT: Env.schema.number(),
 
-  DRIVE_DISK: Env.schema.enum(['local', 's3'] as const),
+  DRIVE_DISK: Env.schema.enum(['local'] as const),
 
   DATABASE_URL: Env.schema.string(),
   STRIPE_KEY: Env.schema.string(),

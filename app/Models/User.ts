@@ -39,7 +39,7 @@ const UserSchema = new Schema<UserDocument>({
     type: [String],
     hide: true
   },
-  externalId: {
+  socialId: {
     type: Object,
     index: true,
     hide: true
@@ -86,7 +86,7 @@ export interface IUser {
   role: "admin" | "novice";
   verified: boolean;
   recoveryCodes: string[];
-  externalId: Record<string, string>;
+  socialId: Record<string, string>;
 }
 
 export interface UserDocument extends Document, IUser, AuthenticatableDocument, HasPolicyDocument<UserPolicy>, MediableDocument, HasApiTokensDocument, NotifiableDocument<UserDocument> {

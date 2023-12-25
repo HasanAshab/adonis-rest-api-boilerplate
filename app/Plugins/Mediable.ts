@@ -1,10 +1,9 @@
-//TODO static helpers
-
-import { Schema, Document } from "mongoose";
-import { UploadedFile } from "express-fileupload";
-//import Route from '@ioc:Adonis/Core/Route'
-//import Drive from '@ioc:Adonis/Core/Drive'
+import Route from '@ioc:Adonis/Core/Route'
+import Drive from '@ioc:Adonis/Core/Drive'
 import Media, { IMedia, MediaDocument } from "App/Models/Media";
+import { join } from "path";
+import { Schema, Document } from "mongoose"
+import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
 
 export interface ReplaceOptions {
   storagePath?: string;
@@ -17,11 +16,11 @@ export interface MediableDocument extends Document {
     withTag(tag: string): {
       then(onFulfill?: ((value: MediaDocument[]) => void) | undefined, onReject?: ((reason: any) => void) | undefined): Promise<MediaDocument[]>;
       first(onFulfill?: ((value: MediaDocument | null) => void) | undefined, onReject?: ((reason: any) => void) | undefined): Promise<MediaDocument | null>;
-      attach(file: UploadedFile, storagePath?: string): {
+      attach(file: MultipartFileContract, storagePath?: string): {
         then(onFulfill?: ((value: MediaDocument) => void) | undefined, onReject?: ((reason: any) => void) | undefined);
-        asPrivate(): Promise<MediaDocument>;
+    asPrivate(): Promise<MediaDocument>;
       };
-      replaceBy(file: UploadedFile, options?: ReplaceOptions): Promise<MediableDocument>;
+      replaceBy(file: MultipartFileContract, options?: ReplaceOptions): Promise<MediableDocument>;
       detach(): Promise<any>;
     };
   };
@@ -29,6 +28,8 @@ export interface MediableDocument extends Document {
 
 export default (schema: Schema) => {
   schema.methods.media = function (this: MediableDocument) {
+console.log(Route.makeUrl("v1_users.show", [1]))
+
     const metadata = {
       mediableId: this._id,
       mediableType: this.constructor.modelName,
@@ -43,17 +44,21 @@ export default (schema: Schema) => {
       
       const first = () => Media.findOne(filter);
 
-      const attach = (file: UploadedFile, storagePath = "uploads") => {
+      const attach = (file: MultipartFileContract, storagePath = "") => {
         let visibility = "public";
         let storeRefIn = null;
         let storeLinkIn = null;
         
         const attachMedia = (onFulfill, onReject) => {
-          Drive.putFile(storagePath, file).then(path => {
+          file.moveToDisk(storagePath).then(() => {
+            console.log(file.fileName)
+            const path = join(storagePath, file.fileName);
+            
             Media.create({ path, visibility, ...filter }).catch(onReject).then(media => {
               if(storeRefIn) {
                 this[storeRefIn] = media._id;
               }
+              
               if(storeLinkIn) {
                 if (visibility === "private") {
                   this[storeLinkIn] = Route.makeSignedUrl("v1_media.serve", [media._id]);
@@ -62,6 +67,7 @@ export default (schema: Schema) => {
                   this[storeLinkIn] = Route.makeUrl("v1_media.serve", [media._id]);
                 }
               }
+              
               onFulfill(media);
             });
           });
@@ -85,7 +91,7 @@ export default (schema: Schema) => {
         return { then: attachMedia, asPrivate, storeRef, storeLink };
       };
       
-      const replaceBy = async (file: UploadedFile) => {
+      const replaceBy = async (file: MultipartFileContract) => {
         const media = await Media.findOneOrFail(filter);
         await Drive.put(media.path, file.data);
       };
