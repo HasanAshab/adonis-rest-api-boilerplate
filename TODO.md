@@ -11,6 +11,5 @@ T: SocialAuthService
 T: organize Route
 T: Route.discover
 I: Refresh Token
-T: externalId -> socialId
 T: extend FakeEmitter
 F: Mediable

@@ -1,4 +1,4 @@
-import Seeder from "~/core/database/Seeder";
+import Seeder from "./Seeder";
 
 export default class DatabaseSeeder extends Seeder {
   /**

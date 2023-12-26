@@ -1,5 +1,5 @@
-import Factory from "./Factory";
-import { IUser, UserDocument } from "App/Models/User";
+import Factory from "./Factory"
+import { IUser, UserDocument } from "App/Models/User"
 import Settings from "App/Models/Settings";
 
 export default class UserFactory extends Factory<IUser, UserDocument> {

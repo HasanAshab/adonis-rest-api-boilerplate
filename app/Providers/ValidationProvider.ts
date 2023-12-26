@@ -39,5 +39,17 @@ export default class PasswordValidationProvider {
       },
       () => ({ async: true })
     );
+    
+    validator.rule('slug', (value, _, options) => {
+      const slugPattern = /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/;
+      if(slugPattern.test(value)) return;
+        
+      return options.errorReporter.report(
+        options.pointer,
+        'slug',
+        `${options.field} must be a valid slug`,
+        options.arrayExpressionPointer
+      );
+    });
   }
 }

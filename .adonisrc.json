@@ -28,13 +28,6 @@
     "./start/kernel",
     "./start/bouncer",
     {
-      "file": "./start/validator",
-      "environment": [
-        "web",
-        "test"
-      ]
-    },
-    {
       "file": "./start/events",
       "environment": [
         "web",
@@ -54,8 +47,7 @@
     "adonis5-jwt",
     "./app/Providers/TwilioProvider",
     "./app/Providers/MongooseProvider",
-    "./app/Providers/ResponseMacroProvider",
-    "./app/Providers/PasswordValidationProvider"
+    "./app/Providers/ValidationProvider"
   ],
   "aceProviders": [
     "@adonisjs/repl"
