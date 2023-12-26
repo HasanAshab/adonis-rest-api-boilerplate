@@ -55,6 +55,7 @@ export default (schema: Schema) => {
               if(storeRefIn) {
                 this[storeRefIn] = media._id;
               }
+              /*
               if(storeLinkIn) {
                 if (visibility === "private") {
                   this[storeLinkIn] = Route.makeSignedUrl("v1_media.serve", [media._id]);
@@ -63,6 +64,7 @@ export default (schema: Schema) => {
                   this[storeLinkIn] = Route.makeUrl("v1_media.serve", [media._id]);
                 }
               }
+              */
               onFulfill(media);
             });
           });

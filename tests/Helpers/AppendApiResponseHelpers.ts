@@ -5,4 +5,4 @@ ApiRequest.macro('fields', function (data: object) {
     this.field(fieldName, data[fieldName]);
   }
   return this;
-})
+});

@@ -39,7 +39,7 @@ test.group('Auth', group => {
     const user = await User.findOne({ email: data.email });
 
 
-    expect(response.status).toReturnWith(201);
+    expect(response.status()).toBe(201);
     expect(response.body()).toHaveProperty("token");
     expect(user).not.toBeNull();
     expect(await user.settings).not.toBeNull();
@@ -59,13 +59,13 @@ test.group('Auth', group => {
     
     const response = await client
       .post("/api/v1/auth/register")
-      .field("password", "Password@1234")
       .fields(data)
+      .field("password", "Password@1234")
       .file("profile", filePath("image.png"));
     
     const user = await User.findOne(data);
     
-    expect(response.status).toReturnWith(201);
+    expect(response.status()).toBe(201);
     expect(response.body()).toHaveProperty("token");
     expect(user).not.toBeNull();
     expect(await user.settings).not.toBeNull();
@@ -85,7 +85,7 @@ test.group('Auth', group => {
       password: "Password@1234"
     });
 
-    expect(response.status).toReturnWith(422);
+    expect(response.status()).toBe(422);
     expect(response.body()).not.toHaveProperty("token");
   });
   
@@ -96,7 +96,7 @@ test.group('Auth', group => {
       password: "Password@1234"
     });
     
-    expect(response.status).toReturnWith(422);
+    expect(response.status()).toBe(422);
     expect(response.body()).not.toHaveProperty("data");
   });
 
@@ -106,7 +106,7 @@ test.group('Auth', group => {
       password: "password"
     });
     
-    expect(response.status).toReturnWith(200);
+    expect(response.status()).toBe(200);
     expect(response.body()).toHaveProperty("token");
   });
 
@@ -116,7 +116,7 @@ test.group('Auth', group => {
       password: "wrong-pass"
     });
     
-    expect(response.status).toReturnWith(401);
+    expect(response.status()).toBe(401);
     expect(response.body()).not.toHaveProperty("token");
   });
 
@@ -127,7 +127,7 @@ test.group('Auth', group => {
       password: "password"
     });
     
-    expect(response.status).toReturnWith(401);
+    expect(response.status()).toBe(401);
     expect(response.body()).not.toHaveProperty("token");
   });
   
@@ -157,7 +157,7 @@ test.group('Auth', group => {
       password: "password"
     });
     
-    expect(response.status).toReturnWith(200);
+    expect(response.status()).toBe(200);
     expect(response.body().data.twoFactorAuthRequired).toBe(true);
     expect(response.body()).not.toHaveProperty("token");
   });
@@ -178,7 +178,7 @@ describe("Auth", () => {
       email: user.email,
       password: "password"
     });
-    expect(response.status).toReturnWith(200);
+    expect(response.status()).toBe(200);
     expect(response.body().data).toHaveProperty("token");
   });
 
@@ -189,7 +189,7 @@ describe("Auth", () => {
       password: "password",
       otp: 999999
     });
-    expect(response.status).toReturnWith(401);
+    expect(response.status()).toBe(401);
     expect(response.body()).not.toHaveProperty("body");
   });
   
@@ -201,7 +201,7 @@ describe("Auth", () => {
       email: user.email,
       code
     });
-    expect(response.status).toReturnWith(200);
+    expect(response.status()).toBe(200);
     expect(response.body().data).toHaveProperty("token");
   });
   
@@ -223,7 +223,7 @@ describe("Auth", () => {
       email: user.email,
       code: "foo-bar"
     });
-    expect(response.status).toReturnWith(401);
+    expect(response.status()).toBe(401);
     expect(response.body()).not.toHaveProperty("data");
   });
   
@@ -231,7 +231,7 @@ describe("Auth", () => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
     const oldCodes = await user.generateRecoveryCodes();
     const response = await request.post("/api/v1/auth/generate-recovery-codes").actingAs(user.createToken());
-    expect(response.status).toReturnWith(200);
+    expect(response.status()).toBe(200);
     expect(response.body().data).toHaveLength(10);
     expect(response.body().data).not.toEqual(oldCodes);
   });
@@ -251,7 +251,7 @@ describe("Auth", () => {
       externalId: externalUser.id
     });
     const user = await User.findOne({ username });
-    expect(response.status).toReturnWith(201);
+    expect(response.status()).toBe(201);
     expect(user).not.toBeNull();
     expect(await user.settings).not.toBeNull();
     Event.assertEmitted("Registered", {
@@ -278,7 +278,7 @@ describe("Auth", () => {
       ...data
     });
     const user = await User.findOne(data);
-    expect(response.status).toReturnWith(201);
+    expect(response.status()).toBe(201);
     expect(user).not.toBeNull();
     expect(await user.settings).not.toBeNull();
     Event.assertEmitted("Registered", {
@@ -296,7 +296,7 @@ describe("Auth", () => {
       externalId: "1000"
     });
     const user = await User.findOne({ username });
-    expect(response.status).toReturnWith(401);
+    expect(response.status()).toBe(401);
     expect(user).toBeNull();
   })
   
@@ -318,7 +318,7 @@ describe("Auth", () => {
       username: "foo95",
       externalId: externalUser.id
     });
-    expect(response.status).toReturnWith(401);
+    expect(response.status()).toBe(401);
   });
 
   test("Should send otp", async () => {
@@ -327,7 +327,7 @@ describe("Auth", () => {
     await sleep(2000)
     const token = await Token.findOne({ key: user._id, type: "2fa" });
     
-    expect(response.status).toReturnWith(200);
+    expect(response.status()).toBe(200);
     expect(otp).not.toBeNull();
   });
   
@@ -354,7 +354,7 @@ describe("Auth", () => {
       email: user.email
     });
 
-    expect(response.status).toReturnWith(200);
+    expect(response.status()).toBe(200);
     Notification.assertSentTo(user, EmailVerificationNotification);
   });
 
@@ -365,7 +365,7 @@ describe("Auth", () => {
     };
     const response = await request.patch("/api/v1/auth/password/change").actingAs(token).send(data);
     await user.refresh();
-    expect(response.status).toReturnWith(200);
+    expect(response.status()).toBe(200);
     expect(await user.attempt(data.newPassword)).toBe(true);
   });
 
@@ -375,12 +375,12 @@ describe("Auth", () => {
       oldPassword: "password",
       newPassword: "Password@1234"
     });
-    expect(response.status).toReturnWith(403);
+    expect(response.status()).toBe(403);
   });
 
   test("Should send reset email", { user: true }, async () => {
     const response = await request.post("/api/v1/auth/password/forgot").send({ email: user.email });
-    expect(response.status).toReturnWith(202);
+    expect(response.status()).toBe(202);
     Notification.assertSentTo(user, ForgotPasswordNotification);
   });
 
@@ -401,7 +401,7 @@ describe("Auth", () => {
       token
     });
     await user.refresh();
-    expect(response.status).toReturnWith(200);
+    expect(response.status()).toBe(200);
     expect(await user.attempt(password)).toBe(true);
   });
 
@@ -413,7 +413,7 @@ describe("Auth", () => {
       password
     });
     await user.refresh();
-    expect(response.status).toReturnWith(401);
+    expect(response.status()).toBe(401);
     expect(await user.attempt(password)).toBe(false);
   });
 
@@ -423,7 +423,7 @@ describe("Auth", () => {
     const otp = await twoFactorAuthService.createToken(user);
     const response = await request.patch("/api/v1/auth/change-phone-number").actingAs(user.createToken()).send({ phoneNumber, otp });
     await user.refresh();
-    expect(response.status).toReturnWith(200);
+    expect(response.status()).toBe(200);
     expect(user.phoneNumber).toBe(phoneNumber);
   });
   
@@ -431,7 +431,7 @@ describe("Auth", () => {
     const phoneNumber = "+14155552671";
     const response = await request.patch("/api/v1/auth/change-phone-number").actingAs(token).send({ phoneNumber, otp: 123456 });
     await user.refresh();
-    expect(response.status).toReturnWith(401);
+    expect(response.status()).toBe(401);
     expect(user.phoneNumber).not.toBe(phoneNumber);
   });
   
@@ -440,7 +440,7 @@ describe("Auth", () => {
     const response = await request.patch("/api/v1/auth/change-phone-number").actingAs(token).send({ phoneNumber });
     const otp = await Token.findOne({ key: user._id, type: "2fa" });
     await user.refresh();
-    expect(response.status).toReturnWith(200);
+    expect(response.status()).toBe(200);
     expect(user.phoneNumber).not.toBe(phoneNumber);
     expect(otp).not.toBeNull();
   });

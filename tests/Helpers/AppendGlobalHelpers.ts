@@ -7,5 +7,5 @@ globalThis.resetDatabase = function resetDatabase(models = modelNames()) {
 }
 
 globalThis.filePath = function filePath(name: string) {
-  return join(__dirname, '../tmp/test/', name);
+  return join(__dirname, '../../tmp/test/', name);
 }
