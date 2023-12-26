@@ -1,4 +1,4 @@
-import Seeder from "./Seeder";
+import Seeder from "@ioc:Adonis/Mongoose/Seeder";
 
 export default class DatabaseSeeder extends Seeder {
   /**

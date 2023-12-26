@@ -1,8 +1,23 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import { getStatusText } from "http-status-codes";
 
+
+// import { Router as BaseRouter } from '@adonisjs/http-server/build/standalone'
+// import Env from '@ioc:Adonis/Core/Env'
+// import { hostname } from "os"
+// 
+// class Router extends BaseRouter {
+//   makeFullUrl(...args) {
+//     const path = this.makeUrl(...args);
+//     return `https://${hostname()}:${Env.get('PORT')}${path}`;
+//   }
+// }
+// 
+
+
 export default class AppProvider {
   constructor (protected app: ApplicationContract) {}
+
 
   public async boot () {
     this.addResponseHelpers();

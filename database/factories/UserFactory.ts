@@ -1,4 +1,4 @@
-import Factory from "./Factory"
+import Factory from "@ioc:Adonis/Mongoose/Factory"
 import { IUser, UserDocument } from "App/Models/User"
 import Settings from "App/Models/Settings";
 

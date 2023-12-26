@@ -1,22 +1,18 @@
+import Logger from '@ioc:Adonis/Core/Logger'
+import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
+import { range } from 'lodash'
+
 /*
 |--------------------------------------------------------------------------
 | Http Exception Handler
 |--------------------------------------------------------------------------
 |
 | AdonisJs will forward all exceptions occurred during an HTTP request to
-| the following class. You can learn more about exception handling by
-| reading docs.
-|
-| The exception handler extends a base `HttpExceptionHandler` which is not
-| mandatory, however it can do lot of heavy lifting to handle the errors
-| properly.
-|
+| the following class.
 */
-
-import Logger from '@ioc:Adonis/Core/Logger'
-import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
-
 export default class ExceptionHandler extends HttpExceptionHandler {
+  ignoreStatuses = range(1, 499);
+  
   constructor() {
     super(Logger)
   }

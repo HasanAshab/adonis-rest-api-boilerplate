@@ -6,6 +6,7 @@ import AuthService from "App/Services/Auth/AuthService";
 import RegisterValidator from "App/Http/Validators/V1/Auth/RegisterValidator";
 import LoginValidator from "App/Http/Validators/V1/Auth/LoginValidator";
 
+
 @inject()
 export default class AuthController {
   //constructor(private authService: AuthService, private socialAuthService: SocialAuthService) {}

@@ -5,8 +5,8 @@ import Cache from '@ioc:Kaperskyguru/Adonis-Cache'
 import User, { UserDocument } from "App/Models/User"
 import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
 import InvalidCredentialException from "App/Exceptions/InvalidCredentialException"
-//import LoginAttemptLimitExceededException from "App/Exceptions/LoginAttemptLimitExceededException"
-//import OtpRequiredException from "App/Exceptions/OtpRequiredException"
+import LoginAttemptLimitExceededException from "App/Exceptions/LoginAttemptLimitExceededException"
+import OtpRequiredException from "App/Exceptions/OtpRequiredException"
 
 @inject()
 export default class AuthService {

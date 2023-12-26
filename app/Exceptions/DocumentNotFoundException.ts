@@ -6,7 +6,7 @@ export default class DocumentNotFoundException extends Exception {
   message = this.modelName + " Not Found.";
   
   constructor(public modelName = "Resource") {
-    super(this.message, this.status);
+    super();
     this.modelName = modelName;
   }
 }

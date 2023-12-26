@@ -3,9 +3,6 @@ import Drive from '@ioc:Adonis/Core/Drive'
 import Event from '@ioc:Adonis/Core/Event'
 import User from "App/Models/User";
 
-//TODO
-Event.assertEmitted = () => null;
-
 test.group('Auth', group => {
   let user;
   let token;
