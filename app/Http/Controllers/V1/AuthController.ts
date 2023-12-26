@@ -12,6 +12,7 @@ export default class AuthController {
   constructor(private readonly authService: AuthService) {}
   
   async register({ request, response, auth }: HttpContextContract) {
+    return response.api({})
     const { email, username, password } = await request.validate(RegisterValidator);
     const user = await this.authService.register(email, username, password, request.file("profile"));
 

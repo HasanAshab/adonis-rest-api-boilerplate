@@ -54,6 +54,7 @@
     "adonis5-jwt",
     "./app/Providers/TwilioProvider",
     "./app/Providers/MongooseProvider",
+    "./app/Providers/ResponseMacroProvider",
     "./app/Providers/PasswordValidationProvider"
   ],
   "aceProviders": [

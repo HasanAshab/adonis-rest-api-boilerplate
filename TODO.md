@@ -1,10 +1,14 @@
 T: reg, log -> test
 
-N: 8->sunnah
+N: 6->sunnah
 
-Fallback: solve type
+Fallback: Fix exceptions, solve type
 
-*: organize Test, Jwt as module ( payload...), Auth, SocialAuthService, Route
+T: Response macro
+T: organize Test
+T: Jwt as module ( payload...)
+T: SocialAuthService
+T: organize Route
 T: Route.discover
 I: Refresh Token
 T: externalId -> socialId
