@@ -39,7 +39,7 @@
     "./app/Providers/AppProvider",
     "@adonisjs/core",
     "@adonisjs/redis",
-    "@kaperskyguru/adonis-cache",
+    "./app/Providers/CacheProvider",
     "./app/Providers/HashProvider",
     "@adonisjs/bouncer",
     "@adonisjs/ally",

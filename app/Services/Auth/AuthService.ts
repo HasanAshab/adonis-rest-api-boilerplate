@@ -1,7 +1,7 @@
 import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
 import { inject } from "@adonisjs/fold"
 import { Mutex } from 'async-mutex';
-import Cache from '@ioc:Kaperskyguru/Adonis-Cache'
+import Cache from '@ioc:Adonis/Addons/Cache'
 import User, { UserDocument } from "App/Models/User"
 import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
 import InvalidCredentialException from "App/Exceptions/InvalidCredentialException"

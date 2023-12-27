@@ -59,22 +59,26 @@ export default class AppProvider {
         success: this.isSuccessful,
         message: text || this.standardMessage,
       });
+      return this;
     });
     
     Response.macro('sendStatus', function (code: number) {
       this.status(code).api({});
+      return this;
     });
     
     Response.macro('setHeaders', function (data: object) {
       for(const key in data) {
         this.header(key, data[key]);
       }
+      return this;
     });
     
     Response.macro('safeHeaders', function (data: object) {
       for(const key in data) {
         this.safeHeader(key, data[key]);
       }
+      return this;
     });
   }
 }
