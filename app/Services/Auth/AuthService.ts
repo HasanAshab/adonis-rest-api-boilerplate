@@ -26,7 +26,7 @@ export default class AuthService {
   }
   
   async login(email: string, password: string, otp?: string) {
-    if(await this.getFailedAttempts(email) > 4) {
+    if(await this.getFailedAttempts(email) >= 4) {
       throw new LoginAttemptLimitExceededException();
     }
 
@@ -81,5 +81,4 @@ export default class AuthService {
     await this.twoFactorAuthService.verifyOtp(user, twoFactorAuth.method, otp);
     await this.incrementFailedAttempt(user.email);
   }
-
 }

@@ -28,12 +28,12 @@ export default class RedisDriver extends CacheDriver {
     await Redis.del(key)
   }
   
-  async increment(key: string) {
-    return await Redis.incr(key);
+  async increment(key: string, value = 1) {
+    return await Redis.incr(key, value);
   }
   
-  async decrement(key: string) {
-    return await Redis.decr(key);
+  async decrement(key: string, value = 1) {
+    return await Redis.decr(key, value);
   }
 
   async flush() {

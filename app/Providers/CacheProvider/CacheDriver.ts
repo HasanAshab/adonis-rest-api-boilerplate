@@ -7,18 +7,15 @@ export default abstract class CacheDriver {
   abstract delete(key: string): Promise<void>;
   abstract flush(): Promise<void>;
   
-  async increment(key: string) {
-    const currentValue = await this.get(key);
-    const newValue = (parseInt(currentValue) || 0) + 1;
-    await this.put(key, newValue.toString());
-    return newValue;
+  async increment(key: string, value = 1) {
+    const data = await this.get(key) ?? 0;
+    const incremented = parseInt(data) + value;
+    await this.put(key, incremented);
+    return incremented;
   }
   
-  async decrement(key: string) {
-    const currentValue = await this.get(key);
-    const newValue = (parseInt(currentValue) || 0) - 1;
-    await this.put(key, newValue.toString());
-    return newValue;
+  async decrement(key: string, value = 1) {
+    return await this.increment(key, value * -1);
   }
   
   async remember(key: string, expiry: number, resolver: Resolver) {
