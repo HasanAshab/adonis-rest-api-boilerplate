@@ -26,7 +26,10 @@ export default class AuthService {
   }
   
   async login(email: string, password: string, otp?: string) {
-    await this.assertFailedAttemptLimitNotExceed(email);
+    if(await this.getFailedAttempts(email) > 4) {
+      throw new LoginAttemptLimitExceededException();
+    }
+
     const user = await User.internal().where("email").equals(email).includeHiddenFields();
     
     if(!user) {
@@ -47,26 +50,12 @@ export default class AuthService {
     return `$_LOGIN_FAILED_ATTEMPTS(${email})`;
   }
   
-  private async checkTwoFactorAuth(user: UserDocument, otp?: string) {
-    const { twoFactorAuth } = await user.settings;
-    if(!twoFactorAuth.enabled) return;
-    
-    if(!otp) {
-      throw new OtpRequiredException();
-    }
-    
-    await this.twoFactorAuthService.verifyOtp(user, twoFactorAuth.method, otp);
-    await this.incrementFailedAttempt(user.email);
-  }
-  
-  private async assertFailedAttemptLimitNotExceed(email: string) {
+  private async getFailedAttempts(email: string) {
     const key = this.getFailedAttemptCacheKey(email);
     await this.mutex.acquire();
-    let failedAttemptsCount = await Cache.get(key) ?? 0;
+    let failedAttempts = await Cache.get(key) ?? 1;
     this.mutex.release();
-    if(failedAttemptsCount > 3) {
-      throw new LoginAttemptLimitExceededException();
-    }
+    return failedAttempts;
   }
   
   private async incrementFailedAttempt(email: string) {
@@ -80,4 +69,17 @@ export default class AuthService {
     const key = this.getFailedAttemptCacheKey(email);
     await Cache.delete(key);
   }
+  
+  private async checkTwoFactorAuth(user: UserDocument, otp?: string) {
+    const { twoFactorAuth } = await user.settings;
+    if(!twoFactorAuth.enabled) return;
+    
+    if(!otp) {
+      throw new OtpRequiredException();
+    }
+    
+    await this.twoFactorAuthService.verifyOtp(user, twoFactorAuth.method, otp);
+    await this.incrementFailedAttempt(user.email);
+  }
+
 }
