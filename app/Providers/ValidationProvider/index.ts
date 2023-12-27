@@ -1,8 +1,8 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
-import PasswordStrategyManager from "App/Services/PasswordStrategies/PasswordStrategyManager"
-import ComplexPasswordStrategy from "App/Services/PasswordStrategies/ComplexPasswordStrategy"
-import StandardPasswordStrategy from "App/Services/PasswordStrategies/StandardPasswordStrategy"
-import WeakPasswordStrategy from "App/Services/PasswordStrategies/WeakPasswordStrategy"
+import PasswordStrategyManager from "./PasswordStrategies/PasswordStrategyManager"
+import ComplexPasswordStrategy from "./PasswordStrategies/ComplexPasswordStrategy"
+import StandardPasswordStrategy from "./PasswordStrategies/StandardPasswordStrategy"
+import WeakPasswordStrategy from "./PasswordStrategies/WeakPasswordStrategy"
 
 
 export default class PasswordValidationProvider {

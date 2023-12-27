@@ -27,7 +27,7 @@ export default hashConfig({
   | free to change the default value
   |
   */
-  default: Env.get('HASH_DRIVER', 'scrypt'),
+  default: Env.get('HASH_DRIVER', 'bcrypt'),
 
   list: {
     /*
@@ -91,6 +91,25 @@ export default hashConfig({
     bcrypt: {
       driver: 'bcrypt',
       rounds: 10,
+    },
+    
+   
+    /*
+    |--------------------------------------------------------------------------
+    | Bcrypt Node
+    |--------------------------------------------------------------------------
+    |
+    | Bcrypt Node mapping uses the bcryptjs pkg under the hood to hash values.
+    |
+    | Make sure you install the underlying dependency for this driver to work.
+    | https://www.npmjs.com/package/bcryptjs.
+    |
+    | npm install bcryptjs
+    |
+    */
+    'bcrypt-node': {
+      driver: 'bcrypt-node',
+      rounds: 1,
     },
   },
 })

@@ -5,11 +5,12 @@ export default class ApiException extends Exception {
   abstract status: number;
   abstract message: string;
   
+  headers = {};
   withHeaders(): Promise<object> | object;
   withHeaders(ctx: HttpContextContract): Promise<object> | object;
   
   async withHeaders(...args: any[]) {
-    return {};
+    return this.headers;
   }
 
   handle(error: this, { response }: HttpContextContract) {

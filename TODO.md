@@ -4,6 +4,8 @@ N: 6->sunnah
 
 Fallback: Fix exceptions, solve type
 
+T: import default
+T*: 'bcrypt-node' driver
 T: Jwt as module ( payload...)
 T: SocialAuthService
 T: organize Route

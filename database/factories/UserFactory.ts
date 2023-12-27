@@ -9,7 +9,7 @@ export default class UserFactory extends Factory<IUser, UserDocument> {
       username: this.faker.person.firstName(),
       email: this.faker.internet.email(),
       phoneNumber: null,
-      password: "$2a$10$GDX4uWSk4bnj5YEde3.LneT1yNyZZFhAXCPO9MkXGEmPJVSIb4jZi", // "password"
+      password: '$2a$04$p0.vClM1AdG5dy/ndGRsIeo6X9dDLK6hTkqIXeKfHGPH8WLFZW3I.' // Hash of "password" with bcrypt-node of round 1
       verified: true,
       role: "novice" as const,
       profile: null,

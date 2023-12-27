@@ -13,8 +13,12 @@ export interface AuthenticatableDocument extends Document {
   verifyRecoveryCode(code: string): Promise<boolean>;
 }
 
+
 export default (schema: Schema) => {
   schema.methods.attempt = function (password: string) {
+    if(!this.password) {
+      throw new Error("Trying to attempt passwordless user (may be social account?)");
+    }
     return Hash.verify(this.password, password);
   }
 

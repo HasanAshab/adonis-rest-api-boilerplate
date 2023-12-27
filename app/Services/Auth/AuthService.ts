@@ -27,7 +27,7 @@ export default class AuthService {
   
   async login(email: string, password: string, otp?: string) {
     await this.assertFailedAttemptLimitNotExceed(email);
-    const user = await User.internal().where("email").equals(email);
+    const user = await User.internal().where("email").equals(email).includeHiddenFields();
     
     if(!user) {
       throw new InvalidCredentialException;

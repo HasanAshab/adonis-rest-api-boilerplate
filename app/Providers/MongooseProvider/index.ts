@@ -73,9 +73,10 @@ export default class MongooseProvider {
     connect && await this.connect();
     syncIndexes && await mongoose.syncIndexes();
     
-    await Promise.all([
-      import('./validator'),
-      this.registerUserProvider()
+    await 
+    Promise.all([
+      import('./validator')
+      //this.registerUserProvider()
     ]);
   }
 }

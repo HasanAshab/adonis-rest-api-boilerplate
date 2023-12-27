@@ -40,11 +40,9 @@
     "@adonisjs/core",
     "@adonisjs/redis",
     "@kaperskyguru/adonis-cache",
+    "./app/Providers/HashProvider",
     "@adonisjs/bouncer",
     "@adonisjs/ally",
-    "@adonisjs/lucid",
-    "@adonisjs/auth",
-    "adonis5-jwt",
     "./app/Providers/TwilioProvider",
     "./app/Providers/MongooseProvider",
     "./app/Providers/ValidationProvider"

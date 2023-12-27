@@ -8,6 +8,7 @@ export default Env.rules({
   PORT: Env.schema.number(),
 
   DRIVE_DISK: Env.schema.enum(['local'] as const),
+  HASH_DRIVER: Env.schema.enum(['scrypt', 'argon', 'bcrypt', 'bcrypt-node'] as const),
 
   DATABASE_URL: Env.schema.string(),
   STRIPE_KEY: Env.schema.string(),
