@@ -1,15 +1,14 @@
 T: reg, log -> test
 
-N: 6->sunnah
+N: 4->sunnah
 
-Fallback: Fix exceptions, solve type
+Fallback: solve type
 
+T: test phonenumberless user 2fa with app method
 T: import default
-T*: 'bcrypt-node' driver
 T: Jwt as module ( payload...)
 T: SocialAuthService
 T: organize Route
 T: Route.discover
 I: Refresh Token
-T: extend FakeEmitter
 F: Mediable

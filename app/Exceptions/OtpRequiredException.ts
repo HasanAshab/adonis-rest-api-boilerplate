@@ -1,7 +1,6 @@
-import { Exception } from '@adonisjs/core/build/standalone'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import ApiException from 'App/Exceptions/ApiException'
 
-export default class OtpRequiredException extends Exception {
+export default class OtpRequiredException extends ApiException {
   status = 401;
   message = "Credentials matched, otp required.";
   headers = {

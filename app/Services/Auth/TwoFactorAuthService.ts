@@ -5,8 +5,8 @@ import Settings, { ISettings } from "App/Models/Settings";
 import Token from "App/Models/Token";
 import TwilioService from "App/Services/TwilioService";
 import speakeasy from "speakeasy";
-// import PhoneNumberRequiredException from "App/Exceptions/PhoneNumberRequiredException";
-// import InvalidOtpException from "App/Exceptions/InvalidOtpException";
+import PhoneNumberRequiredException from "App/Exceptions/PhoneNumberRequiredException";
+import InvalidOtpException from "App/Exceptions/InvalidOtpException";
 
 @inject()
 export default class TwoFactorAuthService {

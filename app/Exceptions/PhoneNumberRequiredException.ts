@@ -1,14 +1,6 @@
-import { Exception } from '@adonisjs/core/build/standalone'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import ApiException from 'App/Exceptions/ApiException'
 
-export default class PhoneNumberRequiredException extends Exception {
+export default class PhoneNumberRequiredException extends ApiException {
   status = 422;
-  message = "Phone number is required.";
-  
-  handle(error: this, { response }: HttpContextContract) {
-    response.status(error.status).api({
-      message: error.message,
-      phoneNumberRequired: true
-    });
-  }
+  message = "Please setup phone number before proceed.";
 }

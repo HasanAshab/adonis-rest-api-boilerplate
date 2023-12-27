@@ -1,7 +1,6 @@
-import { Exception } from '@adonisjs/core/build/standalone'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import ApiException from 'App/Exceptions/ApiException'
 
-export default class DocumentNotFoundException extends Exception {
+export default class DocumentNotFoundException extends ApiException {
   status = 404;
   message = this.modelName + " Not Found.";
   
