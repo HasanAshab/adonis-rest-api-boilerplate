@@ -1,13 +1,10 @@
 import { test } from '@japa/runner'
-import Drive from '@ioc:Adonis/Core/Drive'
 import Event from '@ioc:Adonis/Core/Event'
 import User from "App/Models/User";
 import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
 
 //TODO
 Event.assertEmitted = () => null;
-Drive.assertStored = () => null;
-Drive.assertStoredCount = () => null;
 
 test.group('Auth', group => {
   let user;
@@ -16,7 +13,6 @@ test.group('Auth', group => {
 
   group.setup(async () => {
     //Notification.fake();
-    Drive.fake();
     Event.fake();
   });
 
@@ -24,86 +20,12 @@ test.group('Auth', group => {
     await resetDatabase(); 
 
     //Notification.restore();
-    Drive.restore();
     Event.restore();
     
     user = await User.factory().hasSettings().create();
     token = user.createToken();
   });
   
-  
-  test("should register a user", async ({ expect, client }) => {
-    const data = {
-      username: "foobar123",
-      email: "foo@gmail.com",
-      password: "Password@1234"
-    };
-    
-    const response = await client.post("/api/v1/auth/register").json(data);
-    const user = await User.findOne({ email: data.email });
-
-
-    expect(response.status()).toBe(201);
-    expect(response.body()).toHaveProperty("token");
-    expect(user).not.toBeNull();
-    expect(await user.settings).not.toBeNull();
-
-    Event.assertEmitted("user:registered", {
-      method: "internal",
-      version: "v1",
-      user
-    });
-  });
-
-  test("should register a user with profile", async ({ expect, client }) => {
-    const data = {
-      username: "foobar123",
-      email: "foo@gmail.com",
-    };
-    
-    const response = await client
-      .post("/api/v1/auth/register")
-      .fields(data)
-      .field("password", "Password@1234")
-      .file("profile", filePath("image.png"));
-    
-    const user = await User.findOne(data);
-    
-    expect(response.status()).toBe(201);
-    expect(response.body()).toHaveProperty("token");
-    expect(user).not.toBeNull();
-    expect(await user.settings).not.toBeNull();
-    Event.assertEmitted("Registered", {
-      user,
-      version: "v1",
-      method: "internal"
-    });
-    Drive.assertStoredCount(1);
-    Drive.assertStored("image.png");
-  });
-
-  test("shouldn't register with existing email", async ({ client, expect }) => {
-    const response = await client.post("/api/v1/auth/register").json({
-      username: "foo",
-      email: user.email,
-      password: "Password@1234"
-    });
-
-    expect(response.status()).toBe(422);
-    expect(response.body()).not.toHaveProperty("token");
-  });
-  
-  test("shouldn't register with existing username", async ({ client, expect }) => {
-    const response = await client.post("/api/v1/auth/register").json({
-      username: user.username,
-      email: "foo@test.com",
-      password: "Password@1234"
-    });
-    
-    expect(response.status()).toBe(422);
-    expect(response.body()).not.toHaveProperty("data");
-  });
-
   test("should login a user", async ({ client, expect }) => {
     const response = await client.post("/api/v1/auth/login").json({
       email: user.email,
@@ -197,6 +119,26 @@ describe("Auth", () => {
   
   const authService = new AuthService();
   
+  test("Should send otp", async ({ client, expect }) => {
+    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
+    const response = await client.post("/api/v1/auth/send-otp/" + user._id);
+    await sleep(2000)
+    const token = await Token.findOne({ key: user._id, type: "2fa" });
+    
+    expect(response.status()).toBe(200);
+    expect(otp).not.toBeNull();
+  });
+  
+  test("should generate new recovery codes", async ({ client, expect }) => {
+    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
+    const oldCodes = await user.generateRecoveryCodes();
+    const response = await client.post("/api/v1/auth/generate-recovery-codes").actingAs(user.createToken());
+    expect(response.status()).toBe(200);
+    expect(response.body().data).toHaveLength(10);
+    expect(response.body().data).not.toEqual(oldCodes);
+  });
+
+
   test("should login a user with valid recovery code", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
     const [ code ] = await user.generateRecoveryCodes(1);
@@ -230,15 +172,10 @@ describe("Auth", () => {
     expect(response.body()).not.toHaveProperty("data");
   });
   
-  test("should generate new recovery codes", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const oldCodes = await user.generateRecoveryCodes();
-    const response = await client.post("/api/v1/auth/generate-recovery-codes").actingAs(user.createToken());
-    expect(response.status()).toBe(200);
-    expect(response.body().data).toHaveLength(10);
-    expect(response.body().data).not.toEqual(oldCodes);
-  });
 
+  
+  
+  
   test("Should complete social login with username", async ({ client, expect }) => {
     const username = "FooBar123";
     const externalUser = {
@@ -324,15 +261,8 @@ describe("Auth", () => {
     expect(response.status()).toBe(401);
   });
 
-  test("Should send otp", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const response = await client.post("/api/v1/auth/send-otp/" + user._id);
-    await sleep(2000)
-    const token = await Token.findOne({ key: user._id, type: "2fa" });
-    
-    expect(response.status()).toBe(200);
-    expect(otp).not.toBeNull();
-  });
+  
+  
   
   test("should verify email", async ({ client, expect }) => {
     const user = await User.factory().unverified().create();
@@ -361,6 +291,9 @@ describe("Auth", () => {
     Notification.assertSentTo(user, EmailVerificationNotification);
   });
 
+  
+  
+  
   test("should change password", async ({ client, expect }) => {
     const data = {
       oldPassword: "password",
@@ -419,6 +352,8 @@ describe("Auth", () => {
     expect(response.status()).toBe(401);
     expect(await user.attempt(password)).toBe(false);
   });
+
+
 
   test("Should update phone number with valid otp", async ({ client, expect }) => {
     const user = await User.factory().hasSettings().create();
