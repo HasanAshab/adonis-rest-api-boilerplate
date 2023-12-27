@@ -46,7 +46,7 @@ export default class AuthController {
   
   async loginWithSocialProvider({ params, ally }: HttpContextContract) {
     const externalUser = await ally.use(params.provider).user();
-
+    console.log(externalUser)
     const user = await User.findOneAndUpdate(
       { [`externalId.${params.provider}`]: externalUser.id },
       { 
