@@ -13,10 +13,10 @@ export default class ApiException extends Exception {
     return this.headers;
   }
 
-  handle(error: this, { response }: HttpContextContract) {
-    response
+  async handle(error: this, ctx: HttpContextContract) {
+    ctx.response
       .status(error.status)
-      .headers(await error.withHeaders(ctx))
+      .setHeaders(await error.withHeaders(ctx))
       .message(error.message);
   }
 }

@@ -98,12 +98,13 @@ const corsConfig: CorsConfig = {
   |
   */
   exposeHeaders: [
-    'cache-control',
-    'content-language',
-    'content-type',
-    'expires',
-    'last-modified',
-    'pragma',
+    'CACHE-CONTROL',
+    'CONTENT-LANGUAGE',
+    'CONTENT-TYPE',
+    'EXPIRES',
+    'LAST-MODIFIED',
+    'PRAGMA',
+    'X-2FA-CODE'
   ],
 
   /*

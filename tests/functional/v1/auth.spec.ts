@@ -2,11 +2,13 @@ import { test } from '@japa/runner'
 import Drive from '@ioc:Adonis/Core/Drive'
 import Event from '@ioc:Adonis/Core/Event'
 import User from "App/Models/User";
+import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
 
 test.group('Auth', group => {
   let user;
   let token;
-  
+  const twoFactorAuthService = new TwoFactorAuthService();
+
   group.setup(async ({ client, expect }) => {
     //Notification.fake();
     Drive.fake();
@@ -153,43 +155,43 @@ test.group('Auth', group => {
       email: user.email,
       password: "password"
     });
-    
+
     expect(response.status()).toBe(401);
-    expect(response.header('X-2FA-CODE')).toBe('required');
+    expect(response.header('x-2fa-code')).toBe('required');
     expect(response.body()).not.toHaveProperty("token");
-  }).pin();
-})
-
-/*
-describe("Auth", () => {
+  });
   
-  const authService = new AuthService();
-  const twoFactorAuthService = new TwoFactorAuthService();
-  
-
   test("should login a user with valid otp (2FA)", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
     const otp = await twoFactorAuthService.createToken(user);
-    const response = await client.post("/api/v1/auth/login").send({
-      otp,
+    const response = await client.post("/api/v1/auth/login").json({
       email: user.email,
-      password: "password"
+      password: "password",
+      otp
     });
+
     expect(response.status()).toBe(200);
-    expect(response.body().data).toHaveProperty("token");
-  });
+    expect(response.body()).toHaveProperty("token");
+  }).pin();
 
   test("shouldn't login a user with invalid OTP (2FA)", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
     const response = await client.post("/api/v1/auth/login").send({
       email: user.email,
       password: "password",
-      otp: 999999
+      otp: twoFactorAuthService.generateOTPCode()
     });
+    
     expect(response.status()).toBe(401);
-    expect(response.body()).not.toHaveProperty("body");
+    expect(response.body()).not.toHaveProperty("token");
   });
+
+})
+
+/*
+describe("Auth", () => {
   
+  const authService = new AuthService();
   
   test("should login a user with valid recovery code", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();

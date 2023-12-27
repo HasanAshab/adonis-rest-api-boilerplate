@@ -5,5 +5,7 @@ declare module '@ioc:Adonis/Core/Response' {
     api(data: object | any[]): void;
     message(text?: string): void;
     sendStatus(code: number): void;
+    setHeaders(data: object): void;
+    safeHeaders(data: object): void;
   }
 }

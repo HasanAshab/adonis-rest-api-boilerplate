@@ -64,5 +64,17 @@ export default class AppProvider {
     Response.macro('sendStatus', function (code: number) {
       this.status(code).api({});
     });
+    
+    Response.macro('setHeaders', function (data: object) {
+      for(const key in data) {
+        this.header(key, data[key]);
+      }
+    });
+    
+    Response.macro('safeHeaders', function (data: object) {
+      for(const key in data) {
+        this.safeHeader(key, data[key]);
+      }
+    });
   }
 }
