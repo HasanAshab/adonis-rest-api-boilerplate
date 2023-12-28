@@ -1,5 +1,5 @@
-import Factory from 'App/Providers/MongooseProvider/Factory'
-import Seeder from 'App/Providers/MongooseProvider/Seeder'
+import Factory from './Factory'
+import Seeder from './Seeder'
 
 //type Constructor<T = any> = new (...args: any[]): T;
 

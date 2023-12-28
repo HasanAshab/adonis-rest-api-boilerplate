@@ -21,6 +21,16 @@ export const syncIndexes: boolean = true;
 
 /*
 |--------------------------------------------------------------------------
+| Connect to Database in Background
+|--------------------------------------------------------------------------
+| Wether to connect to database in background 
+| If 'true' then mongoose connect operation will not be awaited
+*/
+export const connectOnBackground: boolean = true;
+
+
+/*
+|--------------------------------------------------------------------------
 |  Database URL
 |--------------------------------------------------------------------------
 | The url (connection string) that will be used to connect to database

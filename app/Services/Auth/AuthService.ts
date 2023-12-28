@@ -1,7 +1,8 @@
 import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
 import { inject } from "@adonisjs/fold"
-import { Mutex } from 'async-mutex';
+import { Mutex } from 'async-mutex'
 import Cache from '@ioc:Adonis/Addons/Cache'
+import { Attachment } from "@ioc:Adonis/Mongoose/Plugin/Attachable";
 import User, { UserDocument } from "App/Models/User"
 import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
 import InvalidCredentialException from "App/Exceptions/InvalidCredentialException"
@@ -17,10 +18,10 @@ export default class AuthService {
     await user.setPassword(password);
     
     if(profile) {
-      await user.media().withTag("profile").attach(profile).storeLink();
-     // await user.attach("profile", profile);
+      //await user.media().withTag("profile").attach(profile).storeLink();
+      user.profile = await Attachment.fromFile(profile);
     }
-    
+
     await user.save();
     await user.createDefaultSettings();
     return user;
@@ -32,7 +33,7 @@ export default class AuthService {
     }
 
     const user = await User.internal().where("email").equals(email).includeHiddenFields();
-    
+
     if(!user) {
       throw new InvalidCredentialException;
     }

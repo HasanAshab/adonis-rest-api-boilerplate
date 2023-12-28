@@ -4,10 +4,12 @@ import HasFactory, { HasFactoryModel } from "App/Plugins/HasFactory";
 import HasPolicy, { HasPolicyDocument } from "App/Plugins/HasPolicy";
 import HasApiTokens, { HasApiTokensDocument } from "App/Plugins/HasApiTokens";
 import Notifiable, { NotifiableDocument } from "App/Plugins/Notifiable";
-import Mediable, { MediableDocument } from "App/Plugins/Mediable";
+//import Mediable, { MediableDocument } from "App/Plugins/Mediable";
+import { Attachable, AttachmentSchema } from "@ioc:Adonis/Mongoose/Plugin/Attachable";
 import Settings, { SettingsDocument } from "App/Models/Settings";
 import UserPolicy from "App/Policies/UserPolicy";
 //import Billable, { BillableDocument } from "App/Plugins/Billable";
+
 
 const UserSchema = new Schema<UserDocument>({
   name: String,
@@ -20,7 +22,7 @@ const UserSchema = new Schema<UserDocument>({
     type: String,
     unique: true
   },
-  profile: String,
+  profile: AttachmentSchema,
   phoneNumber: String,
   password: {
     type: String,
@@ -73,7 +75,8 @@ UserSchema.plugin(HasFactory);
 UserSchema.plugin(HasPolicy, UserPolicy);
 UserSchema.plugin(HasApiTokens);
 UserSchema.plugin(Notifiable);
-UserSchema.plugin(Mediable);
+UserSchema.plugin(Attachable);
+//UserSchema.plugin(Mediable);
 //UserSchema.plugin(Billable);
 
 export interface IUser {

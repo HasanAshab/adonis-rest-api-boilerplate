@@ -1,6 +1,6 @@
 N: 10->sunnah
 
-Fallback: Middlewares, solve type
+Fallback: Factories, solve type
 
 T: npm i adonis-recaptcha2
 T: throttle

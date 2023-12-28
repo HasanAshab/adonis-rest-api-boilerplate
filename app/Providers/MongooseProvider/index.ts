@@ -16,12 +16,28 @@ export default class MongooseProvider {
   constructor(protected app: ApplicationContract) {}
 
   private async connect() {
-    try {
-      await mongoose.connect(Config.get('mongoose.url'), Config.get('mongoose.options'));
-      Logger.info('Connected to database [MONGOOSE]');
+    const { url, options, connectOnBackground, syncIndexes } = Config.get('mongoose');
+    
+    if(connectOnBackground) {
+      mongoose.connect(url, options)
+        .then(() => {
+          Logger.info('Connected to database [MONGOOSE]');
+          syncIndexes && mongoose.syncIndexes();
+        })
+        .catch(err => {
+          Logger.error('Could not connect to database. reason\n, %o', err.stack);
+        });
     }
-    catch(err) {
-      Logger.error('Could not connect to database. reason\n, %o', err.stack);
+    
+    else {
+      try {
+        await mongoose.connect(url, options);
+        Logger.info('Connected to database [MONGOOSE]');
+        syncIndexes && mongoose.syncIndexes();
+      }
+      catch(err) {
+        Logger.error('Could not connect to database. reason\n, %o', err.stack);
+      }
     }
   }
 
@@ -68,13 +84,11 @@ export default class MongooseProvider {
   }
 
   public async boot() {
-    const { connect, syncIndexes } = Config.get('mongoose');
+    if(Config.get('mongoose.connect')) {
+      await this.connect();
+    }
     
-    connect && await this.connect();
-    syncIndexes && await mongoose.syncIndexes();
-    
-    await 
-    Promise.all([
+    await Promise.all([
       import('./validator')
       //this.registerUserProvider()
     ]);

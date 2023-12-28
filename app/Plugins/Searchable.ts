@@ -1,5 +1,4 @@
 import { Schema, Document, Query } from "mongoose";
-import { constructor } from "types";
 
 interface SearchableDocument extends Document {
  // search(query: string): Query;
