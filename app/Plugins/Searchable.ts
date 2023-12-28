@@ -5,9 +5,6 @@ interface SearchableDocument extends Document {
  // search(query: string): Query;
 }
 
-/**
- * Plugin to add access controll to document
-*/
 export default function Searchable(schema: Schema) {
 
   schema.statics.search = function (query: string) {

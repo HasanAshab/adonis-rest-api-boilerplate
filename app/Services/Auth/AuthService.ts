@@ -18,6 +18,7 @@ export default class AuthService {
     
     if(profile) {
       await user.media().withTag("profile").attach(profile).storeLink();
+     // await user.attach("profile", profile);
     }
     
     await user.save();
