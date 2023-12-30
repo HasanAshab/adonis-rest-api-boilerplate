@@ -14,9 +14,8 @@ export default class AuthService {
   constructor(private readonly twoFactorAuthService: TwoFactorAuthService, private readonly mutex: Mutex) {}
   
   async register(email: string, username: string, password: string, profile?: MultipartFileContract){
-    const user = new User({ email, username });
-    await user.setPassword(password);
-    
+    const user = new User({ email, username, password });
+
     if(profile) {
       //await user.media().withTag("profile").attach(profile).storeLink();
       user.profile = await Attachment.fromFile(profile);

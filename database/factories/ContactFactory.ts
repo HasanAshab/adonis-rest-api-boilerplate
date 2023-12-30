@@ -1,5 +1,5 @@
-import Factory from "~/core/database/Factory";
-import { IContact, ContactDocument } from "~/app/models/Contact";
+import Factory from "@ioc:Adonis/Mongoose/Factory"
+import { IContact, ContactDocument } from "App/Models/Contact";
 
 export default class ContactFactory extends Factory<IContact, ContactDocument> {
   definition() {

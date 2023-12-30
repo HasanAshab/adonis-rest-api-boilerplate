@@ -50,14 +50,18 @@ const UserSchema = new Schema<UserDocument>({
 { timestamps: true }
 );
 
-
 UserSchema.virtual("settings").get(function() {
   return Settings.findOne({ userId: this._id });
 });
 
-
 UserSchema.method("createDefaultSettings", function() {
   return Settings.create({ userId: this._id });
+});
+
+
+
+UserSchema.virtual("isInternal").get(function() {
+  return !!this.password;
 });
 
 UserSchema.static("internals", function() {
@@ -67,7 +71,6 @@ UserSchema.static("internals", function() {
 UserSchema.static("internal", function() {
   return this.findOne({ password: { $ne: null }});
 });
-
 
 
 UserSchema.plugin(Authenticatable);

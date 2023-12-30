@@ -11,20 +11,23 @@ import InvalidPasswordException from "~/app/exceptions/InvalidPasswordException"
 export default class PasswordService {
   async reset(user: UserDocument, token: string, password: string) {
     await Token.verify(user._id, "resetPassword", token);
-    await user.setPassword(password);
-    user.tokenVersion++;
+    user.password = password;
     await user.save();
     await Mail.to(user.email).send(new PasswordChangedMail()).catch(log);
   }
   
   async change(user: UserDocument, oldPassword: string, newPassword: string) {
-    if(!user.password)
+    if(!user.isInternal) {
       throw new PasswordChangeNotAllowedException();
-    if (!await user.attempt(oldPassword))
+    }
+    
+    if (!await user.attempt(oldPassword)) {
       throw new InvalidPasswordException();
-    await user.setPassword(newPassword);
-    user.tokenVersion++;
+    }
+    
+    user.password = newPassword;
     await user.save();
+    //TODO Should not be there
     await Mail.to(user.email).send(new PasswordChangedMail()).catch(log);
   }
 }

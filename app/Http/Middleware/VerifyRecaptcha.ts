@@ -1,21 +1,21 @@
-import Config from '@ioc:Adonis/Core/Config'
-import axios from "axios";
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { Exception } from '@adonisjs/core/build/standalone'
+import recaptcha2 from '@ioc:Adonis/Addons/Recaptcha2'
 
+/**
+ * ReCAPTCHA middleware is meant to check recaptcha response
+ * when POST/PUT requests
+ *
+ * You must register this middleware inside `start/kernel.ts` file under the list
+ * of named middleware
+ */
 export default class VerifyRecaptcha {
-  async handle({ request, response }: HttpContextContract, next: NextFunction) {
-    const body = {
-      secret: Config.get("recaptcha.secretKey"),
-      response: request.input('recaptchaResponse')
+  public async handle ({ request }: HttpContextContract, next: () => Promise<void>): Promise<void> {
+    try {
+      await recaptcha2.validate(request.input('recaptchaResponse'));
+    } catch (errors) {
+      throw new Exception(recaptcha2.translateErrors(errors || 'invalid-input-response'), 400, 'E_CAPTCHA');
     }
-    
-    const { data } = await axios.post('https://www.google.com/recaptcha/api/siteverify', body, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-    if (data.success) {
-      return await next();
-    }
-    res.status(400).message('reCAPTCHA verification failed!')
+    await next();
   }
 }

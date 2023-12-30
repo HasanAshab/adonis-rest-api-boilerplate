@@ -22,10 +22,12 @@ export default class MongooseProvider {
       mongoose.connect(url, options)
         .then(() => {
           Logger.info('Connected to database [MONGOOSE]');
-          syncIndexes && mongoose.syncIndexes();
+          syncIndexes && mongoose.syncIndexes().catch(() => {
+            Logger.warn('Error occured while connecting to database and syncronizing indexes. reason\n, %o', err.stack);
+          });
         })
         .catch(err => {
-          Logger.error('Could not connect to database. reason\n, %o', err.stack);
+          Logger.warn('Error occured while connecting to database and syncronizing indexes. reason\n, %o', err.stack);
         });
     }
     
@@ -36,7 +38,7 @@ export default class MongooseProvider {
         syncIndexes && mongoose.syncIndexes();
       }
       catch(err) {
-        Logger.error('Could not connect to database. reason\n, %o', err.stack);
+        Logger.warn('Error occured while connecting to database and syncronizing indexes. reason\n, %o', err.stack);
       }
     }
   }

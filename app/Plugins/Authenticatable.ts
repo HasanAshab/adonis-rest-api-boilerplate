@@ -15,6 +15,14 @@ export interface AuthenticatableDocument extends Document {
 
 
 export default (schema: Schema) => {
+  schema.pre('save', async function () {
+    if (this.password && this.isModified('password')) {
+      this.password = await Hash.make(this.password);
+      this.tokenVersion++;
+    }
+  });
+
+  
   schema.methods.attempt = function (password: string) {
     if(!this.password) {
       throw new Error("Trying to attempt passwordless user (may be social account?)");

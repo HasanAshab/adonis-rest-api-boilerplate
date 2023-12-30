@@ -14,12 +14,12 @@ export default function Helpers(schema: Schema) {
   }
 
   schema.statics.updateOneById = async function(id: string, data: object) {
-    const { modifiedCount } = await this.constructor.updateOne({ _id: id }, data);
+    const { modifiedCount } = await this.updateOne({ _id: id }, data);
     return modifiedCount === 1;
   }
   
   schema.statics.deleteOneById = async function(id: string) {
-    const { deletedCount } = await this.constructor.deleteOne({ _id: id });
+    const { deletedCount } = await this.deleteOne({ _id: id });
     return deletedCount === 1;
   }
   
@@ -47,5 +47,13 @@ export default function Helpers(schema: Schema) {
       queryBuilder(this);
     }
     return this;
+  }
+  
+  schema.query.latest = function(field = 'createdAt') {
+    return this.sort('-' + field);
+  }
+  
+  schema.query.oldest = function(field = 'createdAt') {
+    return this.sort(field);
   }
 }

@@ -1,8 +1,8 @@
 N: 10->sunnah
 
-Fallback: Factories, solve type
+Fallback: solve type
 
-T: npm i adonis-recaptcha2
-T: throttle
+
+*: Custom hook, khata
 T: Attachment Module
 T: test phonenumberless user 2fa with app method

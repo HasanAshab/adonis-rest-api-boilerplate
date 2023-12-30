@@ -1,6 +1,6 @@
-import Factory from "~/core/database/Factory";
-import User, { UserDocument } from "~/app/models/User";
-import type { INotification, NotificationDocument } from "~/app/models/Notification";
+import Factory from "@ioc:Adonis/Mongoose/Factory"
+import User, { UserDocument } from "App/Models/User";
+import type { INotification, NotificationDocument } from "App/Models/Notification";
 
 export default class NotificationFactory extends Factory<INotification, NotificationDocument> {
   definition() {

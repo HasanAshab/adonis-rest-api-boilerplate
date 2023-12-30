@@ -44,5 +44,6 @@ Server.middleware.registerNamed({
   auth: () => import('App/Http/Middleware/Authenticate'),
   verified: () => import('App/Http/Middleware/EnsureEmailIsVerified'),
   roles: () => import('App/Http/Middleware/CheckRole'),
+  recaptcha: () => import('App/Http/Middleware/VerifyRecaptcha'),
   'response.cache': () => import('App/Http/Middleware/CacheResponse')
 })
