@@ -26,18 +26,18 @@ export function getAttachableFields(schema: Schema) {
 export function Attachable(schema: Schema) {
   const attachableFields = getAttachableFields(schema);
 
- // schema.pre('init', )
-
-  schema.path('profile').set(function (newVal: unknown) {
-    this._prevState = {
-      profile: this.profile
-    };
-    return newVal;
+  schema.post('init', document => {
+    document.__cachedAttachments = attachableFields.reduce((attachments: Record<string, AttachmentDocument>, field) => {
+      if (document._doc[field]) {
+        attachments[field] = document._doc[field];
+      }
+      return attachments;
+    }, {});
   });
   
   schema.pre('save', async function () {
-    if(this.isModified('profile') && this._prevState.profile) {
-      await Drive.delete(this._prevState.profile.path);
+    if(this.isModified('profile') && this.__cachedAttachments.profile) {
+      await Drive.delete(this.__cachedAttachments.profile.path);
     }
   });
   

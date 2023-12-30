@@ -15,14 +15,12 @@ Route.post('/', async ({ request }) => {
   
   let user = await User.findOne().latest();
   
-  // console.log(user)
-  const profile = request.file("profile")
+   const profile = request.file("profile");
   if(profile) {
-    user.profile = await Attachment.fromFile(profile)
+    user.profile = await Attachment.fromFile(profile);
   }
-  console.log(user)
-  //await user.save();
-  await user.delete();
+  await user.save();
+  //await user.delete();
   
  // return await user.profile.getUrl()
 })
