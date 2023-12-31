@@ -33,6 +33,7 @@ export function Attachable(schema: Schema) {
 
 
   schema.pre('save', async function () {
+    console.log(attachableFields.filter(this.isModified))
     if(this.isModified('profile')) {
       await this.profile?.moveToDisk();
       await this.__cachedAttachments.profile?.delete();
