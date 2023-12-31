@@ -23,8 +23,10 @@ Route.post('/', async ({ request }) => {
   console.log(user)
 
   await user.save();
+  
   //await user.delete();
-  return await user.profile.getUrl()
+
+  return user;
 })
 
 Route.post("/api/v1/auth/register", "V1/AuthController.register").middleware('recaptcha');
