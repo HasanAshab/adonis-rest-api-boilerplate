@@ -2,8 +2,6 @@ import { SchemaType } from "mongoose"
 import { File } from '@adonisjs/bodyparser/build/src/Multipart/File'
 import AttachmentMeta from './AttachmentMeta'
 
-AttachmentMeta dia o hoibo
-
 
 import type { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
 import type { AttachmentDocument, AttachmentModel } from '@ioc:Adonis/Mongoose/Plugin/Attachable'
@@ -12,7 +10,7 @@ import { model, Schema } from "mongoose";
 import { join } from "path";
 import { cuid } from '@poppinss/utils/build/helpers'
 
-
+/*
 export const AttachmentSchema = new Schema<AttachmentDocument>(
   {
     name: {
@@ -65,8 +63,7 @@ AttachmentSchema.method("deleteFile", function() {
 
 
 export const AttachmentModel = model<AttachmentDocument, AttachmentModel>("Attachment", AttachmentSchema);
-
-
+*/
 
 export default class Attachment extends SchemaType {
   //key ar options re kaje laga
@@ -75,7 +72,6 @@ export default class Attachment extends SchemaType {
   }
 
   cast(value: unknown) {
-    console.log(value)
     if(value instanceof AttachmentMeta) {
       return value;
     }

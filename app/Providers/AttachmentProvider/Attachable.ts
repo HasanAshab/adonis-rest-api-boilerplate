@@ -4,13 +4,12 @@ import { AttachmentSchema } from "@ioc:Adonis/Mongoose/Plugin/Attachable";
 import { File } from '@adonisjs/bodyparser/build/src/Multipart/File'
 import { types } from '@ioc:Adonis/Core/Helpers'
 
-//setter, schema
-
 
 export function isAttachable(schemaType: unknown | unknown[]) {
   return schemaType === AttachmentSchema || 
     (types.isArray(schemaType) && schemaType[0] === AttachmentSchema)
 }
+
 
 export function getAttachableFields(schema: Schema) {
   return Object.keys(schema.tree).reduce((fields: string[], fieldName) => {
@@ -38,20 +37,26 @@ export function Attachable(schema: Schema) {
     }, {});
   });
 
-/*  schema.post('save', document => {
+  schema.post('save', document => {
     document.__cachedAttachments = attachableFields.reduce((attachments: Record<string, AttachmentDocument>, field) => {
       if (document._doc[field]) {
         attachments[field] = document._doc[field];
       }
       return attachments;
     }, {});
-  });*/
+  });
   
   schema.pre('save', async function () {
-
     if(this.isModified('profile')) {
-      await this.profile?.moveFileToDisk();
-      await this.__cachedAttachments.profile?.deleteFile();
+      if(this.profile) {
+        await this.profile.moveToDisk();
+      //  console.log(this.set.toString())
+      //  this.set('profile', this.profile.toJSON());
+       //   console.trace(this)
+
+      //  this.markModified('profile');
+      }
+      await this.__cachedAttachments.profile?.delete();
     }
   });
   

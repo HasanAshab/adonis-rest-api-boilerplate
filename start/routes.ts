@@ -12,6 +12,7 @@ import User, { UserDocument } from "App/Models/User"
 Route.post('/', async ({ request }) => {
   //await User.factory().count(10).create();
   
+//  return await User.deleteOne().latest();
   let user = await User.findOne().latest();
 
    const profile = request.file("profile");

@@ -1,4 +1,4 @@
-N: 10->sunnah
+N: 8->sunnah
 
 Fallback: solve type
 
