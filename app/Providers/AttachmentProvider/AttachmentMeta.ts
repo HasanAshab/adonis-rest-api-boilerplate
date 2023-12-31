@@ -6,16 +6,18 @@ import { join } from "path"
 
 export interface AttachmentMetaData {
   name: string;
-  tmpDir?: string;
+  folder?: string;
   path?: string;
+  disk?: string;
   file?: File;
 }
 
 export default class AttachmentMeta {
-  static fromFile(file: File, tmpDir?: string) {
+  static fromFile(file: File, folder?: string, disk?: string) {
     return new this({
       name: `${cuid()}.${file.extname}`, 
-      tmpDir,
+      folder,
+      disk,
       file
     });
   }
@@ -30,27 +32,31 @@ export default class AttachmentMeta {
     }
     return this.data.path;
   }
+  
+  public get drive() {
+    return Drive.use(this.data.drive);
+  }
 
   public moveToDisk() {
-    const { file, name, tmpDir = '' } = this.data;
+    const { file, name, disk, folder = '' } = this.data;
     
     if(!file) {
       throw new Error('attachment must have a assosiated file to save to storage.');
     }
     
-    return file.moveToDisk(tmpDir, { name });
+    return file.moveToDisk(folder, { name }, disk);
   }
   
   public delete() {
-    return Drive.delete(this.path);
+    return this.drive.delete(this.path);
   }
   
   public getUrl() {
-    return Drive.getUrl(this.path);
+    return this.drive.getUrl(this.path);
   }
 
   public getSignedUrl(options?: ContentHeaders & { expiresIn?: string | number }) {
-    return Drive.getSignedUrl(this.path, options);
+    return this.drive.getSignedUrl(this.path, options);
   }
   
 
@@ -66,8 +72,8 @@ export default class AttachmentMeta {
   }
   
   protected resolvePath() {
-    this.data.path = this.data.tmpDir
-      ? join(this.data.tmpDir, this.data.name)
+    this.data.path = this.data.folder
+      ? join(this.data.folder, this.data.name)
       : this.data.name;
   }
 }

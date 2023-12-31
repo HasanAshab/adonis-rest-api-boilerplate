@@ -14,15 +14,18 @@ export default class Attachment extends SchemaType {
       return value;
     }
     
+    const { disk, folder } = this.options;
+    
     if(value.name && value.path) {
       return new AttachmentMeta({
         name: value.name,
-        path: value.path
+        path: value.path,
+        disk
       });
     }
 
     if(value instanceof File) {
-      return AttachmentMeta.fromFile(value);
+      return AttachmentMeta.fromFile(value, folder, disk);
     }
     
     throw new Error();

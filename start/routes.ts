@@ -8,7 +8,7 @@
 import Route from '@ioc:Adonis/Core/Route'
 import User, { UserDocument } from "App/Models/User"
 
-/*
+
 Route.post('/', async ({ request }) => {
   //await User.factory().count(10).create();
   
@@ -16,7 +16,7 @@ Route.post('/', async ({ request }) => {
   let user = await User.findOne().latest();
 
    const profile = request.file("profile");
-  if(true || profile) {
+  if(profile) {
     user.profile = profile;
   }
   
@@ -28,7 +28,7 @@ Route.post('/', async ({ request }) => {
 
   return user;
 })
-*/
+
 
 Route.post("/api/v1/auth/register", "V1/AuthController.register").middleware('recaptcha');
 
