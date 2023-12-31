@@ -25,7 +25,18 @@ export function getAttachableFields(schema: Schema) {
 
 
 export function Attachable(schema: Schema) {
-  const attachableFields = getAttachableFields(schema);
+  schema.virtual('attachableFields').get(function() {
+    if(!this.__attachableFields) {
+      this.__attachableFields = getAttachableFields(schema);
+    }
+    return this.__attachableFields;
+  });
+  
+  
+  schema.virtual('modifiedAttachableFields').get(function() {
+    return this.attachableFields.filter(field => this.isModified(field));
+  });
+  
 
   schema.post(['init', 'save'], document => {
     document.cacheAttachments();
@@ -33,20 +44,22 @@ export function Attachable(schema: Schema) {
 
 
   schema.pre('save', async function () {
-    console.log(attachableFields.filter(this.isModified))
-    if(this.isModified('profile')) {
-      await this.profile?.moveToDisk();
-      await this.__cachedAttachments.profile?.delete();
-    }
+    this.modifiedAttachableFields.forEach(field => {
+      this._doc[field]?.moveToDisk();
+      this.__cachedAttachments[field]?.delete();
+    });
   });
   
+  
   schema.post('delete', async function () {
-    await this.profile.delete();
+    this.attachableFields.forEach(field => {
+      this._doc[field]?.delete();
+    });
   });
   
   
   schema.method('cacheAttachments', function() {
-    this.__cachedAttachments = attachableFields.reduce((attachments: Record<string, AttachmentDocument>, field) => {
+    this.__cachedAttachments = this.attachableFields.reduce((attachments: Record<string, AttachmentDocument>, field) => {
       if (this._doc[field]) {
         attachments[field] = this._doc[field];
       }
