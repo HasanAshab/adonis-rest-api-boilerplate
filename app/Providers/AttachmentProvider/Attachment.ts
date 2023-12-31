@@ -2,6 +2,7 @@ import { SchemaType } from "mongoose"
 import { File } from '@adonisjs/bodyparser/build/src/Multipart/File'
 import AttachmentMeta from './AttachmentMeta'
 
+AttachmentMeta dia o hoibo
 
 
 import type { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
@@ -9,6 +10,8 @@ import type { AttachmentDocument, AttachmentModel } from '@ioc:Adonis/Mongoose/P
 import Drive, { ContentHeaders } from '@ioc:Adonis/Core/Drive'
 import { model, Schema } from "mongoose";
 import { join } from "path";
+import { cuid } from '@poppinss/utils/build/helpers'
+
 
 export const AttachmentSchema = new Schema<AttachmentDocument>(
   {
@@ -25,12 +28,19 @@ export const AttachmentSchema = new Schema<AttachmentDocument>(
 );
 
 
-AttachmentSchema.static("fromFile", async function(file: MultipartFileContract, tmpPath = '') {
-  await file.moveToDisk(tmpPath);
-  return new this({
-    name: file.fileName,
-    path: join(tmpPath, file.fileName)
+AttachmentSchema.static("fromFile", function(file: MultipartFileContract, tmpDir = '') {
+  const name = `${cuid()}.${file.extname}`;
+  const attachment = new this({
+    name,
+    path: join(tmpDir, name)
   });
+
+  attachment._data = {
+    file,
+    tmpDir
+  }
+  
+  return attachment;
 });
 
 AttachmentSchema.method("getUrl", function() {
@@ -39,6 +49,17 @@ AttachmentSchema.method("getUrl", function() {
 
 AttachmentSchema.method("getSignedUrl", function(options?: ContentHeaders & { expiresIn?: string | number }) {
   return Drive.getSignedUrl(this.path, options);
+});
+
+
+AttachmentSchema.method("moveFileToDisk", async function() {
+  if(this._data) {
+    await this._data.file.moveToDisk(this._data.tmpDir, { name: this.name });
+  }
+});
+
+AttachmentSchema.method("deleteFile", function() {
+  return Drive.delete(this.path);
 });
 
 
@@ -54,15 +75,22 @@ export default class Attachment extends SchemaType {
   }
 
   cast(value: unknown) {
-    if(value instanceof AttachmentModel) {
+    console.log(value)
+    if(value instanceof AttachmentMeta) {
       return value;
+    }
+    
+    if(value.name && value.path) {
+      return new AttachmentMeta({
+        name: value.name,
+        path: value.path
+      });
     }
 
     if(value instanceof File) {
-      return AttachmentModel.fromFile(value);
+      return AttachmentMeta.fromFile(value);
     }
     
     throw new Error();
   }
-  
 }

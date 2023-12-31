@@ -48,11 +48,10 @@ export function Attachable(schema: Schema) {
   });*/
   
   schema.pre('save', async function () {
-    console.log(this.set.toString())
 
     if(this.isModified('profile')) {
-      await this.profile.moveToDisk();
-      await this.__cachedAttachments.profile?.delete();
+      await this.profile?.moveFileToDisk();
+      await this.__cachedAttachments.profile?.deleteFile();
     }
   });
   

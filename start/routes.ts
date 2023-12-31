@@ -15,10 +15,11 @@ Route.post('/', async ({ request }) => {
   let user = await User.findOne().latest();
 
    const profile = request.file("profile");
-   console.log(profile)
   if(profile) {
     user.profile = profile;
   }
+  
+  console.log(user)
 
   await user.save();
   //await user.delete();
