@@ -2,7 +2,6 @@ import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
 import { inject } from "@adonisjs/fold"
 import { Mutex } from 'async-mutex'
 import Cache from '@ioc:Adonis/Addons/Cache'
-import { Attachment } from "@ioc:Adonis/Mongoose/Plugin/Attachable";
 import User, { UserDocument } from "App/Models/User"
 import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
 import InvalidCredentialException from "App/Exceptions/InvalidCredentialException"
@@ -10,21 +9,8 @@ import LoginAttemptLimitExceededException from "App/Exceptions/LoginAttemptLimit
 import OtpRequiredException from "App/Exceptions/OtpRequiredException"
 
 @inject()
-export default class AuthService {
+export default class LoginService {
   constructor(private readonly twoFactorAuthService: TwoFactorAuthService, private readonly mutex: Mutex) {}
-  
-  async register(email: string, username: string, password: string, profile?: MultipartFileContract){
-    const user = new User({ email, username, password });
-
-    if(profile) {
-      //await user.media().withTag("profile").attach(profile).storeLink();
-      user.profile = await Attachment.fromFile(profile);
-    }
-
-    await user.save();
-    await user.createDefaultSettings();
-    return user;
-  }
   
   async login(email: string, password: string, otp?: string) {
     if(await this.getFailedAttempts(email) >= 4) {

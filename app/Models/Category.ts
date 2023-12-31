@@ -1,6 +1,6 @@
 import { model, Schema, Document, Model } from "mongoose";
 import HasFactory, { HasFactoryModel } from "App/Plugins/HasFactory";
-import Mediable, { MediableDocument } from "App/Plugins/Mediable";
+import { Attachable, Attachment, AttachmentMeta } from "@ioc:Adonis/Mongoose/Plugin/Attachable";
 
 const CategorySchema = new Schema<CategoryDocument>({
   name: {
@@ -14,17 +14,17 @@ const CategorySchema = new Schema<CategoryDocument>({
   },
   icon: {
     required: true,
-    type: String
+    type: Attachment
   }
 });
 
 CategorySchema.plugin(HasFactory);
-CategorySchema.plugin(Mediable);
+CategorySchema.plugin(Attachable);
 
 export interface ICategory {
   name: string;
   slug: string;
-  icon: string;
+  icon: AttachmentMeta;
 }
 
 export interface CategoryDocument extends Document, ICategory, MediableDocument {};

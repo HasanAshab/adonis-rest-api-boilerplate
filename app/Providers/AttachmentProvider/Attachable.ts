@@ -46,7 +46,7 @@ export function Attachable(schema: Schema) {
   schema.pre('save', async function () {
     this.modifiedAttachableFields.forEach(field => {
       this._doc[field]?.moveToDisk();
-      this.__cachedAttachments[field]?.delete();
+      this.__cachedAttachments?.[field]?.delete();
     });
   });
   
