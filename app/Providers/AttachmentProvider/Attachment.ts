@@ -1,3 +1,9 @@
+import { SchemaType } from "mongoose"
+import { File } from '@adonisjs/bodyparser/build/src/Multipart/File'
+import AttachmentMeta from './AttachmentMeta'
+
+
+
 import type { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
 import type { AttachmentDocument, AttachmentModel } from '@ioc:Adonis/Mongoose/Plugin/Attachable'
 import Drive, { ContentHeaders } from '@ioc:Adonis/Core/Drive'
@@ -36,8 +42,27 @@ AttachmentSchema.method("getSignedUrl", function(options?: ContentHeaders & { ex
 });
 
 
-//AttachmentSchema.method("getFullUrl", function() {});
+
+export const AttachmentModel = model<AttachmentDocument, AttachmentModel>("Attachment", AttachmentSchema);
 
 
 
-export const Attachment = model<AttachmentDocument, AttachmentModel>("Attachment", AttachmentSchema);
+export default class Attachment extends SchemaType {
+  //key ar options re kaje laga
+  constructor(key, options) {
+    super(key, options, 'Attachment');
+  }
+
+  cast(value: unknown) {
+    if(value instanceof AttachmentModel) {
+      return value;
+    }
+
+    if(value instanceof File) {
+      return AttachmentModel.fromFile(value);
+    }
+    
+    throw new Error();
+  }
+  
+}

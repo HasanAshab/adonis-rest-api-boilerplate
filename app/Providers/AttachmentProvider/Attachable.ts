@@ -1,7 +1,10 @@
 import type { Schema } from "mongoose";
 import Drive from '@ioc:Adonis/Core/Drive'
 import { AttachmentSchema } from "@ioc:Adonis/Mongoose/Plugin/Attachable";
+import { File } from '@adonisjs/bodyparser/build/src/Multipart/File'
 import { types } from '@ioc:Adonis/Core/Helpers'
+
+//setter, schema
 
 
 export function isAttachable(schemaType: unknown | unknown[]) {
@@ -34,14 +37,26 @@ export function Attachable(schema: Schema) {
       return attachments;
     }, {});
   });
+
+/*  schema.post('save', document => {
+    document.__cachedAttachments = attachableFields.reduce((attachments: Record<string, AttachmentDocument>, field) => {
+      if (document._doc[field]) {
+        attachments[field] = document._doc[field];
+      }
+      return attachments;
+    }, {});
+  });*/
   
   schema.pre('save', async function () {
-    if(this.isModified('profile') && this.__cachedAttachments.profile) {
-      await Drive.delete(this.__cachedAttachments.profile.path);
+    console.log(this.set.toString())
+
+    if(this.isModified('profile')) {
+      await this.profile.moveToDisk();
+      await this.__cachedAttachments.profile?.delete();
     }
   });
   
   schema.post('delete', async function () {
-    await Drive.delete(this.profile.path);
+    await this.profile.delete();
   });
 }

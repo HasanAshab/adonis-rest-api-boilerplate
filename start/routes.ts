@@ -7,22 +7,22 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 import User, { UserDocument } from "App/Models/User"
-import { Attachment } from "@ioc:Adonis/Mongoose/Plugin/Attachable";
 
 
 Route.post('/', async ({ request }) => {
   //await User.factory().count(10).create();
   
   let user = await User.findOne().latest();
-  
+
    const profile = request.file("profile");
+   console.log(profile)
   if(profile) {
-    user.profile = await Attachment.fromFile(profile);
+    user.profile = profile;
   }
+
   await user.save();
   //await user.delete();
-  
- // return await user.profile.getUrl()
+  return await user.profile.getUrl()
 })
 
 Route.post("/api/v1/auth/register", "V1/AuthController.register").middleware('recaptcha');
