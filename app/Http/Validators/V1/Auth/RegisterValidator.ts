@@ -15,7 +15,7 @@ export default class RegisterValidator extends Validator {
     ]),
     
     password: schema.string([
-      rules.password("standard")
+      rules.password()
     ]),
     
     profile: schema.file.optional({

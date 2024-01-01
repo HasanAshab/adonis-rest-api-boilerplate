@@ -5,10 +5,10 @@ export default class ResetPasswordValidator extends Validator {
   public schema = schema.create({
     token: schema.string(),
     id: schema.string([
-      rules.objectId()
+      //rules.objectId()
     ]),
     password: schema.string([
-      rules.password()
+      rules.password('standard')
     ])
   });
-
+}

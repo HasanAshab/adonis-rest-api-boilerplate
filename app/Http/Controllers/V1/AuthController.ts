@@ -47,25 +47,20 @@ export default class AuthController {
   }
   
   async forgotPassword({ request, response }: HttpContextContract){
-    const user = await User.findOne(
-      await request.validate(ForgotPasswordValidator)
-    );
-    
-    if(user?.password) {
-      await user.sendResetPasswordNotification();
-    }
-    
+    const { email } = await request.validate(ForgotPasswordValidator);
+    await this.authService.forgotPassword(email);
     response.accepted("Password reset link sent to email!");
   };
 
-  async resetPassword(req: ResetPasswordRequest, passwordService: PasswordService){
-    const { id, password, token } = req.body;
+  async resetPassword({ request }: HttpContextContract){
+    const { id, password, token } = await request.validate(ResetPasswordValidator);
     const user = await User.findByIdOrFail(id);
-    await passwordService.reset(user, token, password);
+    await this.authService.resetPassword(user, token, password);
+    await Mail.to(user.email).send(new PasswordChangedMail());
     return "Password changed successfully!";
   };
  
-  
+
   
  /* 
   redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {

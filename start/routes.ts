@@ -59,7 +59,7 @@ Route.group(() => {
   // User password management
   Route.group(() => {
     Route.post("/forgot", "AuthController.forgotPassword").middleware("recaptcha", "throttle:10000,2");
-    //Route.patch("/reset", "AuthController.resetPassword");
+    Route.patch("/reset", "AuthController.resetPassword");
     //Route.patch("/change", "AuthController.changePassword").middleware("auth", "verified");
   }).prefix("/password");
 

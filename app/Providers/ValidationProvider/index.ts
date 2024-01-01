@@ -12,7 +12,7 @@ export default class PasswordValidationProvider {
 
   public register() {
     this.passwordStrategyManager.register(new ComplexPasswordStrategy);
-    this.passwordStrategyManager.register(new StandardPasswordStrategy);
+    this.passwordStrategyManager.register(new StandardPasswordStrategy).asDefault();
     this.passwordStrategyManager.register(new WeakPasswordStrategy);
     
     this.app.container.singleton('Adonis/Core/Validator/Rules/Password', () => ({
@@ -31,7 +31,7 @@ export default class PasswordValidationProvider {
         
         return options.errorReporter.report(
           options.pointer,
-          `password.${strategyName}`,
+          `password.${strategy.name}`,
           strategy.message.replace("{{ field }}", options.field),
           strategy.message,
           options.arrayExpressionPointer

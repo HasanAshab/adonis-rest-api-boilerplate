@@ -1,8 +1,8 @@
 import Hash from '@ioc:Adonis/Core/Hash';
 import { Schema, Document } from "mongoose";
 import crypto from "crypto";
-//import EmailVerificationNotification from "~/app/notifications/EmailVerificationNotification";
-//import ForgotPasswordNotification from "~/app/notifications/ForgotPasswordNotification";
+//import EmailVerificationNotification from "App/Notifications/EmailVerificationNotification";
+//import ForgotPasswordNotification from "App/Notifications/ForgotPasswordNotification";
 
 export interface AuthenticatableDocument extends Document {
   attempt(password: string): Promise<boolean>;
@@ -33,6 +33,22 @@ export default (schema: Schema) => {
   schema.methods.setPassword = async function (password: string) {
     this.password = await Hash.make(password);
   }
+  
+  schema.method('changePassword', async function(oldPassword: string, newPassword: string) {
+    if(!this.isInternal) {
+      throw new PasswordChangeNotAllowedException();
+    }
+    
+    if (!await this.attempt(oldPassword)) {
+      throw new InvalidPasswordException();
+    }
+    
+    this.password = newPassword;
+    await this.save();
+    //TODO Should not be there
+    await Mail.to(user.email).send(new PasswordChangedMail()).catch(log);
+  });
+  
   
   schema.methods.sendVerificationNotification = async function(version: string) {
     await this.notify(new EmailVerificationNotification({ version }));
