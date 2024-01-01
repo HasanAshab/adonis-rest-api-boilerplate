@@ -36,6 +36,7 @@
     "@adonisjs/ally": "^4.1.5",
     "@adonisjs/bouncer": "^2.3.0",
     "@adonisjs/core": "^5.9.0",
+    "@adonisjs/limiter": "^1.0.2",
     "@adonisjs/redis": "^7.3.4",
     "@adonisjs/repl": "^3.1.11",
     "@faker-js/faker": "^8.3.1",

@@ -39,7 +39,8 @@
       "adonis5-jwt",
       "@kaperskyguru/adonis-cache",
       "@adonisjs/redis",
-      "adonis-recaptcha2"
+      "adonis-recaptcha2",
+      "@adonisjs/limiter"
     ]
   }
 }

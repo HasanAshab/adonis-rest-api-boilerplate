@@ -12,7 +12,7 @@ import OtpRequiredException from "App/Exceptions/OtpRequiredException"
 export default class LoginService {
   constructor(private readonly twoFactorAuthService: TwoFactorAuthService, private readonly mutex: Mutex) {}
   
-  async login(email: string, password: string, otp?: string) {
+  login(email: string, password: string, otp?: string) {
     if(await this.getFailedAttempts(email) >= 4) {
       throw new LoginAttemptLimitExceededException();
     }

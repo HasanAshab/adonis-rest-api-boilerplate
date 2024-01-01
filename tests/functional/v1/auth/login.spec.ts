@@ -1,6 +1,7 @@
 import { test } from '@japa/runner'
 import Event from '@ioc:Adonis/Core/Event'
 import User from "App/Models/User";
+import Config from '@ioc:Adonis/Core/Config'
 import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
 
 //TODO
@@ -58,7 +59,7 @@ test.group('Auth', group => {
   });
   
   test("should prevent Brute Force login", async ({ client, expect }) => {
-    const limit = 4;
+    const limit = Config.get('auth.loginAttemptThrottle.maxFailedAttempts');
     const payload = {
       email: user.email,
       password: "wrong-pass"

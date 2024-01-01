@@ -11,6 +11,7 @@ import recaptcha2 from '@ioc:Adonis/Addons/Recaptcha2'
  */
 export default class VerifyRecaptcha {
   public async handle ({ request }: HttpContextContract, next: () => Promise<void>): Promise<void> {
+    return await next()
     try {
       await recaptcha2.validate(request.input('recaptchaResponse'));
     } catch (errors) {

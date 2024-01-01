@@ -33,7 +33,8 @@
         "web",
         "test"
       ]
-    }
+    },
+    "./start/limiter"
   ],
   "providers": [
     "./app/Providers/AppProvider",
@@ -47,7 +48,8 @@
     "./app/Providers/AttachmentProvider",
     "./app/Providers/TwilioProvider",
     "./app/Providers/ValidationProvider",
-    "adonis-recaptcha2"
+    "adonis-recaptcha2",
+    "@adonisjs/limiter"
   ],
   "aceProviders": [
     "@adonisjs/repl"
