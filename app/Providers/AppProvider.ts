@@ -56,12 +56,7 @@ export default class AppProvider {
       
       return this.sendOriginal(body, generateEtag);
     });
-    /*
-    Response.macro('message', function (text?: string) {
-      this.send(text ?? this.standardMessage);
-      return this;
-    });
-    */
+
     Response.macro('sendStatus', function (code: number) {
       this.status(code).send({});
       return this;
