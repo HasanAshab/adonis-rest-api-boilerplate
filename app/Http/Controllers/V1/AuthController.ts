@@ -6,6 +6,8 @@ import User, { UserDocument } from "App/Models/User"
 import BasicAuthService from "App/Services/Auth/BasicAuthService";
 import RegisterValidator from "App/Http/Validators/V1/Auth/RegisterValidator";
 import LoginValidator from "App/Http/Validators/V1/Auth/LoginValidator";
+import ForgotPasswordValidator from "App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator";
+import ResetPasswordValidator from "App/Http/Validators/V1/Auth/Password/ResetPasswordValidator";
 
 
 @inject()
@@ -44,6 +46,28 @@ export default class AuthController {
     }
   }
   
+  async forgotPassword({ request, response }: HttpContextContract){
+    const user = await User.findOne(
+      await request.validate(ForgotPasswordValidator)
+    );
+    
+    if(user?.password) {
+      await user.sendResetPasswordNotification();
+    }
+    
+    response.accepted("Password reset link sent to email!");
+  };
+
+  async resetPassword(req: ResetPasswordRequest, passwordService: PasswordService){
+    const { id, password, token } = req.body;
+    const user = await User.findByIdOrFail(id);
+    await passwordService.reset(user, token, password);
+    return "Password changed successfully!";
+  };
+ 
+  
+  
+ /* 
   redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {
     return ally.use(params.provider).stateless().redirect();
   }
@@ -71,5 +95,5 @@ export default class AuthController {
     
     return Route.makeClientUrl(`/login/social/${params.provider}/final-step/${externalUser.id}/${token}?fields=${fields}`);
   }
- 
+ */
 }

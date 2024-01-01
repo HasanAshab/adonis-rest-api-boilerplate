@@ -8,7 +8,7 @@
 import Route from '@ioc:Adonis/Core/Route'
 import User, { UserDocument } from "App/Models/User"
 
-
+/*
 Route.post('/', async ({ request }) => {
   //await User.factory().count(10).create();
   
@@ -28,15 +28,49 @@ Route.post('/', async ({ request }) => {
 
   return user;
 })
+*/
+
+/**
+ * Endpoints to authenticate users
+*/
+Route.group(() => {
+  Route.post("/register", "AuthController.register").middleware("recaptcha");
+  // Route.get("social/callback/:provider(google|facebook)", "loginWithSocialProvider");
+//   Route.post("/send-otp/:user", "sendOtp").middleware("throttle:60000,3");
+//   Route.patch("/change-phone-number", "changePhoneNumber").middleware("auth", "verified");
+//   Route.post("/generate-recovery-codes", "generateRecoveryCodes").middleware("throttle:60000,3", "auth", "verified");
 
 
-Route.post("/api/v1/auth/register", "V1/AuthController.register").middleware('recaptcha');
+  // Login with various methods
+  Route.group(() => {
+    Route.post("/", "AuthController.login").middleware("throttle:2000,2", "recaptcha");
+    //Route.post("/recovery-code", "loginWithRecoveryCode").middleware("throttle:2000,1", "recaptcha");
+    
+    // Social login provided by Google, Facebook OAuth
+   /* Route.group(() => {
+      Route.get("/", "redirectToSocialLoginProvider");
+      Route.post("/final-step", "socialLoginFinalStep");
+    }).prefix("/social/:provider(google|facebook)");
+    */
+    
+  }).prefix("/login");
+  
+  
+  // User password management
+  Route.group(() => {
+    Route.post("/forgot", "AuthController.forgotPassword").middleware("recaptcha", "throttle:10000,2");
+    //Route.patch("/reset", "AuthController.resetPassword");
+    //Route.patch("/change", "AuthController.changePassword").middleware("auth", "verified");
+  }).prefix("/password");
 
-Route.post("/api/v1/auth/login", "V1/AuthController.login");
-
-
-Route.get("users/:id", "V1/AuthController.redirectToSocialLoginProvider").as("v1_users.show")
-
-
-Route.get("api/v1/auth/login/social/:provider", "V1/AuthController.redirectToSocialLoginProvider").where('provider', /google|facebook/);
-Route.get("api/v1/auth/social/callback/:provider", "V1/AuthController.loginWithSocialProvider").where('provider', /google|facebook/);
+  // Verify user
+  /*
+  Route.prefix("/verify").group(() => {
+    Route.get("/:id/:token", "verifyEmail").name("verify");
+    Route.post("/resend", "resendEmailVerification").middleware("throttle:60000,1");
+  });
+  */
+  
+})
+.namespace('App/Http/Controllers/V1')
+.prefix('/api/v1/auth');

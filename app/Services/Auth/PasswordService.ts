@@ -1,13 +1,10 @@
-import { singleton } from "tsyringe";
-import { UserDocument } from "~/app/models/User";
-import Token from "~/app/models/Token";
-import speakeasy from "speakeasy";
+import { UserDocument } from "App/Models/User";
+import Token from "App/Models/Token";
 import Mail from "Mail";
-import PasswordChangedMail from "~/app/mails/PasswordChangedMail";
-import PasswordChangeNotAllowedException from "~/app/exceptions/PasswordChangeNotAllowedException";
-import InvalidPasswordException from "~/app/exceptions/InvalidPasswordException";
+import PasswordChangedMail from "App/Mails/PasswordChangedMail";
+import PasswordChangeNotAllowedException from "App/Exceptions/PasswordChangeNotAllowedException";
+import InvalidPasswordException from "App/Exceptions/InvalidPasswordException";
 
-@singleton()
 export default class PasswordService {
   async reset(user: UserDocument, token: string, password: string) {
     await Token.verify(user._id, "resetPassword", token);
