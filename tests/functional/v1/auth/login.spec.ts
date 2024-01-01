@@ -66,7 +66,7 @@ test.group('Auth', group => {
     };
     const responses = [];
     
-    for (let i = 0; i < limit; i++) {
+    for (let i = 0; i < limit + 1; i++) {
       const response = await client.post("/api/v1/auth/login").json(payload);
       responses.push(response);
     }
