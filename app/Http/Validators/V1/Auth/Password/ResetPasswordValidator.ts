@@ -8,7 +8,7 @@ export default class ResetPasswordValidator extends Validator {
       //rules.objectId()
     ]),
     password: schema.string([
-      rules.password('standard')
+      rules.password()
     ])
   });
 }

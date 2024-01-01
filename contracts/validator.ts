@@ -6,7 +6,7 @@ declare module '@ioc:Adonis/Core/Validator' {
   
   interface Rules {
     slug(): Rule;
-    password(strategy: PasswordStrategy): Rule;
+    password(strategy?: PasswordStrategy): Rule;
     unique(Model: string | MongooseModel, field: string): Rule;
   }
 }

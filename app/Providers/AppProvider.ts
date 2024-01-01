@@ -2,29 +2,17 @@ import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import { getStatusText } from "http-status-codes";
 
 
-// import { Router as BaseRouter } from '@adonisjs/http-server/build/standalone'
-// import Env from '@ioc:Adonis/Core/Env'
-// import { hostname } from "os"
-// 
-// class Router extends BaseRouter {
-//   makeFullUrl(...args) {
-//     const path = this.makeUrl(...args);
-//     return `https://${hostname()}:${Env.get('PORT')}${path}`;
-//   }
-// }
-// 
-
-
 export default class AppProvider {
-  constructor (protected app: ApplicationContract) {}
+  constructor(protected app: ApplicationContract) {}
 
-
-  public async boot () {
+  public async boot() {
     this.addResponseHelpers();
   }
   
+  
   private addResponseHelpers() {
-    const Response = this.app.container.use('Adonis/Core/Response')
+    const Response = this.app.container.use('Adonis/Core/Response');
+    const { types } = this.app.container.use('Adonis/Core/Helpers');
 
     Response.getter('isSuccessful', function () {
       return this.response.statusCode >= 200 && this.response.statusCode < 300;
@@ -34,36 +22,48 @@ export default class AppProvider {
       return getStatusText(this.response.statusCode);
     });
     
-    Response.macro('api', function (data: object | any[]) {
-      if(Array.isArray(data)) {
-        return this.send({
-          success: this.isSuccessful,
-          message: this.standardMessage,
-          data
-        });
-      }
-      
-      if(!data.success) {
-        data.success = this.isSuccessful;
-      }
-      
-      if(!data.message) {
-        data.message = this.standardMessage;
-      }
-      
-      return this.send(data);
-    });
+    Response.macro('sendOriginal', Response.prototype.send);
+   /* Response.macro('sendOriginal', function (body = {}, generateEtag = this.config.etag) {
+      this.writerMethod = 'writeBody';
+      this.hasLazyBody = true;
+      this.lazyBody = [body, generateEtag];
+    });*/
     
+    Response.macro('send', function (body: null | string | object | any[] = {}, generateEtag = this.config.etag) {
+      const acceptsJson = this.request.headers.accept === 'application/json';
+      
+      if(acceptsJson) {
+        if(types.isNull(body)) {
+          body = {}
+        }
+        
+        else if(types.isString(body)) {
+          body = { message: body };
+        }
+        
+        else if(types.isArray(body)) {
+          body = { data: body };
+        }
+        
+        if(!body.success) {
+          body.success = this.isSuccessful;
+        }
+        
+        if(!body.message) {
+          body.message = this.standardMessage;
+        }
+      }
+      
+      return this.sendOriginal(body, generateEtag);
+    });
+    /*
     Response.macro('message', function (text?: string) {
-      this.send({
-        success: this.isSuccessful,
-        message: text || this.standardMessage,
-      });
+      this.send(text ?? this.standardMessage);
       return this;
     });
-    
+    */
     Response.macro('sendStatus', function (code: number) {
-      this.status(code).api({});
+      this.status(code).send({});
       return this;
     });
     
