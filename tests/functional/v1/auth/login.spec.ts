@@ -7,7 +7,7 @@ import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
 //TODO
 Event.assertEmitted = () => null;
 
-test.group('Auth', group => {
+test.group('Auth/Login', group => {
   let user;
   let token;
   const twoFactorAuthService = new TwoFactorAuthService();
@@ -113,7 +113,7 @@ test.group('Auth', group => {
     expect(response.status()).toBe(401);
     expect(response.body()).not.toHaveProperty("token");
   });
-})
+});
 
 /*
 describe("Auth", () => {

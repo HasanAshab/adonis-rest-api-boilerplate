@@ -11,34 +11,39 @@ import LoginAttemptLimitExceededException from "App/Exceptions/LoginAttemptLimit
 import OtpRequiredException from "App/Exceptions/OtpRequiredException"
 
 
-    
-@inject()
 export default class BasicAuthService {
-  protected limiter?: LimiterContract;
+  private limiter?: LimiterContract;
 
-  constructor(private readonly twoFactorAuthService: TwoFactorAuthService) {
-    this.setupLimiter();
+  constructor(
+    private readonly twoFactorAuthService = new TwoFactorAuthService,
+    private loginAttemptThrottleConfig = Config.get('auth.loginAttemptThrottle')
+  ) {
+    if(this.loginAttemptThrottleConfig.enabled) {
+      this.setupLimiter();
+    }
   }
   
   protected setupLimiter() {
-    const limiterConfig = Config.get('auth.loginAttemptThrottle');
-    
-    if(!limiterConfig.enabled) return;
-    
+    const { maxFailedAttempts, duration, blockDuration } = this.loginAttemptThrottleConfig;
     this.limiter = Limiter.use({
-      requests: limiterConfig.maxFailedAttempts,
-      duration: limiterConfig.duration,
-      blockDuration: limiterConfig.blockDuration,
+      requests: maxFailedAttempts,
+      duration: duration,
+      blockDuration: blockDuration,
     });
   }
   
+  public getThrottleKeyFor(email: string, ip: string) {
+    return this.loginAttemptThrottleConfig.key
+      .replace('{{ email }}', email)
+      .replace('{{ ip }}', ip);
+  }
+
   public async login(email: string, password: string, otp?: string, ip?: string) {
     if(this.limiter && !ip) {
       throw new Error('Argument[3] "ip" must be provided when login attempt throttle is enabled');
     }
 
     const throttleKey = this.getThrottleKeyFor(email, ip);
-//       return await this.limiter?.delete(throttleKey);
 
     if(await this.limiter?.isBlocked(throttleKey)) {
       throw new LoginAttemptLimitExceededException();
@@ -57,10 +62,6 @@ export default class BasicAuthService {
     await this.checkTwoFactorAuth(user, otp);
     await this.limiter?.delete(throttleKey);
     return user.createToken();
-  }
-  
-  getThrottleKeyFor(email: string, ip: string) {
-    return `login_${email}_${ip}`;
   }
   
   private async checkTwoFactorAuth(user: UserDocument, otp?: string) {

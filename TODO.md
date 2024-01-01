@@ -1,8 +1,6 @@
-N: 8->sunnah
+N: 6->sunnah
 
-Fallback: solve type
+Fallback: Commands, solve type
 
-
-*: Custom hook, khata
-T: Attachment Module
+T: Api doc
 T: test phonenumberless user 2fa with app method
