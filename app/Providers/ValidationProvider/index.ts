@@ -10,7 +10,7 @@ export default class PasswordValidationProvider {
   public register() {
     this.passwordStrategyManager.register('complex', () => {
       const ComplexPasswordStrategy = require("./Password/Strategies/ComplexPasswordStrategy").default;
-      return new StandardPasswordStrategy;
+      return new ComplexPasswordStrategy;
     });
     
     this.passwordStrategyManager.register('standard', () => {

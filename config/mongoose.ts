@@ -7,7 +7,7 @@ import { ConnectOptions } from "mongoose";
 |--------------------------------------------------------------------------
 | Wether to connect to database or not
 */
-export const connect: boolean = true;
+export const connect: boolean = false;
 
 
 /*

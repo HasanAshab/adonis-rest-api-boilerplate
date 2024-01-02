@@ -1,6 +1,8 @@
-N: 6->sunnah
+N: nafl -> 6
 
-Fallback: PassStrat lazy, Commands, solve type
+Fallback: Commands, solve type
+T: Discover
 T: UserPr
+T: organize Event [Provider?]
 T: Api doc
 T: test phonenumberless user 2fa with app method

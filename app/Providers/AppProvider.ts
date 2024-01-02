@@ -1,12 +1,59 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import { getStatusText } from "http-status-codes";
 
+import fs from 'fs'
+import path from 'path'
+import Application from '@ioc:Adonis/Core/Application'
 
 export default class AppProvider {
   constructor(protected app: ApplicationContract) {}
 
   public async boot() {
     this.addResponseHelpers();
+    
+    const Router = this.app.container.use('Adonis/Core/Route')
+   /* 
+   Router.discover = function(directoryPath: string) {
+      const absolutePath = Application.makePath(directoryPath);
+      const files = fs.readdirSync(absolutePath)
+      console.log(files)
+      files.forEach((file) => {
+        const fullPath = path.join(directoryPath, file)
+        const stat = fs.lstatSync(path.join(absolutePath, file))
+        
+        if (stat.isDirectory()) {
+          this.discover(fullPath);
+        }
+        
+        else if (stat.isFile() && path.extname(file) === '.ts') {
+          const routePrefix = path.basename(file, '.ts');
+          this.group(() => require(absolutePath)).prefix(routePrefix);
+        }
+      })
+    }*/
+    Router.discover = function(base: string) {
+      const stack = [base];
+      while (stack.length > 0) {
+        const currentPath = stack.pop();
+        if (!currentPath) break;
+        const items = fs.readdirSync(currentPath);
+        for (const item of items) {
+          const itemPath = path.join(currentPath, item);
+
+          const status = fs.statSync(itemPath);
+          if (status.isFile()) {
+            const itemPathEndpoint = itemPath.replace(base, "").split(".")[0].toLowerCase().replace(/index$/, "");
+                                  console.log(itemPathEndpoint)
+
+            const routerPath =  Application.makePath(itemPath.split(".")[0]);
+            this.group(() => require(routerPath)).prefix(itemPathEndpoint);
+          }
+          else if (status.isDirectory()) {
+            stack.push(itemPath);
+          }
+        }
+      }
+    }
   }
   
   
