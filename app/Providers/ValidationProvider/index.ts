@@ -1,8 +1,5 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
-import PasswordStrategyManager from "./PasswordStrategies/PasswordStrategyManager"
-import ComplexPasswordStrategy from "./PasswordStrategies/ComplexPasswordStrategy"
-import StandardPasswordStrategy from "./PasswordStrategies/StandardPasswordStrategy"
-import WeakPasswordStrategy from "./PasswordStrategies/WeakPasswordStrategy"
+import PasswordStrategyManager from "./Password/PasswordStrategyManager"
 
 
 export default class PasswordValidationProvider {
@@ -11,10 +8,22 @@ export default class PasswordValidationProvider {
   constructor(protected app: ApplicationContract) {}
 
   public register() {
-    this.passwordStrategyManager.register(new ComplexPasswordStrategy);
-    this.passwordStrategyManager.register(new StandardPasswordStrategy).asDefault();
-    this.passwordStrategyManager.register(new WeakPasswordStrategy);
+    this.passwordStrategyManager.register('complex', () => {
+      const ComplexPasswordStrategy = require("./Password/Strategies/ComplexPasswordStrategy").default;
+      return new StandardPasswordStrategy;
+    });
     
+    this.passwordStrategyManager.register('standard', () => {
+      const StandardPasswordStrategy = require("./Password/Strategies/StandardPasswordStrategy").default;
+      return new StandardPasswordStrategy;
+    }).asDefault();
+    
+    this.passwordStrategyManager.register('weak', () => {
+      const WeakPasswordStrategy = require("./Password/Strategies/WeakPasswordStrategy").default;
+      return new WeakPasswordStrategy;
+    });
+    
+
     this.app.container.singleton('Adonis/Core/Validator/Rules/Password', () => ({
       PasswordStrategyManager: this.passwordStrategyManager
     }));
@@ -25,13 +34,13 @@ export default class PasswordValidationProvider {
 
     validator.rule('password', 
       async (value, [strategyName], options) => {
-        const strategy = this.passwordStrategyManager.get(strategyName);
-    
+        const { strategy, name } = this.passwordStrategyManager.get(strategyName);
+
         if(await strategy.validate(value)) return;
         
         return options.errorReporter.report(
           options.pointer,
-          `password.${strategy.name}`,
+          `password.${name}`,
           strategy.message.replace("{{ field }}", options.field),
           strategy.message,
           options.arrayExpressionPointer

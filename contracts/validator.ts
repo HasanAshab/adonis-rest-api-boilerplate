@@ -1,4 +1,4 @@
-import type PasswordStrategyManagerContract from "App/Services/PasswordStrategies/PasswordStrategyManager"
+import type PasswordStrategyManagerContract from "App/Services/Password/PasswordStrategyManager"
 import { Model as MongooseModel } from 'mongoose';
 
 declare module '@ioc:Adonis/Core/Validator' {
