@@ -24,7 +24,6 @@
     "Tests": "tests"
   },
   "preloads": [
-    "./start/routes",
     "./start/kernel",
     "./start/bouncer",
     {
@@ -49,7 +48,8 @@
     "./app/Providers/TwilioProvider",
     "./app/Providers/ValidationProvider",
     "adonis-recaptcha2",
-    "@adonisjs/limiter"
+    "@adonisjs/limiter",
+    "./app/Providers/RouteServiceProvider"
   ],
   "aceProviders": [
     "@adonisjs/repl"
