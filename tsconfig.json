@@ -40,7 +40,8 @@
       "@kaperskyguru/adonis-cache",
       "@adonisjs/redis",
       "adonis-recaptcha2",
-      "@adonisjs/limiter"
+      "@adonisjs/limiter",
+      "@adonisjs/attachment-lite"
     ]
   }
 }

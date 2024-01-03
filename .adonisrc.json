@@ -43,13 +43,14 @@
     "./app/Providers/HashProvider",
     "@adonisjs/bouncer",
     "@adonisjs/ally",
-    "./app/Providers/MongooseProvider",
-    "./app/Providers/AttachmentProvider",
     "./app/Providers/TwilioProvider",
     "./app/Providers/ValidationProvider",
     "adonis-recaptcha2",
     "@adonisjs/limiter",
-    "./app/Providers/RouteServiceProvider"
+    "./app/Providers/RouteServiceProvider",
+    "@adonisjs/lucid",
+    "@adonisjs/auth",
+    "@adonisjs/attachment-lite"
   ],
   "aceProviders": [
     "@adonisjs/repl"

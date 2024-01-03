@@ -3,7 +3,7 @@ import { inject } from '@adonisjs/fold'
 import Config from '@ioc:Adonis/Core/Config'
 import { Limiter } from '@adonisjs/limiter/build/services'
 import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter'
-import User, { UserDocument } from "App/Models/User"
+import User from "App/Models/User"
 import Token from "App/Models/Token";
 import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
 import InvalidCredentialException from "App/Exceptions/InvalidCredentialException"
@@ -16,9 +16,9 @@ export default class BasicAuthService {
 
   constructor(
     private readonly twoFactorAuthService = new TwoFactorAuthService,
-    private loginAttemptThrottleConfig = Config.get('auth.loginAttemptThrottle')
+    private loginAttemptThrottlerConfig = Config.get('auth.loginAttemptThrottler')
   ) {
-    if(this.loginAttemptThrottleConfig.enabled) {
+    if(this.loginAttemptThrottlerConfig.enabled) {
       this.setupLoginThrottler();
     }
   }
@@ -64,7 +64,7 @@ export default class BasicAuthService {
   }
   
   private setupLoginThrottler() {
-    const { maxFailedAttempts, duration, blockDuration } = this.loginAttemptThrottleConfig;
+    const { maxFailedAttempts, duration, blockDuration } = this.loginAttemptThrottlerConfig;
     this.loginThrottler = Limiter.use({
       requests: maxFailedAttempts,
       duration: duration,
@@ -73,7 +73,7 @@ export default class BasicAuthService {
   }
 
   private getThrottleKeyFor(email: string, ip: string) {
-    return this.loginAttemptThrottleConfig.key
+    return this.loginAttemptThrottlerConfig.key
       .replace('{{ email }}', email)
       .replace('{{ ip }}', ip);
   }

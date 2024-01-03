@@ -1,66 +1,26 @@
-import { model, Schema, Document, Model } from "mongoose";
-//import notificationConfig from "~/config/notification";
+import { DateTime } from 'luxon'
+import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm'
 
-//TODO
-const notificationConfig = {channels: [], types: []}
+export default class Settings extends BaseModel {
+ @column({ isPrimary: true })
+ public id: number
 
-const { channels, types } = notificationConfig;
+ @column()
+ public userId: string
 
-const notificationDefaults = channels.reduce((defaults: Record<string, any>, channel) => {
-  defaults[channel] = {
-    type: Boolean,
-    default: true
-  }
-  return defaults;
-}, {});
+ @column()
+ public twoFactorAuthSettings: {
+  enabled: boolean,
+  method: 'sms' | 'call' | 'app',
+  secret: string | null
+ }
 
-export const twoFactorAuthMethods = ["sms", "call", "app"] as const;
+ @column()
+ public notification: Record<string, Record<string, boolean>>
 
-const SettingsSchema = new Schema<SettingsDocument>({
-  userId: {
-    required: true,
-    ref: "User",
-    type: Schema.Types.ObjectId,
-    cascade: true,
-    unique: true
-  },
-  twoFactorAuth: {
-    enabled: {
-      type: Boolean,
-      default: false,
-    },
-    method: {
-      type: String,
-      enum: twoFactorAuthMethods,
-      default: "sms",
-    },
-    secret: {
-      type: String,
-      default: null
-    }
-  },
-  notification: types.reduce((typeObj: Record<string, typeof notificationDefaults>, notificationType) => {
-    typeObj[notificationType] = notificationDefaults;
-    return typeObj;
-  }, {})
-});
+ @column.dateTime({ autoCreate: true })
+ public createdAt: DateTime
 
-
-export interface ISettings {
-  userId: Schema.Types.ObjectId;
-  notification: {
-    [type in typeof types[number]]: {
-      [channel in typeof channels[number]]: boolean;
-    };
-  };
-  twoFactorAuth: {
-    enabled: boolean;
-    method: typeof twoFactorAuthMethods[number];
-    secret: string | null;
-  }
-};
-
-export interface SettingsDocument extends Document, ISettings {};
-interface SettingsModel extends Model<SettingsDocument> {};
-
-export default model<SettingsDocument, SettingsModel>("Settings", SettingsSchema);
+ @column.dateTime({ autoCreate: true, autoUpdate: true })
+ public updatedAt: DateTime
+}

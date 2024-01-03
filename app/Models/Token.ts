@@ -1,3 +1,5 @@
+export default {}
+/*
 import { model, Schema, Document, Model } from "mongoose";
 import crypto from "crypto";
 import InvalidTokenException from "App/Exceptions/InvalidTokenException";
@@ -58,3 +60,4 @@ interface TokenModel extends Model<TokenDocument> {
 
 
 export default model<TokenDocument, TokenModel>("Token", TokenSchema);
+*/

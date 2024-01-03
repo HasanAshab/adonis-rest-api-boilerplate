@@ -7,10 +7,9 @@ export default Env.rules({
   NODE_ENV: Env.schema.enum(['development', 'test', 'production'] as const),
   PORT: Env.schema.number(),
 
+  DB_CONNECTION: Env.schema.enum(['pg'] as const),
   DRIVE_DISK: Env.schema.enum(['local'] as const),
   HASH_DRIVER: Env.schema.enum(['scrypt', 'argon', 'bcrypt', 'bcrypt-node'] as const),
-
-  DATABASE_URL: Env.schema.string(),
   STRIPE_KEY: Env.schema.string(),
 
   RECAPTCHA_SITE_KEY: Env.schema.string(),
@@ -18,6 +17,12 @@ export default Env.rules({
 
   TWILIO_SID: Env.schema.string(),
   TWILIO_AUTH_TOKEN: Env.schema.string(),
+  
+  PG_HOST: Env.schema.string({ format: 'host' }),
+  PG_PORT: Env.schema.number(),
+  PG_USER: Env.schema.string(),
+  PG_PASSWORD: Env.schema.string.optional(),
+  PG_DB_NAME: Env.schema.string(),
   
   //REDIS_URL: Env.schema.string(),
   REDIS_CONNECTION: Env.schema.enum(['local'] as const),

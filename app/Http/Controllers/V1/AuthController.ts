@@ -15,7 +15,7 @@ export default class AuthController {
   //constructor(private authService: AuthService, private socialAuthService: SocialAuthService) {}
   constructor(private readonly authService: BasicAuthService) {}
   
-  async register({ request, response }: HttpContextContract) {
+  async register({ request, response, auth }: HttpContextContract) {
     const userData = await request.validate(RegisterValidator);
     userData.profile = request.file('profile');
     
@@ -28,11 +28,11 @@ export default class AuthController {
       user
     });
 
-    const profileUrl = Route.makeUrl("v1_users.show", [user.username]);
-    
+    const profileUrl = ''//Route.makeUrl("v1_users.show", [user.username]);
+
     response.header("Location", profileUrl).created({
       message: "Verification email sent!",
-      token: user.createToken(),
+      token: await auth.use('api').generate(user),
       data: { user }
     });
   }
