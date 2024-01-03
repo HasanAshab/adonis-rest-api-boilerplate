@@ -9,6 +9,7 @@ import LoginValidator from "App/Http/Validators/V1/Auth/LoginValidator";
 import ForgotPasswordValidator from "App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator";
 import ResetPasswordValidator from "App/Http/Validators/V1/Auth/Password/ResetPasswordValidator";
 
+import HttpContext from '@ioc:Adonis/Core/HttpContext';
 
 @inject()
 export default class AuthController {
@@ -21,7 +22,8 @@ export default class AuthController {
     
     const user = await User.create(userData);
     await user.createDefaultSettings();
-
+    const { token } = await auth.login(user);
+    
     Event.emit("user:registered", {
       version: "v1",
       method: "internal",
@@ -32,17 +34,18 @@ export default class AuthController {
 
     response.header("Location", profileUrl).created({
       message: "Verification email sent!",
-      token: await auth.use('api').generate(user),
-      data: { user }
+      data: { user, token }
     });
   }
   
-  async login({ request, response }: HttpContextContract) {
+  async login({ request, response, auth }: HttpContextContract) {
     const { email, password, otp } = await request.validate(LoginValidator);
-    const token = await this.authService.login(email, password, otp, request.ip());
+    const user = await this.authService.attempt(email, password, otp, request.ip());
+    const { token } = await auth.login(user);
+    
     return {
       message: "Logged in successfully!",
-      token
+      data: { token }
     }
   }
   

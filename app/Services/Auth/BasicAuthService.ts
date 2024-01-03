@@ -4,7 +4,7 @@ import Config from '@ioc:Adonis/Core/Config'
 import { Limiter } from '@adonisjs/limiter/build/services'
 import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter'
 import User from "App/Models/User"
-import Token from "App/Models/Token";
+import Token from "App/Models/Token"
 import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
 import InvalidCredentialException from "App/Exceptions/InvalidCredentialException"
 import LoginAttemptLimitExceededException from "App/Exceptions/LoginAttemptLimitExceededException"
@@ -24,7 +24,7 @@ export default class BasicAuthService {
   }
   
 
-  public async login(email: string, password: string, otp?: string, ip?: string) {
+  public async attempt(email: string, password: string, otp?: string, ip?: string) {
     if(this.loginThrottler && !ip) {
       throw new Error('Argument[3]: "ip" must be provided when login attempt throttle is enabled');
     }
@@ -47,7 +47,8 @@ export default class BasicAuthService {
     
     await this.checkTwoFactorAuth(user, otp);
     await this.loginThrottler?.delete(throttleKey);
-    return user.createToken();
+    
+    return user;
   }
   
   public async forgotPassword(email: string) {
