@@ -1,18 +1,14 @@
 import Hash from '@ioc:Adonis/Core/Hash';
-import { Schema, Document } from 'mongoose';
 import crypto from 'crypto';
+import { BaseModel, beforeSave } from '@ioc:Adonis/Lucid/Orm'
+import { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
+
 //import EmailVerificationNotification from "App/Notifications/EmailVerificationNotification";
 //import ForgotPasswordNotification from "App/Notifications/ForgotPasswordNotification";
 
-
+/*
 export default (schema: Schema) => {
-	schema.pre('save', async function () {
-		if (this.password && this.isModified('password')) {
-			this.password = await Hash.make(this.password);
-			this.tokenVersion++;
-		}
-	});
-
+  
 	schema.methods.attempt = function (password: string) {
 		if (!this.password) {
 			throw new Error(
@@ -82,3 +78,23 @@ export default (schema: Schema) => {
 		return false;
 	};
 };
+*/
+export type SuperclassConstructor = NormalizeConstructor<BaseModel> & { password?: string };
+
+export default function Authenticatable(Superclass: SuperclassConstructor) {
+  return class AuthenticatableModel extends Superclass {
+    @beforeSave()
+  	public static async hashPassword(user: AuthenticatableModel) {
+  		if (user.$dirty.password) {
+  			user.password = await Hash.make(user.password);
+  		}
+  	}
+  	
+  	public comparePassword(password: string) {
+  		if (!this.password) {
+  			throw new Error('Trying to attempt passwordless user [may be social account?]');
+  		}
+  		return Hash.verify(this.password, password);
+  	}
+  }
+}

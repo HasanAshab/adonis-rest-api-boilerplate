@@ -50,7 +50,7 @@ export default class BasicAuthService {
 			throw new InvalidCredentialException();
 		}
 
-		if (!await user.attempt(password)) {
+		if (!await user.comparePassword(password)) {
 			await this.loginThrottler?.increment(throttleKey);
 			throw new InvalidCredentialException();
 		}

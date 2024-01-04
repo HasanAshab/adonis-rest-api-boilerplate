@@ -1,6 +1,6 @@
 N: nafl -> 6
 
-Fallback: Eslint, Commands, PR stub cust, solve type
+Fallback: solve type, Eslint, Commands, PR stub cust
 T: Cache.local mem
 
 T: model and migration

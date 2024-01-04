@@ -8,12 +8,12 @@ import {
 } from '@ioc:Adonis/Lucid/Orm'
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
 import { compose } from '@poppinss/utils/build/helpers'
-import Hash from '@ioc:Adonis/Core/Hash'
 import Settings from 'App/Models/Settings'
+import HasTimestamps from 'App/Models/Traits/HasTimestamps'
 import Authenticatable from 'App/Models/Traits/Authenticatable'
 
 
-export default class User extends compose(BaseModel, Authenticatable) {
+export default class User extends compose(BaseModel, HasTimestamps, Authenticatable) {
 	@column({ isPrimary: true })
 	public id: number;
 
@@ -30,7 +30,7 @@ export default class User extends compose(BaseModel, Authenticatable) {
 	public phoneNumber?: string;
 
 	@column()
-	public role: 'novice' | 'user';
+	public role: 'novice' | 'admin';
 
 	@column()
 	public verified: boolean;
@@ -43,12 +43,6 @@ export default class User extends compose(BaseModel, Authenticatable) {
 
 	@column({ serializeAs: null })
 	public socialId: Record<string, string>;
-
-	@column.dateTime({ autoCreate: true })
-	public createdAt: DateTime;
-
-	@column.dateTime({ autoCreate: true, autoUpdate: true })
-	public updatedAt: DateTime;
 
 	@hasOne(() => Settings)
 	public settings: HasOne<typeof Settings>;
@@ -67,12 +61,5 @@ export default class User extends compose(BaseModel, Authenticatable) {
 
 	public static internals() {
 		return this.query().whereNotNull('password');
-	}
-
-	@beforeSave()
-	public static async hashPassword(user: User) {
-		if (user.$dirty.password) {
-			user.password = await Hash.make(user.password);
-		}
 	}
 }
