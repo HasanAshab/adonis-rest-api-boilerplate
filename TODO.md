@@ -1,9 +1,8 @@
 N: nafl -> 6
 
-Fallback: solve type, Eslint, Commands, PR stub cust
+Fallback: solve type, Eslint, model & migrate, Commands, PR stub cust
 T: Cache.local mem
-
-T: model and migration
+T: provide Factory
 T: uuid?
 T: organize Event [Provider?]
 T: Api doc

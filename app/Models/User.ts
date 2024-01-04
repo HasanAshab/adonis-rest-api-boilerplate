@@ -9,14 +9,18 @@ import {
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
 import { compose } from '@poppinss/utils/build/helpers'
 import Settings from 'App/Models/Settings'
+import HasFactory from 'App/Models/Traits/HasFactory'
 import HasTimestamps from 'App/Models/Traits/HasTimestamps'
 import Authenticatable from 'App/Models/Traits/Authenticatable'
 
 
-export default class User extends compose(BaseModel, HasTimestamps, Authenticatable) {
+export default class User extends compose(BaseModel, HasFactory, HasTimestamps, Authenticatable) {
 	@column({ isPrimary: true })
 	public id: number;
 
+	@column()
+	public name?: string;	
+	
 	@column()
 	public username?: string;
 
