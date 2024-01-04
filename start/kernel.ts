@@ -41,7 +41,7 @@ Server.middleware.register([
 |
 */
 Server.middleware.registerNamed({
-  throttle: () => import('@adonisjs/limiter/build/throttle'),
+  throttle: () => import('App/Http/Middleware/Throttle'),
   auth: () => import('App/Http/Middleware/Authenticate'),
   verified: () => import('App/Http/Middleware/EnsureEmailIsVerified'),
   roles: () => import('App/Http/Middleware/CheckRole'),

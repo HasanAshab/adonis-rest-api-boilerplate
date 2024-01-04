@@ -1,6 +1,6 @@
 N: nafl -> 8
 
-Fallback: Commands, solve type
+Fallback: PR stub cust, Commands, solve type
 T: model and migration
 T: uuid?
 T: UserPr

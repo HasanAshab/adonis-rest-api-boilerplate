@@ -33,8 +33,8 @@ Route.post('/', async ({ request }) => {
 await Router.controller(AuthController).group(async () => {
   // Login with various methods
   await Router.prefix("/login").group(async () => {
-    Router.post("/", "login").middleware("limit:2000,2", "recaptcha");
-    Router.post("/recovery-code", "loginWithRecoveryCode").middleware("limit:2000,1", "recaptcha");
+    Router.post("/", "login").middleware("throttle:global", "recaptcha");
+    Router.post("/recovery-code", "loginWithRecoveryCode").middleware("limit:2,1", "recaptcha");
     
     // Social login provided by Google, Facebook OAuth
     await Router.prefix("/social/:provider(google|facebook)").group(() => {
