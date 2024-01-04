@@ -1,7 +1,6 @@
 import { inject } from '@adonisjs/fold';
-import Cache from '@ioc:Kaperskyguru/Adonis-Cache';
 import { UserDocument } from 'App/Models/User';
-import Settings, { ISettings } from 'App/Models/Settings';
+import Settings, { TwoFactorAuthSettings } from 'App/Models/Settings';
 import Token from 'App/Models/Token';
 import TwilioService from 'App/Services/TwilioService';
 import speakeasy from 'speakeasy';
@@ -18,14 +17,14 @@ export default class TwoFactorAuthService {
 
 	async enable(
 		user: UserDocument,
-		method?: ISettings['twoFactorAuth']['method'],
+		method?: TwoFactorAuthSettings['method'],
 	) {
 		if (!user.phoneNumber && method !== 'app')
 			throw new PhoneNumberRequiredException();
 		const data: { recoveryCodes: string[]; otpauthURL?: string } = {
 			recoveryCodes: await user.generateRecoveryCodes(),
 		};
-		const twoFactorAuth: Partial<ISettings['twoFactorAuth']> = {
+		const twoFactorAuth: Partial<TwoFactorAuthSettings> = {
 			enabled: true,
 			secret: null,
 			method,
@@ -40,7 +39,7 @@ export default class TwoFactorAuthService {
 				issuer: appName,
 			});
 		}
-		await Settings.updateOne({ userId: user._id }, { twoFactorAuth });
+    await Settings.query().where('userId', user._id).update({ twoFactorAuth });
 		return data;
 	}
 

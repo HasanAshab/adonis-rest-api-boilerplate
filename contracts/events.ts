@@ -1,5 +1,3 @@
-import { UserDocument } from 'App/Models/User';
-
 /**
  * Contract source: https://git.io/JfefG
  *
@@ -7,6 +5,7 @@ import { UserDocument } from 'App/Models/User';
  * file.
  */
 declare module '@ioc:Adonis/Core/Event' {
+  import type User from 'App/Models/User';
 	/*
   |--------------------------------------------------------------------------
   | Define typed events
@@ -28,7 +27,7 @@ declare module '@ioc:Adonis/Core/Event' {
   */
 	interface EventsList {
 		registered: {
-			user: UserDocument;
+			user: User;
 			version: string;
 			method: 'internal' | 'social';
 		};

@@ -44,8 +44,6 @@ export default class BasicAuthService {
     
 		const user = await User.internals().where('email', email).preload('settings').first();
     
-    console.log(user.attempt)
-    
 		if (!user) {
 			throw new InvalidCredentialException();
 		}

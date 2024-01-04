@@ -51,9 +51,6 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	@hasOne(() => Settings)
 	public settings: HasOne<typeof Settings>;
 
-	public createDefaultSettings() {
-		return Settings.create({ userId: this.id });
-	}
 
 	public get isAdmin() {
 		return this.role === 'admin';

@@ -1,21 +1,19 @@
-import type PasswordStrategyManagerContract from 'App/Services/Password/PasswordStrategyManager';
-import { Model as MongooseModel } from 'mongoose';
-
 declare module '@ioc:Adonis/Core/Validator' {
 	type PasswordStrategy = 'complex' | 'standard' | 'weak';
 
 	interface Rules {
 		slug(): Rule;
 		password(strategy?: PasswordStrategy): Rule;
-		unique(Model: string | MongooseModel, field: string): Rule;
 	}
 }
 
 declare module '@ioc:Adonis/Core/Validator/Rules/Password' {
+  import type PasswordStrategyManagerContract from 'App/Providers/ValidationProvider/Password/PasswordStrategyManager';
+
 	interface PasswordValidationStrategy {
 		message: string;
 		validate(value: unknown): boolean | Promise<boolean>;
 	}
 
-	const PasswordStrategyManager: PasswordStrategyManagerContract;
+	export const PasswordStrategyManager: PasswordStrategyManagerContract;
 }

@@ -5,8 +5,12 @@ import { string } from '@ioc:Adonis/Core/Helpers'
 export default class ApiException extends Exception {
 	abstract status: number;
 	abstract message: string;
-  
 	headers = {};
+	
+	constructor() {
+	  super(this.message)
+	}
+	
 	withHeaders(): Promise<object> | object;
 	withHeaders(ctx: HttpContextContract): Promise<object> | object;
 

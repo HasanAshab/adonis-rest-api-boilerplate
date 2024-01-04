@@ -1,4 +1,3 @@
-import { inject } from '@adonisjs/fold';
 import Config from '@ioc:Adonis/Core/Config';
 import Twilio from '@ioc:Adonis/Addons/Twilio';
 

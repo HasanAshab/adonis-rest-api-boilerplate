@@ -1,7 +1,7 @@
 {
 	"extends": "adonis-preset-ts/tsconfig.json",
 	"include": ["**/*"],
-	"exclude": ["node_modules", "build"],
+	"exclude": ["node_modules", "build", "tests"],
 	"compilerOptions": {
 		"outDir": "build",
 		"rootDir": "./",
@@ -21,8 +21,6 @@
 			"@adonisjs/ally",
 			"@adonisjs/auth",
 			"@adonisjs/lucid",
-			"adonis5-jwt",
-			"@kaperskyguru/adonis-cache",
 			"@adonisjs/redis",
 			"adonis-recaptcha2",
 			"@adonisjs/limiter",

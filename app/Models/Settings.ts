@@ -1,6 +1,13 @@
 import { DateTime } from 'luxon';
 import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
 
+export interface TwoFactorAuthSettings {
+	enabled: boolean;
+	method: 'sms' | 'call' | 'app';
+	secret: string | null;
+};
+
+
 export default class Settings extends BaseModel {
 	@column({ isPrimary: true })
 	public id: number;
@@ -9,11 +16,7 @@ export default class Settings extends BaseModel {
 	public userId: string;
 
 	@column()
-	public twoFactorAuth: {
-		enabled: boolean;
-		method: 'sms' | 'call' | 'app';
-		secret: string | null;
-	};
+	public twoFactorAuth: TwoFactorAuthSettings;
 
 	@column()
 	public notification: Record<string, Record<string, boolean>>;

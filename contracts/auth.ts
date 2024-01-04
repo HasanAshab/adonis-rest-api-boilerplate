@@ -79,7 +79,7 @@ declare module '@ioc:Adonis/Addons/Auth' {
 		blockDuration: number | string;
 	}
 
-	interface AuthConfig {
+	interface AuthConfigExtended extends AuthConfig {
 		loginAttemptThrottler: LoginAttemptThrottlerConfig;
 	}
 }

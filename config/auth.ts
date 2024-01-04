@@ -5,7 +5,7 @@
  * file.
  */
 
-import type { AuthConfig } from '@ioc:Adonis/Addons/Auth';
+import type { AuthConfigExtended } from '@ioc:Adonis/Addons/Auth';
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +16,7 @@ import type { AuthConfig } from '@ioc:Adonis/Addons/Auth';
 | inside the `contracts/auth.ts` file before mentioning them here.
 |
 */
-const authConfig: AuthConfig = {
+const authConfig: AuthConfigExtended = {
 	guard: 'api',
 	guards: {
 		/*

@@ -25,7 +25,7 @@ export default class AppProvider {
 		Response.macro(
 			'send',
 			function (
-				body: null | string | object | any[] = {},
+				body: null | string | Record<string, any> | any[] = {},
 				generateEtag = this.config.etag,
 			) {
 				const acceptsJson = this.request.headers.accept === 'application/json';

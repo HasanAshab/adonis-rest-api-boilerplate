@@ -1,5 +1,4 @@
 import { join } from 'path';
-import { model, modelNames } from 'mongoose';
 
 globalThis.trace = function trace(...args: unknown[]) {
 	const { stack } = new Error();
@@ -13,9 +12,6 @@ globalThis.sleep = function sleep(seconds: number) {
 	return new Promise((r) => setTimeout(r, seconds * 1000));
 };
 
-globalThis.resetDatabase = function resetDatabase(models = modelNames()) {
-	return Promise.all(models.map((name) => model(name).deleteMany()));
-};
 
 globalThis.filePath = function filePath(name: string) {
 	return join(__dirname, '../../tmp/test/', name);

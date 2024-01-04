@@ -12,7 +12,7 @@ Route.post('/register', 'AuthController.register').middleware('recaptcha');
 
 // Login with various methods
 Route.group(() => {
-	Route.post('/', 'AuthController.login').middleware('throttle:global', 'recaptcha');
+	Route.post('/', 'AuthController.login').middleware(['throttle:global', 'recaptcha']);
 	//Route.post("/recovery-code", "loginWithRecoveryCode").middleware("throttle:2000,1", "recaptcha");
 
 	// Social login provided by Google, Facebook OAuth
@@ -25,10 +25,7 @@ Route.group(() => {
 
 // User password management
 Route.group(() => {
-	Route.post('/forgot', 'AuthController.forgotPassword').middleware(
-		'recaptcha',
-		'throttle:10000,2',
-	);
+	Route.post('/forgot', 'AuthController.forgotPassword').middleware(['recaptcha', 'throttle:10000,2']);
 	Route.patch('/reset', 'AuthController.resetPassword');
 	//Route.patch("/change", "AuthController.changePassword").middleware("auth", "verified");
 }).prefix('/password');
