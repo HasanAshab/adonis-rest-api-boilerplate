@@ -1,60 +1,60 @@
 {
-  "name": "boilerplate",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "node ace serve --watch",
-    "build": "node ace build --production",
-    "start": "node server.js",
-    "test": "node ace test",
-    "lint": "eslint . --ext=.ts"
-  },
-  "eslintConfig": {
-    "extends": [
-      "plugin:adonis/typescriptApp"
-    ]
-  },
-  "eslintIgnore": [
-    "build"
-  ],
-  "devDependencies": {
-    "@adonisjs/assembler": "^5.9.6",
-    "@japa/expect": "^2.0.2",
-    "@japa/preset-adonis": "^1.2.0",
-    "@japa/runner": "^2.5.1",
-    "@types/proxy-addr": "^2.0.3",
-    "@types/source-map-support": "^0.5.10",
-    "adonis-preset-ts": "^2.1.0",
-    "eslint": "^8.56.0",
-    "eslint-plugin-adonis": "^2.1.1",
-    "pino-pretty": "^10.3.0",
-    "prettier": "3.1.1",
-    "typescript": "~4.6",
-    "youch": "^3.3.3",
-    "youch-terminal": "^2.2.3"
-  },
-  "dependencies": {
-    "@adonisjs/ally": "^4.1.5",
-    "@adonisjs/attachment-lite": "^1.0.8",
-    "@adonisjs/auth": "^8.2.3",
-    "@adonisjs/bouncer": "^2.3.0",
-    "@adonisjs/core": "^5.9.0",
-    "@adonisjs/limiter": "^1.0.2",
-    "@adonisjs/lucid": "^18.4.2",
-    "@adonisjs/redis": "^7.3.4",
-    "@adonisjs/repl": "^3.1.11",
-    "@faker-js/faker": "^8.3.1",
-    "adonis-recaptcha2": "^2.0.1",
-    "async-mutex": "^0.4.0",
-    "bcryptjs": "^2.4.3",
-    "http-status-codes": "^2.3.0",
-    "jsonwebtoken": "^9.0.2",
-    "luxon": "^3.4.4",
-    "pg": "^8.11.3",
-    "proxy-addr": "^2.0.7",
-    "reflect-metadata": "^0.2.1",
-    "source-map-support": "^0.5.21",
-    "speakeasy": "^2.0.0",
-    "twilio": "^4.20.0"
-  }
+	"name": "boilerplate",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"dev": "node ace serve --watch",
+		"build": "node ace build --production",
+		"start": "node server.js",
+		"test": "node ace test",
+		"lint": "eslint . --ext=.ts"
+	},
+	"eslintConfig": {
+		"extends": [
+			"plugin:adonis/typescriptApp"
+		]
+	},
+	"eslintIgnore": [
+		"build"
+	],
+	"devDependencies": {
+		"@adonisjs/assembler": "^5.9.6",
+		"@japa/expect": "^2.0.2",
+		"@japa/preset-adonis": "^1.2.0",
+		"@japa/runner": "^2.5.1",
+		"@types/proxy-addr": "^2.0.3",
+		"@types/source-map-support": "^0.5.10",
+		"adonis-preset-ts": "^2.1.0",
+		"eslint": "^8.56.0",
+		"eslint-plugin-adonis": "^2.1.1",
+		"pino-pretty": "^10.3.0",
+		"prettier": "3.1.1",
+		"typescript": "~4.6",
+		"youch": "^3.3.3",
+		"youch-terminal": "^2.2.3"
+	},
+	"dependencies": {
+		"@adonisjs/ally": "^4.1.5",
+		"@adonisjs/attachment-lite": "^1.0.8",
+		"@adonisjs/auth": "^8.2.3",
+		"@adonisjs/bouncer": "^2.3.0",
+		"@adonisjs/core": "^5.9.0",
+		"@adonisjs/limiter": "^1.0.2",
+		"@adonisjs/lucid": "^18.4.2",
+		"@adonisjs/redis": "^7.3.4",
+		"@adonisjs/repl": "^3.1.11",
+		"@faker-js/faker": "^8.3.1",
+		"adonis-recaptcha2": "^2.0.1",
+		"async-mutex": "^0.4.0",
+		"bcryptjs": "^2.4.3",
+		"http-status-codes": "^2.3.0",
+		"jsonwebtoken": "^9.0.2",
+		"luxon": "^3.4.4",
+		"pg": "^8.11.3",
+		"proxy-addr": "^2.0.7",
+		"reflect-metadata": "^0.2.1",
+		"source-map-support": "^0.5.21",
+		"speakeasy": "^2.0.0",
+		"twilio": "^4.20.0"
+	}
 }

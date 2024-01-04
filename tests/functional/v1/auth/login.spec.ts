@@ -1,118 +1,141 @@
-import { test } from '@japa/runner'
-import Event from '@ioc:Adonis/Core/Event'
-import User from "App/Models/User";
-import Config from '@ioc:Adonis/Core/Config'
-import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService"
+import { test } from '@japa/runner';
+import Event from '@ioc:Adonis/Core/Event';
+import User from 'App/Models/User';
+import Config from '@ioc:Adonis/Core/Config';
+import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
 
 //TODO
 Event.assertEmitted = () => null;
 
-test.group('Auth/Login', group => {
-  let user;
-  let token;
-  const twoFactorAuthService = new TwoFactorAuthService();
+test.group('Auth/Login', (group) => {
+	let user;
+	let token;
+	const twoFactorAuthService = new TwoFactorAuthService();
 
-  group.setup(async () => {
-    //Notification.fake();
-    Event.fake();
-  });
+	group.setup(async () => {
+		//Notification.fake();
+		Event.fake();
+	});
 
-  group.each.setup(async () => {
-    await resetDatabase(); 
+	group.each.setup(async () => {
+		await resetDatabase();
 
-    //Notification.restore();
-    Event.restore();
-    
-    user = await User.factory().hasSettings().create();
-    token = user.createToken();
-  });
-  
-  test("should login a user", async ({ client, expect }) => {
-    const response = await client.post("/api/v1/auth/login").json({
-      email: user.email,
-      password: "password"
-    });
-    
-    expect(response.status()).toBe(200);
-    expect(response.body()).toHaveProperty("token");
-  });
+		//Notification.restore();
+		Event.restore();
 
-  test("shouldn't login with wrong password", async ({ client, expect }) => {
-    const response = await client.post("/api/v1/auth/login").json({
-      email: user.email,
-      password: "wrong-pass"
-    });
-    
-    expect(response.status()).toBe(401);
-    expect(response.body()).not.toHaveProperty("token");
-  });
+		user = await User.factory().hasSettings().create();
+		token = user.createToken();
+	});
 
-  test("shouldn't login manually in social account", async ({ client, expect }) => {
-    const user = await User.factory().social().create();
-    const response = await client.post("/api/v1/auth/login").json({
-      email: user.email,
-      password: "password"
-    });
-    
-    expect(response.status()).toBe(401);
-    expect(response.body()).not.toHaveProperty("token");
-  });
-  
-  test("should prevent Brute Force login", async ({ client, expect }) => {
-    const limit = Config.get('auth.loginAttemptThrottle.maxFailedAttempts');
-    const payload = {
-      email: user.email,
-      password: "wrong-pass"
-    };
-    const responses = [];
-    
-    for (let i = 0; i < limit + 1; i++) {
-      const response = await client.post("/api/v1/auth/login").json(payload);
-      responses.push(response);
-    }
-    
-    const lockedResponse = await client.post("/api/v1/auth/login").json(payload);
-    
-    expect(responses.every(res => res.status() === 401)).toBe(true);
-    expect(lockedResponse.status()).toBe(429);
-  });
+	test('should login a user', async ({ client, expect }) => {
+		const response = await client.post('/api/v1/auth/login').json({
+			email: user.email,
+			password: 'password',
+		});
 
-  test("Login should flag for otp if not provided for 2FA enabled account", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const response = await client.post("/api/v1/auth/login").json({
-      email: user.email,
-      password: "password"
-    });
+		expect(response.status()).toBe(200);
+		expect(response.body()).toHaveProperty('token');
+	});
 
-    expect(response.status()).toBe(401);
-    expect(response.header('x-2fa-code')).toBe('required');
-    expect(response.body()).not.toHaveProperty("token");
-  });
-  
-  test("should login a user with valid otp (2FA)", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const otp = await twoFactorAuthService.createToken(user);
-    const response = await client.post("/api/v1/auth/login").json({
-      email: user.email,
-      password: "password",
-      otp
-    });
+	test("shouldn't login with wrong password", async ({ client, expect }) => {
+		const response = await client.post('/api/v1/auth/login').json({
+			email: user.email,
+			password: 'wrong-pass',
+		});
 
-    expect(response.status()).toBe(200);
-    expect(response.body()).toHaveProperty("token");
-  });
+		expect(response.status()).toBe(401);
+		expect(response.body()).not.toHaveProperty('token');
+	});
 
-  test("shouldn't login a user with invalid OTP (2FA)", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const response = await client.post("/api/v1/auth/login").json({
-      email: user.email,
-      password: "password",
-      otp: twoFactorAuthService.generateOTPCode()
-    });
-    
-    expect(response.status()).toBe(401);
-    expect(response.body()).not.toHaveProperty("token");
-  });
+	test("shouldn't login manually in social account", async ({
+		client,
+		expect,
+	}) => {
+		const user = await User.factory().social().create();
+		const response = await client.post('/api/v1/auth/login').json({
+			email: user.email,
+			password: 'password',
+		});
+
+		expect(response.status()).toBe(401);
+		expect(response.body()).not.toHaveProperty('token');
+	});
+
+	test('should prevent Brute Force login', async ({ client, expect }) => {
+		const limit = Config.get('auth.loginAttemptThrottle.maxFailedAttempts');
+		const payload = {
+			email: user.email,
+			password: 'wrong-pass',
+		};
+		const responses = [];
+
+		for (let i = 0; i < limit + 1; i++) {
+			const response = await client.post('/api/v1/auth/login').json(payload);
+			responses.push(response);
+		}
+
+		const lockedResponse = await client
+			.post('/api/v1/auth/login')
+			.json(payload);
+
+		expect(responses.every((res) => res.status() === 401)).toBe(true);
+		expect(lockedResponse.status()).toBe(429);
+	});
+
+	test('Login should flag for otp if not provided for 2FA enabled account', async ({
+		client,
+		expect,
+	}) => {
+		const user = await User.factory()
+			.withPhoneNumber()
+			.hasSettings(true)
+			.create();
+		const response = await client.post('/api/v1/auth/login').json({
+			email: user.email,
+			password: 'password',
+		});
+
+		expect(response.status()).toBe(401);
+		expect(response.header('x-2fa-code')).toBe('required');
+		expect(response.body()).not.toHaveProperty('token');
+	});
+
+	test('should login a user with valid otp (2FA)', async ({
+		client,
+		expect,
+	}) => {
+		const user = await User.factory()
+			.withPhoneNumber()
+			.hasSettings(true)
+			.create();
+		const otp = await twoFactorAuthService.createToken(user);
+		const response = await client.post('/api/v1/auth/login').json({
+			email: user.email,
+			password: 'password',
+			otp,
+		});
+
+		expect(response.status()).toBe(200);
+		expect(response.body()).toHaveProperty('token');
+	});
+
+	test("shouldn't login a user with invalid OTP (2FA)", async ({
+		client,
+		expect,
+	}) => {
+		const user = await User.factory()
+			.withPhoneNumber()
+			.hasSettings(true)
+			.create();
+		const response = await client.post('/api/v1/auth/login').json({
+			email: user.email,
+			password: 'password',
+			otp: twoFactorAuthService.generateOTPCode(),
+		});
+
+		expect(response.status()).toBe(401);
+		expect(response.body()).not.toHaveProperty('token');
+	});
 });
 
 /*

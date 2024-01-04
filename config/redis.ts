@@ -5,8 +5,8 @@
  * file.
  */
 
-import Env from '@ioc:Adonis/Core/Env'
-import { redisConfig } from '@adonisjs/redis/build/config'
+import Env from '@ioc:Adonis/Core/Env';
+import { redisConfig } from '@adonisjs/redis/build/config';
 
 /*
 |--------------------------------------------------------------------------
@@ -22,10 +22,10 @@ import { redisConfig } from '@adonisjs/redis/build/config'
 | Make sure to check `contracts/redis.ts` file for defining extra connections
 */
 export default redisConfig({
-  connection: Env.get('REDIS_CONNECTION'),
+	connection: Env.get('REDIS_CONNECTION'),
 
-  connections: {
-    /*
+	connections: {
+		/*
     |--------------------------------------------------------------------------
     | The default connection
     |--------------------------------------------------------------------------
@@ -35,12 +35,12 @@ export default redisConfig({
     | redis driver.
     |
     */
-    local: {
-      host: Env.get('REDIS_HOST'),
-      port: Env.get('REDIS_PORT'),
-      password: Env.get('REDIS_PASSWORD', ''),
-      db: 0,
-      keyPrefix: '',
-    },
-  },
-})
+		local: {
+			host: Env.get('REDIS_HOST'),
+			port: Env.get('REDIS_PORT'),
+			password: Env.get('REDIS_PASSWORD', ''),
+			db: 0,
+			keyPrefix: '',
+		},
+	},
+});

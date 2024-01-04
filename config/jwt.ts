@@ -1,3 +1,3 @@
 export default {
-  expiration: '30d'
-}
+	expiration: '30d',
+};

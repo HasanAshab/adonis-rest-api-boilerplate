@@ -1,11 +1,11 @@
 // import Router from "~/core/http/routing";
 // import ContactController from "~/app/http/controllers/v1/ContactController";
-// 
+//
 //Endpoints for contact
-// 
+//
 // await Router.controller(ContactController).group(async () => {
 //   Router.post("/", "store");
-//   
+//
 //   await Router.group({
 //     prefix: "/inquiries",
 //     middlewares: ["auth", "roles:admin"]

@@ -1,5 +1,5 @@
-import Env from '@ioc:Adonis/Core/Env'
-import { ConnectOptions } from "mongoose";
+import Env from '@ioc:Adonis/Core/Env';
+import { ConnectOptions } from 'mongoose';
 
 /*
 |--------------------------------------------------------------------------
@@ -9,7 +9,6 @@ import { ConnectOptions } from "mongoose";
 */
 export const connect: boolean = false;
 
-
 /*
 |--------------------------------------------------------------------------
 | Syncronize Database Indexes
@@ -17,7 +16,6 @@ export const connect: boolean = false;
 | Wether to syncronize database indexes or not
 */
 export const syncIndexes: boolean = true;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -28,14 +26,13 @@ export const syncIndexes: boolean = true;
 */
 export const connectOnBackground: boolean = true;
 
-
 /*
 |--------------------------------------------------------------------------
 |  Database URL
 |--------------------------------------------------------------------------
 | The url (connection string) that will be used to connect to database
 */
-export const url: string = Env.get("DATABASE_URL", "");
+export const url: string = Env.get('DATABASE_URL', '');
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +41,5 @@ export const url: string = Env.get("DATABASE_URL", "");
 | Options that will be used when connecting to database through mongoose
 */
 export const options: ConnectOptions = {
-  maxPoolSize: 1
-}
-
+	maxPoolSize: 1,
+};

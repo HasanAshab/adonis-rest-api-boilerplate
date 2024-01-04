@@ -1,3 +1,3 @@
-import type { EventsList } from '@ioc:Adonis/Core/Event'
+import type { EventsList } from '@ioc:Adonis/Core/Event';
 
 export default class User {}

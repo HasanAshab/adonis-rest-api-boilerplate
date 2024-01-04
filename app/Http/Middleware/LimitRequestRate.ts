@@ -1,11 +1,27 @@
-import { Request, Response, NextFunction } from "express";
-import RateLimit from "express-rate-limit";
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import ThrottleMiddleware from '@adonisjs/limiter/build/throttle';
+import { Limiter } from '@adonisjs/limiter/build/services';
+import { inject } from '@adonisjs/core/build/standalone';
 
-export default class LimitRequestRate {
-  async handle(req: Request, res: Response, next: NextFunction, windowMs: string, max: string){
-    return await RateLimit({ 
-      windowMs: parseInt(windowMs),
-      max: parseInt(max)
-    })(req, res, next);
-  }
+@inject(['Adonis/Addons/Limiter'])
+export default class LimitRequestRate extends ThrottleMiddleware {
+	constructor(private limiter: LimiterManager<any, any>) {
+		super();
+	}
+
+	public async handle(
+		ctx: HttpContextContract,
+		next: () => Promise<void>,
+		[duration, count]: string[],
+	) {
+		if (!count) {
+			return await super.handle(ctx, next, duration);
+		}
+
+		const configBuilder = Limiter.allowRequests(parseInt(count)).every(duration);
+
+		await this.rateLimitRequest('dynamic', ctx, configBuilder);
+
+		await next();
+	}
 }

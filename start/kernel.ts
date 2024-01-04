@@ -9,7 +9,7 @@
 |
 */
 
-import Server from '@ioc:Adonis/Core/Server'
+import Server from '@ioc:Adonis/Core/Server';
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +20,7 @@ import Server from '@ioc:Adonis/Core/Server'
 | are defined for every HTTP requests.
 |
 */
-Server.middleware.register([
-  () => import('@ioc:Adonis/Core/BodyParser'),
-])
+Server.middleware.register([() => import('@ioc:Adonis/Core/BodyParser')]);
 
 /*
 |--------------------------------------------------------------------------
@@ -41,10 +39,10 @@ Server.middleware.register([
 |
 */
 Server.middleware.registerNamed({
-  throttle: () => import('App/Http/Middleware/Throttle'),
-  auth: () => import('App/Http/Middleware/Authenticate'),
-  verified: () => import('App/Http/Middleware/EnsureEmailIsVerified'),
-  roles: () => import('App/Http/Middleware/CheckRole'),
-  recaptcha: () => import('App/Http/Middleware/VerifyRecaptcha'),
-  'response.cache': () => import('App/Http/Middleware/CacheResponse')
-})
+	throttle: () => import('App/Http/Middleware/LimitRequestRate'),
+	auth: () => import('App/Http/Middleware/Authenticate'),
+	verified: () => import('App/Http/Middleware/EnsureEmailIsVerified'),
+	roles: () => import('App/Http/Middleware/CheckRole'),
+	recaptcha: () => import('App/Http/Middleware/VerifyRecaptcha'),
+	'response.cache': () => import('App/Http/Middleware/CacheResponse'),
+});

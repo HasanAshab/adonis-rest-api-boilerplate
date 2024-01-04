@@ -5,20 +5,20 @@
  * file.
  */
 
-import type { InferListFromConfig } from '@adonisjs/core/build/config'
-import type hashConfig from '../config/hash'
-import BcryptNodeDriver from 'App/Providers/HashProvider/Drivers/BcryptNodeDriver'
+import type { InferListFromConfig } from '@adonisjs/core/build/config';
+import type hashConfig from '../config/hash';
+import BcryptNodeDriver from 'App/Providers/HashProvider/Drivers/BcryptNodeDriver';
 
 declare module '@ioc:Adonis/Core/Hash' {
-  interface BcryptNodeConfig {
-    driver: 'bcrypt-node';
-    rounds: number;
-  }
+	interface BcryptNodeConfig {
+		driver: 'bcrypt-node';
+		rounds: number;
+	}
 
-  interface HashersList extends InferListFromConfig<typeof hashConfig> {
-    'bcrypt-node': {
-      config: BcryptNodeConfig;
-      implementation: BcryptNodeDriver;
-    }
-  }
+	interface HashersList extends InferListFromConfig<typeof hashConfig> {
+		'bcrypt-node': {
+			config: BcryptNodeConfig;
+			implementation: BcryptNodeDriver;
+		};
+	}
 }

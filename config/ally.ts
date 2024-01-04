@@ -5,8 +5,8 @@
  * file.
  */
 
-import Env from '@ioc:Adonis/Core/Env'
-import { AllyConfig } from '@ioc:Adonis/Addons/Ally'
+import Env from '@ioc:Adonis/Core/Env';
+import { AllyConfig } from '@ioc:Adonis/Addons/Ally';
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +18,6 @@ import { AllyConfig } from '@ioc:Adonis/Addons/Ally'
 |
 */
 const allyConfig: AllyConfig = {
-  
 	/*
 	|--------------------------------------------------------------------------
 	| Google driver
@@ -28,20 +27,20 @@ const allyConfig: AllyConfig = {
 		driver: 'google',
 		clientId: Env.get('GOOGLE_CLIENT_ID'),
 		clientSecret: Env.get('GOOGLE_CLIENT_SECRET'),
-		callbackUrl: 'http://localhost:8000/api/v1/auth/social/callback/google'
+		callbackUrl: 'http://localhost:8000/api/v1/auth/social/callback/google',
 	},
-	
-  /*
+
+	/*
   |--------------------------------------------------------------------------
   | Facebook driver
   |--------------------------------------------------------------------------
   */
-  facebook: {
-    driver: 'facebook',
-    clientId: Env.get('FACEBOOK_CLIENT_ID'),
-    clientSecret: Env.get('FACEBOOK_CLIENT_SECRET'),
-    callbackUrl: 'http://localhost:8000/api/v1/auth/social/callback/facebook'
-  },
-}
+	facebook: {
+		driver: 'facebook',
+		clientId: Env.get('FACEBOOK_CLIENT_ID'),
+		clientSecret: Env.get('FACEBOOK_CLIENT_SECRET'),
+		callbackUrl: 'http://localhost:8000/api/v1/auth/social/callback/facebook',
+	},
+};
 
-export default allyConfig
+export default allyConfig;

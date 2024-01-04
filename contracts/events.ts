@@ -1,5 +1,4 @@
-import { UserDocument } from "App/Models/User";
-
+import { UserDocument } from 'App/Models/User';
 
 /**
  * Contract source: https://git.io/JfefG
@@ -8,7 +7,7 @@ import { UserDocument } from "App/Models/User";
  * file.
  */
 declare module '@ioc:Adonis/Core/Event' {
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Define typed events
   |--------------------------------------------------------------------------
@@ -27,11 +26,11 @@ declare module '@ioc:Adonis/Core/Event' {
   | an instance of the the UserModel only.
   |
   */
-  interface EventsList {
-    "registered": { 
-      user: UserDocument;
-      version: string;
-      method: "internal" | "social";
-    }
-  }
+	interface EventsList {
+		registered: {
+			user: UserDocument;
+			version: string;
+			method: 'internal' | 'social';
+		};
+	}
 }

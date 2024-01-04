@@ -4,11 +4,11 @@
  * Source: https://git.io/JnNoc
  */
 
-import Env from '@ioc:Adonis/Core/Env'
-import { RecaptchaConfig } from '@ioc:Adonis/Addons/Recaptcha2'
+import Env from '@ioc:Adonis/Core/Env';
+import { RecaptchaConfig } from '@ioc:Adonis/Addons/Recaptcha2';
 
 const recaptchaConfig: RecaptchaConfig = {
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Site Key
   |--------------------------------------------------------------------------
@@ -16,9 +16,9 @@ const recaptchaConfig: RecaptchaConfig = {
   | The key for form
   |
   */
-  siteKey: Env.get('RECAPTCHA_SITE_KEY'),
+	siteKey: Env.get('RECAPTCHA_SITE_KEY'),
 
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Secret Key
   |--------------------------------------------------------------------------
@@ -27,9 +27,9 @@ const recaptchaConfig: RecaptchaConfig = {
   | * Don`t tell it to anyone
   |
   */
-  secretKey: Env.get('RECAPTCHA_SECRET_KEY'),
+	secretKey: Env.get('RECAPTCHA_SECRET_KEY'),
 
-  /*
+	/*
   |--------------------------------------------------------------------------
   | SSL (default: true)
   |--------------------------------------------------------------------------
@@ -39,9 +39,9 @@ const recaptchaConfig: RecaptchaConfig = {
   | Disable if you don't want to access the Google API via a secure connection
   |
   */
-  ssl: true,
+	ssl: true,
 
-  /*
+	/*
    |--------------------------------------------------------------------------
    | Views
    |--------------------------------------------------------------------------
@@ -49,6 +49,6 @@ const recaptchaConfig: RecaptchaConfig = {
    | Enable if you need use recaptcha in Views
    |
    */
-  views: false
-}
-export default recaptchaConfig
+	views: false,
+};
+export default recaptchaConfig;

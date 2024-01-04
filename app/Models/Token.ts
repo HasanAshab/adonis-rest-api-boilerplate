@@ -1,4 +1,4 @@
-export default {}
+export default {};
 /*
 import { model, Schema, Document, Model } from "mongoose";
 import crypto from "crypto";

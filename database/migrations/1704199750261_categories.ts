@@ -1,10 +1,10 @@
-import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
- protected tableName = 'categories'
+	protected tableName = 'categories';
 
- public async up() {
- /*  
+	public async up() {
+		/*  
   this.schema.createTable(this.tableName, (table) => {
     table.increments('id').primary()
     table.string('name').notNullable()
@@ -14,9 +14,9 @@ export default class extends BaseSchema {
     table.timestamp('updated_at', { useTz: true }).notNullable()
   })
  */
- }
+	}
 
- public async down() {
-  //this.schema.dropTable(this.tableName)
- }
+	public async down() {
+		//this.schema.dropTable(this.tableName)
+	}
 }

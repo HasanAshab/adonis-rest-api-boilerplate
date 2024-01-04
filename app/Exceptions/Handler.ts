@@ -1,6 +1,7 @@
-import Logger from '@ioc:Adonis/Core/Logger'
-import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
-import { range } from 'lodash'
+import Logger from '@ioc:Adonis/Core/Logger';
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler';
+import { range } from 'lodash';
 
 /*
 |--------------------------------------------------------------------------
@@ -11,9 +12,18 @@ import { range } from 'lodash'
 | the following class.
 */
 export default class ExceptionHandler extends HttpExceptionHandler {
-  ignoreStatuses = range(1, 499);
-  
-  constructor() {
-    super(Logger)
+	ignoreStatuses = range(1, 499);
+
+	constructor() {
+		super(Logger);
+	}
+	
+
+	public handle(error: any, ctx: HttpContextContract) {
+    if (error.code === 'E_TOO_MANY_REQUESTS') {
+      return ctx.response.status(error.status).send('Too many requests');
+    }
+
+    return super.handle(error, ctx)
   }
 }

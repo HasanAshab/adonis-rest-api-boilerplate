@@ -5,10 +5,10 @@
  * file.
  */
 
-import type { Config } from '@japa/runner'
-import TestUtils from '@ioc:Adonis/Core/TestUtils'
-import { runFailedTests, specReporter, apiClient } from '@japa/preset-adonis'
-import { expect } from '@japa/expect'
+import type { Config } from '@japa/runner';
+import TestUtils from '@ioc:Adonis/Core/TestUtils';
+import { runFailedTests, specReporter, apiClient } from '@japa/preset-adonis';
+import { expect } from '@japa/expect';
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +21,11 @@ import { expect } from '@japa/expect'
 | Feel free to remove existing plugins or add more.
 |
 */
-export const plugins: Required<Config>['plugins'] = [expect(), runFailedTests(), apiClient()]
+export const plugins: Required<Config>['plugins'] = [
+	expect(),
+	runFailedTests(),
+	apiClient(),
+];
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +37,7 @@ export const plugins: Required<Config>['plugins'] = [expect(), runFailedTests(),
 | of tests on the terminal.
 |
 */
-export const reporters: Required<Config>['reporters'] = [specReporter()]
+export const reporters: Required<Config>['reporters'] = [specReporter()];
 
 /*
 |--------------------------------------------------------------------------
@@ -48,13 +52,13 @@ export const reporters: Required<Config>['reporters'] = [specReporter()]
 |
 */
 export const runnerHooks: Pick<Required<Config>, 'setup' | 'teardown'> = {
-  setup: [
-    () => TestUtils.ace().loadCommands(),
-    () => import('Tests/Helpers/AppendGlobalHelpers'),
-    () => import('Tests/Helpers/AppendApiResponseHelpers')
-  ],
-  teardown: [],
-}
+	setup: [
+		() => TestUtils.ace().loadCommands(),
+		() => import('Tests/Helpers/AppendGlobalHelpers'),
+		() => import('Tests/Helpers/AppendApiResponseHelpers'),
+	],
+	teardown: [],
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -68,7 +72,7 @@ export const runnerHooks: Pick<Required<Config>, 'setup' | 'teardown'> = {
 | the HTTP server when it is a functional suite.
 */
 export const configureSuite: Required<Config>['configureSuite'] = (suite) => {
-  if (suite.name === 'functional') {
-    suite.setup(() => TestUtils.httpServer().start())
-  }
-}
+	if (suite.name === 'functional') {
+		suite.setup(() => TestUtils.httpServer().start());
+	}
+};
