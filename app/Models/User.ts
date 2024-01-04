@@ -1,19 +1,19 @@
-import { DateTime } from 'luxon';
-import Hash from '@ioc:Adonis/Core/Hash';
-import Settings from 'App/Models/Settings';
+import { DateTime } from 'luxon'
 import {
 	BaseModel,
 	column,
 	beforeSave,
 	hasOne,
 	HasOne,
-} from '@ioc:Adonis/Lucid/Orm';
-import {
-	attachment,
-	AttachmentContract,
-} from '@ioc:Adonis/Addons/AttachmentLite';
+} from '@ioc:Adonis/Lucid/Orm'
+import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
+import { compose } from '@poppinss/utils/build/helpers'
+import Hash from '@ioc:Adonis/Core/Hash'
+import Settings from 'App/Models/Settings'
+import Authenticatable from 'App/Models/Traits/Authenticatable'
 
-export default class User extends BaseModel {
+
+export default class User extends compose(BaseModel, Authenticatable) {
 	@column({ isPrimary: true })
 	public id: number;
 

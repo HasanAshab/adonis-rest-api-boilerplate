@@ -4,14 +4,6 @@ import crypto from 'crypto';
 //import EmailVerificationNotification from "App/Notifications/EmailVerificationNotification";
 //import ForgotPasswordNotification from "App/Notifications/ForgotPasswordNotification";
 
-export interface AuthenticatableDocument extends Document {
-	attempt(password: string): Promise<boolean>;
-	setPassword(password: string): Promise<void>;
-	sendVerificationNotification(version: string): Promise<void>;
-	sendResetPasswordNotification(): Promise<void>;
-	generateRecoveryCodes(count?: number): Promise<string[]>;
-	verifyRecoveryCode(code: string): Promise<boolean>;
-}
 
 export default (schema: Schema) => {
 	schema.pre('save', async function () {

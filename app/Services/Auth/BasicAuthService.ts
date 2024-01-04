@@ -43,12 +43,14 @@ export default class BasicAuthService {
 		}
     
 		const user = await User.internals().where('email', email).preload('settings').first();
-
+    
+    console.log(user.attempt)
+    
 		if (!user) {
 			throw new InvalidCredentialException();
 		}
 
-		if (true || !(await user.attempt(password))) {
+		if (!await user.attempt(password)) {
 			await this.loginThrottler?.increment(throttleKey);
 			throw new InvalidCredentialException();
 		}

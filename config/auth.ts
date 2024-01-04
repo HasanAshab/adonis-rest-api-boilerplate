@@ -110,7 +110,7 @@ const authConfig: AuthConfig = {
 	 * that will be used in BasicAuthService
 	 */
 	loginAttemptThrottler: {
-		enabled: false,
+		enabled: true,
 		key: 'login__{{ email }}_{{ ip }}',
 		maxFailedAttempts: 5,
 		duration: '15 minutes',
