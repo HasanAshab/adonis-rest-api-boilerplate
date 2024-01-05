@@ -2,14 +2,14 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { inject } from '@adonisjs/fold';
 import Route from '@ioc:Adonis/Core/Route';
 import Event from '@ioc:Adonis/Core/Event';
-import User, { UserDocument } from 'App/Models/User';
+import User from 'App/Models/User';
 import BasicAuthService from 'App/Services/Auth/BasicAuthService';
 import RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator';
 import LoginValidator from 'App/Http/Validators/V1/Auth/LoginValidator';
 import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator';
 import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPasswordValidator';
 
-import HttpContext from '@ioc:Adonis/Core/HttpContext';
+import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 
 @inject()
 export default class AuthController {
@@ -17,9 +17,22 @@ export default class AuthController {
 	constructor(private readonly authService: BasicAuthService) {}
 
 	async register({ request, response, auth }: HttpContextContract) {
+		/*const originalCreate = User.create.bind(User);
+		User.create = async function(values, options) {
+		  for(const field in values) {
+		    if(!values[field]) continue;
+		    console.log(values[field])
+		    const isAttachableField = !!this.attachments.find(attachment => attachment.property === field);
+		    if(!isAttachableField) continue;
+		    values[field] = await Attachment.fromFile(values[field])
+		  }
+		  return await originalCreate(values, options);
+		}
+		*/
 		const userData = await request.validate(RegisterValidator);
-		userData.profile = request.file('profile');
-
+    if(userData.profile) {
+      userData.profile = Attachment.fromFile(userData.profile);
+    }
 		const user = await User.create(userData);
 		await user.related('settings').create();
 		
@@ -39,7 +52,7 @@ export default class AuthController {
 		});
 	}
 
-	async login({ request, response, auth }: HttpContextContract) {
+	async login({ request, auth }: HttpContextContract) {
 		const { email, password, otp } = await request.validate(LoginValidator);
 		const user = await this.authService.attempt(
 			email,
@@ -47,7 +60,8 @@ export default class AuthController {
 			otp,
 			request.ip(),
 		);
-		
+		user.factor
+		user.factory
 		const { token } = await auth.login(user);
 
 		return {
@@ -66,7 +80,7 @@ export default class AuthController {
 		const { id, password, token } = await request.validate(
 			ResetPasswordValidator,
 		);
-		const user = await User.findByIdOrFail(id);
+		const user = await User.findOrFail(id);
 		await this.authService.resetPassword(user, token, password);
 		await Mail.to(user.email).send(new PasswordChangedMail());
 		return 'Password changed successfully!';

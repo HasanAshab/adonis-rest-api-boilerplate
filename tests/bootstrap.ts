@@ -21,9 +21,10 @@ import { expect } from '@japa/expect';
 | Feel free to remove existing plugins or add more.
 |
 */
+
 export const plugins: Required<Config>['plugins'] = [
 	expect(),
-	runFailedTests(),
+	//runFailedTests(),
 	apiClient(),
 ];
 
@@ -54,6 +55,7 @@ export const reporters: Required<Config>['reporters'] = [specReporter()];
 export const runnerHooks: Pick<Required<Config>, 'setup' | 'teardown'> = {
 	setup: [
 		() => TestUtils.ace().loadCommands(),
+		() => TestUtils.db().truncate(),
 		() => import('Tests/Helpers/AppendGlobalHelpers'),
 		() => import('Tests/Helpers/AppendApiResponseHelpers'),
 	],

@@ -67,7 +67,7 @@ export default class BasicAuthService {
 	}
 
 	public async resetPassword(
-		user: UserDocument,
+		user: User,
 		token: string,
 		password: string,
 	) {

@@ -1,13 +1,13 @@
 import { merge } from 'lodash';
 import { faker } from '@faker-js/faker';
 
-export type StateCustomizer<IDoc> = (docState: IDoc) => IDoc;
+export type StateCustomizer<Attributes> = (docState: Attributes) => Attributes;
 export type ExternalCallback<DocType> = (
 	docs: DocType[],
 ) => Promise<void> | void;
 
 export default abstract class Factory<
-	IDoc extends object,
+	Attributes extends object = Record<string, any>,
 	DocType extends Document,
 > {
   
@@ -17,18 +17,18 @@ export default abstract class Factory<
 	protected faker = faker;
 
 	/**
-	 * Number of documents to be generated
+	 * Number of records to be generated
 	 */
 	private total = 1;
 
 	/**
-	 * Callbacks that customizes document's state
+	 * Callbacks that customizes record's state
 	 */
-	private stateCustomizers: StateCustomizer<IDoc>[] = [];
+	private stateCustomizers: StateCustomizer<Attributes>[] = [];
 
 	/**
 	 * Callbacks to perform external async operations
-	 * such as creating relational documents.
+	 * such as creating relational records.
 	 */
 	private externalCallbacks: ExternalCallback<DocType>[] = [];
 
@@ -45,12 +45,12 @@ export default abstract class Factory<
 	}
 
 	/**
-	 * Return the initial state of documents
+	 * Return the initial state of records
 	 */
-	abstract definition(): IDoc;
+	abstract definition(): Attributes;
 
 	/**
-	 * Specify the number of documents to be generated
+	 * Specify the number of records to be generated
 	 */
 	count(total: number) {
 		this.total = total;
@@ -60,7 +60,7 @@ export default abstract class Factory<
 	/**
 	 * Adds state customizer
 	 */
-	protected state(cb: StateCustomizer<IDoc>) {
+	protected state(cb: StateCustomizer<Attributes>) {
 		this.stateCustomizers.push(cb);
 		return this;
 	}
@@ -74,9 +74,9 @@ export default abstract class Factory<
 	}
 
 	/**
-	 * Generates all documents raw data
+	 * Generates all records raw data
 	 */
-	make(data?: Partial<IDoc>) {
+	make(data?: Partial<Attributes>) {
 		return this.total === 1
 			? this.generateDocumentData(data)
 			: Array.from({ length: this.total }, () =>
@@ -85,9 +85,9 @@ export default abstract class Factory<
 	}
 
 	/**
-	 * Inserts all generated documents into database
+	 * Inserts all generated records into database
 	 */
-	async create(data: Partial<IDoc>) {
+	async create(data: Partial<Attributes>) {
 		const docsData = this.make(data);
 		const method = this.total === 1 ? 'create' : 'createMany';
 		const docs = await (this.Model as any)[method](docsData);
@@ -96,32 +96,34 @@ export default abstract class Factory<
 	}
 
 	/**
-	 * Generates single document data
+	 * Generates single record data
 	 */
-	private generateDocumentData(data?: Partial<IDoc>) {
-		let docData = this.customizeState(this.definition());
+	private generateDocumentData(data?: Partial<Attributes>) {
+		let recordData = this.customizeState(this.definition());
 		if (data) {
-			docData = merge(docData, data);
+			recordData = merge(recordData, data);
 		}
-		return docData;
+		return recordData;
 	}
 
 	/**
 	 * Runs all state customizers
 	 */
-	private customizeState(docData: IDoc) {
+	private customizeState(recordData: Attributes) {
 		this.stateCustomizers.forEach((customizer) => {
-			docData = customizer(docData);
+			recordData = customizer(recordData);
 		});
-		return docData;
+		return recordData;
 	}
 
 	/**
 	 * Runs all external callbacks
-	 * TODO single model
 	 */
 	private runExternalCallbacks(docs: DocType[]) {
-		const promises = this.externalCallbacks.map((cb) => cb(docs));
-		return Promise.all(promises);
+	  const promises = docs.map(doc => {
+	    return this.externalCallbacks.map(cb => cb(doc));
+	  });
+	  
+		return Promise.all(promises.flat());
 	}
 }

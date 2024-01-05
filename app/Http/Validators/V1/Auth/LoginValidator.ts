@@ -5,6 +5,6 @@ export default class LoginValidator extends Validator {
 	public schema = schema.create({
 		email: schema.string(),
 		password: schema.string(),
-		otp: schema.number.optional(),
+		otp: schema.string.optional(),
 	});
 }

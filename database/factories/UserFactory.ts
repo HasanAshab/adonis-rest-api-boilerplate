@@ -1,8 +1,7 @@
 import Factory from 'App/Models/Traits/HasFactory/Factory';
-import { IUser, UserDocument } from 'App/Models/User';
 import Settings from 'App/Models/Settings';
 
-export default class UserFactory extends Factory<IUser, UserDocument> {
+export default class UserFactory extends Factory {
 	definition() {
 		return {
 			name: this.faker.person.firstName(),
@@ -41,15 +40,10 @@ export default class UserFactory extends Factory<IUser, UserDocument> {
 	}
 
 	hasSettings(enableTwoFactorAuth = false) {
-		return this.external(async (users: UserDocument[]) => {
-			const settingsData: any[] = [];
-			for (const user of users) {
-				settingsData.push({
-					userId: user._id,
-					'twoFactorAuth.enabled': enableTwoFactorAuth,
-				});
-			}
-			await Settings.insertMany(settingsData);
+		return this.external((user: User) => {
+		  return user.related('settings').create({ 
+		    twoFactorAuth: { enabled: enableTwoFactorAuth }
+		  });
 		});
 	}
 

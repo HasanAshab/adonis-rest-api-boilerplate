@@ -7,7 +7,7 @@ export default Env.rules({
 	NODE_ENV: Env.schema.enum(['development', 'test', 'production'] as const),
 	PORT: Env.schema.number(),
 
-	DB_CONNECTION: Env.schema.enum(['pg'] as const),
+	DB_CONNECTION: Env.schema.enum(['pg', 'sqlite'] as const),
 	DRIVE_DISK: Env.schema.enum(['local'] as const),
 	HASH_DRIVER: Env.schema.enum([
 		'scrypt',

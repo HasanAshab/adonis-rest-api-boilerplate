@@ -1,4 +1,5 @@
 import { test } from '@japa/runner';
+import Database from '@ioc:Adonis/Lucid/Database'
 import Event from '@ioc:Adonis/Core/Event';
 import User from 'App/Models/User';
 import Config from '@ioc:Adonis/Core/Config';
@@ -9,22 +10,22 @@ Event.assertEmitted = () => null;
 
 test.group('Auth/Login', (group) => {
 	let user;
-	let token;
 	const twoFactorAuthService = new TwoFactorAuthService();
-
-	group.setup(async () => {
+  
+  group.setup(async () => {
 		//Notification.fake();
 		Event.fake();
 	});
 
+
 	group.each.setup(async () => {
-		await resetDatabase();
+	 // await Database.beginGlobalTransaction();
 
 		//Notification.restore();
 		Event.restore();
-
 		user = await User.factory().hasSettings().create();
-		token = user.createToken();
+
+		//return () => Database.rollbackGlobalTransaction();
 	});
 
 	test('should login a user', async ({ client, expect }) => {

@@ -2,13 +2,13 @@ import { Exception } from '@adonisjs/core/build/standalone';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { string } from '@ioc:Adonis/Core/Helpers'
 
-export default class ApiException extends Exception {
+export default abstract class ApiException extends Exception {
 	abstract status: number;
 	abstract message: string;
 	headers = {};
 	
 	constructor() {
-	  super(this.message)
+	  super('')
 	}
 	
 	withHeaders(): Promise<object> | object;

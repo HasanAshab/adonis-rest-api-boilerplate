@@ -41,8 +41,7 @@ export default class PasswordValidationProvider {
 		validator.rule(
 			'password',
 			async (value, [strategyName], options) => {
-				const { strategy, name } =
-					this.passwordStrategyManager.get(strategyName);
+				const { strategy, name } = this.passwordStrategyManager.get(strategyName);
 
 				if (await strategy.validate(value)) return;
 
