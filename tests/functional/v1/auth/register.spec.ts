@@ -2,6 +2,7 @@ import { test } from '@japa/runner';
 import Drive from '@ioc:Adonis/Core/Drive';
 import Event from '@ioc:Adonis/Core/Event';
 import User from 'App/Models/User';
+import Database from '@ioc:Adonis/Lucid/Database'
 
 //TODO
 Event.assertEmitted = () => null;
@@ -13,12 +14,17 @@ test.group('Auth/Register', (group) => {
 		Drive.fake();
 		Event.fake();
 	});
-
+  
+  group.each.setup(async () => {
+    await Database.beginGlobalTransaction()
+    return () => Database.rollbackGlobalTransaction()
+  });
+  
 	group.each.setup(async () => {
-		await resetDatabase();
-
 		Drive.restore();
 		Event.restore();
+				console.log(await User.all())
+
 	});
 
 	test('should register a user', async ({ expect, client }) => {
@@ -29,12 +35,12 @@ test.group('Auth/Register', (group) => {
 		};
 
 		const response = await client.post('/api/v1/auth/register').json(data);
-		const user = await User.findOne({ email: data.email });
+		const user = await User.query().where('email', data.email).preload('settings').first();
 
 		expect(response.status()).toBe(201);
-		expect(response.body()).toHaveProperty('token');
+		expect(response.body()).toHaveProperty('data.token');
 		expect(user).not.toBeNull();
-		expect(await user.settings).not.toBeNull();
+		expect(user.settings).not.toBeNull();
 
 		Event.assertEmitted('user:registered', {
 			method: 'internal',
@@ -47,20 +53,25 @@ test.group('Auth/Register', (group) => {
 		const data = {
 			username: 'foobar123',
 			email: 'foo@gmail.com',
+			password: 'Password@1234'
 		};
 
 		const response = await client
 			.post('/api/v1/auth/register')
 			.fields(data)
-			.field('password', 'Password@1234')
 			.file('profile', filePath('image.png'));
 
-		const user = await User.findOne(data);
+		const user = await User.query()
+		  .where('email', data.email)
+		  .where('username', data.username)
+		  .preload('settings')
+		  .first();
 
+    trace(response.body())
 		expect(response.status()).toBe(201);
-		expect(response.body()).toHaveProperty('token');
+		expect(response.body()).toHaveProperty('data.token');
 		expect(user).not.toBeNull();
-		expect(await user.settings).not.toBeNull();
+		expect(user.settings).not.toBeNull();
 		Event.assertEmitted('Registered', {
 			user,
 			version: 'v1',

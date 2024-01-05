@@ -1,5 +1,4 @@
 import { test } from '@japa/runner';
-import Database from '@ioc:Adonis/Lucid/Database'
 import Event from '@ioc:Adonis/Core/Event';
 import User from 'App/Models/User';
 import Config from '@ioc:Adonis/Core/Config';
@@ -19,13 +18,9 @@ test.group('Auth/Login', (group) => {
 
 
 	group.each.setup(async () => {
-	 // await Database.beginGlobalTransaction();
-
 		//Notification.restore();
 		Event.restore();
 		user = await User.factory().hasSettings().create();
-
-		//return () => Database.rollbackGlobalTransaction();
 	});
 
 	test('should login a user', async ({ client, expect }) => {

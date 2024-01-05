@@ -33,6 +33,8 @@ export default class Validator {
 			'{{ field }} field must be a date before {{ options.beforeField }} field.',
 		notIn: '{{ field }} field must not be in the specified list.',
 		url: '{{ field }} field must be a valid URL.',
+		unique: '{{ field }} already exists',
+		exists: '{{ field }} doesn\'t exist',
 		equalTo: '{{ field }} field must be equal to {{ options.equalTo }}.',
 		escape: '{{ field }} field must not contain HTML or special characters.',
 		trim: '{{ field }} field must not contain leading or trailing spaces.',

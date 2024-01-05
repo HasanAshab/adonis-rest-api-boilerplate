@@ -8,7 +8,7 @@ export default abstract class ApiException extends Exception {
 	headers = {};
 	
 	constructor() {
-	  super('')
+	  super('');
 	}
 	
 	withHeaders(): Promise<object> | object;
