@@ -1,11 +1,18 @@
 import { inject } from '@adonisjs/fold';
-import { UserDocument } from 'App/Models/User';
-import Settings, { TwoFactorAuthSettings } from 'App/Models/Settings';
+import { DateTime } from 'luxon'
+import type User from 'App/Models/User';
+import type { TwoFactorAuthSettings } from 'App/Models/Settings';
 import Token from 'App/Models/Token';
-import TwilioService from 'App/Services/TwilioService';
 import speakeasy from 'speakeasy';
+import TwilioService from 'App/Services/TwilioService';
 import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException';
 import InvalidOtpException from 'App/Exceptions/InvalidOtpException';
+
+
+export interface TwoFactorAuthData {
+  recoveryCodes: string[];
+  otpauthURL?: string;
+}
 
 @inject()
 export default class TwoFactorAuthService {
@@ -14,36 +21,38 @@ export default class TwoFactorAuthService {
 	public generateOTPCode() {
 		return Math.floor(100000 + Math.random() * 900000).toString();
 	}
-
-	async enable(
-		user: UserDocument,
-		method?: TwoFactorAuthSettings['method'],
-	) {
-		if (!user.phoneNumber && method !== 'app')
+  
+  //TODO configurable
+	public async enable(user: User, method?: TwoFactorAuthSettings['method']) {
+		if (!user.phoneNumber && method !== 'app') {
 			throw new PhoneNumberRequiredException();
-		const data: { recoveryCodes: string[]; otpauthURL?: string } = {
+		}
+		
+		const data: TwoFactorAuthData = {
 			recoveryCodes: await user.generateRecoveryCodes(),
 		};
+		
 		const twoFactorAuth: Partial<TwoFactorAuthSettings> = {
 			enabled: true,
 			secret: null,
 			method,
 		};
+		
 		if (method === 'app') {
-			const secret = speakeasy.generateSecret({ length: 20 });
-			twoFactorAuth.secret = secret.ascii;
+			twoFactorAuth.secret = speakeasy.generateSecret({ length: 20 }).ascii;
 			const appName = Config.get<string>('app.name');
 			data.otpauthURL = speakeasy.otpauthURL({
-				secret: secret.ascii,
+				secret: twoFactorAuth.secret,
 				label: appName,
 				issuer: appName,
 			});
 		}
-    await Settings.query().where('userId', user._id).update({ twoFactorAuth });
+		
+    await user.related('settings').query().update({ twoFactorAuth });
 		return data;
 	}
 
-	async disable(user: UserDocument) {
+	async disable(user: User) {
 		const { modifiedCount } = await Settings.updateOne(
 			{ userId: user._id },
 			{ 'twoFactorAuth.enabled': false },
@@ -52,7 +61,7 @@ export default class TwoFactorAuthService {
 			throw new Error('Failed to disable two factor auth for user: ' + user);
 	}
 
-	async sendOtp(user: UserDocument, method?: 'sms' | 'call') {
+	async sendOtp(user: User, method?: 'sms' | 'call') {
 		if (!user.phoneNumber) return null;
 		if (!method) {
 			const { twoFactorAuth } = await user.settings;
@@ -73,40 +82,41 @@ export default class TwoFactorAuthService {
 		return code;
 	}
 
-	async verifyOtp(
-		user: UserDocument,
-		method: 'sms' | 'call' | 'app',
+	public async verifyOtp(
+		user: User,
+		method: TwoFactorAuthSettings['method'],
 		code: string,
 	) {
 		let isValid = false;
 
 		if (method === 'app') {
-			const { twoFactorAuth } = await user.settings;
-			if (!twoFactorAuth.secret)
-				throw new Error(
-					"Trying to verify otp through 'app' method without generating secret of user: \n" +
-						JSON.stringify(user, null, 2),
-				);
+			const { secret } = user.settings.twoFactorAuth;
+			if (!secret) {
+				throw new Error("Can not verify otp through 'app' method without having secret");
+			}
 			isValid = speakeasy.totp.verify({
-				secret: twoFactorAuth.secret,
+				secret,
 				encoding: 'ascii',
 				token: code,
 				window: 2,
 			});
-		} else {
-			isValid = await Token.isValid(user._id, '2fa', code);
+		}
+		else {
+			isValid = await Token.isValid(user.id, '2fa', code);
 		}
 
-		if (!isValid) throw new InvalidOtpException();
+		if (!isValid) {
+		  throw new InvalidOtpException();
+		}
 	}
 
-	async createToken(user: UserDocument) {
-		const code = this.generateOTPCode().toString();
+	async createToken(user: User) {
+		const code = this.generateOTPCode()
 		await Token.create({
-			key: user._id,
+			key: user.id,
 			type: '2fa',
 			secret: code,
-			expiresAt: Date.now() + 25920000,
+			expiresAt: DateTime.local().plus({ days: 3 })
 		});
 		return code;
 	}
