@@ -1,11 +1,12 @@
 N: nafl -> 6
 
+E: standard event format, index, uuid
+
 Fallback: solve type, Eslint, model & migrate, Commands, PR stub cust
 T: name, username, password limit
 T: Index
 T: Cache.local mem
 T: provide Factory
-T: uuid?
 T: organize Event [Provider?]
 T: Api doc
 T: test phonenumberless user 2fa with app method

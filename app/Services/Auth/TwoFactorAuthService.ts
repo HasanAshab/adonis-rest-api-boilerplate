@@ -11,8 +11,8 @@ import InvalidOtpException from 'App/Exceptions/InvalidOtpException';
 export default class TwoFactorAuthService {
 	constructor(private readonly twilioService: TwilioService) {}
 
-	generateOTPCode() {
-		return Math.floor(100000 + Math.random() * 900000);
+	public generateOTPCode() {
+		return Math.floor(100000 + Math.random() * 900000).toString();
 	}
 
 	async enable(

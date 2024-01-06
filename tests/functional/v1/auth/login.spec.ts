@@ -57,7 +57,8 @@ test.group('Auth/Login', (group) => {
 	});
 
 	test('should prevent Brute Force login', async ({ client, expect }) => {
-		const limit = Config.get('auth.loginAttemptThrottle.maxFailedAttempts');
+		const limit = Config.get('auth.loginAttemptThrottler.maxFailedAttempts');
+
 		const payload = {
 			email: user.email,
 			password: 'wrong-pass',
@@ -65,8 +66,8 @@ test.group('Auth/Login', (group) => {
 		const responses = [];
 
 		for (let i = 0; i < limit + 1; i++) {
-			const response = await client.post('/api/v1/auth/login').json(payload);
-			responses.push(response);
+		  const response = await client.post('/api/v1/auth/login').json(payload);
+		  responses.push(response);
 		}
 
 		const lockedResponse = await client
@@ -119,7 +120,7 @@ test.group('Auth/Login', (group) => {
 			password: 'password',
 			otp: twoFactorAuthService.generateOTPCode(),
 		});
-
+console.log(response.body())
 		expect(response.body()).not.toHaveProperty('data.token');
 		expect(response.status()).toBe(401);
 	});

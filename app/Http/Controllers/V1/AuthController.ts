@@ -30,9 +30,11 @@ export default class AuthController {
 		}
 		*/
 		const userData = await request.validate(RegisterValidator);
+    
     if(userData.profile) {
       userData.profile = Attachment.fromFile(userData.profile);
     }
+    
 		const user = await User.create(userData);
 		await user.related('settings').create();
 
@@ -60,8 +62,7 @@ export default class AuthController {
 			otp,
 			request.ip(),
 		);
-		user.factor
-		user.factory
+
 		const { token } = await auth.login(user);
 
 		return {

@@ -35,7 +35,6 @@ export default class BasicAuthService {
 				'Argument[3]: "ip" must be provided when login attempt throttle is enabled',
 			);
 		}
-
 		const throttleKey = this.getThrottleKeyFor(email, ip);
 
 		if (await this.loginThrottler?.isBlocked(throttleKey)) {
@@ -43,12 +42,11 @@ export default class BasicAuthService {
 		}
     
 		const user = await User.internals().where('email', email).preload('settings').first();
+		
 		if (!user) {
 			throw new InvalidCredentialException();
 		}
-    console.log("ase")
-    console.log(await user.comparePassword(password))
-
+		
 		if (!await user.comparePassword(password)) {
 			await this.loginThrottler?.increment(throttleKey);
 			throw new InvalidCredentialException();
@@ -97,7 +95,7 @@ export default class BasicAuthService {
 	  if(!user.settings) {
 	    await user.load('settings');
 	  }
-
+	  
 		const { enabled, method } = user.settings.twoFactorAuth;
 		if (!enabled) return;
 
