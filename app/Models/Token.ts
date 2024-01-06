@@ -1,63 +1,51 @@
-export default {};
-/*
-import { model, Schema, Document, Model } from "mongoose";
+import { BaseModel, column,	beforeCreate } from '@ioc:Adonis/Lucid/Orm'
+import { DateTime } from 'luxon'
 import crypto from "crypto";
 import InvalidTokenException from "App/Exceptions/InvalidTokenException";
 
-const TokenSchema = new Schema<TokenDocument, TokenModel>({
-  key: {
-    index: true,
-    required: true,
-    type: String
-  },
-  type: {
-    index: true,
-    required: true,
-    type: String
-  },
-  data: {
-    type: Object,
-    default: null
-  },
-  secret: {
-    type: String,
-    default: () => crypto.randomBytes(32).toString('hex')
-  },
-  expiresAt: {
-    type: Date,
-    expires: 0,
-    default: null
-  }
-});
+export default class Token extends BaseModel {
+  @column({ isPrimary: true })
+	public id: number;
+  
+  @column()
+  public key: string;
+  
+  @column()
+	public type: string;
+	
+	@column()
+	public data: object | null;
+	
+	@column()
+	public secret: string;
 
-TokenSchema.static("isValid", async function(this: TokenModel, key: string, type: string, secret: string): Promise<boolean> {
-  const token = await this.findOneAndDelete({ key, type, secret });
-  return !!token;
-});
+  @column.dateTime()
+	public expiresAt: DateTime | null;
+	
+	public static generateSecret(bytes = 32) {
+	  return crypto.randomBytes(bytes).toString('hex');
+	}
+	
+	@beforeCreate()
+	public static setSecretIfNotProvided(token: Token) {
+	  if(!token.secret) {
+	    token.secret = this.generateSecret();
+	  }
+	}
+	
+	public static async isValid(key: string, type: string, secret: string) {
+    const token = await this.findBy({ key, type, secret });
+    if (!token) return false;
+    await token.delete();
+    return !token.expiresAt || (token.expiresAt && token.expiresAt > DateTime.local());
+	}
+	
+	public static async verify<T extends object | null = null>(key: string, type: string, secret: string): Promise<T> {
+    const token = await this.findOneAndDelete({ key, type, secret });
+    if(!token) {
+      throw new InvalidTokenException();
+    }
+    return token.data as T;
+	}
+}
 
-TokenSchema.static("verify", async function<T extends object | null = null>(this: TokenModel, key: string, type: string, secret: string): Promise<T> {
-  const token = await this.findOneAndDelete({ key, type, secret });
-  if(!token) {
-    throw new InvalidTokenException();
-  }
-  return token.data as T;
-});
-
-export interface IToken {
-  key: string;
-  data: object | null;
-  type: string;
-  secret: string;
-  expiresAt: Date | null;
-} 
-
-export interface TokenDocument extends Document, IToken {};
-
-interface TokenModel extends Model<TokenDocument> {
-  isValid(key: string, type: string, secret: string): Promise<boolean>;
-  verify<T extends object | null = null>(key: string, type: string, secret: string): Promise<T>;
-};
-
-
-export default model<TokenDocument, TokenModel>("Token", TokenSchema);
-*/

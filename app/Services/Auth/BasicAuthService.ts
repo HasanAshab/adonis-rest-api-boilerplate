@@ -43,10 +43,11 @@ export default class BasicAuthService {
 		}
     
 		const user = await User.internals().where('email', email).preload('settings').first();
-    
 		if (!user) {
 			throw new InvalidCredentialException();
 		}
+    console.log("ase")
+    console.log(await user.comparePassword(password))
 
 		if (!await user.comparePassword(password)) {
 			await this.loginThrottler?.increment(throttleKey);

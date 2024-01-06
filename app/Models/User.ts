@@ -13,7 +13,7 @@ import HasTimestamps from 'App/Models/Traits/HasTimestamps'
 import Authenticatable from 'App/Models/Traits/Authenticatable'
 
 
-export default class User extends compose(BaseModel, HasFactory, HasTimestamps, Authenticatable) {
+export default class User extends compose(BaseModel, Authenticatable, HasFactory, HasTimestamps) {
 	@column({ isPrimary: true })
 	public id: number;
 

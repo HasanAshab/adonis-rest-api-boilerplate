@@ -83,17 +83,22 @@ export type SuperclassConstructor = NormalizeConstructor<BaseModel> & { password
 
 export default function Authenticatable(Superclass: SuperclassConstructor) {
   return class AuthenticatableModel extends Superclass {
-    @beforeSave()
-  	public static async hashPassword(user: AuthenticatableModel) {
-  		if (user.$dirty.password) {
-  			user.password = await Hash.make(user.password);
-  		}
-  	}
-  	
+    public static boot() {
+      if (this.booted) return;
+      super.boot()
+      
+      this.before('save', async user => {
+    		if (user.$dirty.password) {
+    			user.password = await Hash.make(user.password);
+    		}
+      });
+	  }
+
   	public comparePassword(password: string) {
   		if (!this.password) {
   			throw new Error('Trying to attempt passwordless user [may be social account?]');
   		}
+  		console.log(this.password, password)
   		return Hash.verify(this.password, password);
   	}
   }

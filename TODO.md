@@ -1,6 +1,8 @@
 N: nafl -> 6
 
 Fallback: solve type, Eslint, model & migrate, Commands, PR stub cust
+T: name, username, password limit
+T: Index
 T: Cache.local mem
 T: provide Factory
 T: uuid?

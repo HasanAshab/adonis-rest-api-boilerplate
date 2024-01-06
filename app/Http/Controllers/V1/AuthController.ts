@@ -35,7 +35,7 @@ export default class AuthController {
     }
 		const user = await User.create(userData);
 		await user.related('settings').create();
-		
+
 		const { token } = await auth.login(user);
 
 		Event.emit('user:registered', {

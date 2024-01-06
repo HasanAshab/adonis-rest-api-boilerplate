@@ -2,7 +2,6 @@ import { test } from '@japa/runner';
 import Drive from '@ioc:Adonis/Core/Drive';
 import Event from '@ioc:Adonis/Core/Event';
 import User from 'App/Models/User';
-import Database from '@ioc:Adonis/Lucid/Database'
 
 //TODO
 Event.assertEmitted = () => null;
@@ -10,21 +9,17 @@ Drive.assertStored = () => null;
 Drive.assertStoredCount = () => null;
 
 test.group('Auth/Register', (group) => {
+	refreshDatabase(group);
+	
 	group.setup(async () => {
 		Drive.fake();
 		Event.fake();
 	});
   
-  group.each.setup(async () => {
-    await Database.beginGlobalTransaction()
-    return () => Database.rollbackGlobalTransaction()
-  });
   
 	group.each.setup(async () => {
 		Drive.restore();
 		Event.restore();
-				console.log(await User.all())
-
 	});
 
 	test('should register a user', async ({ expect, client }) => {
@@ -67,7 +62,6 @@ test.group('Auth/Register', (group) => {
 		  .preload('settings')
 		  .first();
 
-    trace(response.body())
 		expect(response.status()).toBe(201);
 		expect(response.body()).toHaveProperty('data.token');
 		expect(user).not.toBeNull();

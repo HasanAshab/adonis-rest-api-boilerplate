@@ -11,6 +11,8 @@ test.group('Auth/Login', (group) => {
 	let user;
 	const twoFactorAuthService = new TwoFactorAuthService();
   
+  refreshDatabase(group);
+
   group.setup(async () => {
 		//Notification.fake();
 		Event.fake();
@@ -29,8 +31,8 @@ test.group('Auth/Login', (group) => {
 			password: 'password',
 		});
 
+		expect(response.body()).toHaveProperty('data.token');
 		expect(response.status()).toBe(200);
-		expect(response.body()).toHaveProperty('token');
 	});
 
 	test("shouldn't login with wrong password", async ({ client, expect }) => {
@@ -40,13 +42,10 @@ test.group('Auth/Login', (group) => {
 		});
 
 		expect(response.status()).toBe(401);
-		expect(response.body()).not.toHaveProperty('token');
+		expect(response.body()).not.toHaveProperty('data.token');
 	});
 
-	test("shouldn't login manually in social account", async ({
-		client,
-		expect,
-	}) => {
+	test("shouldn't login manually in social account", async ({ client,	expect }) => {
 		const user = await User.factory().social().create();
 		const response = await client.post('/api/v1/auth/login').json({
 			email: user.email,
@@ -54,7 +53,7 @@ test.group('Auth/Login', (group) => {
 		});
 
 		expect(response.status()).toBe(401);
-		expect(response.body()).not.toHaveProperty('token');
+		expect(response.body()).not.toHaveProperty('data.token');
 	});
 
 	test('should prevent Brute Force login', async ({ client, expect }) => {
@@ -78,14 +77,12 @@ test.group('Auth/Login', (group) => {
 		expect(lockedResponse.status()).toBe(429);
 	});
 
-	test('Login should flag for otp if not provided for 2FA enabled account', async ({
-		client,
-		expect,
-	}) => {
+	test('Login should flag for otp if not provided for 2FA enabled account', async ({ client, expect }) => {
 		const user = await User.factory()
 			.withPhoneNumber()
 			.hasSettings(true)
 			.create();
+			
 		const response = await client.post('/api/v1/auth/login').json({
 			email: user.email,
 			password: 'password',
@@ -93,13 +90,10 @@ test.group('Auth/Login', (group) => {
 
 		expect(response.status()).toBe(401);
 		expect(response.header('x-2fa-code')).toBe('required');
-		expect(response.body()).not.toHaveProperty('token');
+		expect(response.body()).not.toHaveProperty('data.token');
 	});
 
-	test('should login a user with valid otp (2FA)', async ({
-		client,
-		expect,
-	}) => {
+	test('should login a user with valid otp (2FA)', async ({ client,	expect }) => {
 		const user = await User.factory()
 			.withPhoneNumber()
 			.hasSettings(true)
@@ -112,13 +106,10 @@ test.group('Auth/Login', (group) => {
 		});
 
 		expect(response.status()).toBe(200);
-		expect(response.body()).toHaveProperty('token');
+		expect(response.body()).toHaveProperty('data.token');
 	});
 
-	test("shouldn't login a user with invalid OTP (2FA)", async ({
-		client,
-		expect,
-	}) => {
+	test("shouldn't login a user with invalid OTP (2FA)", async ({ client, expect }) => {
 		const user = await User.factory()
 			.withPhoneNumber()
 			.hasSettings(true)
@@ -129,8 +120,8 @@ test.group('Auth/Login', (group) => {
 			otp: twoFactorAuthService.generateOTPCode(),
 		});
 
+		expect(response.body()).not.toHaveProperty('data.token');
 		expect(response.status()).toBe(401);
-		expect(response.body()).not.toHaveProperty('token');
 	});
 });
 

@@ -12,5 +12,11 @@ export default function HasFactory(Superclass) {
   		factory.configure?.();
   		return factory;
   	}
+  /*	
+  	static bootIfNotBooted () {
+      if (this.name !== 'HasFactoryModel') {
+        super.bootIfNotBooted()
+      }
+    }*/
   }
 }

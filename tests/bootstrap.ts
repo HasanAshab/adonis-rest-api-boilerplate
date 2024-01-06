@@ -22,9 +22,17 @@ import { expect } from '@japa/expect';
 |
 */
 
+function runFailedTestsWhenFlagged() {
+  return (data) => {
+    if(data.cliArgs.failed) {
+      return runFailedTests()
+    }
+  }
+}
+
 export const plugins: Required<Config>['plugins'] = [
 	expect(),
-	//runFailedTests(),
+	runFailedTestsWhenFlagged(),
 	apiClient(),
 ];
 
@@ -55,7 +63,6 @@ export const reporters: Required<Config>['reporters'] = [specReporter()];
 export const runnerHooks: Pick<Required<Config>, 'setup' | 'teardown'> = {
 	setup: [
 		() => TestUtils.ace().loadCommands(),
-		() => TestUtils.db().truncate(),
 		() => import('Tests/Helpers/AppendGlobalHelpers'),
 		() => import('Tests/Helpers/AppendApiResponseHelpers'),
 	],
