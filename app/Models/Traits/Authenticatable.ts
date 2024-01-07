@@ -3,24 +3,13 @@ import crypto from 'crypto';
 import { BaseModel, beforeSave } from '@ioc:Adonis/Lucid/Orm'
 import { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
 
+eda lagbo na
 //import EmailVerificationNotification from "App/Notifications/EmailVerificationNotification";
 //import ForgotPasswordNotification from "App/Notifications/ForgotPasswordNotification";
 
 /*
 export default (schema: Schema) => {
   
-	schema.methods.attempt = function (password: string) {
-		if (!this.password) {
-			throw new Error(
-				'Trying to attempt passwordless user (may be social account?)',
-			);
-		}
-		return Hash.verify(this.password, password);
-	};
-
-	schema.methods.setPassword = async function (password: string) {
-		this.password = await Hash.make(password);
-	};
 
 	schema.method(
 		'changePassword',
@@ -97,10 +86,29 @@ export default function Authenticatable(Superclass: SuperclassConstructor) {
 	  }
 
   	public comparePassword(password: string) {
-  		if (!this.password) {
-  			throw new Error('Trying to attempt passwordless user [may be social account?]');
-  		}
+  		this.assertHasPassword();
   		return Hash.verify(this.password, password);
   	}
+  	
+	  public async changePassword(oldPassword: string, newPassword: string) {
+			if (!this.isInternal) {
+				throw new PasswordChangeNotAllowedException();
+			}
+
+			if (!(await this.attempt(oldPassword))) {
+				throw new InvalidPasswordException();
+			}
+
+			this.password = newPassword;
+			await this.save();
+			//TODO Should not be there
+			await Mail.to(user.email).send(new PasswordChangedMail()).catch(log);
+	  }
+	  
+	  public assertHasPassword(): asserts this is this & { password: string } {
+	     if (!this.password) {
+  			throw new Error('The user must have a password to perform this action');
+  		}
+	  }
   }
 }

@@ -32,7 +32,7 @@ export default class EventProvider {
     if(!listener.includes('.')) {
       listener += '.dispatch';
     }
-    console.log(listener)
+
     Event.on(event, listener);
   }
 }

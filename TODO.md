@@ -1,6 +1,6 @@
 N: nafl -> 2
 
-E: query builder source code, nested json update, extend core, index
+E: SP how app pased behind the scene, nested json update, extend core, index
 
 Fallback: solve type, Eslint, model & migrate, Commands, PR stub cust
 I: Abstr listenner, Event class

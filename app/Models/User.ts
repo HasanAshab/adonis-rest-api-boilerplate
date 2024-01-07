@@ -1,14 +1,15 @@
 import BaseModel from "App/Models/BaseModel";
-import { column, hasOne, HasOne } from '@ioc:Adonis/Lucid/Orm'
+import { column, hasOne, HasOne, beforeSave } from '@ioc:Adonis/Lucid/Orm'
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
+import type { Exception } from '@adonisjs/core/build/standalone';
 import { compose } from '@poppinss/utils/build/helpers'
+import Hash from '@ioc:Adonis/Core/Hash';
 import Settings from 'App/Models/Settings'
 import HasFactory from 'App/Models/Traits/HasFactory'
 import HasTimestamps from 'App/Models/Traits/HasTimestamps'
-import Authenticatable from 'App/Models/Traits/Authenticatable'
 
 
-export default class User extends compose(BaseModel, Authenticatable, HasFactory, HasTimestamps) {
+export default class User extends compose(BaseModel, HasFactory, HasTimestamps) {
 	@column({ isPrimary: true })
 	public id: number;
 
@@ -53,8 +54,44 @@ export default class User extends compose(BaseModel, Authenticatable, HasFactory
 	public get isInternal() {
 		return !!this.password;
 	}
+	
+	public assertHasPassword(exception?: Exception): asserts this is this & { password: string } {
+    if (this.password) return;
+    if(exception) {
+      throw exception;
+    }
+		throw new Error('The user must have a password to perform this action');
+  }
+
+	
+	@beforeSave()
+	public static async hashPasswordIfModified(user: User) {
+	  if (user.$dirty.password) {
+    	user.password = await Hash.make(user.password);
+    }
+	}
 
 	public static internals() {
 		return this.query().whereNotNull('password');
 	}
+	
+	public comparePassword(password: string) {
+		this.assertHasPassword();
+		return Hash.verify(this.password, password);
+	}
+	
+  public async changePassword(oldPassword: string, newPassword: string) {
+		this.assertHasPassword(new PasswordChangeNotAllowedException);
+
+		if (!await this.attempt(oldPassword)) {
+			throw new InvalidPasswordException();
+		}
+
+		this.password = newPassword;
+		await this.save();
+		//TODO Should not be there
+		await Mail.to(user.email).send(new PasswordChangedMail()).catch(log);
+  }
+  
+  
 }
