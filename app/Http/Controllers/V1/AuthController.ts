@@ -29,6 +29,7 @@ export default class AuthController {
 		  return await originalCreate(values, options);
 		}
 		*/
+
 		const userData = await request.validate(RegisterValidator);
     
     if(userData.profile) {
@@ -40,7 +41,7 @@ export default class AuthController {
 
 		const { token } = await auth.login(user);
 
-		Event.emit('user:registered', {
+		Event.emit('registered', {
 			version: 'v1',
 			method: 'internal',
 			user,

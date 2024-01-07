@@ -1,8 +1,9 @@
 N: nafl -> 2
 
-E: extend core, index
+E: query builder source code, nested json update, extend core, index
 
 Fallback: solve type, Eslint, model & migrate, Commands, PR stub cust
+I: Abstr listenner, Event class
 T: name, username, password limit
 T: Index
 T: Cache.local mem

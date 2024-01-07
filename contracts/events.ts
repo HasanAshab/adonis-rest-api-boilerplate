@@ -6,30 +6,16 @@
  */
 declare module '@ioc:Adonis/Core/Event' {
   import type User from 'App/Models/User';
-	/*
-  |--------------------------------------------------------------------------
-  | Define typed events
-  |--------------------------------------------------------------------------
-  |
-  | You can define types for events inside the following interface and
-  | AdonisJS will make sure that all listeners and emit calls adheres
-  | to the defined types.
-  |
-  | For example:
-  |
-  | interface EventsList {
-  |   'new:user': UserModel
-  | }
-  |
-  | Now calling `Event.emit('new:user')` will statically ensure that passed value is
-  | an instance of the the UserModel only.
-  |
-  */
+
 	interface EventsList {
 		registered: {
 			user: User;
 			version: string;
 			method: 'internal' | 'social';
 		};
+	}
+	
+	interface Listener<Event extends keyof EventsList> {
+	  dispatch(event: EventsList[Event]): void | Promise<void>;
 	}
 }
