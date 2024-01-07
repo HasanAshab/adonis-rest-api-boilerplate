@@ -1,4 +1,5 @@
 import { test } from '@japa/runner';
+import { omit } from 'lodash';
 import Drive from '@ioc:Adonis/Core/Drive';
 import Event from '@ioc:Adonis/Core/Event';
 import User from 'App/Models/User';
@@ -26,11 +27,12 @@ test.group('Auth/Register', (group) => {
 		const data = {
 			username: 'foobar123',
 			email: 'foo@gmail.com',
-			password: 'Password@1234',
+			password: 'Password@1234'
 		};
 
 		const response = await client.post('/api/v1/auth/register').json(data);
-		const user = await User.query().where('email', data.email).preload('settings').first();
+		
+		const user = await User.findByFields(omit(data, 'password')).preload('settings').first();
 
 		expect(response.status()).toBe(201);
 		expect(response.body()).toHaveProperty('data.token');
@@ -53,14 +55,10 @@ test.group('Auth/Register', (group) => {
 
 		const response = await client
 			.post('/api/v1/auth/register')
-			.fields(data)
-			.file('profile', filePath('image.png'));
+			.file('profile', filePath('image.png'))
+			.fields(data);
 
-		const user = await User.query()
-		  .where('email', data.email)
-		  .where('username', data.username)
-		  .preload('settings')
-		  .first();
+		const user = await User.findByFields(omit(data, 'password')).preload('settings').first();
 
 		expect(response.status()).toBe(201);
 		expect(response.body()).toHaveProperty('data.token');
@@ -88,10 +86,7 @@ test.group('Auth/Register', (group) => {
 		expect(response.body()).not.toHaveProperty('token');
 	});
 
-	test("shouldn't register with existing username", async ({
-		client,
-		expect,
-	}) => {
+	test("shouldn't register with existing username", async ({ client, expect }) => {
 		const user = await User.factory().create();
 
 		const response = await client.post('/api/v1/auth/register').json({

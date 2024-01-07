@@ -8,7 +8,7 @@ import {
 	BriskRoute,
 } from '@adonisjs/core/build/standalone';
 
-export default class RouteServiceProvider {
+export default class RouteProvider {
 	constructor(protected app: ApplicationContract) {}
 
 	private registerRoutes() {
@@ -27,7 +27,7 @@ export default class RouteServiceProvider {
 		const Application = this.app.container.use('Adonis/Core/Application');
 		const Route = this.app.container.use('Adonis/Core/Route');
 
-		Route.discover = function (base: string) {
+		Route.discover = function(base: string) {
 			const stack = [base];
 			while (stack.length > 0) {
 				const currentPath = stack.pop();

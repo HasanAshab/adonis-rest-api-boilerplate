@@ -44,7 +44,7 @@
 		"./app/Providers/ValidationProvider",
 		"adonis-recaptcha2",
 		"@adonisjs/limiter",
-		"./app/Providers/RouteServiceProvider",
+		"./app/Providers/RouteProvider",
 		"@adonisjs/lucid",
 		"@adonisjs/auth",
 		"@adonisjs/attachment-lite"

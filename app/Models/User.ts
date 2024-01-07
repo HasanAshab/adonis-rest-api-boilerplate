@@ -1,10 +1,5 @@
-import {
-	BaseModel,
-	column,
-	beforeSave,
-	hasOne,
-	HasOne,
-} from '@ioc:Adonis/Lucid/Orm'
+import BaseModel from "App/Models/BaseModel";
+import { column, hasOne, HasOne } from '@ioc:Adonis/Lucid/Orm'
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
 import { compose } from '@poppinss/utils/build/helpers'
 import Settings from 'App/Models/Settings'

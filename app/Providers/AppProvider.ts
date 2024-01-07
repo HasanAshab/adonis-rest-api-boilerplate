@@ -4,11 +4,19 @@ import { getStatusText } from 'http-status-codes';
 export default class AppProvider {
 	constructor(protected app: ApplicationContract) {}
 
-	public async boot() {
-		this.addResponseHelpers();
+
+	private extendQueryBuilders() {
+	  const { ModelQueryBuilder } = this.app.container.use('Adonis/Lucid/Database')
+
+    ModelQueryBuilder.macro('whereFields', function (fields: Record<string, any>) {
+      for(const name in fields) {
+	      this.where(name, fields[name]);
+	    }
+	    return this;
+    });
 	}
 
-	private addResponseHelpers() {
+	private extendHttpResponse() {
 		const Response = this.app.container.use('Adonis/Core/Response');
 		const { types } = this.app.container.use('Adonis/Core/Helpers');
 
@@ -70,5 +78,11 @@ export default class AppProvider {
 			}
 			return this;
 		});
+	}
+	
+	
+	public boot() {
+		this.extendQueryBuilders();
+		this.extendHttpResponse();
 	}
 }

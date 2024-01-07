@@ -1,10 +1,9 @@
-import { BaseModel, column,	beforeCreate } from '@ioc:Adonis/Lucid/Orm'
+import { column, beforeCreate } from '@ioc:Adonis/Lucid/Orm'
+import BaseModel from "App/Models/BaseModel";
 import { DateTime } from 'luxon'
 import crypto from "crypto";
 import InvalidTokenException from "App/Exceptions/InvalidTokenException";
 
-
-import { types } from '@ioc:Adonis/Core/Helpers';
 
 export default class Token extends BaseModel {
   @column({ isPrimary: true })
@@ -36,22 +35,8 @@ export default class Token extends BaseModel {
 	  }
 	}
 	
-	static findBy(keyOrObj: string | object, value?: any, options?) {
-	  if(types.isString(keyOrObj)) {
-	    return super.findBy(keyOrObj, value, options);
-	  }
-	  
-	  const query = this.query();
-	  
-	  for(const key in keyOrObj) {
-	    query.where(key, keyOrObj[key]);
-	  }
-	  
-	  return query;
-	}
-	
 	public static async isValid(key: string, type: string, secret: string) {
-    const token = await this.findBy({ key, type, secret }).first();
+    const token = await this.findByFields({ key, type, secret }).first();
     if (!token) return false;
     await token.delete();
     return !token.expiresAt || (token.expiresAt && token.expiresAt > DateTime.local());

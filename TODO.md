@@ -1,6 +1,6 @@
-N: nafl -> 6
+N: nafl -> 2
 
-E: standard event format, index, uuid
+E: extend core, index
 
 Fallback: solve type, Eslint, model & migrate, Commands, PR stub cust
 T: name, username, password limit
