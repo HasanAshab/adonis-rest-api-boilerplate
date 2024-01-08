@@ -1,5 +1,6 @@
 import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser';
 import { inject } from '@adonisjs/fold';
+import { types } from '@ioc:Adonis/Core/Helpers'
 import Config from '@ioc:Adonis/Core/Config';
 import { Limiter } from '@adonisjs/limiter/build/services';
 import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter';
@@ -55,26 +56,25 @@ export default class BasicAuthService {
 		await this.checkTwoFactorAuth(user, otp);
 		await this.loginThrottler?.delete(throttleKey);
 
-		return await user.createToken();
+	  return await user.createToken();
 	}
 
-	public async forgotPassword(email: string) {
-		const user = await User.internal().where('email').equals(email);
+	public async forgotPassword(user: User | string) {
+	  if(typeof user === 'string') {
+	    user = await User.findBy('email', email).whereNotNull('password');
+	  }
 		if (!user) return false;
 		await user.sendResetPasswordNotification();
 		return true;
 	}
 
-	public async resetPassword(
-		user: User,
-		token: string,
-		password: string,
-	) {
+	public async resetPassword(user: User, token: string, password: string) {
 		await Token.verify(user._id, 'resetPassword', token);
 		user.password = password;
 		await user.save();
 	}
 
+	
 	private setupLoginThrottler() {
 		const { maxFailedAttempts, duration, blockDuration } = this.loginAttemptThrottlerConfig;
 		

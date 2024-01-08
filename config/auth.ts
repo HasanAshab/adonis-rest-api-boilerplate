@@ -53,7 +53,7 @@ const authConfig: AuthConfigExtended = {
 				driver: 'database',
 				table: 'api_tokens',
 				foreignKey: 'user_id',
-        expiresIn: '1 month'
+        expiresIn: '30 days'
 			},
 			provider: {
 				/*

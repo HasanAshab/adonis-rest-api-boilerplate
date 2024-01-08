@@ -7,7 +7,7 @@ export default function HasApiTokens(Superclass) {
       const ctx = HttpContext.create('/', {});
       const auth = await AuthManager.getAuthForRequest(ctx);
       const config = auth.use().config.tokenProvider;
-      
+
       const token = await auth.login(this, {
         name,
         expiresIn: config.expiresIn

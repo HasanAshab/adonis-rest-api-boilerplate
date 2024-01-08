@@ -57,16 +57,6 @@ export default class AuthController {
 	}
 
 	async login({ request, auth }: HttpContextContract) {
-	/*  auth.use('api').authenticate = async function() {
-	    const token = this.getBearerToken()
-	    const {tokenId, value } = this.parsePublicToken(token)
-	    console.log(this.tokenProvider.read.toString());
-	    const providerToken = await this.getProviderToken(tokenId, value);
-	    console.log(providerToken)
-	  }
-	  
-		return auth.use('api').authenticate()
-*/
 		const { email, password, otp } = await request.validate(LoginValidator);
 		const token = await this.authService.attempt(
 			email,
@@ -81,12 +71,10 @@ export default class AuthController {
 		};
 	}
 
-	async forgotPassword({ auth, request, response }: HttpContextContract) {
-		
-		return await auth.authenticate()
+	async forgotPassword({ request, response }: HttpContextContract) {
 		const { email } = await request.validate(ForgotPasswordValidator);
 		await this.authService.forgotPassword(email);
-		response.accepted('Password reset link sent to email!');
+		response.accepted('Password reset link sent to your email!');
 	}
 
 	async resetPassword({ request }: HttpContextContract) {

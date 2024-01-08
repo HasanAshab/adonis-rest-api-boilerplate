@@ -4,13 +4,10 @@ E: SP how app pased behind the scene, nested json update, extend core, index
 
 Fallback: solve type, Eslint, model & migrate, Commands, PR stub cust
 I: Abstr listenner, Event class
-T: name, username, password limit
-T: Index
 T: Cache.local mem
 T: provide Factory
 T: Api doc
 T: test phonenumberless user 2fa with app method
-
 
 
 
