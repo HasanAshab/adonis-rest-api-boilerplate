@@ -1,19 +1,6 @@
 import { DateTime } from 'luxon';
 import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
-//import { json } from '@ioc:Adonis/Lucid/Orm';
 
-
-column.json = function(options) {
-  return function decorateAsJson(target, property) {
-    const Model = target.constructor;
-    Model.boot();
-    const normalizedOptions = Object.assign({
-     // prepare: JSON.stringify,
-      consume: JSON.parse,
-    }, options);
-    Model.$addColumn(property, normalizedOptions);
-  }
-}
 
 export interface TwoFactorAuthSettings {
   enabled: boolean;

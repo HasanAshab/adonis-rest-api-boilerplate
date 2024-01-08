@@ -55,7 +55,7 @@ export default class BasicAuthService {
 		await this.checkTwoFactorAuth(user, otp);
 		await this.loginThrottler?.delete(throttleKey);
 
-		return user;
+		return await user.createToken();
 	}
 
 	public async forgotPassword(email: string) {

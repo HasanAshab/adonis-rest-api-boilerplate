@@ -8,7 +8,6 @@ T: name, username, password limit
 T: Index
 T: Cache.local mem
 T: provide Factory
-T: organize Event [Provider?]
 T: Api doc
 T: test phonenumberless user 2fa with app method
 

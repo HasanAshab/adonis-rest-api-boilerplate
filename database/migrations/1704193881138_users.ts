@@ -6,13 +6,13 @@ export default class extends BaseSchema {
 	public async up() {
 		this.schema.createTable(this.tableName, (table) => {
 			table.increments('id').primary();
-			table.string('name', 255).nullable();
-			table.string('username', 20).unique().nullable();
-			table.string('email', 255).unique();
-			table.string('phone_number', 255).nullable();
+			table.string('name', 35).nullable();
+			table.string('username', 20).unique().nullable().index();
+			table.string('email', 254).unique().index();
+			table.string('phone_number').nullable();
 			table.enum('role', ['novice', 'user']);
 			table.boolean('verified').defaultTo(false);
-			table.string('password', 180).nullable();
+			table.string('password').nullable();
 			table.jsonb('recovery_codes').defaultTo([]);
 			table.jsonb('social_id').defaultTo({});
 			table.jsonb('profile').nullable();

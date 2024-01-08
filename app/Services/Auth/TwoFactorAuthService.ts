@@ -120,4 +120,30 @@ export default class TwoFactorAuthService {
 		});
 		return code;
 	}
+	
+	public async generateRecoveryCodes(user: User, count = 10) {
+		const rawCodes: string[] = [];
+		const promises: Promise<void>[] = [];
+		for (let i = 0; i < count; i++) {
+			const generateCode = async () => {
+				const code = crypto.randomBytes(8).toString('hex');
+				rawCodes.push(code);
+				user.recoveryCodes = await Hash.make(code);
+			};
+			promises.push(generateCode());
+		}
+		await Promise.all(promises);
+		await user.save();
+		return rawCodes;
+	}
+
+	public async verifyRecoveryCode(user: User, code: string) {
+		for (const [index, hashedCode] of user.recoveryCodes.entries()) {
+			if (!await Hash.verify(hashedCode, code)) continue;
+			user.recoveryCodes.splice(index, 1);
+			await user.save();
+			return true;
+		}
+		return false;
+	}
 }

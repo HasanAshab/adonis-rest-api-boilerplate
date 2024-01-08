@@ -8,7 +8,6 @@ import RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator';
 import LoginValidator from 'App/Http/Validators/V1/Auth/LoginValidator';
 import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator';
 import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPasswordValidator';
-
 import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 
 @inject()
@@ -16,7 +15,7 @@ export default class AuthController {
 	//constructor(private authService: AuthService, private socialAuthService: SocialAuthService) {}
 	constructor(private readonly authService: BasicAuthService) {}
 
-	async register({ request, response, auth }: HttpContextContract) {
+	async register({ request, response }: HttpContextContract) {
 		/*const originalCreate = User.create.bind(User);
 		User.create = async function(values, options) {
 		  for(const field in values) {
@@ -29,7 +28,6 @@ export default class AuthController {
 		  return await originalCreate(values, options);
 		}
 		*/
-
 		const userData = await request.validate(RegisterValidator);
     
     if(userData.profile) {
@@ -39,32 +37,43 @@ export default class AuthController {
 		const user = await User.create(userData);
 		await user.related('settings').create();
 
-		const { token } = await auth.login(user);
-
 		Event.emit('registered', {
 			version: 'v1',
 			method: 'internal',
 			user,
 		});
+		
+		//Event.emit(new Registered({}))
 
 		const profileUrl = ''; //Route.makeUrl("v1_users.show", [user.username]);
 
 		response.header('Location', profileUrl).created({
 			message: 'Verification email sent!',
-			data: { user, token },
+			data: { 
+			  user,
+			  token: await user.createToken()
+			}
 		});
 	}
 
 	async login({ request, auth }: HttpContextContract) {
+	/*  auth.use('api').authenticate = async function() {
+	    const token = this.getBearerToken()
+	    const {tokenId, value } = this.parsePublicToken(token)
+	    console.log(this.tokenProvider.read.toString());
+	    const providerToken = await this.getProviderToken(tokenId, value);
+	    console.log(providerToken)
+	  }
+	  
+		return auth.use('api').authenticate()
+*/
 		const { email, password, otp } = await request.validate(LoginValidator);
-		const user = await this.authService.attempt(
+		const token = await this.authService.attempt(
 			email,
 			password,
 			otp,
 			request.ip(),
 		);
-
-		const { token } = await auth.login(user);
 
 		return {
 			message: 'Logged in successfully!',

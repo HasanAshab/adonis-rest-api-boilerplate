@@ -15,7 +15,7 @@ export default class Token extends BaseModel {
   @column()
 	public type: string;
 	
-	@column()
+	@column.json()
 	public data: object | null;
 	
 	@column()

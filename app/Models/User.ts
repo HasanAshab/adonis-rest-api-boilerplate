@@ -7,9 +7,11 @@ import Hash from '@ioc:Adonis/Core/Hash';
 import Settings from 'App/Models/Settings'
 import HasFactory from 'App/Models/Traits/HasFactory'
 import HasTimestamps from 'App/Models/Traits/HasTimestamps'
+import HasApiTokens from 'App/Models/Traits/HasApiTokens'
+import InvalidPasswordException from 'App/Exceptions/InvalidPasswordException'
+import PasswordChangeNotAllowedException from 'App/Exceptions/PasswordChangeNotAllowedException'
 
-
-export default class User extends compose(BaseModel, HasFactory, HasTimestamps) {
+export default class User extends compose(BaseModel, HasFactory, HasTimestamps, HasApiTokens) {
 	@column({ isPrimary: true })
 	public id: number;
 
@@ -37,10 +39,10 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps) 
 	@column({ serializeAs: null })
 	public password?: string;
 
-	@column({ serializeAs: null })
+	@column.json({ serializeAs: null })
 	public recoveryCodes: string[];
 
-	@column({ serializeAs: null })
+	@column.json({ serializeAs: null })
 	public socialId: Record<string, string>;
 
 	@hasOne(() => Settings)
@@ -51,10 +53,7 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps) 
 		return this.role === 'admin';
 	}
 
-	public get isInternal() {
-		return !!this.password;
-	}
-	
+
 	public assertHasPassword(exception?: Exception): asserts this is this & { password: string } {
     if (this.password) return;
     if(exception) {
@@ -92,6 +91,4 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps) 
 		//TODO Should not be there
 		await Mail.to(user.email).send(new PasswordChangedMail()).catch(log);
   }
-  
-  
 }

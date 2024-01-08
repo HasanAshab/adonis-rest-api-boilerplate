@@ -3,10 +3,11 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator';
 
 export default class ResetPasswordValidator extends Validator {
 	public schema = schema.create({
+		id: schema.number(),
 		token: schema.string(),
-		id: schema.string([
-			//rules.objectId()
+		password: schema.string([
+		  rules.password(),
+		  rules.maxLength(128)
 		]),
-		password: schema.string([rules.password()]),
 	});
 }

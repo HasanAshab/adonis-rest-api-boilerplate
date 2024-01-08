@@ -5,6 +5,7 @@ export default class RegisterValidator extends Validator {
 	public schema = schema.create({
 		email: schema.string([
 			rules.email(),
+			rules.maxLength(254),
 			rules.unique({
 				table: 'users',
 				column: 'email',
@@ -13,14 +14,17 @@ export default class RegisterValidator extends Validator {
 
 		username: schema.string([
 			rules.alphaNum(),
-			rules.minLength(3),
+			rules.range(3, 20),
 			rules.unique({
 				table: 'users',
 				column: 'username',
 			}),
 		]),
 
-		password: schema.string([rules.password()]),
+		password: schema.string([
+		  rules.password(),
+		  rules.maxLength(128)
+		]),
 
 		profile: schema.file.optional({
 			size: '1mb',

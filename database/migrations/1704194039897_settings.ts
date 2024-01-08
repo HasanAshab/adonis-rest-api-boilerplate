@@ -10,6 +10,7 @@ export default class extends BaseSchema {
 			table
 				.integer('user_id')
 				.unsigned()
+				.index()
 				.references('users.id')
 				.onDelete('CASCADE');
 				
@@ -19,7 +20,7 @@ export default class extends BaseSchema {
 				secret: null,
 			});
 			
-			table.json('notification');
+			table.jsonb('notification');
 			table.timestamp('created_at', { useTz: true }).notNullable();
 			table.timestamp('updated_at', { useTz: true }).notNullable();
 		});

@@ -1,16 +1,25 @@
 import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import { forIn } from 'lodash'
+import { Emitter as CoreEmitter } from '@adonisjs/events/build/src/Emitter' 
+
+
+class Emitter extends CoreEmitter {
+  
+}
 
 export default class EventProvider {
   constructor(protected app: ApplicationContract) {}
   
   private listen = {
     'registered': [
-      'SendEmailVerificationNotification',
-      'SendNewUserJoinedNotificationToAdmins'
+     // 'SendEmailVerificationNotification',
+      //'SendNewUserJoinedNotificationToAdmins'
     ]
   }
   
+  public async register() {
+    
+  }
   
   public async boot() {
     this.subscribeListeners();

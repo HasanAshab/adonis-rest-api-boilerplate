@@ -4,8 +4,23 @@ import { getStatusText } from 'http-status-codes';
 export default class AppProvider {
 	constructor(protected app: ApplicationContract) {}
 
-
-	private extendQueryBuilders() {
+  private extendOrmDecorators() {
+    const { column } = this.app.container.use('Adonis/Lucid/Orm');
+    
+    column.json = function(options) {
+      return function decorateAsJson(target, property) {
+        const Model = target.constructor;
+        Model.boot();
+        const normalizedOptions = Object.assign({
+         // prepare: JSON.stringify,
+          consume: JSON.parse,
+        }, options);
+        Model.$addColumn(property, normalizedOptions);
+      }
+    }
+  }
+  
+	private extendModelQueryBuilder() {
 	  const { ModelQueryBuilder } = this.app.container.use('Adonis/Lucid/Database')
 
     ModelQueryBuilder.macro('whereFields', function (fields: Record<string, any>) {
@@ -82,7 +97,8 @@ export default class AppProvider {
 	
 	
 	public boot() {
-		this.extendQueryBuilders();
+		this.extendOrmDecorators();
+		this.extendModelQueryBuilder();
 		this.extendHttpResponse();
 	}
 }
