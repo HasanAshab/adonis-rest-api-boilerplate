@@ -14,7 +14,7 @@ export default class RegisterValidator extends Validator {
 
 		username: schema.string([
 			rules.alphaNum(),
-			rules.range(3, 20),
+			rules.lengthRange(3, 20),
 			rules.unique({
 				table: 'users',
 				column: 'username',

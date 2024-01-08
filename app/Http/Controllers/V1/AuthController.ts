@@ -81,7 +81,9 @@ export default class AuthController {
 		};
 	}
 
-	async forgotPassword({ request, response }: HttpContextContract) {
+	async forgotPassword({ auth, request, response }: HttpContextContract) {
+		
+		return await auth.authenticate()
 		const { email } = await request.validate(ForgotPasswordValidator);
 		await this.authService.forgotPassword(email);
 		response.accepted('Password reset link sent to email!');
