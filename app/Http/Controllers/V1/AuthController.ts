@@ -8,7 +8,7 @@ import RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator';
 import LoginValidator from 'App/Http/Validators/V1/Auth/LoginValidator';
 import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator';
 import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPasswordValidator';
-import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
+
 
 @inject()
 export default class AuthController {
@@ -16,71 +16,48 @@ export default class AuthController {
 	constructor(private readonly authService: BasicAuthService) {}
 
 	async register({ request, response }: HttpContextContract) {
-		/*const originalCreate = User.create.bind(User);
-		User.create = async function(values, options) {
-		  for(const field in values) {
-		    if(!values[field]) continue;
-		    console.log(values[field])
-		    const isAttachableField = !!this.attachments.find(attachment => attachment.property === field);
-		    if(!isAttachableField) continue;
-		    values[field] = await Attachment.fromFile(values[field])
-		  }
-		  return await originalCreate(values, options);
-		}
-		*/
-		const userData = await request.validate(RegisterValidator);
+		const registrationData = await request.validate(RegisterValidator);
     
-    if(userData.profile) {
-      userData.profile = Attachment.fromFile(userData.profile);
-    }
-    
-		const user = await User.create(userData);
-		await user.related('settings').create();
-
+    const user = await this.authService.register(registrationData);
+      
 		Event.emit('registered', {
 			version: 'v1',
 			method: 'internal',
 			user,
 		});
-		
 		//Event.emit(new Registered({}))
 
 		const profileUrl = ''; //Route.makeUrl("v1_users.show", [user.username]);
 
 		response.header('Location', profileUrl).created({
 			message: 'Verification email sent!',
-			data: { 
-			  user,
-			  token: await user.createToken()
+			data: {
+			  token: await user.createToken(),
+			  user
 			}
 		});
 	}
 
-	async login({ request, auth }: HttpContextContract) {
-		const { email, password, otp } = await request.validate(LoginValidator);
-		const token = await this.authService.attempt(
-			email,
-			password,
-			otp,
-			request.ip(),
-		);
+	public async login({ request }: HttpContextContract) {
+		const token = await this.authService.attempt({
+			...await request.validate(LoginValidator),
+			ip: request.ip()
+		});
 
 		return {
 			message: 'Logged in successfully!',
-			data: { token },
-		};
+			data: { token }
+		}
 	}
 
-	async forgotPassword({ request, response }: HttpContextContract) {
+	public async forgotPassword({ request, response }: HttpContextContract) {
 		const { email } = await request.validate(ForgotPasswordValidator);
 		await this.authService.forgotPassword(email);
 		response.accepted('Password reset link sent to your email!');
 	}
 
 	async resetPassword({ request }: HttpContextContract) {
-		const { id, password, token } = await request.validate(
-			ResetPasswordValidator,
-		);
+		const { id, password, token } = await request.validate(ResetPasswordValidator);
 		const user = await User.findOrFail(id);
 		await this.authService.resetPassword(user, token, password);
 		await Mail.to(user.email).send(new PasswordChangedMail());

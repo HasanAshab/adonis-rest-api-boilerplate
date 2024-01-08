@@ -1,6 +1,5 @@
-import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser';
+import type RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator';
 import { inject } from '@adonisjs/fold';
-import { types } from '@ioc:Adonis/Core/Helpers'
 import Config from '@ioc:Adonis/Core/Config';
 import { Limiter } from '@adonisjs/limiter/build/services';
 import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter';
@@ -10,6 +9,16 @@ import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
 import InvalidCredentialException from 'App/Exceptions/InvalidCredentialException';
 import LoginAttemptLimitExceededException from 'App/Exceptions/LoginAttemptLimitExceededException';
 import OtpRequiredException from 'App/Exceptions/OtpRequiredException';
+import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
+
+
+interface LoginCredentials {
+  email: string;
+  password: string;
+  otp?: string;
+  ip?: string;
+}
+
 
 export default class BasicAuthService {
 	private loginThrottler?: LimiterContract;
@@ -24,40 +33,48 @@ export default class BasicAuthService {
 			this.setupLoginThrottler();
 		}
 	}
-
-	public async attempt(
-		email: string,
-		password: string,
-		otp?: string,
-		ip?: string,
-	) {
-		if (this.loginThrottler && !ip) {
-			throw new Error(
-				'Argument[3]: "ip" must be provided when login attempt throttle is enabled',
-			);
-		}
-		const throttleKey = this.getThrottleKeyFor(email, ip);
-
-		if (await this.loginThrottler?.isBlocked(throttleKey)) {
-			throw new LoginAttemptLimitExceededException();
-		}
+	
+	
+	public async register(data: RegisterValidator['__type']) {
+	  if(data.profile) {
+      data.profile = Attachment.fromFile(data.profile);
+    }
     
-		const user = await User.internals().where('email', email).preload('settings').first();
-		
-		if (!user) {
-			throw new InvalidCredentialException();
-		}
-		
-		if (!await user.comparePassword(password)) {
-			await this.loginThrottler?.increment(throttleKey);
-			throw new InvalidCredentialException();
-		}
-
-		await this.checkTwoFactorAuth(user, otp);
-		await this.loginThrottler?.delete(throttleKey);
-
-	  return await user.createToken();
+		const user = await User.create(data);
+		await user.related('settings').create();
+    
+    return user;
 	}
+
+  public async attempt(credentials: LoginCredentials) {
+    const { email, password, otp, ip } = credentials;
+  
+    if (this.loginThrottler && !ip) {
+      throw new Error('Argument[3]: "ip" must be provided when login attempt throttle is enabled');
+    }
+  
+    const throttleKey = this.getThrottleKeyFor(email, ip);
+  
+    if (await this.loginThrottler?.isBlocked(throttleKey)) {
+      throw new LoginAttemptLimitExceededException();
+    }
+  
+    const user = await User.internals().where('email', email).preload('settings').first();
+  
+    if (!user) {
+      throw new InvalidCredentialException();
+    }
+  
+    if (!await user.comparePassword(password)) {
+      await this.loginThrottler?.increment(throttleKey);
+      throw new InvalidCredentialException();
+    }
+  
+    await this.checkTwoFactorAuth(user, otp);
+    await this.loginThrottler?.delete(throttleKey);
+  
+    return await user.createToken();
+  }
 
 	public async forgotPassword(user: User | string) {
 	  if(typeof user === 'string') {
@@ -65,6 +82,7 @@ export default class BasicAuthService {
 	  }
 		if (!user) return false;
 		await user.sendResetPasswordNotification();
+		
 		return true;
 	}
 

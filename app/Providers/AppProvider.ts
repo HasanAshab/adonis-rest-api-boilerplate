@@ -11,10 +11,12 @@ export default class AppProvider {
       return function decorateAsJson(target, property) {
         const Model = target.constructor;
         Model.boot();
+        
         const normalizedOptions = Object.assign({
-         // prepare: JSON.stringify,
-          consume: JSON.parse,
+          prepare: JSON.stringify,
+          consume: JSON.parse
         }, options);
+        
         Model.$addColumn(property, normalizedOptions);
       }
     }

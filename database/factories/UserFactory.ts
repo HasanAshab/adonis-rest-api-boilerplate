@@ -1,7 +1,7 @@
 import Factory from 'App/Models/Traits/HasFactory/Factory';
-import Settings from 'App/Models/Settings';
+import User from 'App/Models/User';
 
-export default class UserFactory extends Factory {
+export default class UserFactory extends Factory<User> {
 	definition() {
 		return {
 			name: this.faker.person.firstName(),
@@ -18,22 +18,22 @@ export default class UserFactory extends Factory {
 	}
 
 	unverified() {
-		return this.state((user: IUser) => {
+		return this.state(user => {
 			user.verified = false;
 			return user;
 		});
 	}
 
 	social(provider = 'google', id = '100020') {
-		return this.state((user: IUser) => {
+		return this.state(user => {
 			user.password = null;
 			user.socialId[provider] = id;
 			return user;
 		});
 	}
 
-	withRole(name: IUser['role']) {
-		return this.state((user: IUser) => {
+	withRole(name: User['role']) {
+		return this.state(user => {
 			user.role = name;
 			return user;
 		});
@@ -48,14 +48,14 @@ export default class UserFactory extends Factory {
 	}
 
 	withProfile(url = this.faker.internet.avatar()) {
-		return this.state((user: IUser) => {
+		return this.state(user => {
 			user.profile = url;
 			return user;
 		});
 	}
 
 	withPhoneNumber(phoneNumber = '+15005550006') {
-		return this.state((user: IUser) => {
+		return this.state(user => {
 			user.phoneNumber = phoneNumber;
 			return user;
 		});

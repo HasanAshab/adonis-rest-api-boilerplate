@@ -43,7 +43,7 @@ test.group('Auth/Register', (group) => {
 			version: 'v1',
 			user,
 		});
-	}).pin();
+	});
 
 	test('should register a user with profile', async ({ expect, client }) => {
 		const data = {

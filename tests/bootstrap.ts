@@ -22,17 +22,10 @@ import { expect } from '@japa/expect';
 |
 */
 
-function runFailedTestsWhenFlagged() {
-  return (data) => {
-    if(data.cliArgs.failed) {
-      return runFailedTests()
-    }
-  }
-}
 
 export const plugins: Required<Config>['plugins'] = [
 	expect(),
-	runFailedTestsWhenFlagged(),
+//	runFailedTests(),
 	apiClient(),
 ];
 

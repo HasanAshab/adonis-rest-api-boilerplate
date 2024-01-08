@@ -26,8 +26,6 @@ test.group('Auth/Login', (group) => {
 	});
 
 	test('should login a user', async ({ client, expect }) => {
-		console.log(client.post('/api/v1/auth/login').loginAs.toString());
-		
 		const response = await client.post('/api/v1/auth/login').json({
 			email: user.email,
 			password: 'password',
@@ -35,7 +33,7 @@ test.group('Auth/Login', (group) => {
 
 		expect(response.body()).toHaveProperty('data.token');
 		expect(response.status()).toBe(200);
-	}).pin();
+	});
 
 	test("shouldn't login with wrong password", async ({ client, expect }) => {
 		const response = await client.post('/api/v1/auth/login').json({

@@ -1,14 +1,17 @@
+import { BaseModel } from '@ioc:Adonis/Lucid/Orm';
 import { merge } from 'lodash';
 import { faker } from '@faker-js/faker';
 
-export type StateCustomizer<Attributes> = (docState: Attributes) => Attributes;
-export type ExternalCallback<DocType> = (
-	docs: DocType[],
-) => Promise<void> | void;
+
+export type StateCustomizer<Attributes> = (state: Attributes) => Attributes;
+
+export type ExternalCallback<Model> = (model: Model) => Promise<void> | void;
+
+
 
 export default abstract class Factory<
-	Attributes extends object = Record<string, any>,
-	DocType extends Document,
+	Model extends BaseModel,
+	Attributes extends object = Record<string, any>
 > {
   
 	/**
@@ -30,29 +33,37 @@ export default abstract class Factory<
 	 * Callbacks to perform external async operations
 	 * such as creating relational records.
 	 */
-	private externalCallbacks: ExternalCallback<DocType>[] = [];
+	private externalCallbacks: ExternalCallback<Model>[] = [];
 
 	/**
 	 * Create factory instance
 	 */
 	constructor(
-		private Model: Model<DocType>,
+		private Model: typeof Model,
 		protected options: Record<string, unknown> = {},
 	) {
 		this.Model = Model;
 		// this options will be available everywhere
 		this.options = options;
 	}
+  
+  /**
+   * Configure the factory.
+   */
+  public configure() {
+    //
+  }
+    
 
 	/**
 	 * Return the initial state of records
 	 */
-	abstract definition(): Attributes;
+	protected abstract definition(): Attributes;
 
 	/**
 	 * Specify the number of records to be generated
 	 */
-	count(total: number) {
+	public count(total: number) {
 		this.total = total;
 		return this;
 	}
@@ -60,7 +71,7 @@ export default abstract class Factory<
 	/**
 	 * Adds state customizer
 	 */
-	protected state(cb: StateCustomizer<Attributes>) {
+	public state(cb: StateCustomizer<Attributes>) {
 		this.stateCustomizers.push(cb);
 		return this;
 	}
@@ -68,37 +79,42 @@ export default abstract class Factory<
 	/** 
 	 * Adds external operations callback
 	 */
-	protected external(cb: ExternalCallback<DocType>) {
+	public external(cb: ExternalCallback<Model>) {
 		this.externalCallbacks.push(cb);
 		return this;
 	}
 
 	/**
-	 * Generates all records raw data
+	 * Generate all records stub data
 	 */
-	make(data?: Partial<Attributes>) {
-		return this.total === 1
-			? this.generateDocumentData(data)
-			: Array.from({ length: this.total }, () =>
-					this.generateDocumentData(data),
-				);
+	public make(data?: Partial<Attributes>) {
+		if(this.total === 1) {
+			return this.generateData(data);
+		}
+		
+		return Array.from({ length: this.total }, () => {
+			return this.generateDocumentData(data);
+		});
 	}
 
 	/**
-	 * Inserts all generated records into database
+	 * generate and persists all records to database
 	 */
-	async create(data: Partial<Attributes>) {
-		const docsData = this.make(data);
-		const method = this.total === 1 ? 'create' : 'createMany';
-		const docs = await (this.Model as any)[method](docsData);
-		await this.runExternalCallbacks(Array.isArray(docs) ? docs : [docs]);
-		return docs;
+	public async create(data: Partial<Attributes>) {
+		const stubModels = this.make(data);
+		
+		const records = Array.isArray(stubModels)
+		  ? await this.Model.createMany(stubModels)
+		  : await this.Model.create(stubModels);
+
+		await this.runExternalCallbacks(records);
+		return records;
 	}
 
 	/**
 	 * Generates single record data
 	 */
-	private generateDocumentData(data?: Partial<Attributes>) {
+	private generateData(data?: Partial<Attributes>) {
 		let recordData = this.customizeState(this.definition());
 		if (data) {
 			recordData = merge(recordData, data);
@@ -119,9 +135,15 @@ export default abstract class Factory<
 	/**
 	 * Runs all external callbacks
 	 */
-	private runExternalCallbacks(docs: DocType[]) {
-	  const promises = docs.map(doc => {
-	    return this.externalCallbacks.map(cb => cb(doc));
+	private runExternalCallbacks(models: Model | Model[]) {
+	  if(!Array.isArray(models)) {
+	    return Promise.all(
+	      this.externalCallbacks.map(cb => cb(models))
+	    );
+	  }
+	  
+	  const promises = models.map(model => {
+	    return this.externalCallbacks.map(cb => cb(model));
 	  });
 	  
 		return Promise.all(promises.flat());

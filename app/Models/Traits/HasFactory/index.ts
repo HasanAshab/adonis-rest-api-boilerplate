@@ -9,7 +9,7 @@ export default function HasFactory(Superclass) {
     
     static factory(options?: object) {
   		const factory = new this.factoryClass(this, options);
-  		factory.configure?.();
+  		factory.configure();
   		return factory;
   	}
   /*	
