@@ -1,6 +1,4 @@
 This: 
-1. type
-2. compose
 3. TFA
 
 

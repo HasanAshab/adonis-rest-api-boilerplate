@@ -1,5 +1,5 @@
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
-import { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
+import type { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
 import { DateTime } from 'luxon'
 
 

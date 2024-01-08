@@ -56,7 +56,7 @@ export default class AuthController {
 		response.accepted('Password reset link sent to your email!');
 	}
 
-	async resetPassword({ request }: HttpContextContract) {
+	public async resetPassword({ request }: HttpContextContract) {
 		const { id, password, token } = await request.validate(ResetPasswordValidator);
 		const user = await User.findOrFail(id);
 		await this.authService.resetPassword(user, token, password);
