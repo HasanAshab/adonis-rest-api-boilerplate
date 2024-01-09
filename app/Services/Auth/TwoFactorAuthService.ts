@@ -29,7 +29,7 @@ export default class TwoFactorAuthService {
 		}
 		
 		const data: TwoFactorAuthData = {
-			recoveryCodes: await user.generateRecoveryCodes(),
+			recoveryCodes: await this.generateRecoveryCodes(user),
 		};
 		
 		const twoFactorAuth: Partial<TwoFactorAuthSettings> = {
@@ -121,6 +121,12 @@ export default class TwoFactorAuthService {
 		return code;
 	}
 	
+	public async recover(email: string, code: string) {
+	  const user = await User.findByOrFail('email', email);
+    await this.verifyRecoveryCode(user, code);
+    return await user.createToken();
+	}
+	
 	public async generateRecoveryCodes(user: User, count = 10) {
 		const rawCodes: string[] = [];
 		const promises: Promise<void>[] = [];
@@ -140,10 +146,11 @@ export default class TwoFactorAuthService {
 	public async verifyRecoveryCode(user: User, code: string) {
 		for (const [index, hashedCode] of user.recoveryCodes.entries()) {
 			if (!await Hash.verify(hashedCode, code)) continue;
+			
 			user.recoveryCodes.splice(index, 1);
 			await user.save();
-			return true;
+			return;
 		}
-		return false;
+		throw new InvalidRecoveryCodeException;
 	}
 }

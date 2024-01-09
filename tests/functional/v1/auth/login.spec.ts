@@ -8,8 +8,8 @@ import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
 Event.assertEmitted = () => null;
 
 test.group('Auth/Login', (group) => {
-	let user;
 	const twoFactorAuthService = new TwoFactorAuthService();
+	let user;
   
   refreshDatabase(group);
 

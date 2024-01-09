@@ -1,21 +1,28 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { inject } from '@adonisjs/fold';
+import { bind } from '@adonisjs/route-model-binding'
 import Route from '@ioc:Adonis/Core/Route';
 import Event from '@ioc:Adonis/Core/Event';
 import User from 'App/Models/User';
 import BasicAuthService from 'App/Services/Auth/BasicAuthService';
+import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService";
 import RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator';
-import LoginValidator from 'App/Http/Validators/V1/Auth/LoginValidator';
+import LoginValidator from 'App/Http/Validators/V1/Auth/Login/LoginValidator';
 import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator';
 import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPasswordValidator';
+//import SetupTwoFactorAuthValidator from 'App/Http/Validators/V1/Auth/SetupTwoFactorAuthValidator';
+//import AccountRecoveryValidator from 'App/Http/Validators/V1/Auth/AccountRecoveryValidator';
 
 
 @inject()
 export default class AuthController {
 	//constructor(private authService: AuthService, private socialAuthService: SocialAuthService) {}
-	constructor(private readonly authService: BasicAuthService) {}
+	constructor(
+	  private readonly authService: BasicAuthService,
+	  private readonly twoFactorAuthService: TwoFactorAuthService
+	) {}
 
-	async register({ request, response }: HttpContextContract) {
+	public async register({ request, response }: HttpContextContract) {
 		const registrationData = await request.validate(RegisterValidator);
     
     const user = await this.authService.register(registrationData);
@@ -49,8 +56,8 @@ export default class AuthController {
 			data: { token }
 		}
 	}
-
-	public async forgotPassword({ request, response }: HttpContextContract) {
+  
+  public async forgotPassword({ request, response }: HttpContextContract) {
 		const { email } = await request.validate(ForgotPasswordValidator);
 		await this.authService.forgotPassword(email);
 		response.accepted('Password reset link sent to your email!');
@@ -63,6 +70,42 @@ export default class AuthController {
 		await Mail.to(user.email).send(new PasswordChangedMail());
 		return 'Password changed successfully!';
 	}
+
+
+
+  public async setupTwoFactorAuth({ request, auth }: HttpContextContract) {
+    const { enable, method } = await request.validate(SetupTwoFactorAuthValidator);
+   
+    if(!enable) {
+      await this.twoFactorAuthService.disable(auth.user!);
+      return "Two Factor Auth disabled!";
+    }
+    
+    return {
+      message: "Two Factor Auth enabled!",
+      data: await this.twoFactorAuthService.enable(auth.user!, method)
+    };
+  }
+  
+  @bind()
+  public async sendOtp({}, user: User) {
+    await this.twoFactorAuthService.sendOtp(user);
+    return "6 digit OTP code sent to phone number!";
+  }
+  
+  public generateRecoveryCodes({ auth }: AuthenticRequest) {
+    return this.twoFactorAuthService.generateRecoveryCodes(auth.user!);
+  }
+  
+  public async recoverAccount({ request }: HttpContextContract) {
+    const { email, code } = await request.validate(AccountRecoveryValidator);
+    const token = await this.twoFactorAuthService.recover(email, code);
+    
+    return {
+      message: "Account recovered successfully!",
+      token
+    }
+  }
 
 	/* 
   redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {

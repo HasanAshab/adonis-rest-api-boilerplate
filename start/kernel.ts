@@ -20,7 +20,10 @@ import Server from '@ioc:Adonis/Core/Server';
 | are defined for every HTTP requests.
 |
 */
-Server.middleware.register([() => import('@ioc:Adonis/Core/BodyParser')]);
+Server.middleware.register([
+  () => import('@ioc:Adonis/Core/BodyParser'),
+  () => import('@ioc:Adonis/Addons/RmbMiddleware')
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +43,7 @@ Server.middleware.register([() => import('@ioc:Adonis/Core/BodyParser')]);
 */
 Server.middleware.registerNamed({
 	throttle: () => import('App/Http/Middleware/LimitRequestRate'),
-	auth: () => import('App/Http/Middleware/Authenticate'),
+	auth: () => import('App/Http/Middleware/Auth'),
 	verified: () => import('App/Http/Middleware/EnsureEmailIsVerified'),
 	roles: () => import('App/Http/Middleware/CheckRole'),
 	recaptcha: () => import('App/Http/Middleware/VerifyRecaptcha'),

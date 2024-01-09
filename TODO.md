@@ -1,10 +1,11 @@
 This: 
-3. TFA
-
+. Adonis sqagger
+2. nested update
+1. TFA
 
 N: nafl -> 2
 
-E: SP how app pased behind the scene, nested json update, extend core, index
+E: TFA Standard, SP how app pased behind the scene
 
 Fallback: solve type, Eslint, model & migrate, Commands, PR stub cust
 I: Abstr listenner, Event class

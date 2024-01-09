@@ -9,7 +9,17 @@ describe("Auth", () => {
   
   const authService = new AuthService();
   
-  test("should login a user with valid recovery code", async ({ client, expect }) => {
+  test("Should send otp", async ({ client, expect }) => {
+    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
+    const response = await client.post("/api/v1/auth/send-otp/" + user._id);
+    await sleep(2000)
+    const token = await Token.findOne({ key: user._id, type: "2fa" });
+    
+    expect(response.status()).toBe(200);
+    expect(otp).not.toBeNull();
+  });
+
+  test("should recover a user with valid recovery code", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
     const [ code ] = await user.generateRecoveryCodes(1);
     const response = await client.post("/api/v1/auth/login/recovery-code").json({
@@ -50,7 +60,9 @@ describe("Auth", () => {
     expect(response.body().data).toHaveLength(10);
     expect(response.body().data).not.toEqual(oldCodes);
   });
-
+  
+ 
+ 
   test("Should complete social login with username", async ({ client, expect }) => {
     const username = "FooBar123";
     const externalUser = {
@@ -136,15 +148,7 @@ describe("Auth", () => {
     expect(response.status()).toBe(401);
   });
 
-  test("Should send otp", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const response = await client.post("/api/v1/auth/send-otp/" + user._id);
-    await sleep(2000)
-    const token = await Token.findOne({ key: user._id, type: "2fa" });
-    
-    expect(response.status()).toBe(200);
-    expect(otp).not.toBeNull();
-  });
+
   
   test("should verify email", async ({ client, expect }) => {
     const user = await User.factory().unverified().create();

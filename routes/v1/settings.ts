@@ -6,7 +6,6 @@
 //   // User settings managenent
 //   await Router.middleware(["auth", "verified"]).group(() => {
 //     Router.get("/", "index");
-//     Router.post("/setup-2fa", "setupTwoFactorAuth");
 //     Router.patch("/notification", "setupNotificationPreference");
 //   });
 //

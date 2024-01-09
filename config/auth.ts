@@ -116,6 +116,13 @@ const authConfig: AuthConfigExtended = {
 		duration: '15 minutes',
 		blockDuration: '1 hour',
 	},
+	
+	/**
+	 * 
+ 	 */
+ 	 twoFactor: {
+ 	   methods: ['sms', 'call', 'app']
+ 	 }
 };
 
 export default authConfig;

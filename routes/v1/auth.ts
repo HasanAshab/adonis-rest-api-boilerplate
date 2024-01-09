@@ -6,16 +6,23 @@ import Route from '@ioc:Adonis/Core/Route';
 
 Route.post('/register', 'AuthController.register').middleware('recaptcha');
 // Route.get("social/callback/:provider(google|facebook)", "loginWithSocialProvider");
-//   Route.post("/send-otp/:user", "sendOtp").middleware("throttle:60000,3");
 //   Route.patch("/change-phone-number", "changePhoneNumber").middleware("auth", "verified");
-//   Route.post("/generate-recovery-codes", "generateRecoveryCodes").middleware("throttle:60000,3", "auth", "verified");
+
+
+
+Route.group(() => {
+  Route.post("/setup", "AuthController.setupTwoFactorAuth");
+  //TODO -> Route.post("/send-otp/:user", "AuthController.sendOtp").middleware("throttle:60000,3");
+  //TODO -> Route.post("/generate-recovery-codes", "AuthController.generateRecoveryCodes").middleware("throttle:3600,3", "auth", "verified");
+  //TODO -> Route.post("/recover", "AuthController.recoverAccount").middleware("throttle:3600,1", "recaptcha");
+}).prefix('/two-factor');
+
 
 // Login with various methods
 Route.group(() => {
 	Route.post('/', 'AuthController.login').middleware(['throttle:global', 'recaptcha']);
-	//Route.post("/recovery-code", "loginWithRecoveryCode").middleware("throttle:2000,1", "recaptcha");
 
-	// Social login provided by Google, Facebook OAuth
+	// login with external providers
 	/* Route.group(() => {
       Route.get("/", "redirectToSocialLoginProvider");
       Route.post("/final-step", "socialLoginFinalStep");

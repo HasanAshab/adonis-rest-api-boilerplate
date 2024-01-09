@@ -44,7 +44,8 @@
 		"@adonisjs/lucid",
 		"@adonisjs/auth",
 		"@adonisjs/attachment-lite",
-		"./app/Providers/EventProvider"
+		"./app/Providers/EventProvider",
+		"@adonisjs/route-model-binding/build/providers/RmbProvider"
 	],
 	"aceProviders": [
 		"@adonisjs/repl"
