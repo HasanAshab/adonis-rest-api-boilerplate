@@ -44,7 +44,8 @@ export default class UserFactory extends Factory<User> {
 		  return user.related('settings').create({ 
 		    twoFactorAuth: { 
 		      enabled: enableTwoFactorAuth,
-		      
+		      method: 'sms',
+		      secret: null
 		    }
 		  });
 		});

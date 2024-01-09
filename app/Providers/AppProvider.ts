@@ -13,8 +13,16 @@ export default class AppProvider {
         Model.boot();
         
         const normalizedOptions = Object.assign({
-          prepare: JSON.stringify,
-          consume: JSON.parse
+          prepare: value => {
+            return typeof value !== 'string'
+              ? JSON.stringify(value)
+              : value;
+          },
+          consume: value => {
+            return typeof value === 'string'
+              ? JSON.parse(value)
+              : value;
+          }
         }, options);
         
         Model.$addColumn(property, normalizedOptions);
