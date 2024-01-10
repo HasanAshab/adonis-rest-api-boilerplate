@@ -14,6 +14,7 @@ export default class extends BaseSchema {
 				.references('users.id')
 				.onDelete('CASCADE');
 				
+				jsonb kore dekh
 			table.jsonb('two_factor_auth').defaultTo({
 				enabled: false,
 				method: 'sms',

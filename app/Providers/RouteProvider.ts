@@ -2,11 +2,6 @@ import { ApplicationContract } from '@ioc:Adonis/Core/Application';
 import fs from 'fs';
 import path from 'path';
 
-import {
-	RouteGroup,
-	RouteResource,
-	BriskRoute,
-} from '@adonisjs/core/build/standalone';
 
 export default class RouteProvider {
 	constructor(protected app: ApplicationContract) {}
@@ -42,9 +37,13 @@ export default class RouteProvider {
 							.replace(base, '')
 							.split('.')[0]
 							.toLowerCase()
-							.replace(/index$/, '');
+
 						const routerPath = Application.makePath(itemPath.split('.')[0]);
-						this.group(() => require(routerPath)).prefix(itemPathEndpoint);
+						
+						const group = this.group(() => require(routerPath));
+						if(!itemPath.endsWith('index.ts')) {
+						  group.prefix(itemPathEndpoint);
+						}
 					} else if (status.isDirectory()) {
 						stack.push(itemPath);
 					}

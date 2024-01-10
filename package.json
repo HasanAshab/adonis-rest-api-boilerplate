@@ -46,6 +46,7 @@
 		"@adonisjs/repl": "^3.1.11",
 		"@adonisjs/route-model-binding": "^1.0.1",
 		"@faker-js/faker": "^8.3.1",
+		"adonis-autoswagger": "^1.10.1",
 		"adonis-recaptcha2": "^2.0.1",
 		"async-mutex": "^0.4.0",
 		"bcryptjs": "^2.4.3",

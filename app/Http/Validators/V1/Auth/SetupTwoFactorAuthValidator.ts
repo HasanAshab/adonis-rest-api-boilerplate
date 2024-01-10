@@ -1,22 +1,9 @@
-import { AuthenticRequest } from "~/core/express";
-import Validator from "Validator";
-import Config from "Config";
-import { ISettings, twoFactorAuthMethods } from "~/app/models/Settings";
+import Validator from 'App/Http/Validators/Validator';
+import { schema, rules } from '@ioc:Adonis/Core/Validator';
 
-interface SetupTwoFactorAuthRequest {
-  body: { 
-    enable: boolean;
-    method?: ISettings["twoFactorAuth"]["method"];
-  }
+export default class RegisterValidator extends Validator {
+	public schema = schema.create({
+		enable: schema.boolean(),
+    method: schema.enum.optional(['sms', 'call', 'app'] as const)
+	});
 }
-
-class SetupTwoFactorAuthRequest extends AuthenticRequest {
-  static rules() {
-    return {
-      enable: Validator.boolean().default(true),
-      method: Validator.string().valid(...twoFactorAuthMethods)
-    }
-  }
-}
-
-export default SetupTwoFactorAuthRequest;

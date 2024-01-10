@@ -62,7 +62,6 @@ export default class AppProvider {
 				generateEtag = this.config.etag,
 			) {
 				const acceptsJson = this.request.headers.accept === 'application/json';
-
 				if (acceptsJson) {
 					if (types.isNull(body)) {
 						body = {};

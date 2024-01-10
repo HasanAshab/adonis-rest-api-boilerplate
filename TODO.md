@@ -1,11 +1,10 @@
 This: 
 . Adonis sqagger
-2. nested update
 1. TFA
 
 N: nafl -> 2
 
-E: TFA Standard, SP how app pased behind the scene
+E: Validate json field lara, SP how app pased behind the scene
 
 Fallback: solve type, Eslint, model & migrate, Commands, PR stub cust
 I: Abstr listenner, Event class

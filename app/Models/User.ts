@@ -1,7 +1,7 @@
 import BaseModel from "App/Models/BaseModel";
 import { column, hasOne, HasOne, beforeSave } from '@ioc:Adonis/Lucid/Orm'
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
-import type { Exception } from '@adonisjs/core/build/standalone';
+import { Exception } from '@adonisjs/core/build/standalone';
 import { compose } from '@poppinss/utils/build/helpers'
 import Hash from '@ioc:Adonis/Core/Hash';
 import Settings from 'App/Models/Settings'

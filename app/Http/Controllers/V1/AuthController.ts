@@ -10,7 +10,7 @@ import RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator';
 import LoginValidator from 'App/Http/Validators/V1/Auth/Login/LoginValidator';
 import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator';
 import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPasswordValidator';
-//import SetupTwoFactorAuthValidator from 'App/Http/Validators/V1/Auth/SetupTwoFactorAuthValidator';
+import SetupTwoFactorAuthValidator from 'App/Http/Validators/V1/Auth/SetupTwoFactorAuthValidator';
 //import AccountRecoveryValidator from 'App/Http/Validators/V1/Auth/AccountRecoveryValidator';
 
 
@@ -27,7 +27,7 @@ export default class AuthController {
     
     const user = await this.authService.register(registrationData);
       
-		Event.emit('registered', {
+		Event.fire('registered', {
 			version: 'v1',
 			method: 'internal',
 			user,
@@ -74,7 +74,7 @@ export default class AuthController {
 
 
   public async setupTwoFactorAuth({ request, auth }: HttpContextContract) {
-    const { enable, method } = await request.validate(SetupTwoFactorAuthValidator);
+    const { enable = true, method } = await request.validate(SetupTwoFactorAuthValidator);
    
     if(!enable) {
       await this.twoFactorAuthService.disable(auth.user!);

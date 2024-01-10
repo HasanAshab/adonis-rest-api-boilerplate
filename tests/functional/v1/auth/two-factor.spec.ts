@@ -1,5 +1,6 @@
 import { test } from '@japa/runner';
 import User from 'App/Models/User';
+import Settings from 'App/Models/Settings';
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
 
 
@@ -14,45 +15,54 @@ test.group('Auth/TwoFactor', (group) => {
 		user = await User.factory().hasSettings().create();
 	});
   
+
+  test("Should enable Two Factor Authorization", async ({ client, expect }) => {
+    const user = await User.factory().hasSettings().withPhoneNumber().create();
+
+    const response = await client.post("/api/v1/auth/two-factor/setup").loginAs(user).json({ enable: true });
+
+    await user.load('settings');
+    expect(response.status()).toBe(200);
+    expect(response.body().data.recoveryCodes).toHaveLength(10);
+
+    expect(user.settings.twoFactorAuth).toEqual({
+      enabled: true,
+      method: 'sms',
+      secret: null
+    });
+  }).pin();
   
-  it("Should enable Two Factor Authorization", { phone: true }, async () => {
-    const response = await request.post("/api/v1/settings/setup-2fa").actingAs(token).send({ enable: true });
-    const settings = await user.settings;
-    expect(response.statusCode).toBe(200);
-    expect(response.body.data.recoveryCodes).toHaveLength(10);
-    expect(settings.twoFactorAuth.enabled).toBe(true);
-    expect(settings.twoFactorAuth.method).toBe("sms");
+  test("Should disable Two Factor Authorization", async ({ client, expect }) => {
+    const user = await User.factory().hasSettings(true).withPhoneNumber().create();
+    const response = await client.post("/api/v1/auth/two-factor/setup").actingAs(token).send({ enable: false });
+    await user.load('settings');
+    
+    expect(response.status()).toBe(200);
+    expect(user.settings.twoFactorAuth.enabled).toBe(false);
   });
   
-  it("Should disable Two Factor Authorization", { mfa: true, phone: true }, async () => {
-    const response = await request.post("/api/v1/settings/setup-2fa").actingAs(token).send({ enable: false });
+  test("Two Factor Authorization should flag for phone number if not setted", async ({ client, expect }) => {
+    const response = await client.post("/api/v1/auth/two-factor/setup").actingAs(token).send({ enable: true });
     const settings = await user.settings;
-    expect(response.statusCode).toBe(200);
+    expect(response.status()).toBe(400);
+    expect(response.body().data.phoneNumberRequired).toBe(true);
     expect(settings.twoFactorAuth.enabled).toBe(false);
   });
   
-  it("Two Factor Authorization should flag for phone number if not setted", async () => {
-    const response = await request.post("/api/v1/settings/setup-2fa").actingAs(token).send({ enable: true });
+  test("Two Factor Authorization app method sends OTP Auth URL", async ({ client, expect }) => {
+    const response = await client.post("/api/v1/auth/two-factor/setup").actingAs(token).send({ enable: true, method: "app" });
     const settings = await user.settings;
-    expect(response.statusCode).toBe(400);
-    expect(response.body.data.phoneNumberRequired).toBe(true);
-    expect(settings.twoFactorAuth.enabled).toBe(false);
-  });
-  
-  it("Two Factor Authorization app method sends OTP Auth URL", async () => {
-    const response = await request.post("/api/v1/settings/setup-2fa").actingAs(token).send({ enable: true, method: "app" });
-    const settings = await user.settings;
-    expect(response.statusCode).toBe(200);
-    expect(response.body.data).toHaveProperty("otpauthURL");
-    expect(response.body.data.recoveryCodes).toHaveLength(10);
+    expect(response.status()).toBe(200);
+    expect(response.body().data).toHaveProperty("otpauthURL");
+    expect(response.body().data.recoveryCodes).toHaveLength(10);
     expect(settings.twoFactorAuth.enabled).toBe(true);
   });
 
-  it("Should change Two Factor Authorization method", { mfa: true, phone: true }, async () => {
-    const response = await request.post("/api/v1/settings/setup-2fa").actingAs(token).send({ method: "call" });
+  test("Should change Two Factor Authorization method", { mfa: true, phone: true }, async ({ client, expect }) => {
+    const response = await client.post("/api/v1/auth/two-factor/setup").actingAs(token).send({ method: "call" });
     const settings = await user.settings;
-    expect(response.statusCode).toBe(200);
-    expect(response.body.data.recoveryCodes).toHaveLength(10);
+    expect(response.status()).toBe(200);
+    expect(response.body().data.recoveryCodes).toHaveLength(10);
     expect(settings.twoFactorAuth.method).toBe("call");
   });
 

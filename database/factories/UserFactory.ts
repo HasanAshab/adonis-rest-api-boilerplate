@@ -39,18 +39,6 @@ export default class UserFactory extends Factory<User> {
 		});
 	}
 
-	hasSettings(enableTwoFactorAuth = false) {
-		return this.external((user: User) => {
-		  return user.related('settings').create({ 
-		    twoFactorAuth: { 
-		      enabled: enableTwoFactorAuth,
-		      method: 'sms',
-		      secret: null
-		    }
-		  });
-		});
-	}
-
 	withProfile(url = this.faker.internet.avatar()) {
 		return this.state(user => {
 			user.profile = url;
@@ -64,4 +52,17 @@ export default class UserFactory extends Factory<User> {
 			return user;
 		});
 	}
+	
+	hasSettings(enableTwoFactorAuth = false) {
+		return this.external((user: User) => {
+		  return user.related('settings').create({ 
+		    twoFactorAuth: { 
+		      enabled: enableTwoFactorAuth,
+		      method: 'sms',
+		      secret: null
+		    }
+		  });
+		});
+	}
+
 }

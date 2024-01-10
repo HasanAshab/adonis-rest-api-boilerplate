@@ -1,6 +1,8 @@
 import { inject } from '@adonisjs/fold';
-import { DateTime } from 'luxon'
+import { DateTime } from 'luxon';
+import { randomBytes } from 'crypto';
 import type User from 'App/Models/User';
+import Hash from '@ioc:Adonis/Core/Hash';
 import type { TwoFactorAuthSettings } from 'App/Models/Settings';
 import Token from 'App/Models/Token';
 import speakeasy from 'speakeasy';
@@ -132,9 +134,9 @@ export default class TwoFactorAuthService {
 		const promises: Promise<void>[] = [];
 		for (let i = 0; i < count; i++) {
 			const generateCode = async () => {
-				const code = crypto.randomBytes(8).toString('hex');
+				const code = randomBytes(8).toString('hex');
 				rawCodes.push(code);
-				user.recoveryCodes = await Hash.make(code);
+				user.recoveryCodes.push(await Hash.make(code));
 			};
 			promises.push(generateCode());
 		}
