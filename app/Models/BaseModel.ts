@@ -3,6 +3,12 @@ import { types } from '@ioc:Adonis/Core/Helpers';
 
 
 export default class BaseModel extends Model {
+  public async loadIfNotLoaded(relation: string) {
+    if(this[relation] === undefined) {
+      return await this.load(relation);
+    }
+  }
+  
   public static findByFields(fields: Record<string, any>, options?) {
 	  const query = this.query(options);
 	  
@@ -10,6 +16,13 @@ export default class BaseModel extends Model {
 	    query.where(name, fields[name]);
 	  }
 	  
-	  return query;
+	  return query.first();
+	}
+	
+	
+	public static async exists(value: number | object) {
+	  return types.isNumber(value)
+	    ? !!await this.find(value)
+	    : !!await this.findByFields(value)
 	}
 }

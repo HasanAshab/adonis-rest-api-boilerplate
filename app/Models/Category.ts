@@ -1,7 +1,11 @@
+import BaseModel from "App/Models/BaseModel";
 import { DateTime } from 'luxon';
-import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
+import { compose } from '@poppinss/utils/build/helpers'
+import { column } from '@ioc:Adonis/Lucid/Orm';
+import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
+import HasFactory from 'App/Models/Traits/HasFactory'
 
-export default class Category extends BaseModel {
+export default class Category extends compose(BaseModel, HasFactory) {
 	@column({ isPrimary: true })
 	public id: number;
 
@@ -11,15 +15,6 @@ export default class Category extends BaseModel {
 	@column()
 	public slug: string;
 
-	@column()
-	public icon: string;
-
-	@column.dateTime({ autoCreate: true })
-	public createdAt: DateTime;
-
-	@column.dateTime({ autoCreate: true, autoUpdate: true })
-	public updatedAt: DateTime;
+	@attachment()
+	public icon: AttachmentContract;
 }
-
-CategorySchema.plugin(HasFactory);
-CategorySchema.plugin(Attachable);

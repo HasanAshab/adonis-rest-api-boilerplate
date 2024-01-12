@@ -15,11 +15,5 @@ export default function HasFactory(Superclass: NormalizeConstructor<typeof BaseM
   		factory.configure();
   		return factory;
   	}
-  /*	
-  	static bootIfNotBooted () {
-      if (this.name !== 'HasFactoryModel') {
-        super.bootIfNotBooted()
-      }
-    }*/
   }
 }

@@ -11,10 +11,14 @@ Route.post('/register', 'AuthController.register').middleware('recaptcha');
 
 
 Route.group(() => {
-  Route.post("/setup", "AuthController.setupTwoFactorAuth").middleware('auth');
-  //TODO -> Route.post("/send-otp/:user", "AuthController.sendOtp").middleware("throttle:60000,3");
-  //TODO -> Route.post("/generate-recovery-codes", "AuthController.generateRecoveryCodes").middleware("throttle:3600,3", "auth", "verified");
-  //TODO -> Route.post("/recover", "AuthController.recoverAccount").middleware("throttle:3600,1", "recaptcha");
+  Route.post("/recover", "AuthController.recoverAccount").middleware("recaptcha");
+  Route.post("/send-otp/:user", "AuthController.sendOtp").middleware("throttle:60000,3");
+  
+  Route.group(() => {
+    Route.post("/setup", "AuthController.setupTwoFactorAuth");
+    Route.post("/generate-recovery-codes", "AuthController.generateRecoveryCodes").middleware("recaptcha");
+  }).middleware('auth', 'verified');
+  
 }).prefix('/two-factor');
 
 

@@ -2,15 +2,15 @@ import Config from '@ioc:Adonis/Core/Config';
 import Twilio from '@ioc:Adonis/Addons/Twilio';
 
 export default class TwilioService {
-	sendMessage(to: string, body: string) {
+	public sendMessage(to: string, body: string) {
 		return Twilio.messages.create({
 			from: Config.get('twilio.from'),
-			to,
 			body,
+			to
 		});
 	}
 
-	makeCall(to: string, twiml: string) {
+	public makeCall(to: string, twiml: string) {
 		return Twilio.calls.create({
 			from: Config.get('twilio.from'),
 			to,

@@ -14,14 +14,13 @@ export default class extends BaseSchema {
 				.references('users.id')
 				.onDelete('CASCADE');
 				
-				jsonb kore dekh
 			table.jsonb('two_factor_auth').defaultTo({
 				enabled: false,
 				method: 'sms',
 				secret: null,
 			});
 			
-			table.jsonb('notification');
+			table.jsonb('notification').notNullable();
 			table.timestamp('created_at', { useTz: true }).notNullable();
 			table.timestamp('updated_at', { useTz: true }).notNullable();
 		});

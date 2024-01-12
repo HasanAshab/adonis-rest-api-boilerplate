@@ -25,7 +25,7 @@ import { expect } from '@japa/expect';
 
 export const plugins: Required<Config>['plugins'] = [
 	expect(),
-//	runFailedTests(),
+  //runFailedTests(),
 	apiClient(),
 ];
 

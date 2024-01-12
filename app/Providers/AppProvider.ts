@@ -14,7 +14,7 @@ export default class AppProvider {
         
         const normalizedOptions = Object.assign({
           prepare: value => {
-            return typeof value !== 'string'
+            return value && typeof value !== 'string'
               ? JSON.stringify(value)
               : value;
           },

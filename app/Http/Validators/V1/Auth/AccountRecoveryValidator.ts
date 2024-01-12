@@ -1,20 +1,9 @@
-import { Request } from "~/core/express";
-import Validator from "Validator";
+import Validator from 'App/Http/Validators/Validator';
+import { schema } from '@ioc:Adonis/Core/Validator';
 
-interface LoginWithRecoveryCodeRequest {
-  body: { 
-    email: string;
-    code: string;
-  };
+export default class AccountRecoveryValidator extends Validator {
+	public schema = schema.create({
+		email: schema.string(),
+    code: schema.string()
+	});
 }
-
-class LoginWithRecoveryCodeRequest extends Request {
-  static rules() {
-    return {
-      email: Validator.string().email().required(),
-      code: Validator.string().required()
-    }
-  }
-}
-
-export default LoginWithRecoveryCodeRequest;

@@ -1,10 +1,10 @@
 import { test } from '@japa/runner';
 import User from 'App/Models/User';
-import Settings from 'App/Models/Settings';
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
+import Token from 'App/Models/Token';
 
 
-test.group('Auth/TwoFactor', (group) => {
+test.group('Auth/TwoFactor', group => {
   const twoFactorAuthService = new TwoFactorAuthService();
 	let user;
 
@@ -30,11 +30,11 @@ test.group('Auth/TwoFactor', (group) => {
       method: 'sms',
       secret: null
     });
-  }).pin();
+  });
   
   test("Should disable Two Factor Authorization", async ({ client, expect }) => {
     const user = await User.factory().hasSettings(true).withPhoneNumber().create();
-    const response = await client.post("/api/v1/auth/two-factor/setup").actingAs(token).send({ enable: false });
+    const response = await client.post("/api/v1/auth/two-factor/setup").loginAs(user).json({ enable: false });
     await user.load('settings');
     
     expect(response.status()).toBe(200);
@@ -42,67 +42,91 @@ test.group('Auth/TwoFactor', (group) => {
   });
   
   test("Two Factor Authorization should flag for phone number if not setted", async ({ client, expect }) => {
-    const response = await client.post("/api/v1/auth/two-factor/setup").actingAs(token).send({ enable: true });
+    const response = await client.post("/api/v1/auth/two-factor/setup").loginAs(user).json({ enable: true });
     const settings = await user.settings;
+    
     expect(response.status()).toBe(400);
     expect(response.body().data.phoneNumberRequired).toBe(true);
     expect(settings.twoFactorAuth.enabled).toBe(false);
   });
   
   test("Two Factor Authorization app method sends OTP Auth URL", async ({ client, expect }) => {
-    const response = await client.post("/api/v1/auth/two-factor/setup").actingAs(token).send({ enable: true, method: "app" });
-    const settings = await user.settings;
+    const response = await client.post("/api/v1/auth/two-factor/setup")
+      .json({ enable: true, method: "app" })
+      .loginAs(user);
+    
+    await user.load('settings');
+    
     expect(response.status()).toBe(200);
-    expect(response.body().data).toHaveProperty("otpauthURL");
+    expect(response.body().data).toHaveProperty("otpAuthUrl");
     expect(response.body().data.recoveryCodes).toHaveLength(10);
-    expect(settings.twoFactorAuth.enabled).toBe(true);
+    expect(user.settings.twoFactorAuth.enabled).toBe(true);
   });
 
-  test("Should change Two Factor Authorization method", { mfa: true, phone: true }, async ({ client, expect }) => {
-    const response = await client.post("/api/v1/auth/two-factor/setup").actingAs(token).send({ method: "call" });
-    const settings = await user.settings;
+  test("Should change Two Factor Authorization method", async ({ client, expect }) => {
+    const user = await User.factory().hasSettings(true).withPhoneNumber().create();
+
+    const response = await client.post("/api/v1/auth/two-factor/setup")
+      .json({ method: "call" })
+      .loginAs(user);
+      
+    await user.load('settings');
+
     expect(response.status()).toBe(200);
     expect(response.body().data.recoveryCodes).toHaveLength(10);
-    expect(settings.twoFactorAuth.method).toBe("call");
+    expect(user.settings.twoFactorAuth.method).toBe("call");
   });
-
 
   test("Should send otp", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const response = await client.post("/api/v1/auth/send-otp/" + user._id);
-    await sleep(2000)
-    const token = await Token.findOne({ key: user._id, type: "2fa" });
+    
+    const response = await client.post("/api/v1/auth/two-factor/send-otp/" + user.id);
+    const tokenCreated = await Token.exists({ 
+      key: user.id,
+      type: "2fa"
+    });
     
     expect(response.status()).toBe(200);
-    expect(otp).not.toBeNull();
+    expect(tokenCreated).toBe(true);
   });
 
   test("should recover a user with valid recovery code", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const [ code ] = await user.generateRecoveryCodes(1);
-    const response = await client.post("/api/v1/auth/login/recovery-code").json({
+    const [ code ] = await twoFactorAuthService.generateRecoveryCodes(user, 1);
+    const response = await client.post("/api/v1/auth/two-factor/recover").json({
       email: user.email,
       code
     });
+    
     expect(response.status()).toBe(200);
     expect(response.body().data).toHaveProperty("token");
   });
   
-  test("shouldn't login a user with same recovery code multiple times", async ({ client, expect }) => {
+  test("shouldn't recover a user with same recovery code multiple times", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const [ code ] = await user.generateRecoveryCodes(1);
-    const response1 = await client.post("/api/v1/auth/login/recovery-code").json({ email: user.email, code });
-    const response2 = await client.post("/api/v1/auth/login/recovery-code").json({ email: user.email, code });
-    expect(response1.statusCode).toBe(200);
-    expect(response2.statusCode).toBe(401);
-    expect(response1.body.data).toHaveProperty("token");
-    expect(response2.body).not.toHaveProperty("data");
-  });
+    const data = {
+      email: user.email,
+      code: (await twoFactorAuthService.generateRecoveryCodes(user, 1))[0]
+    }
+
+    const response1 = await client.post("/api/v1/auth/two-factor/recover").json(data);
+    const response2 = await client.post("/api/v1/auth/two-factor/recover").json(data);
+    
+    trace(data)
+    trace(response1.body())
+    trace(response2.body())
+
+    expect(response1.status()).toBe(200);
+    expect(response2.status()).toBe(401);
+    expect(response1.body().data).toHaveProperty("token");
+    expect(response2.body()).not.toHaveProperty("data");
+  }).pin();
   
-  test("shouldn't login a user with invalid recovery code", async ({ client, expect }) => {
+  test("shouldn't recover a user with invalid recovery code", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    await user.generateRecoveryCodes(1);
-    const response = await client.post("/api/v1/auth/login/recovery-code").json({
+    await twoFactorAuthService.generateRecoveryCodes(user, 1);
+    
+    const response = await client.post("/api/v1/auth/two-factor/recover").json({
       email: user.email,
       code: "foo-bar"
     });
@@ -112,8 +136,10 @@ test.group('Auth/TwoFactor', (group) => {
   
   test("should generate new recovery codes", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const oldCodes = await user.generateRecoveryCodes();
-    const response = await client.post("/api/v1/auth/generate-recovery-codes").actingAs(user.createToken());
+    const oldCodes = await twoFactorAuthService.generateRecoveryCodes(user);
+    
+    const response = await client.post("/api/v1/auth/two-factor/generate-recovery-codes").loginAs(user);
+   
     expect(response.status()).toBe(200);
     expect(response.body().data).toHaveLength(10);
     expect(response.body().data).not.toEqual(oldCodes);

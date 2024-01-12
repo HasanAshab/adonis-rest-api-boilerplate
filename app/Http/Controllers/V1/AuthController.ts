@@ -11,7 +11,7 @@ import LoginValidator from 'App/Http/Validators/V1/Auth/Login/LoginValidator';
 import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator';
 import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPasswordValidator';
 import SetupTwoFactorAuthValidator from 'App/Http/Validators/V1/Auth/SetupTwoFactorAuthValidator';
-//import AccountRecoveryValidator from 'App/Http/Validators/V1/Auth/AccountRecoveryValidator';
+import AccountRecoveryValidator from 'App/Http/Validators/V1/Auth/AccountRecoveryValidator';
 
 
 @inject()
@@ -26,13 +26,13 @@ export default class AuthController {
 		const registrationData = await request.validate(RegisterValidator);
     
     const user = await this.authService.register(registrationData);
-      
-		Event.fire('registered', {
+
+		Event.emit('registered', {
 			version: 'v1',
 			method: 'internal',
 			user,
 		});
-		//Event.emit(new Registered({}))
+		//Event.fire(new Registered({}))
 
 		const profileUrl = ''; //Route.makeUrl("v1_users.show", [user.username]);
 
@@ -103,7 +103,7 @@ export default class AuthController {
     
     return {
       message: "Account recovered successfully!",
-      token
+      data: { token }
     }
   }
 

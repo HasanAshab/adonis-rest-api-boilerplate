@@ -1,8 +1,9 @@
 import { inject } from '@adonisjs/fold';
 import { DateTime } from 'luxon';
 import { randomBytes } from 'crypto';
-import type User from 'App/Models/User';
 import Hash from '@ioc:Adonis/Core/Hash';
+import Config from '@ioc:Adonis/Core/Config';
+import User from 'App/Models/User';
 import type { TwoFactorAuthSettings } from 'App/Models/Settings';
 import Token from 'App/Models/Token';
 import speakeasy from 'speakeasy';
@@ -13,18 +14,15 @@ import InvalidOtpException from 'App/Exceptions/InvalidOtpException';
 
 export interface TwoFactorAuthData {
   recoveryCodes: string[];
-  otpauthURL?: string;
+  otpAuthUrl?: string;
 }
 
+//TODO configurable
 @inject()
 export default class TwoFactorAuthService {
 	constructor(private readonly twilioService: TwilioService) {}
 
-	public generateOTPCode() {
-		return Math.floor(100000 + Math.random() * 900000).toString();
-	}
-  
-  //TODO configurable
+  //TODO with direct query
 	public async enable(user: User, method?: TwoFactorAuthSettings['method']) {
 		if (!user.phoneNumber && method !== 'app') {
 			throw new PhoneNumberRequiredException();
@@ -34,53 +32,62 @@ export default class TwoFactorAuthService {
 			recoveryCodes: await this.generateRecoveryCodes(user),
 		};
 		
-		const twoFactorAuth: Partial<TwoFactorAuthSettings> = {
-			enabled: true,
-			secret: null,
-			method,
-		};
-		
+		await user.loadIfNotLoaded('settings')
+
+		const { twoFactorAuth } = user.settings;
+
+		twoFactorAuth.enabled = true;
+		twoFactorAuth.method = method ?? twoFactorAuth.method;
+
 		if (method === 'app') {
 			twoFactorAuth.secret = speakeasy.generateSecret({ length: 20 }).ascii;
 			const appName = Config.get<string>('app.name');
-			data.otpauthURL = speakeasy.otpauthURL({
+			
+			data.otpAuthUrl = speakeasy.otpauthURL({
 				secret: twoFactorAuth.secret,
 				label: appName,
 				issuer: appName,
 			});
 		}
 		
-    await user.related('settings').query().update({ twoFactorAuth });
+    await user.settings.save();
 		return data;
 	}
 
 	async disable(user: User) {
-		const { modifiedCount } = await Settings.updateOne(
-			{ userId: user._id },
-			{ 'twoFactorAuth.enabled': false },
-		);
-		if (modifiedCount !== 1)
-			throw new Error('Failed to disable two factor auth for user: ' + user);
+		await user.loadIfNotLoaded('settings');
+		user.settings.twoFactorAuth.enabled = false;
+		await user.settings.save();
 	}
 
 	async sendOtp(user: User, method?: 'sms' | 'call') {
-		if (!user.phoneNumber) return null;
-		if (!method) {
-			const { twoFactorAuth } = await user.settings;
-			if (twoFactorAuth.method === 'app') return null;
-			method = twoFactorAuth.method;
+		if (!user.phoneNumber) {
+		  return null;
 		}
+		
+		if (!method) {
+			await user.loadIfNotLoaded('settings');
+			method = user.settings.twoFactorAuth.method;
+			if (method === 'app') {
+			  return null;
+			}
+		}
+		
 		const code = await this.createToken(user);
-		if (method === 'sms')
+		
+		if (method === 'sms') {
 			await this.twilioService.sendMessage(
 				user.phoneNumber,
-				'Your verification code is: ' + code,
+				'Your verification code is: ' + code
 			);
-		else if (method === 'call')
+		}
+		else if (method === 'call') {
 			await this.twilioService.makeCall(
 				user.phoneNumber,
 				`<Response><Say>Your verification code is ${code}</Say></Response>`,
 			);
+		}
+		
 		return code;
 	}
 
@@ -92,6 +99,7 @@ export default class TwoFactorAuthService {
 		let isValid = false;
 
 		if (method === 'app') {
+		  await user.loadIfNotLoaded('settings');
 			const { secret } = user.settings.twoFactorAuth;
 			if (!secret) {
 				throw new Error("Can not verify otp through 'app' method without having secret");
@@ -154,5 +162,9 @@ export default class TwoFactorAuthService {
 			return;
 		}
 		throw new InvalidRecoveryCodeException;
+	}
+
+  public generateOTPCode() {
+		return Math.floor(100000 + Math.random() * 900000).toString();
 	}
 }
