@@ -112,15 +112,11 @@ test.group('Auth/TwoFactor', group => {
     const response1 = await client.post("/api/v1/auth/two-factor/recover").json(data);
     const response2 = await client.post("/api/v1/auth/two-factor/recover").json(data);
     
-    trace(data)
-    trace(response1.body())
-    trace(response2.body())
-
     expect(response1.status()).toBe(200);
     expect(response2.status()).toBe(401);
     expect(response1.body().data).toHaveProperty("token");
     expect(response2.body()).not.toHaveProperty("data");
-  }).pin();
+  });
   
   test("shouldn't recover a user with invalid recovery code", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();

@@ -10,6 +10,7 @@ import speakeasy from 'speakeasy';
 import TwilioService from 'App/Services/TwilioService';
 import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException';
 import InvalidOtpException from 'App/Exceptions/InvalidOtpException';
+import InvalidRecoveryCodeException from 'App/Exceptions/InvalidRecoveryCodeException';
 
 
 export interface TwoFactorAuthData {
@@ -33,9 +34,7 @@ export default class TwoFactorAuthService {
 		};
 		
 		await user.loadIfNotLoaded('settings')
-
 		const { twoFactorAuth } = user.settings;
-
 		twoFactorAuth.enabled = true;
 		twoFactorAuth.method = method ?? twoFactorAuth.method;
 
