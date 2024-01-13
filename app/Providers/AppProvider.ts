@@ -33,7 +33,7 @@ export default class AppProvider {
 	private extendModelQueryBuilder() {
 	  const { ModelQueryBuilder } = this.app.container.use('Adonis/Lucid/Database')
 
-    ModelQueryBuilder.macro('whereFields', function (fields: Record<string, any>) {
+    ModelQueryBuilder.macro('whereEqual', function (fields: Record<string, any>) {
       for(const name in fields) {
 	      this.where(name, fields[name]);
 	    }

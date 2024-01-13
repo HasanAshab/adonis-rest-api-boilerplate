@@ -3,16 +3,15 @@ import Route from '@ioc:Adonis/Core/Route';
 /**
  * Endpoints to authenticate users
  */
-
+ 
 Route.post('/register', 'AuthController.register').middleware('recaptcha');
 // Route.get("social/callback/:provider(google|facebook)", "loginWithSocialProvider");
-//   Route.patch("/change-phone-number", "changePhoneNumber").middleware("auth", "verified");
 
 
-
+// Two factor authentication
 Route.group(() => {
   Route.post("/recover", "AuthController.recoverAccount").middleware("recaptcha");
-  Route.post("/send-otp/:user", "AuthController.sendOtp").middleware("throttle:60000,3");
+  Route.post("/send-otp/:id", "AuthController.sendOtp").middleware("throttle:60000,3");
   
   Route.group(() => {
     Route.post("/setup", "AuthController.setupTwoFactorAuth");
@@ -22,7 +21,7 @@ Route.group(() => {
 }).prefix('/two-factor');
 
 
-// Login with various methods
+// Login through various methods
 Route.group(() => {
 	Route.post('/', 'AuthController.login').middleware(['throttle:global', 'recaptcha']);
 
@@ -38,7 +37,6 @@ Route.group(() => {
 Route.group(() => {
 	Route.post('/forgot', 'AuthController.forgotPassword').middleware(['recaptcha', 'throttle:10000,2']);
 	Route.patch('/reset', 'AuthController.resetPassword');
-	//Route.patch("/change", "AuthController.changePassword").middleware("auth", "verified");
 }).prefix('/password');
 
 // Verify user

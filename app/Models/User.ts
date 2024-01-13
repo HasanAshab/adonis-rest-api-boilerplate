@@ -31,10 +31,10 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	public phoneNumber?: string;
 
 	@column()
-	public role: 'novice' | 'admin';
+	public role: 'novice' | 'admin' = 'novice';
 
 	@column()
-	public verified: boolean;
+	public verified = false;
 
 	@column({ serializeAs: null })
 	public password?: string;

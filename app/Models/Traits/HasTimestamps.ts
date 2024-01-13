@@ -1,14 +1,26 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import type { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
 import { DateTime } from 'luxon'
+import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
 
 
-export default function HasTimestamps(Superclass: NormalizeConstructor<typeof BaseModel>) {
+export default function HasTimestamps(Superclass: NormalizeConstructor < typeof BaseModel >) {
   return class extends Superclass {
-    @column.dateTime({ autoCreate: true })
-	  public createdAt: DateTime;
+    public static boot() {
+      if(this.booted) return
+      super.boot();
 
-	  @column.dateTime({ autoCreate: true, autoUpdate: true })
-	  public updatedAt: DateTime;
+      this.$addColumn('createdAt', 'datetime')
+      this.$addColumn('updatedAt', 'datetime')
+
+      this.before('save', user => {
+        if (!user.createdAt) {
+          user.createdAt = DateTime.local().toISO()
+        }
+        user.updatedAt = DateTime.local().toISO()
+      });
+    }
+
+    public createdAt: DateTime;
+    public updatedAt: DateTime;
   }
 }

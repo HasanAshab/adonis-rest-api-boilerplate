@@ -3,7 +3,6 @@ import User from 'App/Models/User';
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
 import Token from 'App/Models/Token';
 
-
 test.group('Auth/TwoFactor', group => {
   const twoFactorAuthService = new TwoFactorAuthService();
 	let user;

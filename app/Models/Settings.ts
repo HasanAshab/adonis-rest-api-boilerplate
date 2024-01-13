@@ -19,7 +19,11 @@ export default class Settings extends BaseModel {
   public userId: string;
 
   @column.json()
-  public twoFactorAuth: TwoFactorAuthSettings;
+  public twoFactorAuth: TwoFactorAuthSettings = {
+		enabled: false,
+		method: 'sms',
+		secret: null
+  };
 
   @column.json()
   public notification: Record < string, Record < string, boolean>>;
