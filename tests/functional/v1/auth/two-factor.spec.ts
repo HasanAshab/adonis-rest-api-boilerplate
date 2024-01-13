@@ -2,6 +2,7 @@ import { test } from '@japa/runner';
 import User from 'App/Models/User';
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
 import Token from 'App/Models/Token';
+import Twilio from '@ioc:Adonis/Addons/Twilio';
 
 test.group('Auth/TwoFactor', group => {
   const twoFactorAuthService = new TwoFactorAuthService();
@@ -11,6 +12,16 @@ test.group('Auth/TwoFactor', group => {
 	
 
 	group.each.setup(async () => {
+	  Twilio.fake();
+	});
+	  
+	group.each.setup(async () => {
+	  Twilio.restore()
+		user = await User.factory().hasSettings().create();
+	});
+	
+	group.each.setup(async () => {
+	  Twilio.fake()
 		user = await User.factory().hasSettings().create();
 	});
   
@@ -76,8 +87,40 @@ test.group('Auth/TwoFactor', group => {
     expect(user.settings.twoFactorAuth.method).toBe("call");
   });
 
-  test("Should send otp", async ({ client, expect }) => {
+  test("Should send otp through sms", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
+    
+    const response = await client.post("/api/v1/auth/two-factor/send-otp/" + user.id);
+    
+    const tokenCreated = await Token.exists({ 
+      key: user.id,
+      type: "2fa"
+    });
+    
+    Twilio.assertMessaged(user.phoneNumber);
+    
+    expect(response.status()).toBe(200);
+    expect(tokenCreated).toBe(true);
+  });
+  
+  test("Should send otp through call", async ({ client, expect }) => {
+    const user = await User.factory().withPhoneNumber().hasSettings(true, 'call').create();
+    
+    const response = await client.post("/api/v1/auth/two-factor/send-otp/" + user.id);
+    
+    const tokenCreated = await Token.exists({ 
+      key: user.id,
+      type: "2fa"
+    });
+    
+    Twilio.assertCalled(user.phoneNumber);
+    
+    expect(response.status()).toBe(200);
+    expect(tokenCreated).toBe(true);
+  });
+  
+  test("Shouldn't send otp when the method is app", async ({ client, expect }) => {
+    const user = await User.factory().withPhoneNumber().hasSettings(true, 'app').create();
     
     const response = await client.post("/api/v1/auth/two-factor/send-otp/" + user.id);
     const tokenCreated = await Token.exists({ 
@@ -86,8 +129,23 @@ test.group('Auth/TwoFactor', group => {
     });
     
     expect(response.status()).toBe(200);
-    expect(tokenCreated).toBe(true);
+    expect(tokenCreated).toBe(false);
   });
+
+  test("Shouldn't send otp to phone numberless user", async ({ client, expect }) => {
+    const user = await User.factory().hasSettings(true).create();
+    
+    const response = await client.post("/api/v1/auth/two-factor/send-otp/" + user.id);
+    const tokenCreated = await Token.exists({ 
+      key: user.id,
+      type: "2fa"
+    });
+    
+    expect(response.status()).toBe(200);
+    expect(tokenCreated).toBe(false);
+  });
+  
+
 
   test("should recover a user with valid recovery code", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();

@@ -3,11 +3,11 @@ import { DateTime } from 'luxon';
 import { randomBytes } from 'crypto';
 import Hash from '@ioc:Adonis/Core/Hash';
 import Config from '@ioc:Adonis/Core/Config';
+import Twilio from '@ioc:Adonis/Addons/Twilio';
 import User from 'App/Models/User';
 import type { TwoFactorAuthSettings } from 'App/Models/Settings';
 import Token from 'App/Models/Token';
 import speakeasy from 'speakeasy';
-import TwilioService from 'App/Services/TwilioService';
 import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException';
 import InvalidOtpException from 'App/Exceptions/InvalidOtpException';
 import InvalidRecoveryCodeException from 'App/Exceptions/InvalidRecoveryCodeException';
@@ -21,8 +21,6 @@ export interface TwoFactorAuthData {
 //TODO configurable
 @inject()
 export default class TwoFactorAuthService {
-	constructor(private readonly twilioService: TwilioService) {}
-
   //TODO with direct query
 	public async enable(user: User, method?: TwoFactorAuthSettings['method']) {
 		if (!user.phoneNumber && method !== 'app') {
@@ -60,6 +58,7 @@ export default class TwoFactorAuthService {
 	}
 
 	async sendOtp(user: User, method?: 'sms' | 'call') {
+	console.log(Twilio)
 		if (!user.phoneNumber) {
 		  return null;
 		}
@@ -75,13 +74,14 @@ export default class TwoFactorAuthService {
 		const code = await this.createToken(user);
 		
 		if (method === 'sms') {
-			await this.twilioService.sendMessage(
+			await Twilio.sendMessage(
 				user.phoneNumber,
 				'Your verification code is: ' + code
 			);
 		}
+		
 		else if (method === 'call') {
-			await this.twilioService.makeCall(
+			await Twilio.makeCall(
 				user.phoneNumber,
 				`<Response><Say>Your verification code is ${code}</Say></Response>`,
 			);

@@ -53,12 +53,15 @@ export default class UserFactory extends Factory<User> {
 		});
 	}
 	
-	hasSettings(enableTwoFactorAuth = false) {
+	hasSettings(
+	  enableTwoFactorAuth = false,
+	  method: TwoFactorAuthMethod = 'sms'
+	) {
 		return this.external((user: User) => {
 		  return user.related('settings').create({ 
 		    twoFactorAuth: { 
 		      enabled: enableTwoFactorAuth,
-		      method: 'sms',
+		      method,
 		      secret: null
 		    }
 		  });

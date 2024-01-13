@@ -1,8 +1,7 @@
 import type RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator';
-import { inject } from '@adonisjs/fold';
+import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter';
 import Config from '@ioc:Adonis/Core/Config';
 import { Limiter } from '@adonisjs/limiter/build/services';
-import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter';
 import User from 'App/Models/User';
 import Token from 'App/Models/Token';
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
@@ -12,7 +11,7 @@ import OtpRequiredException from 'App/Exceptions/OtpRequiredException';
 import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 
 
-interface LoginCredentials {
+export interface LoginCredentials {
   email: string;
   password: string;
   otp?: string;
