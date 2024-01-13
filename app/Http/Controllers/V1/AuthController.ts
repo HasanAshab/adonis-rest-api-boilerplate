@@ -56,6 +56,11 @@ export default class AuthController {
 			data: { token }
 		}
 	}
+	
+	public async logout({ auth }: HttpContextContract) {
+    await auth.logout();
+		return 'Logged out successfully!';
+	}
   
   public async forgotPassword({ request, response }: HttpContextContract) {
 		const { email } = await request.validate(ForgotPasswordValidator);
@@ -70,8 +75,6 @@ export default class AuthController {
 		await Mail.to(user.email).send(new PasswordChangedMail());
 		return 'Password changed successfully!';
 	}
-
-
 
   public async setupTwoFactorAuth({ request, auth }: HttpContextContract) {
     const { enable = true, method } = await request.validate(SetupTwoFactorAuthValidator);

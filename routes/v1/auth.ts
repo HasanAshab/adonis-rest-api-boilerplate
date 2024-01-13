@@ -5,8 +5,22 @@ import Route from '@ioc:Adonis/Core/Route';
  */
  
 Route.post('/register', 'AuthController.register').middleware('recaptcha');
+
 // Route.get("social/callback/:provider(google|facebook)", "loginWithSocialProvider");
 
+// Login through various methods
+Route.group(() => {
+	Route.post('/', 'AuthController.login').middleware(['throttle:global', 'recaptcha']);
+
+	// login with external providers
+	/* Route.group(() => {
+      Route.get("/", "redirectToSocialLoginProvider");
+      Route.post("/final-step", "socialLoginFinalStep");
+    }).prefix("/social/:provider(google|facebook)");
+    */
+}).prefix('/login');
+
+Route.post('/logout', 'AuthController.logout').middleware('auth');
 
 // Two factor authentication
 Route.group(() => {
@@ -21,23 +35,12 @@ Route.group(() => {
 }).prefix('/two-factor');
 
 
-// Login through various methods
-Route.group(() => {
-	Route.post('/', 'AuthController.login').middleware(['throttle:global', 'recaptcha']);
-
-	// login with external providers
-	/* Route.group(() => {
-      Route.get("/", "redirectToSocialLoginProvider");
-      Route.post("/final-step", "socialLoginFinalStep");
-    }).prefix("/social/:provider(google|facebook)");
-    */
-}).prefix('/login');
-
-// User password management
+// Password Reset
 Route.group(() => {
 	Route.post('/forgot', 'AuthController.forgotPassword').middleware(['recaptcha', 'throttle:10000,2']);
 	Route.patch('/reset', 'AuthController.resetPassword');
 }).prefix('/password');
+
 
 // Verify user
 /*
