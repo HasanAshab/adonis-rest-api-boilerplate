@@ -58,7 +58,6 @@ export default class TwoFactorAuthService {
 	}
 
 	async sendOtp(user: User, method?: 'sms' | 'call') {
-	console.log(Twilio)
 		if (!user.phoneNumber) {
 		  return null;
 		}

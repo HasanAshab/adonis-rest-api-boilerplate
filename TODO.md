@@ -7,11 +7,10 @@ N: nafl -> 2
 E: SP how app pased behind the scene
 
 Fallback: solve type, Eslint, model & migrate, Commands, PR stub cust
+T: app/listenners
 T: standard Exception res format
 I: Abstr listenner, Event class
 T: provide Factory
-T: Api doc
-T: test phonenumberless user 2fa with app method
 
 
 you have to convert mongoose models to lucid model and migration. i will give you my mongoose models

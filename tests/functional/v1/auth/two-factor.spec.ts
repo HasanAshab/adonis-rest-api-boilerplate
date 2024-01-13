@@ -16,7 +16,7 @@ test.group('Auth/TwoFactor', group => {
 	});
 	  
 	group.each.setup(async () => {
-	  Twilio.restore()
+	  Twilio.restore();
 		user = await User.factory().hasSettings().create();
 	});
 	
@@ -98,7 +98,6 @@ test.group('Auth/TwoFactor', group => {
     });
     
     Twilio.assertMessaged(user.phoneNumber);
-    
     expect(response.status()).toBe(200);
     expect(tokenCreated).toBe(true);
   });
@@ -114,7 +113,6 @@ test.group('Auth/TwoFactor', group => {
     });
     
     Twilio.assertCalled(user.phoneNumber);
-    
     expect(response.status()).toBe(200);
     expect(tokenCreated).toBe(true);
   });
@@ -145,7 +143,6 @@ test.group('Auth/TwoFactor', group => {
     expect(tokenCreated).toBe(false);
   });
   
-
 
   test("should recover a user with valid recovery code", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
