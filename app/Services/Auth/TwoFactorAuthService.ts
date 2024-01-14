@@ -61,7 +61,7 @@ export default class TwoFactorAuthService {
 		if (!user.phoneNumber) {
 		  return null;
 		}
-		
+
 		if (!method) {
 			await user.loadIfNotLoaded('settings');
 			method = user.settings.twoFactorAuth.method;
@@ -118,8 +118,7 @@ export default class TwoFactorAuthService {
 		}
 	}
 
-	async createToken(user: User) {
-		const code = this.generateOTPCode()
+	async createToken(user: User, code = this.generateOTPCode()) {
 		await Token.create({
 			key: user.id,
 			type: '2fa',

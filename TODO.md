@@ -1,5 +1,4 @@
 This: 
-Command
 
 N: nafl -> 0
 
@@ -9,7 +8,6 @@ Fallback: solve type, Eslint, model & migrate, Commands,
 
 T: app/listenners
 I: Abstr listenner, Event class
-T: provide Factory
 
 
 you have to convert mongoose models to lucid model and migration. i will give you my mongoose models

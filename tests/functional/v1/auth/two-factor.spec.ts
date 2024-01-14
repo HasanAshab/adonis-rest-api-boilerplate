@@ -100,11 +100,10 @@ test.group('Auth/TwoFactor', group => {
     Twilio.assertMessaged(user.phoneNumber);
     expect(response.status()).toBe(200);
     expect(tokenCreated).toBe(true);
-  }).pin();
+  });
   
   test("Should send otp through call", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true, 'call').create();
-    
     const response = await client.post("/api/v1/auth/two-factor/send-otp/" + user.id);
     
     const tokenCreated = await Token.exists({ 
@@ -112,10 +111,10 @@ test.group('Auth/TwoFactor', group => {
       type: "2fa"
     });
     
-    Twilio.assertCalled(user.phoneNumber);
     expect(response.status()).toBe(200);
     expect(tokenCreated).toBe(true);
-  });
+    Twilio.assertCalled(user.phoneNumber);
+  }).pin();
   
   test("Shouldn't send otp when the method is app", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true, 'app').create();
@@ -132,7 +131,6 @@ test.group('Auth/TwoFactor', group => {
 
   test("Shouldn't send otp to phone numberless user", async ({ client, expect }) => {
     const user = await User.factory().hasSettings(true).create();
-    
     const response = await client.post("/api/v1/auth/two-factor/send-otp/" + user.id);
     const tokenCreated = await Token.exists({ 
       key: user.id,

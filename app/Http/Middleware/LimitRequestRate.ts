@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import Env from '@ioc:Adonis/Core/Env';
 import ThrottleMiddleware from '@adonisjs/limiter/build/throttle';
 import { Limiter } from '@adonisjs/limiter/build/services';
 import { inject } from '@adonisjs/core/build/standalone';
@@ -14,6 +15,10 @@ export default class LimitRequestRate extends ThrottleMiddleware {
 		next: () => Promise<void>,
 		[duration, count]: string[],
 	) {
+	  if(Env.get('NODE_ENV') === 'test') {
+	    return await next();
+	  }
+	  
 		if (!count) {
 			return await super.handle(ctx, next, duration);
 		}
