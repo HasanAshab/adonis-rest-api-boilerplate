@@ -114,7 +114,7 @@ test.group('Auth/TwoFactor', group => {
     expect(response.status()).toBe(200);
     expect(tokenCreated).toBe(true);
     Twilio.assertCalled(user.phoneNumber);
-  }).pin();
+  });
   
   test("Shouldn't send otp when the method is app", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true, 'app').create();
