@@ -53,11 +53,11 @@ test.group('Auth/TwoFactor', group => {
   
   test("Two Factor Authorization should flag for phone number if not setted", async ({ client, expect }) => {
     const response = await client.post("/api/v1/auth/two-factor/setup").loginAs(user).json({ enable: true });
-    const settings = await user.settings;
+    await user.load('settings');
     
-    expect(response.status()).toBe(400);
-    expect(response.body().data.phoneNumberRequired).toBe(true);
-    expect(settings.twoFactorAuth.enabled).toBe(false);
+    expect(response.status()).toBe(422);
+    expect(response.body().phoneNumberRequired).toBe(true);
+    expect(user.settings.twoFactorAuth.enabled).toBe(false);
   });
   
   test("Two Factor Authorization app method sends OTP Auth URL", async ({ client, expect }) => {

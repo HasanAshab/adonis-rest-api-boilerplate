@@ -5,6 +5,7 @@ import { string } from '@ioc:Adonis/Core/Helpers'
 export default abstract class ApiException extends Exception {
 	abstract status: number;
 	abstract message: string;
+	abstract payload: object;
 	headers = {};
 	
 	constructor() {
@@ -26,6 +27,6 @@ export default abstract class ApiException extends Exception {
 		ctx.response
 			.status(error.status)
 			.setHeaders(await error.withHeaders(ctx))
-			.send(error.message);
+			.send(error.payload ?? error.message);
 	}
 }
