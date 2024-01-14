@@ -1,5 +1,7 @@
 import { Twilio as TwilioClient } from 'twilio';
-import expect from 'expect'
+import { TwilioFakedData, TwilioConfig } from '@ioc:Adonis/Addons/Twilio';
+import expect from 'expect';
+
 
 export default class Twilio {
   private client: TwilioClient;
@@ -55,10 +57,14 @@ export default class Twilio {
 
   
   public assertMessaged(phoneNumber: string) {
-    expect(this.faked.messages.includes(phoneNumber)).toBe(true);
+    assertWithContext(() => {
+      expect(this.faked.messages.includes(phoneNumber)).toBe(true);
+    })
   }
   
   public assertCalled(phoneNumber: string) {
-    expect(this.faked.calls.includes(phoneNumber)).toBe(true);
+    assertWithContext(() => {
+      expect(this.faked.calls.includes(phoneNumber)).toBe(true);
+    })
   }
 }

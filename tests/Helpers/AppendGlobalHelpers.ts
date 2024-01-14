@@ -25,3 +25,13 @@ globalThis.refreshDatabase = function(group) {
     return () => Database.rollbackGlobalTransaction()
   });
 }
+
+globalThis.assertWithContext = function(cb, steps = 3) {
+  try {
+    cb();
+  }
+  catch(e) {
+    e.stack = e.stack.split('\n').toSpliced(4, steps).join('\n');
+    throw e
+  }
+}

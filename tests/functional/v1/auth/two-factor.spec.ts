@@ -100,7 +100,7 @@ test.group('Auth/TwoFactor', group => {
     Twilio.assertMessaged(user.phoneNumber);
     expect(response.status()).toBe(200);
     expect(tokenCreated).toBe(true);
-  });
+  }).pin();
   
   test("Should send otp through call", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true, 'call').create();
