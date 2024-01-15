@@ -5,7 +5,9 @@
 		"@adonisjs/core/build/commands/index.js",
 		"@adonisjs/repl/build/commands",
 		"@adonisjs/bouncer/build/commands",
-		"@adonisjs/lucid/build/commands"
+		"@adonisjs/lucid/build/commands",
+		"@adonisjs/mail/build/commands",
+		"@verful/notifications/build/commands"
 	],
 	"directories": {
 		"providers": "app/Providers"
@@ -13,7 +15,8 @@
 	"namespaces": {
 		"httpControllers": "App/Http/Controllers",
 		"validators": "App/Http/Validators",
-		"middleware": "App/Http/Middleware"
+		"middleware": "App/Http/Middleware",
+		"mailers": "App/Mails"
 	},
 	"exceptionHandlerNamespace": "App/Exceptions/Handler",
 	"aliases": {
@@ -45,7 +48,9 @@
 		"@adonisjs/auth",
 		"@adonisjs/attachment-lite",
 		"./app/Providers/EventProvider",
-		"@adonisjs/route-model-binding/build/providers/RmbProvider"
+		"@adonisjs/route-model-binding/build/providers/RmbProvider",
+		"@adonisjs/mail",
+		"@verful/notifications"
 	],
 	"aceProviders": [
 		"@adonisjs/repl"

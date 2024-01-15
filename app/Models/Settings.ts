@@ -26,7 +26,7 @@ export default class Settings extends BaseModel {
   };
 
   @column.json()
-  public notification: Record < string, Record < string, boolean>>;
+  public notification: Record <string, Record<string, boolean>> = {};
 
   @column.dateTime({
     autoCreate: true

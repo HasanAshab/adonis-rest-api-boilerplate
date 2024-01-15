@@ -6,6 +6,7 @@ import Event from '@ioc:Adonis/Core/Event';
 import User from 'App/Models/User';
 import BasicAuthService from 'App/Services/Auth/BasicAuthService';
 import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService";
+import PasswordChangedMail from "App/Mails/PasswordChangedMail";
 import RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator';
 import LoginValidator from 'App/Http/Validators/V1/Auth/Login/LoginValidator';
 import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator';
@@ -63,16 +64,16 @@ export default class AuthController {
 	}
   
   public async forgotPassword({ request, response }: HttpContextContract) {
-		const { email } = await request.validate(ForgotPasswordValidator);
-		await this.authService.forgotPassword(email);
+		const { email, redirectUrl } = await request.validate(ForgotPasswordValidator);
+		await this.authService.forgotPassword(email, redirectUrl);
 		response.accepted('Password reset link sent to your email!');
 	}
 
-	public async resetPassword({ request }: HttpContextContract) {
-		const { id, password, token } = await request.validate(ResetPasswordValidator);
-		const user = await User.findOrFail(id);
+  @bind()
+	public async resetPassword({ request }: HttpContextContract, user: User) {
+		const { password, token } = await request.validate(ResetPasswordValidator);
 		await this.authService.resetPassword(user, token, password);
-		await Mail.to(user.email).send(new PasswordChangedMail());
+		await new PasswordChangedMail(user).sendLater();
 		return 'Password changed successfully!';
 	}
 

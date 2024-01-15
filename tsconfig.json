@@ -41,7 +41,9 @@
 			"adonis-recaptcha2",
 			"@adonisjs/limiter",
 			"@adonisjs/attachment-lite",
-			"@adonisjs/route-model-binding/build/adonis-typings"
+			"@adonisjs/route-model-binding/build/adonis-typings",
+			"@adonisjs/mail",
+			"@verful/notifications"
 		]
 	}
 }

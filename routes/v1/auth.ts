@@ -38,7 +38,7 @@ Route.group(() => {
 // Password Reset
 Route.group(() => {
 	Route.post('/forgot', 'AuthController.forgotPassword').middleware(['recaptcha', 'throttle:10000,2']);
-	Route.patch('/reset', 'AuthController.resetPassword');
+	Route.patch('/reset/:id', 'AuthController.resetPassword');
 }).prefix('/password');
 
 

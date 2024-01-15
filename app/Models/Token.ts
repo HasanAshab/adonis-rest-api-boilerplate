@@ -50,4 +50,3 @@ export default class Token extends BaseModel {
     return token.data as T;
 	}
 }
-

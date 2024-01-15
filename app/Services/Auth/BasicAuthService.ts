@@ -1,10 +1,12 @@
 import type RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator';
 import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter';
 import Config from '@ioc:Adonis/Core/Config';
+import { DateTime } from 'luxon';
 import { Limiter } from '@adonisjs/limiter/build/services';
 import User from 'App/Models/User';
 import Token from 'App/Models/Token';
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
+import ResetPasswordNotification from 'App/Notifications/ResetPasswordNotification';
 import InvalidCredentialException from 'App/Exceptions/InvalidCredentialException';
 import LoginAttemptLimitExceededException from 'App/Exceptions/LoginAttemptLimitExceededException';
 import OtpRequiredException from 'App/Exceptions/OtpRequiredException';
@@ -75,18 +77,28 @@ export default class BasicAuthService {
     return await user.createToken();
   }
 
-	public async forgotPassword(user: User | string) {
+	public async forgotPassword(user: User | string, redirectUrl: string) {
 	  if(typeof user === 'string') {
-	    user = await User.findBy('email', email).whereNotNull('password');
+	    user = await User.internals().where('email', user).first();
 	  }
-		if (!user) return false;
-		await user.sendResetPasswordNotification();
-		
-		return true;
+	  
+	  const token = await this.createForgotPasswordToken(user);
+	  await user?.notify(new ResetPasswordNotification(token, redirectUrl));
+		return !!user;
+	}
+	
+	public async createForgotPasswordToken(user: User) {
+		const { secret } = await Token.create({
+			key: user.id,
+			type: 'resetPassword',
+			expiresAt: DateTime.local().plus({ days: 3 })
+		});
+		return secret;
 	}
 
+
 	public async resetPassword(user: User, token: string, password: string) {
-		await Token.verify(user._id, 'resetPassword', token);
+		await Token.verify(user.id, 'resetPassword', token);
 		user.password = password;
 		await user.save();
 	}

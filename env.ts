@@ -22,7 +22,15 @@ export default Env.rules({
 
 	TWILIO_SID: Env.schema.string(),
 	TWILIO_AUTH_TOKEN: Env.schema.string(),
-
+  
+  SMTP_HOST: Env.schema.string({ format: 'host' }),
+  SMTP_PORT: Env.schema.number(),
+  SMTP_USERNAME: Env.schema.string(),
+  SMTP_PASSWORD: Env.schema.string(),
+  
+  MAILGUN_API_KEY: Env.schema.string(),
+  MAILGUN_DOMAIN: Env.schema.string(),
+  
 	PG_HOST: Env.schema.string({ format: 'host' }),
 	PG_PORT: Env.schema.number(),
 	PG_USER: Env.schema.string(),
@@ -34,16 +42,10 @@ export default Env.rules({
 	REDIS_HOST: Env.schema.string({ format: 'host' }),
 	REDIS_PORT: Env.schema.number(),
 	REDIS_PASSWORD: Env.schema.string.optional(),
-
-	MAIL_HOST: Env.schema.string(),
-	MAIL_PORT: Env.schema.number(),
-	MAIL_USERNAME: Env.schema.string(),
-	MAIL_PASSWORD: Env.schema.string(),
-	MAIL_ENCRYPTION: Env.schema.enum(['tls', 'ssl']),
-
+  
 	GOOGLE_CLIENT_ID: Env.schema.string(),
 	GOOGLE_CLIENT_SECRET: Env.schema.string(),
 
 	FACEBOOK_CLIENT_ID: Env.schema.string(),
-	FACEBOOK_CLIENT_SECRET: Env.schema.string(),
+	FACEBOOK_CLIENT_SECRET: Env.schema.string()
 });

@@ -3,6 +3,7 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator';
 
 export default class ForgotPasswordValidator extends Validator {
 	public schema = schema.create({
-		email: schema.string([rules.email()]),
+		email: schema.string([ rules.email() ]),
+		redirectUrl: schema.string([ rules.url() ]),
 	});
 }
