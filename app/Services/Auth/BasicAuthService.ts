@@ -6,12 +6,11 @@ import { Limiter } from '@adonisjs/limiter/build/services';
 import User from 'App/Models/User';
 import Token from 'App/Models/Token';
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
-import ResetPasswordNotification from 'App/Notifications/ResetPasswordNotification';
+import ResetPasswordMail from "App/Mails/ResetPasswordMail";
 import InvalidCredentialException from 'App/Exceptions/InvalidCredentialException';
 import LoginAttemptLimitExceededException from 'App/Exceptions/LoginAttemptLimitExceededException';
 import OtpRequiredException from 'App/Exceptions/OtpRequiredException';
 import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
-
 
 export interface LoginCredentials {
   email: string;
@@ -77,25 +76,15 @@ export default class BasicAuthService {
     return await user.createToken();
   }
 
-	public async forgotPassword(user: User | string, redirectUrl: string) {
+	public async sendResetPasswordNotification(user: User | string, redirectUrl: string) {
 	  if(typeof user === 'string') {
 	    user = await User.internals().where('email', user).first();
 	  }
-	  
-	  const token = await this.createForgotPasswordToken(user);
-	  await user?.notify(new ResetPasswordNotification(token, redirectUrl));
+
+	  await new ResetPasswordMail(user, redirectUrl).sendLater();
 		return !!user;
 	}
 	
-	public async createForgotPasswordToken(user: User) {
-		const { secret } = await Token.create({
-			key: user.id,
-			type: 'resetPassword',
-			expiresAt: DateTime.local().plus({ days: 3 })
-		});
-		return secret;
-	}
-
 
 	public async resetPassword(user: User, token: string, password: string) {
 		await Token.verify(user.id, 'resetPassword', token);
