@@ -1,4 +1,4 @@
-import { column, beforeCreate } from '@ioc:Adonis/Lucid/Orm'
+import { column, beforeCreate, afterFind } from '@ioc:Adonis/Lucid/Orm'
 import BaseModel from "App/Models/BaseModel";
 import { DateTime } from 'luxon'
 import crypto from "crypto";
@@ -15,14 +15,26 @@ export default class Token extends BaseModel {
   @column()
 	public type: string;
 	
+	@column()
+	public oneTime = false;
+	
 	@column.json()
-	public data: object | null;
+	public data: object | null = null;
 	
 	@column()
-	public secret: string;
+	public secret: string;	
+	
 
   @column.dateTime()
 	public expiresAt: DateTime | null;
+	
+	public isExpired() {
+	  return this.expiresAt && this.expiresAt < DateTime.local();
+	}
+
+	public isNotExpired() {
+	  return !this.isExpired();
+	}
 	
 	public static generateSecret(bytes = 32) {
 	  return crypto.randomBytes(bytes).toString('hex');
@@ -35,18 +47,26 @@ export default class Token extends BaseModel {
 	  }
 	}
 	
+  @afterFind()
+  public static deleteOneTimeTokens(token: Token) {
+    if(token.oneTime) {
+      return token.delete();
+    }
+  }
+	
 	public static async isValid(key: string, type: string, secret: string) {
-    const token = await this.findByFields({ key, type, secret }).first();
+    const token = await this.findByFields({ key, type, secret });
     if (!token) return false;
-    await token.delete();
-    return !token.expiresAt || (token.expiresAt && token.expiresAt > DateTime.local());
+    return token.isNotExpired();
 	}
 	
 	public static async verify<T extends object | null = null>(key: string, type: string, secret: string): Promise<T> {
-    const token = await this.findOneAndDelete({ key, type, secret });
-    if(!token) {
+    const token = await this.findByFields({ key, type, secret });
+
+    if(!token || token?.isExpired()) {
       throw new InvalidTokenException();
     }
+    
     return token.data as T;
 	}
 }

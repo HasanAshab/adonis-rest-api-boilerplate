@@ -1,7 +1,6 @@
 import type RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator';
 import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter';
 import Config from '@ioc:Adonis/Core/Config';
-import { DateTime } from 'luxon';
 import { Limiter } from '@adonisjs/limiter/build/services';
 import User from 'App/Models/User';
 import Token from 'App/Models/Token';
@@ -79,10 +78,11 @@ export default class BasicAuthService {
 	public async sendResetPasswordNotification(user: User | string, redirectUrl: string) {
 	  if(typeof user === 'string') {
 	    user = await User.internals().where('email', user).first();
+	    if(!user) return false;
 	  }
 
 	  await new ResetPasswordMail(user, redirectUrl).sendLater();
-		return !!user;
+		return true;
 	}
 	
 

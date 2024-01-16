@@ -43,7 +43,8 @@
 			"@adonisjs/attachment-lite",
 			"@adonisjs/route-model-binding/build/adonis-typings",
 			"@adonisjs/mail",
-			"@verful/notifications"
+			"@verful/notifications",
+			"@adonisjs/view"
 		]
 	}
 }

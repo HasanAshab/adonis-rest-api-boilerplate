@@ -6,10 +6,11 @@ export default class extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.string('key').index()
-      table.string('type')
+      table.string('key').notNullable().index()
+      table.string('type').notNullable()
+      table.boolean('one_time').notNullable()
       table.jsonb('data').nullable()
-      table.string('secret')
+      table.string('secret').notNullable()
       table.timestamp('expires_at', { useTz: true })
     });
   }

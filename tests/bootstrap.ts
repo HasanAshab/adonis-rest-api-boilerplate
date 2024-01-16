@@ -7,7 +7,7 @@
 
 import type { Config } from '@japa/runner';
 import TestUtils from '@ioc:Adonis/Core/TestUtils';
-import { runFailedTests, specReporter, apiClient } from '@japa/preset-adonis';
+import { runFailedTests, specReporter, assert, apiClient } from '@japa/preset-adonis';
 import { expect } from '@japa/expect';
 
 /*
@@ -26,6 +26,7 @@ import { expect } from '@japa/expect';
 export const plugins: Required<Config>['plugins'] = [
 	expect(),
   //runFailedTests(),
+  assert(),
 	apiClient(),
 ];
 

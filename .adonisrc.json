@@ -50,7 +50,8 @@
 		"./app/Providers/EventProvider",
 		"@adonisjs/route-model-binding/build/providers/RmbProvider",
 		"@adonisjs/mail",
-		"@verful/notifications"
+		"@verful/notifications",
+		"@adonisjs/view"
 	],
 	"aceProviders": [
 		"@adonisjs/repl"
@@ -68,5 +69,11 @@
 	},
 	"testProviders": [
 		"@japa/preset-adonis/TestsProvider"
+	],
+	"metaFiles": [
+		{
+			"pattern": "resources/views/**/*.edge",
+			"reloadServer": false
+		}
 	]
 }

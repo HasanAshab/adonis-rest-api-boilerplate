@@ -22,7 +22,10 @@ export default class AuthController {
 	  private readonly authService: BasicAuthService,
 	  private readonly twoFactorAuthService: TwoFactorAuthService
 	) {}
-
+  
+  /**
+   * @responseBody 201 jdhdh
+   */
 	public async register({ request, response }: HttpContextContract) {
 		const registrationData = await request.validate(RegisterValidator);
     
