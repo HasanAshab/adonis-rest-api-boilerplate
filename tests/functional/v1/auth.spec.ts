@@ -6,62 +6,6 @@ import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
 
 /*
 describe("Auth", () => {
-  
-  const authService = new AuthService();
-  
-  test("Should send otp", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const response = await client.post("/api/v1/auth/send-otp/" + user._id);
-    await sleep(2000)
-    const token = await Token.findOne({ key: user._id, type: "2fa" });
-    
-    expect(response.status()).toBe(200);
-    expect(otp).not.toBeNull();
-  });
-
-  test("should recover a user with valid recovery code", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const [ code ] = await user.generateRecoveryCodes(1);
-    const response = await client.post("/api/v1/auth/login/recovery-code").json({
-      email: user.email,
-      code
-    });
-    expect(response.status()).toBe(200);
-    expect(response.body().data).toHaveProperty("token");
-  });
-  
-  test("shouldn't login a user with same recovery code multiple times", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const [ code ] = await user.generateRecoveryCodes(1);
-    const response1 = await client.post("/api/v1/auth/login/recovery-code").json({ email: user.email, code });
-    const response2 = await client.post("/api/v1/auth/login/recovery-code").json({ email: user.email, code });
-    expect(response1.statusCode).toBe(200);
-    expect(response2.statusCode).toBe(401);
-    expect(response1.body.data).toHaveProperty("token");
-    expect(response2.body).not.toHaveProperty("data");
-  });
-  
-  test("shouldn't login a user with invalid recovery code", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    await user.generateRecoveryCodes(1);
-    const response = await client.post("/api/v1/auth/login/recovery-code").json({
-      email: user.email,
-      code: "foo-bar"
-    });
-    expect(response.status()).toBe(401);
-    expect(response.body()).not.toHaveProperty("data");
-  });
-  
-  test("should generate new recovery codes", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const oldCodes = await user.generateRecoveryCodes();
-    const response = await client.post("/api/v1/auth/generate-recovery-codes").actingAs(user.createToken());
-    expect(response.status()).toBe(200);
-    expect(response.body().data).toHaveLength(10);
-    expect(response.body().data).not.toEqual(oldCodes);
-  });
-  
- 
  
   test("Should complete social login with username", async ({ client, expect }) => {
     const username = "FooBar123";
@@ -149,35 +93,6 @@ describe("Auth", () => {
   });
 
 
-  
-  test("should verify email", async ({ client, expect }) => {
-    const user = await User.factory().unverified().create();
-    const token = await (new EmailVerificationNotification).createVerificationToken(user);
-    const response = await client.get(`/auth/verify/${user._id}/${token}`);
-    await user.refresh();
-    expect(response.status).toBe(200);
-    expect(user.verified).toBe(true);
-  });
-
-  test("shouldn't verify email with invalid token", async ({ client, expect }) => {
-    const user = await User.factory().unverified().create();
-    const response = await client.get(`/auth/verify/${user._id}/invalid-token`);
-    await user.refresh();
-    expect(response.status).toBe(401);
-    expect(user.verified).toBe(false);
-  });
-
-  test("should resend verification email", async ({ client, expect }) => {
-    const user = await User.factory().unverified().create();
-    const response = await client.post("/api/v1/auth/verify/resend").json({
-      email: user.email
-    });
-
-    expect(response.status()).toBe(200);
-    Notification.assertSentTo(user, EmailVerificationNotification);
-  });
-
-
   test("should change password", async ({ client, expect }) => {
     const data = {
       oldPassword: "password",
@@ -198,6 +113,7 @@ describe("Auth", () => {
     expect(response.status()).toBe(403);
   });
 
+  
   test("Should update phone number with valid otp", async ({ client, expect }) => {
     const user = await User.factory().hasSettings().create();
     const phoneNumber = "+14155552671";

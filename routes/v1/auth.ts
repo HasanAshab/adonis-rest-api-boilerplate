@@ -3,7 +3,7 @@ import Route from '@ioc:Adonis/Core/Route';
 /**
  * Endpoints to authenticate users
  */
- 
+
 Route.post('/register', 'AuthController.register').middleware('recaptcha');
 
 // Route.get("social/callback/:provider(google|facebook)", "loginWithSocialProvider");
@@ -44,6 +44,6 @@ Route.group(() => {
 
 // Verify user
 Route.group(() => {
-  Route.get("/:id", "verifyEmail").as("verify").middleware('signed');
-  Route.post("/resend", "resendEmailVerification").middleware("throttle:60000,1");
+  Route.get("/:id", "AuthController.verifyEmail").as("verify").middleware('signed');
+  Route.post("/resend", "AuthController.resendEmailVerification").middleware("throttle:60000,1");
 }).prefix("/verify");

@@ -10,7 +10,7 @@ export default class extends BaseSchema {
 			table.string('username', 20).unique().nullable().index();
 			table.string('email', 254).unique().notNullable().index();
 			table.string('phone_number').nullable();
-			table.enum('role', ['novice', 'user']).notNullable();
+			table.enum('role', ['novice', 'admin']).notNullable();
 			table.boolean('verified').notNullable();
 			table.string('password').nullable();
 			table.jsonb('recovery_codes').defaultTo([]);

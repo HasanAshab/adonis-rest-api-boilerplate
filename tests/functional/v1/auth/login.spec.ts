@@ -109,7 +109,7 @@ test.group('Auth/Login', (group) => {
 			password: 'password',
 			otp: twoFactorAuthService.generateOTPCode(),
 		});
-console.log(response.body())
+
 		expect(response.body()).not.toHaveProperty('data.token');
 		expect(response.status()).toBe(401);
 	});

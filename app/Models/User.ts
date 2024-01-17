@@ -1,5 +1,5 @@
 import BaseModel from "App/Models/BaseModel";
-import { column, hasOne, HasOne, beforeSave } from '@ioc:Adonis/Lucid/Orm'
+import { column, hasOne, hasMany, beforeSave, HasOne, HasMany } from '@ioc:Adonis/Lucid/Orm'
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
 import { Exception } from '@adonisjs/core/build/standalone';
 import { compose } from '@poppinss/utils/build/helpers'
@@ -9,9 +9,9 @@ import HasFactory from 'App/Models/Traits/HasFactory'
 import HasTimestamps from 'App/Models/Traits/HasTimestamps'
 import HasApiTokens from 'App/Models/Traits/HasApiTokens'
 import { Notifiable } from '@ioc:Verful/Notification/Mixins'
+import { DatabaseNotification } from '@ioc:Verful/Notification'
 import InvalidPasswordException from 'App/Exceptions/InvalidPasswordException'
 import PasswordChangeNotAllowedException from 'App/Exceptions/PasswordChangeNotAllowedException'
-
 
 export default class User extends compose(BaseModel, HasFactory, HasTimestamps, HasApiTokens, Notifiable('notifications')) {
 	@column({ isPrimary: true })
@@ -49,7 +49,9 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 
 	@hasOne(() => Settings)
 	public settings: HasOne<typeof Settings>;
-
+  
+  @hasMany(() => DatabaseNotification)
+	public notifications: HasMany<typeof DatabaseNotification>;
 
 	public get isAdmin() {
 		return this.role === 'admin';
@@ -79,6 +81,11 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	public static internals() {
 		return this.query().whereNotNull('password');
 	}
+	
+	public static withRole(role: string) {
+	  return this.query().where("role", "admin");
+	}
+
 	
 	public comparePassword(password: string) {
 		this.assertHasPassword();

@@ -31,13 +31,21 @@ export default class AppProvider {
   }
   
 	private extendModelQueryBuilder() {
-	  const { ModelQueryBuilder } = this.app.container.use('Adonis/Lucid/Database')
+	  const { ModelQueryBuilder } = this.app.container.use('Adonis/Lucid/Database');
+    const { BaseModel } = this.app.container.use('Adonis/Lucid/Orm');
 
     ModelQueryBuilder.macro('whereEqual', function (fields: Record<string, any>) {
       for(const name in fields) {
 	      this.where(name, fields[name]);
 	    }
 	    return this;
+    });
+    
+    ModelQueryBuilder.macro('except', function (modelOrId: BaseModel | number) {
+	    const id = modelOrId instanceof BaseModel
+  	    ? modelOrId.id
+  	    : modelOrId;
+	    return this.whereNot('id', id);
     });
 	}
 

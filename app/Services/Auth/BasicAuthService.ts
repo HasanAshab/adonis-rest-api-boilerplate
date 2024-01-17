@@ -5,6 +5,7 @@ import { Limiter } from '@adonisjs/limiter/build/services';
 import User from 'App/Models/User';
 import Token from 'App/Models/Token';
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
+import EmailVerificationMail from "App/Mails/EmailVerificationMail";
 import ResetPasswordMail from "App/Mails/ResetPasswordMail";
 import InvalidCredentialException from 'App/Exceptions/InvalidCredentialException';
 import LoginAttemptLimitExceededException from 'App/Exceptions/LoginAttemptLimitExceededException';
@@ -75,7 +76,7 @@ export default class BasicAuthService {
     return await user.createToken();
   }
   
-  public async sendVerificationMail(email: User | string, version: string) {
+  public async sendVerificationMail(user: User | string, version: string) {
 	  if(typeof user === 'string') {
 	    user = await User.internals().where('email', user).first();
 	    if(!user || user.verified) return false;

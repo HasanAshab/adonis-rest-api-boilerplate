@@ -38,7 +38,7 @@ export default class AuthController {
 		});
 		//Event.fire(new Registered({}))
 
-		const profileUrl = ''; //Route.makeUrl("v1_users.show", [user.username]);
+		const profileUrl = ''; //Route.makeUrl("v1.users.show", [user.username]);
 
 		response.header('Location', profileUrl).created({
 			message: 'Verification email sent!',

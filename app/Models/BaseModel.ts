@@ -19,10 +19,13 @@ export default class BaseModel extends Model {
 	  return query.first();
 	}
 	
-	
 	public static async exists(value: number | object) {
 	  return types.isNumber(value)
 	    ? !!await this.find(value)
 	    : !!await this.findByFields(value)
+	}
+	
+	public static except(modelOrId: Model | number) {
+	  return this.query().except(modelOrId);
 	}
 }

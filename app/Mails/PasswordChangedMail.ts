@@ -8,6 +8,7 @@ export default class PasswordChangedMail extends BaseMailer {
   public prepare(message: MessageContract) {
     message
       .subject('Your Password Was Changed!')
-      .to(this.user.email);
+      .to(this.user.email)
+      .htmlView('emails/password_changed');
   }
 }

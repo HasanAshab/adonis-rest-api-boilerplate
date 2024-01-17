@@ -50,7 +50,6 @@ export default class RouteProvider {
 				}
 			}
 		};
-
 		Route.RouteGroup.macro('invoke', function (route, method, params) {
 			if (route instanceof Route.RouteGroup) {
 				route.routes.forEach((child) => this.invoke(child, method, params));

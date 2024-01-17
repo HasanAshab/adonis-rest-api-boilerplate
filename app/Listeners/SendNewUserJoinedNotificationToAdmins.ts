@@ -5,12 +5,7 @@ import User from "App/Models/User";
 
 export default class SendNewUserJoinedNotificationToAdmins implements Listener<"registered"> {
   async dispatch({ user }: EventsList["registered"]) {
-    //const admins = await User.admins().except(user);
-    
-    const admins = await User.query()
-      .where("role", "admin")
-      .whereNot('id', user.id);
-    
-    await Notification.sendLater(admins, new NewUserJoinedNotification({ user }));
+    const admins = await User.withRole("admin").except(user);
+    await Notification.send(admins, new NewUserJoinedNotification(user));
   }
 }

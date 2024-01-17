@@ -93,7 +93,7 @@ export default abstract class Factory<
 		}
 		
 		return Array.from({ length: this.total }, () => {
-			return this.generateDocumentData(data);
+			return this.generateData(data);
 		});
 	}
 
