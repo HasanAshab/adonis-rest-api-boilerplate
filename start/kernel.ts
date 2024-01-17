@@ -45,6 +45,7 @@ Server.middleware.registerNamed({
 	throttle: () => import('App/Http/Middleware/LimitRequestRate'),
 	auth: () => import('App/Http/Middleware/Auth'),
 	verified: () => import('App/Http/Middleware/EnsureEmailIsVerified'),
+	signed: () => import('App/Http/Middleware/ValidateSignature'),
 	roles: () => import('App/Http/Middleware/CheckRole'),
 	recaptcha: () => import('App/Http/Middleware/VerifyRecaptcha'),
 	'response.cache': () => import('App/Http/Middleware/CacheResponse'),

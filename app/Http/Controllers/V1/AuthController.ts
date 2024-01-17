@@ -65,6 +65,18 @@ export default class AuthController {
     await auth.logout();
 		return 'Logged out successfully!';
 	}
+	
+	@bind()
+  public async verifyEmail({ response }, user: User) {
+    await user.markAsVerified();
+    response.redirectToClient("/email/verify/success");
+  }
+
+  async resendEmailVerification({ request }: HttpContextContract){
+    const { email } = await request.validate(ResendEmailVerificationValidator);
+    await this.authService.sendVerificationMail(email);
+    return "Verification link sent to email!";
+  };
   
   public async forgotPassword({ request, response }: HttpContextContract) {
 		const { email, redirectUrl } = await request.validate(ForgotPasswordValidator);
@@ -113,7 +125,7 @@ export default class AuthController {
       data: { token }
     }
   }
-
+  
 	/* 
   redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {
     return ally.use(params.provider).stateless().redirect();

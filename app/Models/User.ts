@@ -54,7 +54,11 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	public get isAdmin() {
 		return this.role === 'admin';
 	}
-
+  
+  public markAsVerified() {
+    this.verified = true;
+    return this.save();
+  }
 
 	public assertHasPassword(exception?: Exception): asserts this is this & { password: string } {
     if (this.password) return;

@@ -2,7 +2,7 @@ import { column, beforeCreate, afterFind } from '@ioc:Adonis/Lucid/Orm'
 import BaseModel from "App/Models/BaseModel";
 import { DateTime } from 'luxon'
 import { compose } from '@poppinss/utils/build/helpers'
-import crypto from "crypto";
+import { string } from '@ioc:Adonis/Core/Helpers'
 import Expirable from 'App/Models/Traits/Expirable'
 import InvalidTokenException from "App/Exceptions/InvalidTokenException";
 
@@ -26,14 +26,11 @@ export default class Token extends compose(BaseModel, Expirable) {
 	@column()
 	public secret: string;
 	
-	public static generateSecret(bytes = 32) {
-	  return crypto.randomBytes(bytes).toString('hex');
-	}
-	
+
 	@beforeCreate()
 	public static setSecretIfNotSetted(token: Token) {
 	  if(!token.secret) {
-	    token.secret = this.generateSecret();
+	    token.secret = string.generateRandom(32);
 	  }
 	}
 	

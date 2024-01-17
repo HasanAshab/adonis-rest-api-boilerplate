@@ -43,9 +43,7 @@ Route.group(() => {
 
 
 // Verify user
-/*
-  Route.prefix("/verify").group(() => {
-    Route.get("/:id/:token", "verifyEmail").name("verify");
-    Route.post("/resend", "resendEmailVerification").middleware("throttle:60000,1");
-  });
-  */
+Route.group(() => {
+  Route.get("/:id", "verifyEmail").as("verify").middleware('signed');
+  Route.post("/resend", "resendEmailVerification").middleware("throttle:60000,1");
+}).prefix("/verify");

@@ -74,6 +74,16 @@ export default class BasicAuthService {
   
     return await user.createToken();
   }
+  
+  public async sendVerificationMail(email: User | string, version: string) {
+	  if(typeof user === 'string') {
+	    user = await User.internals().where('email', user).first();
+	    if(!user || user.verified) return false;
+	  }
+	  
+    await new EmailVerificationMail(user, version).sendLater();
+    return true;
+	}
 
 	public async sendResetPasswordNotification(user: User | string, redirectUrl: string) {
 	  if(typeof user === 'string') {
@@ -91,11 +101,10 @@ export default class BasicAuthService {
 		user.password = password;
 		await user.save();
 	}
-
+	
 	
 	private setupLoginThrottler() {
 		const { maxFailedAttempts, duration, blockDuration } = this.loginAttemptThrottlerConfig;
-		
 		this.loginThrottler = Limiter.use({
 			requests: maxFailedAttempts,
 			duration: duration,
