@@ -86,7 +86,7 @@ export default class BasicAuthService {
     return true;
 	}
 
-	public async sendResetPasswordNotification(user: User | string, redirectUrl: string) {
+	public async sendResetPasswordMail(user: User | string, redirectUrl: string) {
 	  if(typeof user === 'string') {
 	    user = await User.internals().where('email', user).first();
 	    if(!user) return false;

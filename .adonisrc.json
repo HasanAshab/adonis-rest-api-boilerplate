@@ -29,7 +29,8 @@
 	"preloads": [
 		"./start/kernel",
 		"./start/bouncer",
-		"./start/limiter"
+		"./start/limiter",
+		"./start/client"
 	],
 	"providers": [
 		"./app/Providers/AppProvider",
@@ -51,7 +52,8 @@
 		"@adonisjs/route-model-binding/build/providers/RmbProvider",
 		"@adonisjs/mail",
 		"@verful/notifications",
-		"@adonisjs/view"
+		"@adonisjs/view",
+		"./app/Providers/ClientProvider"
 	],
 	"aceProviders": [
 		"@adonisjs/repl"

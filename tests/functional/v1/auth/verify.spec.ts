@@ -15,10 +15,11 @@ test.group('Auth/Verify', group => {
   test("should verify email", async ({ client, expect }) => {
     const url = await new EmailVerificationMail(user, 'v1').verificationUrl();
     const response = await client.get(url);
-    //const response = await client.get('api/v1/auth/verify/' + user.id);
     await user.refresh();
     
     response.assertStatus(200);
+    response.assertRedirectsTo('/email/verify/success');
+    
     expect(user.verified).toBe(true);
   }).pin();
   

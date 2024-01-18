@@ -1,7 +1,8 @@
 import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
+import Client from '@ioc:Adonis/Addons/Client'
 import { DateTime } from 'luxon';
-import { interpolate } from '@ioc:Adonis/Core/Helpers';
 import Token from 'App/Models/Token';
+
 
 export default class ResetPasswordMail extends BaseMailer {
   constructor (private user: User, private redirectUrl: string) {
@@ -21,10 +22,10 @@ export default class ResetPasswordMail extends BaseMailer {
   }
   
   public resetUrl(token: string) {
-		return interpolate(this.redirectUrl, {
-		  id: this.user.id,
-		  token
-		});
+    return Client.makeUrl('password.reset', [
+      id: this.user.id,
+      token
+    ]);
 	}
 	
 	public async resetToken() {

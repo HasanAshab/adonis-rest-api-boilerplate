@@ -69,6 +69,8 @@ export default class AuthController {
 	@bind()
   public async verifyEmail({ response }, user: User) {
     await user.markAsVerified();
+    //await User.where('id', id).update({ verified: true });
+    
     response.redirectToClient("/email/verify/success");
   }
 
@@ -80,7 +82,7 @@ export default class AuthController {
   
   public async forgotPassword({ request, response }: HttpContextContract) {
 		const { email, redirectUrl } = await request.validate(ForgotPasswordValidator);
-		await this.authService.sendResetPasswordNotification(email, redirectUrl);
+		await this.authService.sendResetPasswordMail(email, redirectUrl);
 		response.accepted('Password reset link sent to your email!');
 	}
 
