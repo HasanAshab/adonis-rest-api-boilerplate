@@ -41,10 +41,10 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	@column({ serializeAs: null })
 	public password?: string;
 
-	@column.json({ serializeAs: null })
-	public recoveryCodes: string[];
+	@column({ serializeAs: null })
+	public recoveryCodes: string[] = [];
 
-	@column.json({ serializeAs: null })
+	@column({ serializeAs: null })
 	public socialId: Record<string, string>;
 
 	@hasOne(() => Settings)

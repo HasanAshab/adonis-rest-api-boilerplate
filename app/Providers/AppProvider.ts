@@ -4,32 +4,6 @@ import { getStatusText } from 'http-status-codes';
 export default class AppProvider {
 	constructor(protected app: ApplicationContract) {}
 
-  private extendOrmDecorators() {
-    const { column } = this.app.container.use('Adonis/Lucid/Orm');
-    
-    column.json = function(options) {
-      return function decorateAsJson(target, property) {
-        const Model = target.constructor;
-        Model.boot();
-        
-        const normalizedOptions = Object.assign({
-          prepare: value => {
-            return value && typeof value !== 'string'
-              ? JSON.stringify(value)
-              : value;
-          },
-          consume: value => {
-            return typeof value === 'string'
-              ? JSON.parse(value)
-              : value;
-          }
-        }, options);
-        
-        Model.$addColumn(property, normalizedOptions);
-      }
-    }
-  }
-  
 	private extendModelQueryBuilder() {
 	  const { ModelQueryBuilder } = this.app.container.use('Adonis/Lucid/Database');
     const { BaseModel } = this.app.container.use('Adonis/Lucid/Orm');
@@ -114,7 +88,6 @@ export default class AppProvider {
 	
 	
 	public boot() {
-		this.extendOrmDecorators();
 		this.extendModelQueryBuilder();
 		this.extendHttpResponse();
 	}

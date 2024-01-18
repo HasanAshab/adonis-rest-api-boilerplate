@@ -5,10 +5,33 @@ import Client from './Client';
 export default class ClientProvider {
   constructor(protected app: ApplicationContract) {}
 
-  public register() {
-    this.app.container.bind('Adonis/Addons/Client', () => {
+  private registerClientAddon() {
+    this.app.container.singleton('Adonis/Addons/Client', () => {
       const Client = require('./Client').default;
       return new Client(Config.get('client'));
     });
+  }
+  
+  private extendHttpResponse() {
+		const Response = this.app.container.use('Adonis/Core/Response');
+		const Client = this.app.container.use('Adonis/Addons/Client');
+		
+		Response.macro('redirectToClient', function(name: string, data?: Record<string, any>) {
+		  return this.redirect(
+		    Client.makeUrl(name, data)
+		  );
+		});
+		
+		Response.macro('redirectToClientPath', function(path: string) {
+		  return this.redirect(Client.url(path));
+		});
+  }
+  
+  public register() {
+    this.registerClientAddon();
+  }
+  
+  public boot() {
+    this.extendHttpResponse();
   }
 }

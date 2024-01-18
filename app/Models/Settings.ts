@@ -18,14 +18,14 @@ export default class Settings extends BaseModel {
   @column()
   public userId: string;
 
-  @column.json()
+  @column()
   public twoFactorAuth: TwoFactorAuthSettings = {
 		enabled: false,
 		method: 'sms',
 		secret: null
   };
 
-  @column.json()
+  @column()
   public notification: Record <string, Record<string, boolean>> = {};
 
   @column.dateTime({

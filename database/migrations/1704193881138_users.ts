@@ -13,7 +13,7 @@ export default class extends BaseSchema {
 			table.enum('role', ['novice', 'admin']).notNullable();
 			table.boolean('verified').notNullable();
 			table.string('password').nullable();
-			table.jsonb('recovery_codes').defaultTo([]);
+			table.specificType('recovery_codes', 'text[]').notNullable();
 			table.jsonb('social_id').defaultTo({});
 			table.jsonb('profile').nullable();
 			table.timestamp('created_at', { useTz: true });

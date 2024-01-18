@@ -141,6 +141,7 @@ export default class TwoFactorAuthService {
 			const generateCode = async () => {
 				const code = randomBytes(8).toString('hex');
 				rawCodes.push(code);
+				trace(user.recoveryCodes)
 				user.recoveryCodes.push(await Hash.make(code));
 			};
 			promises.push(generateCode());

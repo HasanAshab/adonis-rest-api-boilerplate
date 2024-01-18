@@ -9,6 +9,7 @@ import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService";
 import PasswordChangedMail from "App/Mails/PasswordChangedMail";
 import RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator';
 import LoginValidator from 'App/Http/Validators/V1/Auth/Login/LoginValidator';
+import ResendEmailVerificationValidator from 'App/Http/Validators/V1/Auth/ResendEmailVerificationValidator';
 import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator';
 import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPasswordValidator';
 import SetupTwoFactorAuthValidator from 'App/Http/Validators/V1/Auth/SetupTwoFactorAuthValidator';
@@ -70,13 +71,12 @@ export default class AuthController {
   public async verifyEmail({ response }, user: User) {
     await user.markAsVerified();
     //await User.where('id', id).update({ verified: true });
-    
-    response.redirectToClient("/email/verify/success");
+    response.redirectToClient('verify.success');
   }
 
   async resendEmailVerification({ request }: HttpContextContract){
     const { email } = await request.validate(ResendEmailVerificationValidator);
-    await this.authService.sendVerificationMail(email);
+    await this.authService.sendVerificationMail(email, 'v1');
     return "Verification link sent to email!";
   };
   

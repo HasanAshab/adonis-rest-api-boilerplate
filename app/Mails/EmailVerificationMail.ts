@@ -2,6 +2,8 @@ import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
 import Route from '@ioc:Adonis/Core/Route';
 
 export default class EmailVerificationMail extends BaseMailer {
+  private verificationUrlLifespan = '1 day';
+  
   constructor (private user: User, private version: string) {
     super();
   }
@@ -16,8 +18,9 @@ export default class EmailVerificationMail extends BaseMailer {
   }
   
   public async verificationUrl() {
-    return await Route.makeSignedUrl(this.version + '.verify', [this.user.id], {
-      expiresIn: '30m'
-    });
+    return await Route.makeSignedUrl(this.version + '.verify', 
+      { id: this.user.id }, 
+      { expiresIn: this.verificationUrlLifespan }
+    );
   }
 }

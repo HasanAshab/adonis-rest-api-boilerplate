@@ -1,6 +1,6 @@
 import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
-import Client from '@ioc:Adonis/Addons/Client'
 import { DateTime } from 'luxon';
+import Client from '@ioc:Adonis/Addons/Client'
 import Token from 'App/Models/Token';
 
 

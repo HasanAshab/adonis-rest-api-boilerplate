@@ -20,7 +20,7 @@ export default class Token extends compose(BaseModel, Expirable) {
 	@column()
 	public oneTime = false;
 	
-	@column.json()
+	@column()
 	public data: object | null = null;
 	
 	@column()
