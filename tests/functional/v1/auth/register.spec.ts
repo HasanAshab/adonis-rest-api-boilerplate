@@ -1,26 +1,23 @@
 import { test } from '@japa/runner';
 import { omit } from 'lodash';
 import Drive from '@ioc:Adonis/Core/Drive';
-import Event from '@ioc:Adonis/Core/Event';
 import User from 'App/Models/User';
+import Event from 'Tests/Assertors/EventAssertor';
 
-//TODO
-Event.assertEmitted = () => null;
-Drive.assertStored = () => null;
-Drive.assertStoredCount = () => null;
 
 test.group('Auth/Register', (group) => {
+	let drive;
+	
 	refreshDatabase(group);
 	
 	group.setup(async () => {
-		Drive.fake();
+		drive = Drive.fake();
 		Event.fake();
 	});
   
   
 	group.each.setup(async () => {
 		Drive.restore();
-		Event.restore();
 	});
 
 	test('should register a user', async ({ expect, client }) => {
@@ -38,10 +35,10 @@ test.group('Auth/Register', (group) => {
 		expect(user).not.toBeNull();
 		expect(user.settings).not.toBeNull();
 
-		Event.assertEmitted('user:registered', {
-			method: 'internal',
+		Event.assertDispatchedContain('registered', {
 			version: 'v1',
-			user,
+			method: 'internal',
+			user: { id: user.id },
 		});
 	});
 
@@ -63,13 +60,13 @@ test.group('Auth/Register', (group) => {
 		expect(response.body()).toHaveProperty('data.token');
 		expect(user).not.toBeNull();
 		expect(user.settings).not.toBeNull();
-		Event.assertEmitted('Registered', {
-			user,
+		Event.assertDispatched('registered', {
 			version: 'v1',
 			method: 'internal',
+			user
 		});
-		Drive.assertStoredCount(1);
-		Drive.assertStored('image.png');
+		
+		expect(await drive.exists('image.png')).toBe(true);
 	});
 
 	test("shouldn't register with existing email", async ({ client, expect }) => {

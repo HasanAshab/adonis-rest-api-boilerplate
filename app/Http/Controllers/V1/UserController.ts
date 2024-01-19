@@ -1,30 +1,34 @@
-import Controller from "~/app/http/controllers/Controller";
-import { RequestHandler } from "~/core/decorators";
-import { AuthenticRequest, Response } from "~/core/express";
-import User from "~/app/models/User";
-import TwoFactorAuthService from "~/app/services/auth/TwoFactorAuthService";
-import PasswordService from "~/app/services/auth/PasswordService";
-import UpdateProfileRequest from "~/app/http/requests/v1/user/UpdateProfileRequest";
-import UserProfileResource from "~/app/http/resources/v1/user/UserProfileResource";
-import ChangePasswordRequest from "~/app/http/requests/v1/user/ChangePasswordRequest";
-import ChangePhoneNumberRequest from "~/app/http/requests/v1/user/ChangePhoneNumberRequest";
-import ShowUserResource from "~/app/http/resources/v1/user/ShowUserResource";
-import ListUserResource from "~/app/http/resources/v1/user/ListUserResource";
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import User from "App/Models/User";
+import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService";
+//import UpdateProfileRequest from "App/Http/requests/v1/user/UpdateProfileRequest";
+//import ChangePasswordRequest from "App/Http/requests/v1/user/ChangePasswordRequest";
+//import ChangePhoneNumberRequest from "App/Http/requests/v1/user/ChangePhoneNumberRequest";
 
-export default class UserController extends Controller {
-  @RequestHandler
-  async index(req: AuthenticRequest) {
-    return ListUserResource.collection(
-      await User.where("role").equals("novice").lean().paginateCursor(req)
-    );
+
+export default class UserController {
+  public async index({ request }: HttpContextContract) {
+    //return ListUserResource.collection(
+      //await User.where("role").equals("novice").lean().paginateCursor(req)
+   // );
+    const paginated = await User.withRole("novice").paginate();
+    const serialized = paginated.toJSON();
+    
+    serialized.data = serialized.data.map(user => ({
+      id: user.id,
+      username: user.username,
+      profile: user.profile
+    }))
+    
+    return serialized;
   }
   
-  @RequestHandler
+
   async profile(req: AuthenticRequest) {
     return UserProfileResource.make(req.user);
   }
   
-  @RequestHandler
+
   async updateProfile(req: UpdateProfileRequest) {
     const user = req.user;
     const profile = req.file("profile");
@@ -53,14 +57,14 @@ export default class UserController extends Controller {
     return "Verification email sent to your new email address!";
   };
   
-  @RequestHandler
+
   async show(username: string) {
     return ShowUserResource.make(
       await User.findOneOrFail({ username }).select("-email -phoneNumber").lean()
     );
   }
   
-  @RequestHandler
+
   async delete(req: AuthenticRequest, res: Response, username: string) {
     const user = await User.findOneOrFail({ username });
     if(req.user.cannot("delete", user))
@@ -69,20 +73,20 @@ export default class UserController extends Controller {
     res.sendStatus(204);
   }
   
-  @RequestHandler
+
   async makeAdmin(username: string) {
     await User.updateOneOrFail({ username }, { role: "admin" });
     return "Admin role granted!";
   }
   
-  @RequestHandler
+
   async changePassword(req: ChangePasswordRequest, passwordService: PasswordService) {
     const { oldPassword, newPassword } = req.body;
     await passwordService.change(req.user, oldPassword, newPassword);
     return "Password changed!";
   };
  
-  @RequestHandler
+
   async changePhoneNumber(req: ChangePhoneNumberRequest, res: Response, twoFactorAuthService: TwoFactorAuthService) {
     const { phoneNumber, otp } = req.body;
     if(req.user.phoneNumber && req.user.phoneNumber === phoneNumber)

@@ -79,7 +79,7 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	}
 	
 	public static withRole(role: string) {
-	  return this.query().where("role", "admin");
+	  return this.query().where("role", role);
 	}
 
 	

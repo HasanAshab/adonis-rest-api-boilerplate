@@ -6,7 +6,7 @@ Route.group(() => {
   Route.get("/", "UserController.index");
   Route.patch("/:username/make-admin", "UserController.makeAdmin");
 })
-.middleware("auth", "roles:admin");
+//.middleware("auth", "roles:admin");
 
 
 Route.group(() => {

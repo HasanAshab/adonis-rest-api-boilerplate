@@ -47,9 +47,14 @@ export default class AppProvider {
 				if (acceptsJson) {
 					if (types.isNull(body)) {
 						body = {};
-					} else if (types.isString(body)) {
+					} 
+					else if (types.isString(body)) {
 						body = { message: body };
-					} else if (types.isArray(body)) {
+					} 
+					else if(body.toJSON) {
+				    body = body.toJSON()
+				  }
+					else if (types.isArray(body)) {
 						body = { data: body };
 					}
 
