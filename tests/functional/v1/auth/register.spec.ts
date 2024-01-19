@@ -14,7 +14,7 @@ test.group('Auth/Register', (group) => {
 	
 	group.setup(async () => {
 		Drive.fake();
-		console.log(Event.fake());
+		Event.fake();
 	});
   
   
@@ -32,7 +32,7 @@ test.group('Auth/Register', (group) => {
 
 		const response = await client.post('/api/v1/auth/register').json(data);
 		
-		const user = await User.findByFields(omit(data, 'password')).preload('settings').first();
+		const user = await User.query().whereEqual(omit(data, 'password')).preload('settings').first();
 		expect(response.status()).toBe(201);
 		expect(response.body()).toHaveProperty('data.token');
 		expect(user).not.toBeNull();
@@ -57,7 +57,7 @@ test.group('Auth/Register', (group) => {
 			.file('profile', filePath('image.png'))
 			.fields(data);
 
-		const user = await User.findByFields(omit(data, 'password')).preload('settings').first();
+		const user = await User.query().whereEqual(omit(data, 'password')).preload('settings').first();
 
 		expect(response.status()).toBe(201);
 		expect(response.body()).toHaveProperty('data.token');

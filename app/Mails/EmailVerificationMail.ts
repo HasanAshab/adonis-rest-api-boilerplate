@@ -24,3 +24,5 @@ export default class EmailVerificationMail extends BaseMailer {
     );
   }
 }
+
+
