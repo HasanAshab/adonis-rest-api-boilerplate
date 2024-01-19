@@ -20,7 +20,7 @@ test.group('Auth/Verify', group => {
     const response = await client.get(url);
     await user.refresh();
     
-    response.assertRedirectsTo(Client.makeUrl('verify.success'));
+    response.assertRedirectsTo(Client.makePath('verify.success'));
     expect(user.verified).toBe(true);
   });
   

@@ -7,7 +7,7 @@ export default class NewUserJoinedNotification implements NotificationContract {
   constructor(private user: User) {}
 
 	via(notifiable: User) {
-		return 'mail' //['mail', 'database'] as const;
+		return ['mail', 'database'] as const;
 	}
 
 	toMail(notifiable: User) {

@@ -15,10 +15,12 @@ export default class Client {
   }
   
   public url(path = '') {
-    return join(this.config.baseUrl, path);
+    return 'https://' + join(this.config.domain, path);
   }
   
-  public makeUrl(name: string, data?: Record<string, any>) {
+  
+  
+  public makePath(name: string, data?: Record<string, any>) {
     let path = this.urlPaths.get(name);
 
     if (!path) {
@@ -30,6 +32,12 @@ export default class Client {
         return encodeURIComponent(data[param]);
       });
     }
-    return this.url(path);
+    return path;
+  }
+  
+  public makeUrl(name: string, data?: Record<string, any>) {
+    return this.url(
+      this.makePath(name, data)
+    );
   }
 }

@@ -86,13 +86,13 @@ export default class BasicAuthService {
     return true;
 	}
 
-	public async sendResetPasswordMail(user: User | string, redirectUrl: string) {
+	public async sendResetPasswordMail(user: User | string) {
 	  if(typeof user === 'string') {
 	    user = await User.internals().where('email', user).first();
 	    if(!user) return false;
 	  }
 
-	  await new ResetPasswordMail(user, redirectUrl).sendLater();
+	  await new ResetPasswordMail(user).sendLater();
 		return true;
 	}
 	

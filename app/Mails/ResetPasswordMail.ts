@@ -5,7 +5,7 @@ import Token from 'App/Models/Token';
 
 
 export default class ResetPasswordMail extends BaseMailer {
-  constructor (private user: User, private redirectUrl: string) {
+  constructor (private user: User) {
     super();
   }
   
@@ -22,10 +22,10 @@ export default class ResetPasswordMail extends BaseMailer {
   }
   
   public resetUrl(token: string) {
-    return Client.makeUrl('password.reset', [
+    return Client.makeUrl('password.reset', {
       id: this.user.id,
       token
-    ]);
+    });
 	}
 	
 	public async resetToken() {

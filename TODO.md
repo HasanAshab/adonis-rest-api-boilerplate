@@ -1,11 +1,6 @@
 This: 
 Test listenners
-Test verify
+BaseMail
 
-T: BaseMail
-T: redirect to external
-
-Fallback: solve type, Eslint, model & migrate, Commands, 
-T: verify email
-F: Stateless
+Fallback: solve type, Eslint, model & migrate, Commands
 I: Abstr listenner, Event class

@@ -9,7 +9,6 @@ import HasFactory from 'App/Models/Traits/HasFactory'
 import HasTimestamps from 'App/Models/Traits/HasTimestamps'
 import HasApiTokens from 'App/Models/Traits/HasApiTokens'
 import { Notifiable } from '@ioc:Verful/Notification/Mixins'
-import { DatabaseNotification } from '@ioc:Verful/Notification'
 import InvalidPasswordException from 'App/Exceptions/InvalidPasswordException'
 import PasswordChangeNotAllowedException from 'App/Exceptions/PasswordChangeNotAllowedException'
 
@@ -50,9 +49,6 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	@hasOne(() => Settings)
 	public settings: HasOne<typeof Settings>;
   
-  @hasMany(() => DatabaseNotification)
-	public notifications: HasMany<typeof DatabaseNotification>;
-
 	public get isAdmin() {
 		return this.role === 'admin';
 	}
