@@ -7,19 +7,18 @@ import { isEqual, isEqualWith } from 'lodash';
 
 type FakeEmitter = ReturnType < Event['fake'] >;
 
+
 export class EventAssertor extends Assertor {
   public fakeEmitter?: FakeEmitter;
-
-  public fake(...args: Parameters < Event['fake'] >) {
-    return this.fakeEmitter = Event.fake(...args);
-  }
-
-  private assertFaked(): asserts this is this & {
-    fakeEmitter: FakeEmitter
-  } {
+  
+  private assertFaked(): asserts this is this & { fakeEmitter: FakeEmitter } {
     if (!this.fakeEmitter) {
       throw new Error('Event not faked. \nUse fake() before asserting events.');
     }
+  }
+
+  public fake(...args: Parameters < Event['fake'] >) {
+    return this.fakeEmitter = Event.fake(...args);
   }
 
   public isDispatched(eventName: string, data?: object) {
@@ -28,8 +27,7 @@ export class EventAssertor extends Assertor {
       if (event.name !== eventName) {
         return false;
       }
-
-      if (data && !isEqualWith(event.data, data, this.matchModels)) {
+      if (data && !isEqual(event.data, data)) {
         return false;
       }
       return true;
@@ -39,40 +37,40 @@ export class EventAssertor extends Assertor {
   public isDispatchedContain(eventName: string, data: object) {
     this.assertFaked();
     return this.fakeEmitter.exists(event => {
-      return event.name === eventName && containsObject(event.data, data);
+      return event.name === eventName &&
+        this.deepContainsObject(event.data, data)
     });
   }
-
+  
   public assertDispatched(...args: Parameters < this['isDispatched'] >) {
-    this.assert(() => {
-      expect(this.isDispatched(...args)).toBe(true);
-    });
+    this.assertTrue(this.isDispatched(...args));
   }
   
   public assertDispatchedContain(...args: Parameters < this['isDispatchedContain'] >) {
-    this.assert(() => {
-      expect(this.isDispatchedContain(...args)).toBe(true);
-    });
+    this.assertTrue(this.isDispatchedContain(...args));
   }
 
   public assertNotDispatched(eventName: string) {
-    this.assert(() => {
-      expect(this.isDispatched(eventName)).toBe(false);
-    });
+    this.assertFalse(this.isDispatched(...args));
   }
 
   public assertNothingDispatched() {
-    this.assert(() => {
-      expect(this.fakeEmitter.events).toHaveLength(0)
-    })
+    this.assertFalse(this.fakeEmitter.events.length);
   }
   
-  private matchModels(objValue: unknown, otherValue: unknown) {
-    if(objValue instanceof BaseModel && otherValue instanceof BaseModel) {
-    trace(objValue.toJSON(), otherValue.toJSON());
-
-      return isEqual(objValue.toJSON(), otherValue.toJSON());
+  private deepContainsObject(obj1: object, obj2: object) {
+    for (const key in obj2) {
+      if (obj2.hasOwnProperty(key)) {
+        if (typeof obj2[key] === 'object' && obj2[key] !== null) {
+          if (!this.deepContainsObject(obj1[key], obj2[key])) {
+            return false;
+          }
+        } else if (obj1[key] !== obj2[key]) {
+          return false;
+        }
+      }
     }
+    return true;
   }
 }
 

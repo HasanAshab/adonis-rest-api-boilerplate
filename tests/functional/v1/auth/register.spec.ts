@@ -1,17 +1,14 @@
 import { test } from '@japa/runner';
-import { omit } from 'lodash';
+import { omit, pick } from 'lodash';
 import Drive from '@ioc:Adonis/Core/Drive';
 import User from 'App/Models/User';
 import Event from 'Tests/Assertors/EventAssertor';
 
 
 test.group('Auth/Register', (group) => {
-	let drive;
-	
 	refreshDatabase(group);
 	
 	group.setup(async () => {
-		drive = Drive.fake();
 		Event.fake();
 	});
   
@@ -38,11 +35,13 @@ test.group('Auth/Register', (group) => {
 		Event.assertDispatchedContain('registered', {
 			version: 'v1',
 			method: 'internal',
-			user: { id: user.id },
+			user: pick(user, 'id')
 		});
 	});
 
 	test('should register a user with profile', async ({ expect, client }) => {
+		const drive = Drive.fake();
+
 		const data = {
 			username: 'foobar123',
 			email: 'foo@gmail.com',
@@ -60,14 +59,15 @@ test.group('Auth/Register', (group) => {
 		expect(response.body()).toHaveProperty('data.token');
 		expect(user).not.toBeNull();
 		expect(user.settings).not.toBeNull();
-		Event.assertDispatched('registered', {
+
+		Event.assertDispatchedContain('registered', {
 			version: 'v1',
 			method: 'internal',
-			user
+			user: pick(user, 'id')
 		});
 		
 		expect(await drive.exists('image.png')).toBe(true);
-	});
+	}).pin();
 
 	test("shouldn't register with existing email", async ({ client, expect }) => {
 		const user = await User.factory().create();

@@ -1,5 +1,5 @@
 import BaseModel from "App/Models/BaseModel";
-import { column, hasOne, hasMany, beforeSave, HasOne, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import { column, hasOne, beforeSave, HasOne, HasMany } from '@ioc:Adonis/Lucid/Orm'
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
 import { Exception } from '@adonisjs/core/build/standalone';
 import { compose } from '@poppinss/utils/build/helpers'

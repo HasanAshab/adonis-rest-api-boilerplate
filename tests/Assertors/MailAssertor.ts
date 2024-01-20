@@ -1,60 +1,50 @@
 import Assertor from './Assertor';
-import Mail, { BaseMailer } from '@ioc:Adonis/Addons/Mail'
-
+import Mail from '@ioc:Adonis/Addons/Mail'
 import expect from 'expect';
-import { isEqual } from 'lodash';
-
 
 type FakeMailer = ReturnType < Mail['fake'] >;
 
 export class MailAssertor extends Assertor {
-  public fakeMailer?: FakeEmitter;
-
-  public fake(...args: Parameters<Mail['fake']>) {
-    return this.fakeMailer = Mail.fake(...args);
-  }
-
+  private fakeMailer?: FakeEmitter;
+  
   private assertFaked(): asserts this is this & { fakeMailer: FakeEmitter } {
     if (!this.fakeMailer) {
       throw new Error('Mail not faked. \nUse fake() before asserting mails.');
     }
   }
 
-  public isDispatched(eventName: string, data?: object) {
+  public fake(...args: Parameters<Mail['fake']>) {
+    return this.fakeMailer = Mail.fake(...args);
+  }
+
+  public isSentTo(email: string) {
     this.assertFaked();
-    return this.fakeMailer.exists(event => {
-      if (event.name !== eventName) {
-        return false;
-      }
-      trace(event.data.user, data.user)
-      if (data && !isEqual(event.data, data)) {
-        return false;
-      }
-      return true;
+    return this.fakeMailer.exists(mail => {
+      return !!mail.to.find(recipient => {
+        return recipient.address === email;
+      });
     });
   }
-
-  public assertSent(mailer: BaseMailer) {
-    this.assert(() => {
-      console.log(mailer)
-      this.fakeMailer.exists(mail => {
-      })
-      expect(this.isDispatched(...args)).toBe(true);
-    });
+  
+  public assertExists(...args: Parameters<FakeMailer['exists']>) {
+    this.assertTrue(this.fakeMailer.exists(...args));
+  }
+  
+  public assertNotExists(...args: Parameters<FakeMailer['exists']>) {
+    this.assertFalse(this.fakeMailer.exists(...args));
   }
 
-  public assertNotDispatched(eventName: string) {
-    this.assert(() => {
-      expect(this.isDispatched(eventName)).toBe(false);
-    });
+  public assertSentTo(email: string) {
+    this.assertTrue(this.isSentTo(email));
+  }
+  
+  public assertNotSentTo(email: string) {
+    this.assertFalse(this.isSentTo(email));
   }
 
   public assertNothingSent() {
-    this.assert(() => {
-      expect(this.fakeMailer.events).toHaveLength(0)
-    })
+    this.assertFalse(this.fakeMailer.exists(() => true));
   }
-
 }
 
 export default new MailAssertor;
