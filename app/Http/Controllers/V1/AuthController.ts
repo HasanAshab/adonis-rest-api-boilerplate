@@ -13,6 +13,7 @@ import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/Forgot
 import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPasswordValidator';
 import SetupTwoFactorAuthValidator from 'App/Http/Validators/V1/Auth/SetupTwoFactorAuthValidator';
 import AccountRecoveryValidator from 'App/Http/Validators/V1/Auth/AccountRecoveryValidator';
+import SocialAuthTokenLoginValidator from 'App/Http/Validators/V1/Auth/Login/SocialAuthTokenLoginValidator';
 
 export default class AuthController {
 	//constructor(private authService: AuthService, private socialAuthService: SocialAuthService) {}
@@ -138,20 +139,76 @@ export default class AuthController {
     }
   }
   
+  
+  /* 
+  Tokens(haoronaldo): 
+    google:
+ya29.a0AfB_byD6BZ7J4bG6PIBM_93T_SBpvHSH_xFMt26Mgk0SGbuP2SbO0GuquY3snwQUKGCApg0JI8_czVWe_qtb6Pe2huFlZMo2TvnoMl_LZJB3o3RGEtEXd6WycpFCShvkLbGUSpSkEWTZZ8Yx7pQ4wUwumXa1UVSFShBhaCgYKAX8SARISFQHGX2MiS9EHkCZzFMu49pI2DCE4Yw0171
+    facebook:
+EAACZBwjX8c54BO8pp3Dv6vYhERW5XoebXPyS4rjcl597sJLaWnz2HwZAUE23rdMQI5bUXJMMgL5amFFPBd6yPKERuZAw8XWhlZBNPYnegy70QolDPTnp3EqZCGenkOkTZCZC1zGYzpZBw1UfMYtvwc7wNvk0iXfb6Mr3g62lFhsIPw73DJRmYnSL4yB6EQrgZCrf9ebDyu7pqf9wZAXrgRveVzbEqXZBeIZADaKg29TBMuqkOqq5qXUgIpyv
+  */
   public async loginWithSocialAuthToken({ params, ally, request }: HttpContextContract) {
     const { token } = await request.validate(SocialAuthTokenLoginValidator)
+
     const userInfo = await ally.use(params.provider).userFromToken(token);
-    user.where('email', userInfo.email)
+
+    try {
+      const user = await User.updateOrCreate(
+        {
+          socialProvider: params.provider,
+          socialId: userInfo.id
+        },
+        {
+          email: userInfo.email,
+          username: userInfo.email.split('@')[0],
+          verified: userInfo.emailVerificationState === 'verified',
+          name: userInfo.nickName.substring(0, 35),
+  // TODO phoneNumber: userInfo.phoneNumber,
+  // TODO profile: userInfo.avatarUrl
+        }
+      );
+    
+      return {
+  			message: 'Verification email sent!',
+  			data: {
+  			  token: await user.createToken(),
+  			  user
+  			}
+  		}
+    }
+    catch(err) {
+      log(err)
+      if(err.code !== '23505') {
+        throw err;
+      }
+      if(err.constraint === 'users_email_unique') {
+        return {
+          errors: {
+            email: "email already exists"
+          }
+        }
+      }
+      
+      if(err.constraint === 'users_username_unique') {
+        return {
+          errors: {
+            username: "set username"
+          }
+        }
+      }
+    }
   }
+  
+  
   
   redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {
     return ally.use(params.provider).stateless().redirect();
   }
   
   async loginWithSocialProvider({ request, params, ally }: HttpContextContract) {
-        console.log(request.qs())
 
     const externalUser = await ally.use(params.provider).user();
+        log(externalUser)
     const user = await User.findOneAndUpdate(
       { [`externalId.${params.provider}`]: externalUser.id },
       { 

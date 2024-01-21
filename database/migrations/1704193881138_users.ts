@@ -14,7 +14,8 @@ export default class extends BaseSchema {
 			table.boolean('verified').notNullable();
 			table.string('password').nullable();
 			table.specificType('recovery_codes', 'text[]').notNullable();
-			table.jsonb('social_id').defaultTo({});
+			table.string('social_provider').nullable();
+			table.string('social_id').nullable();
 			table.jsonb('profile').nullable();
 			table.timestamp('created_at', { useTz: true });
 			table.timestamp('updated_at', { useTz: true });

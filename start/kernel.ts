@@ -50,3 +50,6 @@ Server.middleware.registerNamed({
 	recaptcha: () => import('App/Http/Middleware/VerifyRecaptcha'),
 	'response.cache': () => import('App/Http/Middleware/CacheResponse'),
 });
+
+
+globalThis.log = console.log;
