@@ -10,19 +10,10 @@ export default function HasApiTokens(Superclass: NormalizeConstructor<typeof Bas
       const auth = await AuthManager.getAuthForRequest(ctx);
       const config = auth.use().config.tokenProvider;
 
-      const token = await auth.login(this, {
+      return await auth.login(this, {
         name,
         expiresIn: config.expiresIn
       });
-      
-      token.toJSON = function() {
-        return {
-          plain: this.token,
-          expires_at: this.expiresAt
-        }
-      }
-      
-      return token;
     }
   }
   

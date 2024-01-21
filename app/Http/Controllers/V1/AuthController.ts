@@ -1,5 +1,4 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import { inject } from '@adonisjs/fold';
 import { bind } from '@adonisjs/route-model-binding'
 import Route from '@ioc:Adonis/Core/Route';
 import Event from '@ioc:Adonis/Core/Event';
@@ -15,17 +14,16 @@ import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPa
 import SetupTwoFactorAuthValidator from 'App/Http/Validators/V1/Auth/SetupTwoFactorAuthValidator';
 import AccountRecoveryValidator from 'App/Http/Validators/V1/Auth/AccountRecoveryValidator';
 
-
-@inject()
 export default class AuthController {
 	//constructor(private authService: AuthService, private socialAuthService: SocialAuthService) {}
 	constructor(
-	  private readonly authService: BasicAuthService,
-	  private readonly twoFactorAuthService: TwoFactorAuthService
+	  private readonly authService = new BasicAuthService,
+	  private readonly twoFactorAuthService = new TwoFactorAuthService
 	) {}
   
   /**
-   * @responseBody 201 jdhdh
+   * @register
+   * @responseBody 201 - { "message": "Verification email sent", "data": { "user": <User>, "token": } }
    */
 	public async register({ request, response }: HttpContextContract) {
 		const registrationData = await request.validate(RegisterValidator);
@@ -50,6 +48,10 @@ export default class AuthController {
 		});
 	}
 
+  /**
+   * @login
+   * @responseBody 200 - { message: <string>, data: { token: } }
+   */
 	public async login({ request }: HttpContextContract) {
 		const token = await this.authService.attempt({
 			...await request.validate(LoginValidator),
@@ -61,12 +63,20 @@ export default class AuthController {
 			data: { token }
 		}
 	}
-	
+	 
+	/**
+   * @logout
+   * @responseBody 200 - { message: <string> }
+   */
 	public async logout({ auth }: HttpContextContract) {
     await auth.logout();
 		return 'Logged out successfully!';
 	}
 	
+	/**
+   * @verifyEmail
+   * @responseBody 301
+   */
 	@bind()
   public async verifyEmail({ response }, user: User) {
     await user.markAsVerified();
@@ -128,14 +138,20 @@ export default class AuthController {
     }
   }
   
-	/* 
+  public async loginWithSocialAuthToken({ params, ally, request }: HttpContextContract) {
+    const { token } = await request.validate(SocialAuthTokenLoginValidator)
+    const userInfo = await ally.use(params.provider).userFromToken(token);
+    user.where('email', userInfo.email)
+  }
+  
   redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {
     return ally.use(params.provider).stateless().redirect();
   }
   
-  async loginWithSocialProvider({ params, ally }: HttpContextContract) {
+  async loginWithSocialProvider({ request, params, ally }: HttpContextContract) {
+        console.log(request.qs())
+
     const externalUser = await ally.use(params.provider).user();
-    console.log(externalUser)
     const user = await User.findOneAndUpdate(
       { [`externalId.${params.provider}`]: externalUser.id },
       { 
@@ -156,5 +172,4 @@ export default class AuthController {
     
     return Route.makeClientUrl(`/login/social/${params.provider}/final-step/${externalUser.id}/${token}?fields=${fields}`);
   }
- */
 }

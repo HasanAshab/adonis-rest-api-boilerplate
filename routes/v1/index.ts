@@ -13,5 +13,4 @@ Route.get("swagger", async ({ response }) => {
 
 Route.get("docs", async ({ response }) => {
   return response.sendOriginal(AutoSwagger.ui("/api/v1/swagger", swagger));
-  return console.log(AutoSwagger.ui("/api/v1/swagger", swagger));
 });

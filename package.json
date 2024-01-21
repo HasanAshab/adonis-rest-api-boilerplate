@@ -48,7 +48,7 @@
 		"@adonisjs/route-model-binding": "^1.0.1",
 		"@adonisjs/view": "^6.2.0",
 		"@faker-js/faker": "^8.3.1",
-		"@verful/notifications": "^2.1.0",
+		"@verful/notifications": "^2.3.0",
 		"adonis-autoswagger": "^1.10.1",
 		"adonis-recaptcha2": "^2.0.1",
 		"async-mutex": "^0.4.0",

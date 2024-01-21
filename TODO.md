@@ -1,8 +1,7 @@
 This: 
 Test listenners
-BaseMail
+Notifiable pr()
 
-I: better assertors
-
+K: cursor pag pr
 Fallback: solve type, Eslint, model & migrate, Commands
 I: Abstr listenner, Event class
