@@ -10,23 +10,17 @@ export interface TwoFactorAuthSettings {
 
 
 export default class Settings extends BaseModel {
-  @column({
-    isPrimary: true
-  })
+  @column({ isPrimary: true })
   public id: number;
 
   @column()
   public userId: string;
 
   @column()
-  public twoFactorAuth: TwoFactorAuthSettings = {
-		enabled: false,
-		method: 'sms',
-		secret: null
-  };
+  public twoFactorAuth: TwoFactorAuthSettings;
 
   @column()
-  public notification: Record <string, Record<string, boolean>> = {};
+  public notification: Record<string, Record<string, boolean>>;
 
   @column.dateTime({
     autoCreate: true

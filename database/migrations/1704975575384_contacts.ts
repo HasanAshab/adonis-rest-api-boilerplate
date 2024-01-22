@@ -9,8 +9,7 @@ export default class extends BaseSchema {
       table.string('email', 254).notNullable()
       table.string('subject', ).notNullable().index()
       table.string('message', ).notNullable()
-      table.enum('status', ['opened', 'closed']).notNullable()
-
+      table.enum('status', ['opened', 'closed']).notNullable().defaultTo('open')
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

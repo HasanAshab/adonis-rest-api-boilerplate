@@ -15,6 +15,11 @@ import SetupTwoFactorAuthValidator from 'App/Http/Validators/V1/Auth/SetupTwoFac
 import AccountRecoveryValidator from 'App/Http/Validators/V1/Auth/AccountRecoveryValidator';
 import SocialAuthTokenLoginValidator from 'App/Http/Validators/V1/Auth/Login/SocialAuthTokenLoginValidator';
 
+import EmailAndUsernameSetupRequiredException from 'App/Exceptions/EmailAndUsernameSetupRequiredException';
+import UsernameSetupRequiredException from 'App/Exceptions/UsernameSetupRequiredException';
+import EmailSetupRequiredException from 'App/Exceptions/EmailSetupRequiredException';
+
+
 export default class AuthController {
 	//constructor(private authService: AuthService, private socialAuthService: SocialAuthService) {}
 	constructor(
@@ -143,60 +148,97 @@ export default class AuthController {
   /* 
   Tokens(haoronaldo): 
     google:
-ya29.a0AfB_byD6BZ7J4bG6PIBM_93T_SBpvHSH_xFMt26Mgk0SGbuP2SbO0GuquY3snwQUKGCApg0JI8_czVWe_qtb6Pe2huFlZMo2TvnoMl_LZJB3o3RGEtEXd6WycpFCShvkLbGUSpSkEWTZZ8Yx7pQ4wUwumXa1UVSFShBhaCgYKAX8SARISFQHGX2MiS9EHkCZzFMu49pI2DCE4Yw0171
+ya29.a0AfB_byDAdXmhyCHY5fyblwsY5Uu_IijvY5WwbH1rJnyzYCoDt_zSu85hkd8w9y-1GOK-ckDJSVgONYhJ1zH9ItqNtWUF2lsPQpqBnp-7DNCZMJ1Yi8zYTinGE-6IS40kvFt7NPBAyMQOTyt9I2iquuLeuV-VwJQnaE1-aCgYKAXgSARISFQHGX2MiYR7lLiS8ChJ2rfiTcsM1gw0171
     facebook:
-EAACZBwjX8c54BO8pp3Dv6vYhERW5XoebXPyS4rjcl597sJLaWnz2HwZAUE23rdMQI5bUXJMMgL5amFFPBd6yPKERuZAw8XWhlZBNPYnegy70QolDPTnp3EqZCGenkOkTZCZC1zGYzpZBw1UfMYtvwc7wNvk0iXfb6Mr3g62lFhsIPw73DJRmYnSL4yB6EQrgZCrf9ebDyu7pqf9wZAXrgRveVzbEqXZBeIZADaKg29TBMuqkOqq5qXUgIpyv
-  */
+EAACZBwjX8c54BOZCrAF6xYcpYT6a5emzzCKUF0DlVq2geDe7bd4zkGqGoB0w6CrzdcrSdLaZCtaTy8Y5ZC5OgpyvbTvjGK8QJnK4jNkq1CaLb8qp8PJNZCTJMLexjE5RzzLgx5K0ROybkOdfJbitgSVsuzckfIE9viiXgI9bRHq95BXgCJPTqBg0POWtyfL6pvRxhiAU7yEyAxsWgXWIZAdW9PntApt37wvQn4KH0sMrJsz1gHt3h6
+*/
   public async loginWithSocialAuthToken({ params, ally, request }: HttpContextContract) {
-    const { token } = await request.validate(SocialAuthTokenLoginValidator)
+    let { token, email, username } = await request.validate(SocialAuthTokenLoginValidator)
 
-    const userInfo = await ally.use(params.provider).userFromToken(token);
-
-    try {
-      const user = await User.updateOrCreate(
-        {
-          socialProvider: params.provider,
-          socialId: userInfo.id
-        },
-        {
-          email: userInfo.email,
-          username: userInfo.email.split('@')[0],
-          verified: userInfo.emailVerificationState === 'verified',
-          name: userInfo.nickName.substring(0, 35),
-  // TODO phoneNumber: userInfo.phoneNumber,
-  // TODO profile: userInfo.avatarUrl
-        }
-      );
+    const socialInfo = await ally.use(params.provider).userFromToken(token);
     
-      return {
-  			message: 'Verification email sent!',
-  			data: {
-  			  token: await user.createToken(),
-  			  user
-  			}
-  		}
-    }
-    catch(err) {
-      log(err)
-      if(err.code !== '23505') {
-        throw err;
+    email = email ?? socialInfo.email;
+    username = username ?? email?.split('@')[0];
+    
+    const user = await User.updateOrCreate(
+      {
+        socialProvider: params.provider,
+        socialId: socialInfo.id
+      },
+      {
+        name: socialInfo.nickName.substring(0, 35),
+        socialAvatar: socialInfo.avatarUrl
       }
-      if(err.constraint === 'users_email_unique') {
-        return {
-          errors: {
-            email: "email already exists"
-          }
-        }
+    );
+    
+    if(!(user.email || user.username) && socialInfo.email) {
+      const existingUser = await User.query()
+        .where('email', socialInfo.email)
+        .orWhere('username', username)
+        .select('email', 'username')
+        .first();
+        
+      const emailExists = existingUser?.email === socialInfo.email;
+      const usernameExists = existingUser?.username === username; 
+      
+      if(emailExists && usernameExists) {
+        throw new EmailAndUsernameSetupRequiredException();
+      }
+
+      if(emailExists) {
+        throw new EmailSetupRequiredException();
       }
       
-      if(err.constraint === 'users_username_unique') {
-        return {
-          errors: {
-            username: "set username"
-          }
-        }
+      user.email = socialInfo.email;
+      user.verified = socialInfo.emailVerificationState === 'verified';
+      
+      if(!usernameExists) {
+        user.username = username;
+      }
+
+      await user.save();
+      
+      if(usernameExists) {
+        throw new UsernameSetupRequiredException();
       }
     }
+    
+    if(!user.email && !user.username) {
+      throw new EmailAndUsernameSetupRequiredException();
+    }
+
+    if(!user.email) {
+      throw new EmailSetupRequiredException();
+    }
+    
+    if(!user.username) {
+      throw new UsernameSetupRequiredException();
+    }
+    
+    return {
+			message: 'Logged in successfully!',
+			data: {
+			  token: await user.createToken(),
+			  user
+			}
+		}
+  }
+  
+  
+  public async setupSocialAccountWithAuthToken({ params, ally, request }: HttpContextContract) {
+    const { token, email, username } = await request.validate(SocialAuthTokenLoginValidator)
+
+    const socialInfo = await ally.use(params.provider).userFromToken(token);
+
+    await User.query()
+      .where(socialProvider, params.provider)
+      .where(socialId, socialInfo.id)
+      .update({
+        email,
+        username
+      });
+      
+    return 'Account'
   }
   
   
@@ -208,7 +250,7 @@ EAACZBwjX8c54BO8pp3Dv6vYhERW5XoebXPyS4rjcl597sJLaWnz2HwZAUE23rdMQI5bUXJMMgL5amFF
   async loginWithSocialProvider({ request, params, ally }: HttpContextContract) {
 
     const externalUser = await ally.use(params.provider).user();
-        log(externalUser)
+    return externalUser.token.token
     const user = await User.findOneAndUpdate(
       { [`externalId.${params.provider}`]: externalUser.id },
       { 

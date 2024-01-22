@@ -18,10 +18,10 @@ export default class Token extends compose(BaseModel, Expirable) {
 	public type: string;
 	
 	@column()
-	public oneTime = false;
+	public oneTime: boolean;
 	
 	@column()
-	public data: object | null = null;
+	public data?: object;
 	
 	@column()
 	public secret: string;

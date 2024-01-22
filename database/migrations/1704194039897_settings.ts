@@ -13,8 +13,14 @@ export default class extends BaseSchema {
 				.index()
 				.references('users.id')
 				.onDelete('CASCADE');
-			table.jsonb('two_factor_auth').notNullable();
-			table.jsonb('notification').notNullable();
+			
+			table.json('two_factor_auth').notNullable().defaultTo({
+      	enabled: false,
+      	method: 'sms',
+      	secret: null
+      });
+      
+			table.json('notification').notNullable().defaultTo({});
 			table.timestamp('created_at', { useTz: true }).notNullable();
 			table.timestamp('updated_at', { useTz: true }).notNullable();
 		});

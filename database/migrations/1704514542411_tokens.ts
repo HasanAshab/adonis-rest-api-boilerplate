@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('key').notNullable().index()
       table.string('type').notNullable()
-      table.boolean('one_time').notNullable()
+      table.boolean('one_time').notNullable().defaultTo(false)
       table.jsonb('data').nullable()
       table.string('secret').notNullable()
       table.timestamp('expires_at', { useTz: true })

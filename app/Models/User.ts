@@ -32,7 +32,7 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	public phoneNumber?: string;
 
 	@column()
-	public role: 'novice' | 'admin' = 'novice';
+	public role: 'novice' | 'admin';
 
 	@column()
 	public verified = false;
@@ -41,13 +41,16 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	public password?: string;
 
 	@column({ serializeAs: null })
-	public recoveryCodes: string[] = [];
+	public recoveryCodes?: string[];
 
   @column({ serializeAs: null })
 	public socialProvider?: string;
   
 	@column({ serializeAs: null })
 	public socialId?: string;
+  
+  @column()
+  public socialAvatar?: string;
   
 	@hasOne(() => Settings)
 	public settings: HasOne<typeof Settings>;
