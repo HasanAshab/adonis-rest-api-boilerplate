@@ -7,20 +7,12 @@ export default class SocialAuthTokenLoginValidator extends Validator {
 		
 		email: schema.string.optional([
 			rules.email(),
-			rules.maxLength(254),
-			rules.unique({
-				table: 'users',
-				column: 'email',
-			}),
+			rules.maxLength(254)
 		]),
 
 		username: schema.string.optional([
 			rules.alphaNum(),
-			rules.lengthRange(3, 20),
-			rules.unique({
-				table: 'users',
-				column: 'username',
-			}),
+			rules.lengthRange(3, 20)
 		]),
 	});
 }

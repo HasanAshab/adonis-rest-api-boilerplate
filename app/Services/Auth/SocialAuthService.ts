@@ -1,63 +1,87 @@
-import Token from 'App/Models/Token';
+import type { AllyUserContract } from '@ioc:Adonis/Addons/Ally';
+import User from 'App/Models/User';
+import ValidationException from 'App/Exceptions/ValidationException';
+
+
+export interface SocialLoginFallbackData {
+  email?: string;
+  username?: string;
+}
 
 export default class SocialAuthService {
-	async login(provider: string, code: string) {
-		const externalUser = await Socialite.driver(provider).user(code);
-		console.log(externalUser);
-		const user = await User.findOneAndUpdate(
-			{ [`externalId.${provider}`]: externalUser.id },
-			{
-				name: externalUser.name,
-				email: externalUser.email,
-				verified: true,
-				profile: externalUser.picture,
-			},
-			{ new: true },
-		);
-		if (user) {
-			return URL.client(
-				`/login/social/${provider}/success/${user.createToken()}`,
-			);
-		}
-		const fields = externalUser.email ? 'username' : 'email,username';
-		const token = await this.createSocialLoginFinalStepToken(
-			provider,
-			externalUser,
-		);
-		return URL.client(
-			`/login/social/${provider}/final-step/${externalUser.id}/${token}?fields=${fields}`,
-		);
-	}
+  public async upsertUser(provider: string, allyUser: AllyUserContract, fallbackData: SocialLoginFallbackData) {
+    fallbackData.email = fallbackData.email ?? allyUser.email;
+    fallbackData.username = fallbackData.username ?? fallbackData.email?.split('@')[0];
+    
+    const user = await User.updateOrCreate(
+      {
+        socialProvider: params.provider,
+        socialId: allyUser.id
+      },
+      {
+        name: allyUser.nickName.substring(0, 35),
+        socialAvatar: allyUser.avatarUrl
+      }
+    );
+    
+    if(!(user.email || user.username) && fallbackData.email) {
+      const existingUser = await User.query()
+        .where('email', fallbackData.email)
+        .orWhere('username', fallbackData.username)
+        .select('email', 'username')
+        .first();
+        
+      const emailExists = existingUser?.email === fallbackData.email;
+      const usernameExists = existingUser?.username === fallbackData.username; 
+      
+      if(emailExists && usernameExists) {
+        throw new ValidationException({
+          'email': 'email already exists',
+          'username': 'username already exists'
+        });
+      }
 
-	async loginFinalStep(
-		provider: string,
-		externalId: string,
-		token: string,
-		username: string,
-		email?: string,
-	) {
-		const externalUser = await Token.verify<ExternalUser>(
-			externalId,
-			provider + 'Login',
-			token,
-		);
-		return await User.create({
-			[`externalId.${provider}`]: externalUser.id,
-			name: externalUser.name,
-			email: externalUser.email ?? email,
-			username,
-			verified: true,
-			profile: externalUser.picture,
-		});
-	}
+      if(emailExists) {
+        throw new ValidationException({
+          'email': 'email already exists'
+        });
+      }
+      
+      user.email = fallbackData.email;
+      user.verified = allyUser.emailVerificationState === 'verified';
+      
+      if(!usernameExists) {
+        user.username = fallbackData.username;
+      }
 
-	async createFinalStepToken(provider: string, externalUser: ExternalUser) {
-		const { secret } = await Token.create({
-			key: externalUser.id,
-			type: provider + 'Login',
-			data: externalUser,
-			expiresAt: Date.now() + 25920000,
-		});
-		return secret;
-	}
+      await user.save();
+      
+      if(usernameExists) {
+        throw new ValidationException({
+          'username': 'username already exists',
+        });
+      }
+    }
+    
+    if(!user.email && !user.username) {
+      throw new ValidationException({
+        'email': 'email already exists',
+        'username': 'username already exists'
+      });
+    }
+
+    if(!user.email) {
+      throw new ValidationException({
+        'email': 'email already exists'
+      });
+    }
+    
+    if(!user.username) {
+      throw new ValidationException({
+        'username': 'username already exists',
+      });
+    }
+    
+    return user;
+  }
 }
