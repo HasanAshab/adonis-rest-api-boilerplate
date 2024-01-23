@@ -6,6 +6,7 @@ declare module '@ioc:Adonis/Lucid/Orm' {
     Result = InstanceType<Model>
   > {
     whereFields(fields: Record<string, any>): this;
+    exists(): Promise<boolean>;
     except(modelOrId: BaseModel | number): this;
   }
 }

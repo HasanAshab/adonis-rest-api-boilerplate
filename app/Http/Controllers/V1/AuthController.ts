@@ -18,6 +18,8 @@ import SocialAuthTokenLoginValidator from 'App/Http/Validators/V1/Auth/Login/Soc
 
 
 export default class AuthController {
+	public readonly version = 'v1';
+	
 	constructor(
 	  private readonly authService = new BasicAuthService,
 	  private readonly twoFactorAuthService = new TwoFactorAuthService
@@ -34,13 +36,13 @@ export default class AuthController {
     const user = await this.authService.register(registrationData);
 
 		Event.emit('registered', {
-			version: 'v1',
+			version: this.version,
 			method: 'internal',
 			user,
 		});
 		//Event.fire(new Registered({}))
 
-		const profileUrl = ''; //Route.makeUrl("v1.users.show", [user.username]);
+		const profileUrl = ''; //Route.makeUrl(this.version + ".users.show", [user.username]);
 
 		response.header('Location', profileUrl).created({
 			message: 'Verification email sent!',
@@ -89,7 +91,7 @@ export default class AuthController {
 
   async resendEmailVerification({ request }: HttpContextContract){
     const { email } = await request.validate(ResendEmailVerificationValidator);
-    await this.authService.sendVerificationMail(email, 'v1');
+    await this.authService.sendVerificationMail(email, this.version);
     return "Verification link sent to email!";
   };
   
@@ -154,12 +156,20 @@ EAACZBwjX8c54BOZCrAF6xYcpYT6a5emzzCKUF0DlVq2geDe7bd4zkGqGoB0w6CrzdcrSdLaZCtaTy8Y
 
     const allyUser = await ally.use(params.provider).userFromToken(token);
     
-    const user = await this.socialAuthService.upsertUser(
+    const { user, isRegisteredNow } = await this.socialAuthService.upsertUser(
       params.provider,
       allyUser,
       fallbackData
     );
-
+    
+    if(isRegisteredNow) {
+      Event.emit('registered', {
+  			version: this.version,
+  			method: 'social',
+  			user
+  		});
+    }
+    
     return {
 			message: 'Logged in successfully!',
 			data: {
@@ -167,23 +177,6 @@ EAACZBwjX8c54BOZCrAF6xYcpYT6a5emzzCKUF0DlVq2geDe7bd4zkGqGoB0w6CrzdcrSdLaZCtaTy8Y
 			  user
 			}
 		}
-  }
-  
-  
-  public async setupSocialAccountWithAuthToken({ params, ally, request }: HttpContextContract) {
-    const { token, email, username } = await request.validate(SocialAuthTokenLoginValidator)
-
-    const socialInfo = await ally.use(params.provider).userFromToken(token);
-
-    await User.query()
-      .where(socialProvider, params.provider)
-      .where(socialId, socialInfo.id)
-      .update({
-        email,
-        username
-      });
-      
-    return 'Account'
   }
   
   

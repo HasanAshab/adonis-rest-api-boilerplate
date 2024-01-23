@@ -10,9 +10,9 @@ export interface SocialLoginFallbackData {
 
 export default class SocialAuthService {
   public async upsertUser(provider: string, allyUser: AllyUserContract, fallbackData: SocialLoginFallbackData) {
-    fallbackData.email = fallbackData.email ?? allyUser.email;
-    fallbackData.username = fallbackData.username ?? fallbackData.email?.split('@')[0];
-    
+    this.normalizeFallbackData(fallbackData, allyUser);
+    let isRegisteredNow = false;
+
     const user = await User.updateOrCreate(
       {
         socialProvider: params.provider,
@@ -24,6 +24,7 @@ export default class SocialAuthService {
       }
     );
     
+    // Merge fallback data with the user
     if(!(user.email || user.username) && fallbackData.email) {
       const existingUser = await User.query()
         .where('email', fallbackData.email)
@@ -36,52 +37,61 @@ export default class SocialAuthService {
       
       if(emailExists && usernameExists) {
         throw new ValidationException({
-          'email': 'email already exists',
-          'username': 'username already exists'
+          'email': 'unique',
+          'username': 'unique'
         });
       }
 
       if(emailExists) {
-        throw new ValidationException({
-          'email': 'email already exists'
-        });
+        throw new ValidationException('email', 'unique');
       }
       
       user.email = fallbackData.email;
-      user.verified = allyUser.emailVerificationState === 'verified';
+      user.verified = allyUser.email === fallbackData.email && allyUser.emailVerificationState === 'verified';
       
       if(!usernameExists) {
-        user.username = fallbackData.username;
+        user.username = fallbackData.username; 
+      }
+      
+      else {
+        await user.generateUsername();
       }
 
       await user.save();
       
       if(usernameExists) {
-        throw new ValidationException({
-          'username': 'username already exists',
-        });
+        throw new ValidationException('username', 'unique');
       }
+      
+      isRegisteredNow = true;
     }
     
+    // Insuring if the user have all critical data
+    this.assertAccountIsReady(user);
+    
+    return { user, isRegisteredNow };
+  }
+  
+  private normalizeFallbackData(fallbackData: SocialLoginFallbackData, allyUser: AllyUserContract) {
+    fallbackData.email = fallbackData.email ?? allyUser.email;
+    fallbackData.username = fallbackData.username ?? fallbackData.email?.split('@')[0];
+    return fallbackData;
+  }
+  
+  private assertAccountIsReady(user: User) {
     if(!user.email && !user.username) {
       throw new ValidationException({
-        'email': 'email already exists',
-        'username': 'username already exists'
+        'email': 'required',
+        'username': 'required'
       });
     }
 
     if(!user.email) {
-      throw new ValidationException({
-        'email': 'email already exists'
-      });
+      throw new ValidationException('email', 'required');
     }
     
     if(!user.username) {
-      throw new ValidationException({
-        'username': 'username already exists',
-      });
+      throw new ValidationException('username', 'required');
     }
-    
-    return user;
   }
 }

@@ -15,6 +15,10 @@ export default class AppProvider {
 	    return this;
     });
     
+    ModelQueryBuilder.macro('exists', async function () {
+	    return !!await this.first();
+    });
+    
     ModelQueryBuilder.macro('except', function (modelOrId: BaseModel | number) {
 	    const id = modelOrId instanceof BaseModel
   	    ? modelOrId.id

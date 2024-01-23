@@ -63,6 +63,31 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
     this.verified = true;
     return this.save();
   }
+  
+  public async generateUsername(maxAttempts = 10, MAX_LENGTH = 20) {
+    if(!this.email) {
+      throw new Error('User must have a email before trying to generate username');
+    }
+    
+    const name = this.email
+      .replace(/@.+/, "")
+      .replace(/[&/\\#,+()$~%._@'":*?<>{}]/g, "");
+    
+    let username = name + 1;
+
+    for(let attempt = 2; attempt <= maxAttempts + 1; attempt++) {
+      if(await User.notExists('username', username)) {
+        return this.username = username;
+      }
+      
+      username = name + attempt;
+      if(username.length > MAX_LENGTH) {
+        username = name.substring(0, name.length - (username.length - MAX_LENGTH)) + attempt;
+      }
+    }
+    
+    return null;
+  }
 
 	public assertHasPassword(exception?: Exception): asserts this is this & { password: string } {
     if (this.password) return;

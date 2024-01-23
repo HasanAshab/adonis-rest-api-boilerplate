@@ -19,12 +19,26 @@ export default class BaseModel extends Model {
 	  return query.first();
 	}
 	
-	public static async exists(value: number | object) {
-	  return types.isNumber(value)
-	    ? !!await this.find(value)
-	    : !!await this.findByFields(value)
+	public static async exists<
+	  T extends number | string | object
+	>(idOrFieldOrData: T, value: T extends string ? unknown : never) {
+	  if(types.isNumber(idOrFieldOrData)) {
+	    return !!await this.find(value)
+	  }
+	  
+	  if(types.isString(idOrFieldOrData)) {
+	    return await this.query().where(idOrFieldOrData, value).exists();
+	  }
+	  
+	  return !!await this.findByFields(idOrFieldOrData);
 	}
 	
+	public static async notExists<
+	  T extends number | string | object
+	>(idOrFieldOrData: T, value: T extends string ? unknown : never) {
+	  return !await this.exists(idOrFieldOrData, value);
+	}
+
 	public static except(modelOrId: Model | number) {
 	  return this.query().except(modelOrId);
 	}
