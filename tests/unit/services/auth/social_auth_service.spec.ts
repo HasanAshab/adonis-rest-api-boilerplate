@@ -53,23 +53,6 @@ test.group('Services/Auth/SocialAuthService', group => {
     expect(result.user.verified).toBe(status)
   });
  
-  test('should respect overrider email over oauth provided email', async ({ expect }) => {
-    const allyUser: Partial<AllyUserContract> = {
-      id: '1',
-      name: 'Test User',
-      avatarUrl: 'http://example.com/avatar.jpg',
-      email: 'test1@example.com',
-      emailVerificationState: 'verified'
-    }
-    
-    const overriderData = {
-      email: 'test2@example.com',
-    }
-    const result = await service.upsertUser('google', allyUser, overriderData)
-    
-    expect(result.user.email).toBe(overriderData.email)
-  })
-  
   test('should generate username from email', async ({ expect }) => {
     const allyUser: Partial<AllyUserContract> = {
       id: '1',
@@ -233,23 +216,8 @@ test.group('Services/Auth/SocialAuthService', group => {
     const result = await service.upsertUser('google', allyUser)
 
     expect(result.isRegisteredNow).toBe(true)
-  }).pin()
-  
-  test('should flag registered when email not provided by oauth but overrider given and unique username genrated successfully', async ({ expect }) => {
-    const allyUser: Partial<AllyUserContract> = {
-      id: '1',
-      name: 'Test User',
-      avatarUrl: 'http://example.com/avatar.jpg',
-      emailVerificationState: 'verified'
-    }
-    
-    const result = await service.upsertUser('google', allyUser, {
-      email: 'test@example.com'
-    })
+  })
 
-    expect(result.isRegisteredNow).toBe(true)
-  }).pin()
-  
   test('should flag registered for first time only', async ({ expect }) => {
     const allyUser: Partial<AllyUserContract> = {
       id: '1',
@@ -264,11 +232,11 @@ test.group('Services/Auth/SocialAuthService', group => {
 
     expect(result1.isRegisteredNow).toBe(true)
     expect(result2.isRegisteredNow).toBe(false)
-  }).pin()
+  })
   
   
   //Validation Exception
-  test('should throw validation exception when email not provided by the oauth provider and no overrider email given', async ({ expect }) => {
+  test('should throw validation exception when email not provided by the oauth provider', async ({ expect }) => {
     const allyUser: Partial<AllyUserContract> = {
       id: '1',
       name: 'Test User',

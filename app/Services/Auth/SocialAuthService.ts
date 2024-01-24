@@ -3,18 +3,8 @@ import User from 'App/Models/User';
 import ValidationException from 'App/Exceptions/ValidationException';
 
 
-export interface SocialLoginOverriderData {
-  email?: string;
-  username?: string;
-}
-
 export default class SocialAuthService {
-  public async upsertUser(
-    provider: string,
-    allyUser: AllyUserContract,
-    overriderData: SocialLoginOverriderData = {}
-  ) {
-    const { email = allyUser.email, username } = overriderData;
+  public async upsertUser(provider: string, allyUser: AllyUserContract, username?: string) {
     let isRegisteredNow = false;
 
     const user = await User.updateOrCreate(
@@ -29,16 +19,16 @@ export default class SocialAuthService {
     );
     
     // Merge fallback data with the user
-    if(!(user.email || user.username) && email) {
+    if(!(user.email || user.username) && allyUser.email) {
       const existingUser = await User.query()
-        .where('email', email)
+        .where('email', allyUser.email)
         .when(username, query => {
           query.orWhere('username', username);
         })
         .select('email', 'username')
         .first();
         
-      const emailExists = existingUser?.email === email;
+      const emailExists = existingUser?.email === allyUser.email;
       const usernameExists = username && existingUser?.username === username;
 
       if(emailExists && usernameExists) {
@@ -52,8 +42,8 @@ export default class SocialAuthService {
         throw ValidationException.field('email', 'unique');
       }
       
-      user.email = email;
-      user.verified = allyUser.email === email && allyUser.emailVerificationState === 'verified';
+      user.email = allyUser.email;
+      user.verified = allyUser.emailVerificationState === 'verified';
       
       if(username && !usernameExists) {
         user.username = username; 
