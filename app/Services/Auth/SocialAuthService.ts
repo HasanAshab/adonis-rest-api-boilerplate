@@ -9,8 +9,12 @@ export interface SocialLoginFallbackData {
 }
 
 export default class SocialAuthService {
-  public async upsertUser(provider: string, allyUser: AllyUserContract, fallbackData: SocialLoginFallbackData = {}) {
-    this.normalizeFallbackData(fallbackData, allyUser);
+  public async upsertUser(
+    provider: string,
+    allyUser: AllyUserContract,
+    fallbackData: SocialLoginFallbackData = {}
+  ) {
+    const { email = allyUser.email, username } = fallbackData;
     let isRegisteredNow = false;
 
     const user = await User.updateOrCreate(
@@ -25,16 +29,18 @@ export default class SocialAuthService {
     );
     
     // Merge fallback data with the user
-    if(!(user.email || user.username) && fallbackData.email) {
+    if(!(user.email || user.username) && email) {
       const existingUser = await User.query()
-        .where('email', fallbackData.email)
-        .orWhere('username', fallbackData.username)
+        .where('email', email)
+        .when(username, query => {
+          query.orWhere('username', username);
+        })
         .select('email', 'username')
         .first();
         
-      const emailExists = existingUser?.email === fallbackData.email;
-      const usernameExists = existingUser?.username === fallbackData.username; 
-      
+      const emailExists = existingUser?.email === email;
+      const usernameExists = username && existingUser?.username === username;
+
       if(emailExists && usernameExists) {
         throw new ValidationException({
           'email': 'unique',
@@ -46,17 +52,17 @@ export default class SocialAuthService {
         throw ValidationException.field('email', 'unique');
       }
       
-      user.email = fallbackData.email;
-      user.verified = allyUser.email === fallbackData.email && allyUser.emailVerificationState === 'verified';
+      user.email = email;
+      user.verified = allyUser.email === email && allyUser.emailVerificationState === 'verified';
       
-      if(!usernameExists) {
-        user.username = fallbackData.username; 
+      if(username && !usernameExists) {
+        user.username = username; 
       }
       
       else {
-        await user.generateUsername();
+        await user.generateUsername(10);
       }
-
+      
       await user.save();
       
       if(usernameExists) {
@@ -72,12 +78,7 @@ export default class SocialAuthService {
     return { user, isRegisteredNow };
   }
   
-  private normalizeFallbackData(fallbackData: SocialLoginFallbackData, allyUser: AllyUserContract) {
-    fallbackData.email = fallbackData.email ?? allyUser.email;
-    fallbackData.username = fallbackData.username ?? fallbackData.email?.split('@')[0];
-    return fallbackData;
-  }
-  
+
   private assertAccountIsReady(user: User) {
     if(!user.email && !user.username) {
       throw new ValidationException({

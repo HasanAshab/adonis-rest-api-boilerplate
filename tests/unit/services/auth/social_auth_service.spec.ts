@@ -4,12 +4,17 @@ import User from 'App/Models/User';
 import SocialAuthService from 'App/Services/Auth/SocialAuthService';
 import ValidationException from 'App/Exceptions/ValidationException';
 
+/*
+  Run this suits:
+  node ace test unit --files="services/auth/social_auth_service.spec.ts"
+*/
 
 test.group('Services/Auth/SocialAuthService', group => {
   const service = new SocialAuthService();
   
   refreshDatabase(group);
 
+  //Create
   test('should create a new user', async ({ expect }) => {
     const allyUser: Partial<AllyUserContract> = {
       id: '1',
@@ -20,7 +25,7 @@ test.group('Services/Auth/SocialAuthService', group => {
     }
     
     const result = await service.upsertUser('google', allyUser)
-
+    
     expect(result.user.email).toBe(allyUser.email)
     expect(result.user.username).toBe('test')
     expect(result.user.verified).toBe(true)
@@ -28,8 +33,29 @@ test.group('Services/Auth/SocialAuthService', group => {
     expect(result.isRegisteredNow).toBe(true)
   })
 
-  
-  test('should update existing user', async ({ expect }) => {
+  test('should create user with verification status "{status}" when email verification state is {state}')
+  .with([
+    { state: 'verified', status: true },
+    { state: 'unverified', status: false },
+    { state: 'unsupported', status: false }
+  ])
+  .run(async ({ expect }, { state, status}) => {
+    const allyUser: Partial<AllyUserContract> = {
+      id: '1',
+      name: 'Test User',
+      avatarUrl: 'http://example.com/avatar.jpg',
+      email: 'test@example.com',
+      emailVerificationState: state
+    }
+    
+    const result = await service.upsertUser('google', allyUser)
+
+    expect(result.user.verified).toBe(status)
+  });
+ 
+
+  //Update
+  test('should update name and avatar', async ({ expect }) => {
     const socialProvider = 'google';
 
     const allyUser: Partial<AllyUserContract> = {
@@ -76,9 +102,61 @@ test.group('Services/Auth/SocialAuthService', group => {
     const result = await service.upsertUser(socialProvider, allyUser)
   
     expect(result.user.email).toBe(user.email);
-  }).pin()
+  })
   
-  test('should not update user verification status to {status} when social email not match and email verification state is {state}')
+  test('should not update username based on the new email provided by oauth', async ({ expect }) => {
+    const socialProvider = 'google';
+    const allyUser: Partial<AllyUserContract> = {
+      id: '1',
+      email: 'test.new@example.com',
+      name: 'Test User',
+      avatarUrl: 'http://example.com/avatar.jpg',
+      emailVerificationState: 'verified'
+    }
+    
+    const user = await User.create({
+      socialId: allyUser.id,
+      socialProvider,
+      email: 'test@example.com',
+      username: 'test',
+    })
+
+    const result = await service.upsertUser(socialProvider, allyUser)
+  
+    expect(result.user.username).toBe(user.username);
+  })
+
+  test('should update user verification status to {status} when oauth provided email is same and email verification state is {state}')
+  .with([
+    { state: 'verified', status: true },
+    { state: 'unverified', status: false },
+    { state: 'unsupported', status: false },
+  ])
+  .run(async ({ expect }, { state, status }) => {
+    const socialProvider = 'google';
+
+    const allyUser: Partial<AllyUserContract> = {
+      id: '1',
+      email: 'test.new@example.com',
+      name: 'Test User',
+      avatarUrl: 'http://example.com/avatar.jpg',
+      emailVerificationState: state
+    }
+    
+    const user = await User.create({
+      socialId: allyUser.id,
+      socialProvider,
+      email: 'test@example.com',
+      username: 'test',
+      verified: status
+    })
+
+    const result = await service.upsertUser(socialProvider, allyUser)
+  
+    expect(result.user.verified).toBe(status);
+  })
+  
+  test('should not update user verification status from {status} when social email not match and email verification state is {state}')
   .with([
     { state: 'verified', status: false },
     { state: 'verified', status: true },
@@ -109,10 +187,57 @@ test.group('Services/Auth/SocialAuthService', group => {
     const result = await service.upsertUser(socialProvider, allyUser)
   
     expect(result.user.verified).toBe(status);
+  })
+  
+  
+  // Registered Flag
+  test('should flag registered when email provided by oauth and unique username genrated successfully', async ({ expect }) => {
+    const allyUser: Partial<AllyUserContract> = {
+      id: '1',
+      name: 'Test User',
+      avatarUrl: 'http://example.com/avatar.jpg',
+      email: 'test@example.com',
+      emailVerificationState: 'verified'
+    }
+    
+    const result = await service.upsertUser('google', allyUser)
+
+    expect(result.isRegisteredNow).toBe(true)
+  }).pin()
+  
+  test('should flag registered when email not provided by oauth but fallback given and unique username genrated successfully', async ({ expect }) => {
+    const allyUser: Partial<AllyUserContract> = {
+      id: '1',
+      name: 'Test User',
+      avatarUrl: 'http://example.com/avatar.jpg',
+      emailVerificationState: 'verified'
+    }
+    
+    const result = await service.upsertUser('google', allyUser, {
+      email: 'test@example.com'
+    })
+
+    expect(result.isRegisteredNow).toBe(true)
+  }).pin()
+  
+  test('should flag registered for first time only', async ({ expect }) => {
+    const allyUser: Partial<AllyUserContract> = {
+      id: '1',
+      name: 'Test User',
+      avatarUrl: 'http://example.com/avatar.jpg',
+      email: 'test@example.com',
+      emailVerificationState: 'verified'
+    }
+    
+    const result1 = await service.upsertUser('google', allyUser)
+    const result2 = await service.upsertUser('google', allyUser)
+
+    expect(result1.isRegisteredNow).toBe(true)
+    expect(result2.isRegisteredNow).toBe(false)
   }).pin()
 
-
   
+  //Validation Exception
   test('should throw validation exception when email not provided by the oauth provider and no fallback email given', async ({ expect }) => {
     const allyUser: Partial<AllyUserContract> = {
       id: '1',
@@ -132,42 +257,7 @@ test.group('Services/Auth/SocialAuthService', group => {
       })
     }
   })
-  
-  test('should make verified user when email verification state is verified', async ({ expect }) => {
-    const allyUser: Partial<AllyUserContract> = {
-      id: '1',
-      name: 'Test User',
-      avatarUrl: 'http://example.com/avatar.jpg',
-      emailVerificationState: 'verified'
-    }
-    
-    const fallbackData = {
-      email: 'test@example.com'
-    }
-    const result = await service.upsertUser('google', allyUser, fallbackData)
 
-    expect(result.user.verified).toBe(true)
-  })
-  
-  test('should not make verified user when email verification state is {$self}')
-  .with([
-    'unverified',
-    'unsupported'
-  ])
-  .run(async ({ expect }, state) => {
-    const allyUser: Partial<AllyUserContract> = {
-      id: '1',
-      name: 'Test User',
-      avatarUrl: 'http://example.com/avatar.jpg',
-      email: 'test@example.com',
-      emailVerificationState: state
-    }
-    
-    const result = await service.upsertUser('google', allyUser)
-
-    expect(result.user.verified).toBe(false)
-  }).pin();
- 
   test('should throw validation exception if email is not unique', async ({ expect }) => {
     const allyUser: Partial<AllyUserContract> = {
       id: '1',

@@ -8,6 +8,7 @@ export default class AppProvider {
 	  const { ModelQueryBuilder } = this.app.container.use('Adonis/Lucid/Database');
     const { BaseModel } = this.app.container.use('Adonis/Lucid/Orm');
 
+
     ModelQueryBuilder.macro('whereEqual', function (fields: Record<string, any>) {
       for(const name in fields) {
 	      this.where(name, fields[name]);
@@ -24,6 +25,13 @@ export default class AppProvider {
   	    ? modelOrId.id
   	    : modelOrId;
 	    return this.whereNot('id', id);
+    });
+    
+    ModelQueryBuilder.macro('when', function(condition: boolean, cb: QueryBuilderCallback) {
+	    if(condition) {
+	      cb(this);
+	    }
+	    return this;
     });
 	}
 

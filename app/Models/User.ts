@@ -84,9 +84,9 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
       .replace(/@.+/, "")
       .replace(/[&/\\#,+()$~%._@'":*?<>{}]/g, "");
     
-    let username = name + 1;
+    let username = name;
 
-    for(let attempt = 2; attempt <= maxAttempts + 1; attempt++) {
+    for(let attempt = 1; attempt <= maxAttempts; attempt++) {
       if(await User.notExists('username', username)) {
         return this.username = username;
       }
