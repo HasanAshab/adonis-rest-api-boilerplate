@@ -13,8 +13,10 @@ Route.group(() => {
 	Route.post('/', 'AuthController.login').middleware(['throttle:global', 'recaptcha']);
 
 	// login with external providers
+	Route.post("/social/:provider", "AuthController.loginWithSocialAuthToken")
+	  .where('provider', /^(google|facebook)$/);
+
   Route.group(() => {
-    Route.post("/", "AuthController.loginWithSocialAuthToken");
     Route.get("/", "AuthController.redirectToSocialLoginProvider");
     Route.post("/final-step", "AuthController.socialLoginFinalStep");
   }).prefix("/social/:provider");

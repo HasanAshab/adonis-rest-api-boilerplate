@@ -12,6 +12,8 @@ import { Notifiable } from '@ioc:Verful/Notification/Mixins'
 import InvalidPasswordException from 'App/Exceptions/InvalidPasswordException'
 import PasswordChangeNotAllowedException from 'App/Exceptions/PasswordChangeNotAllowedException'
 
+type Role = 'novice' | 'admin';
+
 export default class User extends compose(BaseModel, HasFactory, HasTimestamps, HasApiTokens, Notifiable('notifications')) {
 	@column({ isPrimary: true })
 	public id: number;
@@ -32,7 +34,7 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	public phoneNumber?: string;
 
 	@column()
-	public role: 'novice' | 'admin';
+	public role: Role;
 
 	@column()
 	public verified = false;
@@ -64,6 +66,15 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
     return this.save();
   }
   
+  public assertHasPassword(exception?: Exception): asserts this is this & { password: string } {
+    if (this.password) return;
+    if(exception) {
+      throw exception;
+    }
+		throw new Error('The user must have a password to perform this action');
+  }
+
+  
   public async generateUsername(maxAttempts = 10, MAX_LENGTH = 20) {
     if(!this.email) {
       throw new Error('User must have a email before trying to generate username');
@@ -89,13 +100,6 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
     return null;
   }
 
-	public assertHasPassword(exception?: Exception): asserts this is this & { password: string } {
-    if (this.password) return;
-    if(exception) {
-      throw exception;
-    }
-		throw new Error('The user must have a password to perform this action');
-  }
 
 	
 	@beforeSave()
@@ -109,7 +113,7 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 		return this.query().whereNotNull('password');
 	}
 	
-	public static withRole(role: string) {
+	public static withRole(role: Role) {
 	  return this.query().where("role", role);
 	}
 

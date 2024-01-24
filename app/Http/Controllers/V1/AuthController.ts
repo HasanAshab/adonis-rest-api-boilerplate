@@ -22,7 +22,7 @@ export default class AuthController {
 	
 	constructor(
 	  private readonly authService = new BasicAuthService,
-	  private readonly twoFactorAuthService = new TwoFactorAuthService
+	  private readonly twoFactorAuthService = new TwoFactorAuthService,
 	  private readonly socialAuthService = new SocialAuthService
 	) {}
   
@@ -188,6 +188,7 @@ EAACZBwjX8c54BOZCrAF6xYcpYT6a5emzzCKUF0DlVq2geDe7bd4zkGqGoB0w6CrzdcrSdLaZCtaTy8Y
   async loginWithSocialProvider({ request, params, ally }: HttpContextContract) {
 
     const externalUser = await ally.use(params.provider).user();
+    log(externalUser)
     return externalUser.token.token
     const user = await User.findOneAndUpdate(
       { [`externalId.${params.provider}`]: externalUser.id },

@@ -9,17 +9,17 @@ export interface SocialLoginFallbackData {
 }
 
 export default class SocialAuthService {
-  public async upsertUser(provider: string, allyUser: AllyUserContract, fallbackData: SocialLoginFallbackData) {
+  public async upsertUser(provider: string, allyUser: AllyUserContract, fallbackData: SocialLoginFallbackData = {}) {
     this.normalizeFallbackData(fallbackData, allyUser);
     let isRegisteredNow = false;
 
     const user = await User.updateOrCreate(
       {
-        socialProvider: params.provider,
+        socialProvider: provider,
         socialId: allyUser.id
       },
       {
-        name: allyUser.nickName.substring(0, 35),
+        name: allyUser.name.substring(0, 35),
         socialAvatar: allyUser.avatarUrl
       }
     );
@@ -43,7 +43,7 @@ export default class SocialAuthService {
       }
 
       if(emailExists) {
-        throw new ValidationException('email', 'unique');
+        throw ValidationException.field('email', 'unique');
       }
       
       user.email = fallbackData.email;
@@ -60,7 +60,7 @@ export default class SocialAuthService {
       await user.save();
       
       if(usernameExists) {
-        throw new ValidationException('username', 'unique');
+        throw ValidationException.field('username', 'unique');
       }
       
       isRegisteredNow = true;
@@ -87,11 +87,11 @@ export default class SocialAuthService {
     }
 
     if(!user.email) {
-      throw new ValidationException('email', 'required');
+      throw ValidationException.field('email', 'required');
     }
     
     if(!user.username) {
-      throw new ValidationException('username', 'required');
+      throw ValidationException.field('username', 'required');
     }
   }
 }
