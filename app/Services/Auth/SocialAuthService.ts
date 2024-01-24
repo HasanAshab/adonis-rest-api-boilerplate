@@ -3,7 +3,7 @@ import User from 'App/Models/User';
 import ValidationException from 'App/Exceptions/ValidationException';
 
 
-export interface SocialLoginFallbackData {
+export interface SocialLoginOverriderData {
   email?: string;
   username?: string;
 }
@@ -12,9 +12,9 @@ export default class SocialAuthService {
   public async upsertUser(
     provider: string,
     allyUser: AllyUserContract,
-    fallbackData: SocialLoginFallbackData = {}
+    overriderData: SocialLoginOverriderData = {}
   ) {
-    const { email = allyUser.email, username } = fallbackData;
+    const { email = allyUser.email, username } = overriderData;
     let isRegisteredNow = false;
 
     const user = await User.updateOrCreate(
