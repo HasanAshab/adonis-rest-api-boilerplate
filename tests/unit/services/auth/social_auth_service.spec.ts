@@ -78,7 +78,16 @@ test.group('Services/Auth/SocialAuthService', group => {
     expect(result.user.email).toBe(user.email);
   }).pin()
   
-  test('should not update user verification status when social email not match', async ({ expect }, { state, status }) => {
+  test('should not update user verification status to {status} when social email not match and email verification state is {state}')
+  .with([
+    { state: 'verified', status: false },
+    { state: 'verified', status: true },
+    { state: 'unverified', status: false },
+    { state: 'unverified', status: true },
+    { state: 'unsupported', status: false },
+    { state: 'unsupported', status: true },
+  ])
+  .run(async ({ expect }, { state, status }) => {
     const socialProvider = 'google';
 
     const allyUser: Partial<AllyUserContract> = {
@@ -100,14 +109,7 @@ test.group('Services/Auth/SocialAuthService', group => {
     const result = await service.upsertUser(socialProvider, allyUser)
   
     expect(result.user.verified).toBe(status);
-  }).with([
-    { state: 'verified', status: false },
-    { state: 'verified', status: true },
-    { state: 'unverified', status: false },
-    { state: 'unverified', status: true },
-    { state: 'unsupported', status: false },
-    { state: 'unsupported', status: true },
-  ]).pin()
+  }).pin()
 
 
   
@@ -147,7 +149,12 @@ test.group('Services/Auth/SocialAuthService', group => {
     expect(result.user.verified).toBe(true)
   })
   
-  test('should not make verified user when email verification state is not verified', async ({ expect }, state) => {
+  test('should not make verified user when email verification state is {$self}')
+  .with([
+    'unverified',
+    'unsupported'
+  ])
+  .run(async ({ expect }, state) => {
     const allyUser: Partial<AllyUserContract> = {
       id: '1',
       name: 'Test User',
@@ -156,13 +163,10 @@ test.group('Services/Auth/SocialAuthService', group => {
       emailVerificationState: state
     }
     
-    const result1 = await service.upsertUser('google', allyUser, fallbackData)
+    const result = await service.upsertUser('google', allyUser)
 
     expect(result.user.verified).toBe(false)
-  }).with([
-    'unverified',
-    'unsupported'
-  ]);
+  }).pin();
  
   test('should throw validation exception if email is not unique', async ({ expect }) => {
     const allyUser: Partial<AllyUserContract> = {
