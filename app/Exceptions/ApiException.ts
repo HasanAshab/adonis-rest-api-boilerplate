@@ -3,19 +3,27 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { string } from '@ioc:Adonis/Core/Helpers'
 
 export default abstract class ApiException extends Exception {
-	abstract status: number;
-	abstract message: string;
-	abstract payload: object;
-	headers = {};
+	public abstract status: number;
+	public abstract message: string;
+	public headers = {};
 	
 	constructor() {
 	  super('');
 	}
 	
+	protected payload() {
+	  return {
+  	  errors: [{
+  	    code: this.code,
+  	    message: this.message
+  	  }]
+	  };
+	}
+
 	withHeaders(): Promise<object> | object;
 	withHeaders(ctx: HttpContextContract): Promise<object> | object;
 
-	async withHeaders(...args: any[]) {
+	protected async withHeaders(...args: any[]) {
 		return this.headers;
 	}
 	
@@ -27,6 +35,6 @@ export default abstract class ApiException extends Exception {
 		ctx.response
 			.status(error.status)
 			.setHeaders(await error.withHeaders(ctx))
-			.send(error.payload ?? error.message);
+			.send(error.payload());
 	}
 }

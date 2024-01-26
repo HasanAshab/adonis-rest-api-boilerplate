@@ -108,8 +108,8 @@ export default class BasicAuthService {
 		const { maxFailedAttempts, duration, blockDuration } = this.loginAttemptThrottlerConfig;
 		this.loginThrottler = Limiter.use({
 			requests: maxFailedAttempts,
-			duration: duration,
-			blockDuration: blockDuration,
+			blockDuration,
+			duration
 		});
 	}
 

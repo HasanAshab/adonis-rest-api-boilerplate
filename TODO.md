@@ -1,9 +1,6 @@
-This:
-Fallback: typings
+t: feature/socialauth
+t: unit/socialauth
+T: Contribute adonisjs query builder
+F: listenners Test
 
-
-
-F: Test listenners
-F: validation exception
-
-Fallback: solve type, Eslint, model & migrate, Commands
+Fallback: solve type, Eslint, Commands

@@ -9,6 +9,8 @@ import ValidationException from 'App/Exceptions/ValidationException';
   node ace test unit --files="services/auth/social_auth_service.spec.ts"
 */
 
+test error data
+
 test.group('Services/Auth/SocialAuthService', group => {
   const service = new SocialAuthService();
   
@@ -65,7 +67,7 @@ test.group('Services/Auth/SocialAuthService', group => {
     
     expect(result.user.username).toBe('test')
   })
-
+  
   
   //Update
   test('should update name and avatar', async ({ expect }) => {
@@ -117,6 +119,29 @@ test.group('Services/Auth/SocialAuthService', group => {
     expect(result.user.email).toBe(user.email);
   })
   
+  test('should not update username', async ({ expect }) => {
+    const socialProvider = 'google';
+    const allyUser: Partial<AllyUserContract> = {
+      id: '1',
+      email: 'test.new@example.com',
+      name: 'Test User',
+      avatarUrl: 'http://example.com/avatar.jpg',
+      emailVerificationState: 'verified'
+    }
+    
+    const user = await User.create({
+      socialId: allyUser.id,
+      socialProvider,
+      email: 'test@example.com',
+      username: 'test',
+    })
+
+    const result = await service.upsertUser(socialProvider, allyUser, 'test12')
+  
+    expect(result.user.username).toBe(user.username);
+  })
+
+  
   test('should not update username based on the new email provided by oauth', async ({ expect }) => {
     const socialProvider = 'google';
     const allyUser: Partial<AllyUserContract> = {
@@ -138,6 +163,7 @@ test.group('Services/Auth/SocialAuthService', group => {
   
     expect(result.user.username).toBe(user.username);
   })
+  
 
   test('should update user verification status to {status} when oauth provided email is same and email verification state is {state}')
   .with([
@@ -244,19 +270,29 @@ test.group('Services/Auth/SocialAuthService', group => {
       emailVerificationState: 'unsupported'
     }
     
-    try {
-      await service.upsertUser('google', allyUser)
-    }
-    catch (error) {
-      expect(error).toBeInstanceOf(ValidationException)
-      expect(error.fieldsWithRule).toEqual({
-        email: 'required',
-        username: 'required'
-      })
-    }
-  })
+    await expect(service.upsertUser('google', allyUser, 'twst')).rejects.toThrow(
+      ValidationException.field('email', 'required')
+    )
+  }).pin()
 
   test('should throw validation exception if email is not unique', async ({ expect }) => {
+    const email = 'test@example.com'
+    const allyUser: Partial<AllyUserContract> = {
+      id: '1',
+      name: 'Test User',
+      avatarUrl: 'http://example.com/avatar.jpg',
+      email,
+      emailVerificationState: 'verified'
+    }
+    
+    await User.create({ email })
+    
+    await expect(service.upsertUser('google', allyUser)).rejects.toThrow(
+      ValidationException.field('email', 'unique')
+    );
+  })
+
+  test('should throw validation exception if failed to generate unique username', async ({ expect }) => {
     const allyUser: Partial<AllyUserContract> = {
       id: '1',
       name: 'Test User',
@@ -264,52 +300,29 @@ test.group('Services/Auth/SocialAuthService', group => {
       email: 'test@example.com',
       emailVerificationState: 'verified'
     }
-    const overriderData = {
-      email: 'test@example.com',
-      username: 'testuser'
-    }
-
-    await User.create({
-      email: overriderData.email,
-      username: 'anotheruser',
-      password: 'secret'
-    })
-
-    try {
-      await service.upsertUser('google', allyUser, overriderData)
-    } catch (error) {
-      expect(error).to.be.instanceOf(ValidationException)
-      expect(error.messages).to.deep.equal({ email: ['unique'] })
-    }
-  }).skip()
-
-  test('should throw validation exception if username is not unique', async ({ expect }) => {
+    
+    User.prototype.generateUsername = () => null
+   
+    await expect(service.upsertUser('google', allyUser)).rejects.toThrow(
+      ValidationException.field('username', 'required')
+    );
+  })
+  
+  test('should throw validation exception if provided username is not unique', async ({ expect }) => {
+    const username = 'test'
     const allyUser: Partial<AllyUserContract> = {
       id: '1',
       name: 'Test User',
-      avatarUrl: 'http://example.com/avatar.jpg',
       email: 'test@example.com',
       emailVerificationState: 'verified'
     }
-    const overriderData = {
-      email: 'anotheremail@example.com',
-      username: 'testuser'
-    }
-
-    // Create a user first
-    await User.create({
-      email: 'anotheremail@example.com',
-      username: overriderData.username,
-      password: 'secret'
-    })
-
-    try {
-      await service.upsertUser('google', allyUser, overriderData)
-    } catch (error) {
-      expect(error).to.be.instanceOf(ValidationException)
-      expect(error.messages).to.deep.equal({ username: ['unique'] })
-    }
- }).skip()
+    
+    await User.create({ username })
+    
+    await expect(service.upsertUser('google', allyUser)).rejects.toThrow(
+      ValidationException.field('username', 'unique')
+    );
+  })
 })
 
 	

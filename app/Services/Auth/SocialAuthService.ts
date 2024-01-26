@@ -18,8 +18,12 @@ export default class SocialAuthService {
       }
     );
     
-    // Merge fallback data with the user
-    if(!(user.email || user.username) && allyUser.email) {
+    // The user is not ready
+    if(!user.email || !user.username) {
+      if(!allyUser.email) {
+        throw ValidationException.field('email', 'required');
+      }
+      
       const existingUser = await User.query()
         .where('email', allyUser.email)
         .when(username, query => {
@@ -56,7 +60,7 @@ export default class SocialAuthService {
       await user.save();
       
       if(usernameExists) {
-        throw ValidationException.field('username', 'unique');
+        throw ValidationException.field('username', username ? 'unique': 'required');
       }
       
       isRegisteredNow = true;
