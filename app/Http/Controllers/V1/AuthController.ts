@@ -18,7 +18,7 @@ import SocialAuthTokenLoginValidator from 'App/Http/Validators/V1/Auth/Login/Soc
 
 
 export default class AuthController {
-	public readonly version = 'v1';
+  public static readonly VERSION = 'v1';
 	
 	constructor(
 	  private readonly authService = new BasicAuthService,
@@ -36,13 +36,13 @@ export default class AuthController {
     const user = await this.authService.register(registrationData);
 
 		Event.emit('registered', {
-			version: this.version,
+			version: AuthController.VERSION,
 			method: 'internal',
 			user,
 		});
 		//Event.fire(new Registered({}))
 
-		const profileUrl = ''; //Route.makeUrl(this.version + ".users.show", [user.username]);
+		const profileUrl = ''; //Route.makeUrl(AuthController.VERSION + ".users.show", [user.username]);
 
 		response.header('Location', profileUrl).created({
 			message: 'Verification email sent!',
@@ -91,7 +91,7 @@ export default class AuthController {
 
   async resendEmailVerification({ request }: HttpContextContract){
     const { email } = await request.validate(ResendEmailVerificationValidator);
-    await this.authService.sendVerificationMail(email, this.version);
+    await this.authService.sendVerificationMail(email, AuthController.VERSION);
     return "Verification link sent to email!";
   };
   
@@ -169,7 +169,7 @@ EAACZBwjX8c54BOZCrAF6xYcpYT6a5emzzCKUF0DlVq2geDe7bd4zkGqGoB0w6CrzdcrSdLaZCtaTy8Y
     
     if(isRegisteredNow) {
       Event.emit('registered', {
-  			version: this.version,
+  			version: AuthController.VERSION,
   			method: 'social',
   			user
   		});

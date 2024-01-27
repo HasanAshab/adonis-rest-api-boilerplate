@@ -9,7 +9,7 @@ import ChangePhoneNumberValidator from "App/Http/requests/v1/user/ChangePhoneNum
 
 
 export default class UserController {
-  public readonly version = 'v1';
+  public static readonly VERSION = 'v1';
   
   //TODO
   public async index({ request }: HttpContextContract) {
@@ -50,7 +50,7 @@ export default class UserController {
     await user.save();
     
     if(data.email) {
-      await user.sendVerificationMail(this.version);
+      await user.sendVerificationMail(UserController.VERSION);
       return "Verification email sent to your new email address!";
     }
     
