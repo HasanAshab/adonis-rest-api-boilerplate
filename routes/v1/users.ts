@@ -13,12 +13,8 @@ Route.group(() => {
   Route.group(() => {
     Route.get("/", "UserController.profile");
     Route.patch("/", "UserController.updateProfile");
-    
-    Route.group(() => {
-      Route.patch("/password", "UserController.changePassword");
-      Route.patch("/phone-number", "UserController.changePhoneNumber");
-    }).prefix('change');
-    
+    Route.patch("/password", "UserController.changePassword");
+    Route.patch("/phone-number", "UserController.changePhoneNumber");
   }).prefix('me');
   
   Route.get("/:username", "UserController.show").as("users.show");

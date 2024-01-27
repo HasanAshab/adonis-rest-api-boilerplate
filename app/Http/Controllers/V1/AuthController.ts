@@ -111,7 +111,7 @@ export default class AuthController {
 
   public async setupTwoFactorAuth({ request, auth }: HttpContextContract) {
     const { enable = true, method } = await request.validate(SetupTwoFactorAuthValidator);
-   
+    
     if(!enable) {
       await this.twoFactorAuthService.disable(auth.user!);
       return "Two Factor Auth disabled!";

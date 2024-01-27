@@ -40,6 +40,10 @@ export default class Token extends compose(BaseModel, Expirable) {
       return token.delete();
     }
   }
+  
+  public static get(key: string, type: string) {
+    return this.findByFields({ key, type });
+  }
 	
 	public static async isValid(key: string, type: string, secret: string) {
     const token = await this.findByFields({ key, type, secret });

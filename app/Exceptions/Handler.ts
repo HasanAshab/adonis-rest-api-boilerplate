@@ -17,6 +17,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
 		super(Logger);
 	}
 	
+	/*
 	handle(error: any, ctx) {
 	  if(error.code === 'E_UNAUTHORIZED_ACCESS') {
 	    ctx.response.send({
@@ -27,4 +28,5 @@ export default class ExceptionHandler extends HttpExceptionHandler {
 	    })
 	  }
 	}
+	*/
 }

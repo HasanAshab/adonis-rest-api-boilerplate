@@ -132,7 +132,5 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 
 		this.password = newPassword;
 		await this.save();
-		//TODO Should not be there
-		await Mail.to(user.email).send(new PasswordChangedMail()).catch(log);
   }
 }

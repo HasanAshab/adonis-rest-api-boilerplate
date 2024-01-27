@@ -29,7 +29,7 @@ export default class TwoFactorAuthService {
 		
 		const data: TwoFactorAuthData = {
 			recoveryCodes: await this.generateRecoveryCodes(user),
-		};
+		}
 		
 		await user.loadIfNotLoaded('settings')
 		const { twoFactorAuth } = user.settings;
@@ -118,7 +118,7 @@ export default class TwoFactorAuthService {
 		}
 	}
 
-	async createToken(user: User, code = this.generateOTPCode()) {
+	public async createToken(user: User, code = this.generateOTPCode()) {
 		await Token.create({
 			key: user.id,
 			type: '2fa',
