@@ -1,5 +1,36 @@
 {
   "commands": {
+    "search": {
+      "settings": {
+        "loadApp": false,
+        "stayAlive": false
+      },
+      "commandPath": "./app/Commands/Search",
+      "commandName": "search",
+      "description": "",
+      "args": [
+        {
+          "type": "string",
+          "propertyName": "query",
+          "name": "query",
+          "required": true
+        },
+        {
+          "type": "string",
+          "propertyName": "replace",
+          "name": "replace",
+          "required": false
+        }
+      ],
+      "aliases": [],
+      "flags": [
+        {
+          "name": "dir",
+          "propertyName": "dir",
+          "type": "string"
+        }
+      ]
+    },
     "dump:rcfile": {
       "settings": {},
       "commandPath": "@adonisjs/core/build/commands/DumpRc",
