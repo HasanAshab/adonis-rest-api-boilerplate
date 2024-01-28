@@ -41,19 +41,19 @@ export default class Search extends BaseCommand {
   declare replace?: string;
   
   @flags.string()
-  declare dir = '.';
+  declare dir: string;
   
-  protected exclude = ["package.json", "package-lock.json", "node_modules", ".git", ".gitignore", ".env", "tsconfig.json", "artisan", "artisan.ts", "dist", "artisan", "backup", "docs", "storage"];
+  protected exclude = ["package.json", "package-lock.json", "node_modules", ".git", ".gitignore", ".env", "tsconfig.json", "artisan", "artisan.ts", "build", "artisan", "backup", "docs", "storage"];
 
   public async run() {
     if(this.replace) {
-      this.info("\nReplacing started...\n");
+      this.logger.info("\nReplacing started...\n");
     }
     else {
-      this.info("\nSearching started...\n");
+      this.logger.info("\nSearching started...\n");
     }
     
-    await this.searchFiles(this.dir, this.query, this.replace);
+    await this.searchFiles(this.dir ?? '.', this.query, this.replace);
   }
 
   private async searchFiles(currentDir: string, query: string, replace?: string) {
@@ -70,19 +70,21 @@ export default class Search extends BaseCommand {
           promises.push(promise);
       } else if (stat.isFile()) {
         const fileContent = fs.readFileSync(filePath, "utf-8");
-        if(Wildcard.match(fileContent, query)){
-          if(replace){
-            const replacedContent = Wildcard.replace(fileContent, query, replace);
-            const promise = fs.promises.writeFile(filePath, replacedContent);
-            promises.push(promise);
+        if(Wildcard.match(fileContent, query)) {
+          if(!replace) {
+            this.logger.info('Matched: ' + filePath);
+            continue;
           }
-          this.info(filePath);
+            
+          const replacedContent = Wildcard.replace(fileContent, query, replace);
+          const promise = fs.promises.writeFile(filePath, replacedContent);
+          promises.push(promise);
+          this.logger.debug('Replaced: ' + filePath);
         }
       }
     }
     await Promise.all(promises);
-  }
-  
+  }  
   private isExcluded(path: string): boolean {
     return this.exclude.includes(path);
   }

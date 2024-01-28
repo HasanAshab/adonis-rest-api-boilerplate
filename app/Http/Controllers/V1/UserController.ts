@@ -15,9 +15,9 @@ export default class UserController {
   //TODO
   public async index({ request }: HttpContextContract) {
     //return ListUserResource.collection(
-      //await User.where("role").equals("novice").lean().paginateCursor(req)
+      //await User.where("role").equals("user").lean().paginateCursor(req)
    // );
-    const paginated = await User.withRole("novice").paginate();
+    const paginated = await User.withRole("user").paginate();
     const serialized = paginated.toJSON();
     
     serialized.data = serialized.data.map(user => ({
