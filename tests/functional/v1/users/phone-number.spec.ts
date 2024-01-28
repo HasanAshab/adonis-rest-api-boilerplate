@@ -2,6 +2,10 @@ import { test } from '@japa/runner';
 import User from 'App/Models/User';
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
 
+/*
+Run this suits:
+node ace test feature --files="v1/users/phone-number.spec.ts"
+*/
 
 test.group("Users/PhoneNumber", group => {
   const twoFactorAuthService = new TwoFactorAuthService;
@@ -18,7 +22,7 @@ test.group("Users/PhoneNumber", group => {
     const phoneNumber = "+14155552671";
     const otp = await twoFactorAuthService.createToken(user);
     
-    const response = await client.patch("/api/v1/users/me/phone-number").actingAs(user).json({ phoneNumber, otp });
+    const response = await client.patch("/api/v1/users/me/phone-number").loginAs(user).json({ phoneNumber, otp });
     await user.refresh();
    
     //TODO swap TwoFactorAuthService
@@ -30,7 +34,7 @@ test.group("Users/PhoneNumber", group => {
     const user = await User.factory().hasSettings().create();
     const phoneNumber = "+14155552671";
     
-    const response = await client.patch("/api/v1/users/me/phone-number").actingAs(user).json({ 
+    const response = await client.patch("/api/v1/users/me/phone-number").loginAs(user).json({ 
       phoneNumber,
       otp: 123456
     });
@@ -44,7 +48,7 @@ test.group("Users/PhoneNumber", group => {
   test("Update phone number should send otp if otp code not provided", async ({ client, expect }) => {
     const phoneNumber = "+14155552671";
     
-    const response = await client.patch("/api/v1/users/me/phone-number").actingAs(user).json({ phoneNumber });
+    const response = await client.patch("/api/v1/users/me/phone-number").loginAs(user).json({ phoneNumber });
     await user.refresh();
     
     //TODO swap TwoFactorAuthService

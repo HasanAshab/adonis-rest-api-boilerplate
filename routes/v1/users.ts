@@ -4,7 +4,7 @@ import Route from '@ioc:Adonis/Core/Route';
 
 Route.group(() => {
   Route.get("/", "UserController.index");
-  Route.patch("/:username/make-admin", "UserController.makeAdmin");
+  Route.patch("/:id/make-admin", "UserController.makeAdmin");
 })
 //.middleware("auth", "roles:admin");
 
@@ -18,6 +18,6 @@ Route.group(() => {
   }).prefix('me');
   
   Route.get("/:username", "UserController.show").as("users.show");
-  Route.delete("/:username", "UserController.delete");
+  Route.delete("/:id", "UserController.delete");
 })
 .middleware("auth", "verified");

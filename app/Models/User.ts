@@ -10,7 +10,8 @@ import HasTimestamps from 'App/Models/Traits/HasTimestamps'
 import HasApiTokens from 'App/Models/Traits/HasApiTokens'
 import { Notifiable } from '@ioc:Verful/Notification/Mixins'
 import InvalidPasswordException from 'App/Exceptions/InvalidPasswordException'
-import PasswordChangeNotAllowedException from 'App/Exceptions/PasswordChangeNotAllowedException'
+
+const USERNAME_MAX_LENGTH = 20
 
 type Role = 'novice' | 'admin';
 
@@ -61,27 +62,19 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 		return this.role === 'admin';
 	}
   
+  
   public markAsVerified() {
     this.verified = true;
     return this.save();
   }
-  
-  public assertHasPassword(exception?: Exception): asserts this is this & { password: string } {
-    if (this.password) return;
-    if(exception) {
-      throw exception;
-    }
-		throw new Error('The user must have a password to perform this action');
-  }
 
-  
-  public async generateUsername(maxAttempts = 10, MAX_LENGTH = 20) {
+  public async generateUsername(maxAttempts = 10) {
     if(!this.email) {
       throw new Error('User must have a email before trying to generate username');
     }
     
     const name = this.email
-      .replace(/@.+/, "")
+      .split('@')[0]
       .replace(/[&/\\#,+()$~%._@'":*?<>{}]/g, "");
     
     let username = name;
@@ -92,16 +85,14 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
       }
       
       username = name + attempt;
-      if(username.length > MAX_LENGTH) {
-        username = name.substring(0, name.length - (username.length - MAX_LENGTH)) + attempt;
+      if(username.length > USERNAME_MAX_LENGTH) {
+        username = name.substring(0, name.length - (username.length - USERNAME_MAX_LENGTH)) + attempt;
       }
     }
     
     return null;
   }
 
-
-	
 	@beforeSave()
 	public static async hashPasswordIfModified(user: User) {
 	  if (user.$dirty.password) {
@@ -116,21 +107,17 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	public static withRole(role: Role) {
 	  return this.query().where("role", role);
 	}
-
 	
 	public comparePassword(password: string) {
-		this.assertHasPassword();
+    if (!this.password) {
+      throw new Error('The user must have a password to compare with');
+    }
 		return Hash.verify(this.password, password);
 	}
 	
-  public async changePassword(oldPassword: string, newPassword: string) {
-		this.assertHasPassword(new PasswordChangeNotAllowedException);
-
-		if (!await this.attempt(oldPassword)) {
+	public async verifyPassword(password: string) {
+	  if (!await this.comparePassword(password)) {
 			throw new InvalidPasswordException();
 		}
-
-		this.password = newPassword;
-		await this.save();
-  }
+	}
 }

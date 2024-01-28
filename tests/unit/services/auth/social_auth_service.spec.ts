@@ -5,8 +5,8 @@ import SocialAuthService from 'App/Services/Auth/SocialAuthService';
 import ValidationException from 'App/Exceptions/ValidationException';
 
 /*
-  Run this suits:
-  node ace test unit --files="services/auth/social_auth_service.spec.ts"
+Run this suits:
+node ace test unit --files="services/auth/social_auth_service.spec.ts"
 */
 
 test error data
@@ -300,7 +300,7 @@ test.group('Services/Auth/SocialAuthService', group => {
       email: 'test@example.com',
       emailVerificationState: 'verified'
     }
-    
+    //todo
     User.prototype.generateUsername = () => null
    
     await expect(service.upsertUser('google', allyUser)).rejects.toThrow(

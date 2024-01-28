@@ -2,6 +2,7 @@ import type RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidato
 import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter';
 import Config from '@ioc:Adonis/Core/Config';
 import { Limiter } from '@adonisjs/limiter/build/services';
+import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import User from 'App/Models/User';
 import Token from 'App/Models/Token';
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
@@ -10,7 +11,8 @@ import ResetPasswordMail from "App/Mails/ResetPasswordMail";
 import InvalidCredentialException from 'App/Exceptions/InvalidCredentialException';
 import LoginAttemptLimitExceededException from 'App/Exceptions/LoginAttemptLimitExceededException';
 import OtpRequiredException from 'App/Exceptions/OtpRequiredException';
-import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
+import PasswordChangeNotAllowedException from 'App/Exceptions/PasswordChangeNotAllowedException'
+
 
 export interface LoginCredentials {
   email: string;
@@ -85,6 +87,17 @@ export default class BasicAuthService {
     await new EmailVerificationMail(user, version).sendLater();
     return true;
 	}
+	
+  public async changePassword(user: User, oldPassword: string, newPassword: string) {
+		if(!user.password) {
+		  throw new PasswordChangeNotAllowedException;
+		}
+		
+		await user.verifyPassword(oldPassword);
+		
+		user.password = newPassword;
+		await user.save();
+  }
 
 	public async sendResetPasswordMail(user: User | string) {
 	  if(typeof user === 'string') {
@@ -95,6 +108,8 @@ export default class BasicAuthService {
 	  await new ResetPasswordMail(user).sendLater();
 		return true;
 	}
+	
+	
 	
 
 	public async resetPassword(user: User, token: string, password: string) {

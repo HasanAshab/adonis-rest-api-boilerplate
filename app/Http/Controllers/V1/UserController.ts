@@ -1,11 +1,13 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import { bind } from '@adonisjs/route-model-binding'
+import { inject } from '@adonisjs/core'
 import User from "App/Models/User";
 import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService";
 import UserPolicy from 'App/Policies/UserPolicy';
 import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import UpdateProfileValidator from "App/Http/Validators/V1/user/UpdateProfileValidator";
-import ChangePasswordValidator from "App/Http/Validators/v1/user/ChangePasswordValidator";
-import ChangePhoneNumberValidator from "App/Http/requests/v1/user/ChangePhoneNumberValidator";
+import ChangePasswordValidator from "App/Http/Validators/V1/user/ChangePasswordValidator";
+import ChangePhoneNumberValidator from "App/Http/Validators/V1/user/ChangePhoneNumberValidator";
 
 
 export default class UserController {
@@ -29,8 +31,8 @@ export default class UserController {
   }
   
   //TODO
-  async profile(req: AuthenticRequest) {
-    return UserProfileResource.make(req.user);
+  async profile({ auth }) {
+    return UserProfileResource.make(auth.user!);
   }
   
   public async updateProfile({ request, auth }: HttpContextContract) {
@@ -64,9 +66,8 @@ export default class UserController {
     );
   }
   
-
-  public async delete({ request, response, params, bouncer }: HttpContextContract) {
-    const user = await User.findByOrFail('username', params.username);
+  @bind()
+  public async delete({ request, response, bouncer }: HttpContextContract, user: User) {
     if(await bouncer.with(UserPolicy).denies("delete", user)) {
       return response.forbidden();
     }
@@ -75,13 +76,14 @@ export default class UserController {
   }
   
   public async makeAdmin({ params }: HttpContextContract) {
-    await User.query().where('username', params.username).update({ role: "admin" });
+    await User.query().where('id', params.id).update({ role: "admin" });
     return "Admin role granted to the user!";
   }
   
-  public async changePassword({ request, auth }: HttpContextContract) {
+  //@inject()
+  public async changePassword({ request, auth }: HttpContextContract, authService: BasicAuthService) {
     const { oldPassword, newPassword } = await request.validate(ChangePasswordValidator);
-    await auth.user!.changePassword(oldPassword, newPassword);
+    await authService.changePassword(auth.user!, oldPassword, newPassword);
 		await Mail.to(user.email).send(new PasswordChangedMail());
     return "Password changed!";
   }
@@ -107,4 +109,3 @@ export default class UserController {
     return "Phone number updated!";
   }
 }
-

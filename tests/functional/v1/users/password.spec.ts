@@ -2,6 +2,10 @@ import { test } from '@japa/runner';
 import User from 'App/Models/User';
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
 
+/*
+Run this suits:
+node ace test feature --files="v1/users/password.spec.ts"
+*/
 
 test.group("Users/Password", group => {
   refreshDatabase(group);
