@@ -74,9 +74,10 @@ export default class UserController {
     response.noContent();
   }
   
-  public async makeAdmin({ params }: HttpContextContract) {
-    await User.query().where('id', params.id).update({ role: "admin" });
-    return "Admin role granted to the user!";
+  public async makeAdmin({ response, params }: HttpContextContract) {
+    return await User.query().where('id', params.id).update({ role: "admin" })
+      ? 'Admin role granted to the user.'
+      : response.notFound('User not found')
   }
   
   //@inject()

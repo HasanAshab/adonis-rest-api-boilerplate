@@ -2,20 +2,21 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 
 export default class CheckRole {
 	handle(
-		{ response, user }: HttpContextContract,
+		{ response, auth }: HttpContextContract,
 		next: NextFunction,
-		...roles: string[]
+		roles: string[]
 	) {
-		if (!user) {
+		if (!auth.user) {
 			throw new Error(
 				'You have to use "auth" middleware before using "role" middleware.',
 			);
 		}
+		
 
-		if (roles.includes(user.role)) {
+		if (roles.includes(auth.user.role)) {
 			return next();
 		}
 
-		response.status(403).message();
+		response.forbidden();
 	}
 }

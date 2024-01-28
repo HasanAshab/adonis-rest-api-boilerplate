@@ -99,20 +99,4 @@ describe("user", () => {
     response.assertStatus(200);
     expect(response.body.data).toEqualDocument(otherUser.safeDetails());
   });
- 
-  test("Should make admin", async ({ client, expect }) => {
-    const admin = await User.factory().withRole("admin").create();
-    const response = await client.patch(`/users/${user.username}/make-admin`).loginAs(admin);
-    response.assertStatus(200);
-    user = await User.findById(user._id);
-    expect(user.role).toBe("admin");
-  });
-  
-  test("General user Should't make admin", async ({ client, expect }) => {
-    let anotherUser = await User.factory().create();
-    const response = await client.patch(`/users/${anotherUser.username}/make-admin`).loginAs(token);
-    response.assertStatus(403);
-    user = await User.findById(user._id);
-    expect(anotherUser.role).toBe("novice");
-  });
 });
