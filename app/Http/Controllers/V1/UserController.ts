@@ -3,7 +3,6 @@ import { bind } from '@adonisjs/route-model-binding'
 import { inject } from '@adonisjs/core'
 import User from "App/Models/User";
 import TwoFactorAuthService from "App/Services/Auth/TwoFactorAuthService";
-import UserPolicy from 'App/Policies/UserPolicy';
 import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import UpdateProfileValidator from "App/Http/Validators/V1/user/UpdateProfileValidator";
 import ChangePasswordValidator from "App/Http/Validators/V1/user/ChangePasswordValidator";
@@ -68,7 +67,7 @@ export default class UserController {
   
   @bind()
   public async delete({ request, response, bouncer }: HttpContextContract, user: User) {
-    if(await bouncer.with(UserPolicy).denies("delete", user)) {
+    if(await bouncer.with('UserPolicy').denies("delete", user)) {
       return response.forbidden();
     }
     await user.delete();

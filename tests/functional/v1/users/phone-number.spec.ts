@@ -4,7 +4,7 @@ import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService';
 
 /*
 Run this suits:
-node ace test feature --files="v1/users/phone-number.spec.ts"
+node ace test functional --files="v1/users/phone-number.spec.ts"
 */
 
 test.group("Users/PhoneNumber", group => {

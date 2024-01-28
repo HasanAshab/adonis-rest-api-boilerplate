@@ -10,7 +10,6 @@ export default class UserFactory extends Factory<User> {
 			phoneNumber: null,
 			password: 'password',
 			verified: true,
-			role: 'novice' as const,
 			profile: null,
 			recoveryCodes: [],
 			socialId: {},

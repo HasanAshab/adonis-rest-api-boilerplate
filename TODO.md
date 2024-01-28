@@ -2,7 +2,7 @@
 
 asr kaja
 
-T: profile -> avatar
+T: profile -> avatar, novice -> user
 t: feature/socialauth
 t: unit/socialauth
 T: Contribute adonisjs query builder

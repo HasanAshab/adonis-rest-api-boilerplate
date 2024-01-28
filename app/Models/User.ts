@@ -13,7 +13,7 @@ import InvalidPasswordException from 'App/Exceptions/InvalidPasswordException'
 
 const USERNAME_MAX_LENGTH = 20
 
-type Role = 'novice' | 'admin';
+type Role = 'user' | 'admin';
 
 export default class User extends compose(BaseModel, HasFactory, HasTimestamps, HasApiTokens, Notifiable('notifications')) {
 	@column({ isPrimary: true })
