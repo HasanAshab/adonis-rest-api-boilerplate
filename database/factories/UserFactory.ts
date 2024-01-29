@@ -7,13 +7,9 @@ export default class UserFactory extends Factory<User> {
 			name: this.faker.person.firstName(),
 			username: this.faker.person.firstName(),
 			email: this.faker.internet.email(),
-			phoneNumber: null,
 			password: 'password',
 			verified: true,
-			profile: null,
-			recoveryCodes: [],
-			socialId: {},
-		};
+		}
 	}
 
 	unverified() {
@@ -34,13 +30,6 @@ export default class UserFactory extends Factory<User> {
 	withRole(name: User['role']) {
 		return this.state(user => {
 			user.role = name;
-			return user;
-		});
-	}
-
-	withProfile(url = this.faker.internet.avatar()) {
-		return this.state(user => {
-			user.profile = url;
 			return user;
 		});
 	}

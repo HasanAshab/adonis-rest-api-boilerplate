@@ -23,7 +23,7 @@ export default class UpdateProfileValidator extends Validator {
 				column: 'email',
 			}),
 		]),
-		profile: schema.file.optional({
+		avatar: schema.file.optional({
 			size: '1mb',
 			extnames: ['jpg', 'png'],
 		})

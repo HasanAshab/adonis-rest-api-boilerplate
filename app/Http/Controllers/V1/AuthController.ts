@@ -185,7 +185,7 @@ EAACZBwjX8c54BOZCrAF6xYcpYT6a5emzzCKUF0DlVq2geDe7bd4zkGqGoB0w6CrzdcrSdLaZCtaTy8Y
   }
   
   
-  
+ /* 
   redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {
     return ally.use(params.provider).stateless().redirect();
   }
@@ -215,4 +215,5 @@ EAACZBwjX8c54BOZCrAF6xYcpYT6a5emzzCKUF0DlVq2geDe7bd4zkGqGoB0w6CrzdcrSdLaZCtaTy8Y
     
     return Route.makeClientUrl(`/login/social/${params.provider}/final-step/${externalUser.id}/${token}?fields=${fields}`);
   }
+*/
 }

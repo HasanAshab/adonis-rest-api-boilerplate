@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 
-export default class Wildcard {
+class Wildcard {
   static match(str: string, query: string): boolean {
     const regexQuery = query
       .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
@@ -35,9 +35,7 @@ export default class Search extends BaseCommand {
   @args.string()
   declare query: string;
   
-  @args.string({
-    required: false
-  })
+  @args.string({ required: false })
   declare replace?: string;
   
   @flags.string()
@@ -46,13 +44,9 @@ export default class Search extends BaseCommand {
   protected exclude = ["package.json", "package-lock.json", "node_modules", ".git", ".gitignore", ".env", "tsconfig.json", "artisan", "artisan.ts", "build", "artisan", "backup", "docs", "storage"];
 
   public async run() {
-    if(this.replace) {
-      this.logger.info("\nReplacing started...\n");
-    }
-    else {
-      this.logger.info("\nSearching started...\n");
-    }
-    
+    this.logger.info(
+      (this.replace ? 'Replacing' : 'Searching') + ' started...\n'
+    );
     await this.searchFiles(this.dir ?? '.', this.query, this.replace);
   }
 
@@ -70,6 +64,8 @@ export default class Search extends BaseCommand {
           promises.push(promise);
       } else if (stat.isFile()) {
         const fileContent = fs.readFileSync(filePath, "utf-8");
+        //this.logger.debug('Searching: ' + filePath);
+
         if(Wildcard.match(fileContent, query)) {
           if(!replace) {
             this.logger.info('Matched: ' + filePath);
@@ -79,13 +75,14 @@ export default class Search extends BaseCommand {
           const replacedContent = Wildcard.replace(fileContent, query, replace);
           const promise = fs.promises.writeFile(filePath, replacedContent);
           promises.push(promise);
-          this.logger.debug('Replaced: ' + filePath);
+          this.logger.info('Replaced: ' + filePath);
         }
       }
     }
     await Promise.all(promises);
-  }  
-  private isExcluded(path: string): boolean {
+  }
+  
+  private isExcluded(path: string) {
     return this.exclude.includes(path);
   }
 }

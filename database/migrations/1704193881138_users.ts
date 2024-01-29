@@ -16,8 +16,8 @@ export default class extends BaseSchema {
 			table.specificType('recovery_codes', 'text[]').nullable();
 			table.string('social_provider').nullable();
 			table.string('social_id').nullable();
-			table.string('social_avatar').nullable();
-			table.json('profile').nullable();
+			table.string('social_avatar_url').nullable();
+			table.json('avatar').nullable();
 			table.timestamp('created_at', { useTz: true });
 			table.timestamp('updated_at', { useTz: true });
 		});

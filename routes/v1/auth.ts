@@ -6,7 +6,6 @@ import Route from '@ioc:Adonis/Core/Route';
 
 Route.post('/register', 'AuthController.register').middleware('recaptcha');
 
- Route.get("social/callback/:provider", "AuthController.loginWithSocialProvider");
 
 // Login through various methods
 Route.group(() => {
@@ -16,11 +15,14 @@ Route.group(() => {
 	Route.post("/social/:provider", "AuthController.loginWithSocialAuthToken")
 	  .where('provider', /^(google|facebook)$/);
 
+ /*
+ Route.get("social/callback/:provider", "AuthController.loginWithSocialProvider");
   Route.group(() => {
     Route.get("/", "AuthController.redirectToSocialLoginProvider");
     Route.post("/final-step", "AuthController.socialLoginFinalStep");
   }).prefix("/social/:provider");
-    
+  */
+  
 }).prefix('/login');
 
 Route.post('/logout', 'AuthController.logout').middleware('auth');

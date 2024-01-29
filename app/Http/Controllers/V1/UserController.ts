@@ -23,7 +23,7 @@ export default class UserController {
     serialized.data = serialized.data.map(user => ({
       id: user.id,
       username: user.username,
-      profile: user.profile
+      avatar: user.avatar
     }))
     
     return serialized;
@@ -35,7 +35,7 @@ export default class UserController {
   }
   
   public async updateProfile({ request, auth }: HttpContextContract) {
-    const { profile, ...data } = await request.validate(UpdateProfileValidator);
+    const { avatar, ...data } = await request.validate(UpdateProfileValidator);
     const user = auth.user!;
 
     user.merge(data);
@@ -44,8 +44,8 @@ export default class UserController {
       user.verified = false;
     }
     
-    if (profile) {
-      user.profile = Attachment.fromFile(profile)
+    if (avatar) {
+      user.avatar = Attachment.fromFile(avatar)
     }
     
     await user.save();

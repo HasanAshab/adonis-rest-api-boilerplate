@@ -38,8 +38,8 @@ export default class BasicAuthService {
 	
 	
 	public async register(data: RegisterValidator['__type']) {
-	  if(data.profile) {
-      data.profile = Attachment.fromFile(data.profile);
+	  if(data.avatar) {
+      data.avatar = Attachment.fromFile(data.avatar);
     }
     
 		const user = await User.create(data);

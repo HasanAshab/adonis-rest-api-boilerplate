@@ -13,7 +13,7 @@ import InvalidPasswordException from 'App/Exceptions/InvalidPasswordException'
 
 const USERNAME_MAX_LENGTH = 20
 
-type Role = 'user' | 'admin';
+export type Role = 'user' | 'admin';
 
 export default class User extends compose(BaseModel, HasFactory, HasTimestamps, HasApiTokens, Notifiable('notifications')) {
 	@column({ isPrimary: true })
@@ -29,7 +29,7 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	public email: string;
 
 	@attachment()
-	public profile?: AttachmentContract;
+	public avatar?: AttachmentContract;
 
 	@column()
 	public phoneNumber?: string;
@@ -53,7 +53,7 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	public socialId?: string;
   
   @column()
-  public socialAvatar?: string;
+  public socialAvatarUrl?: string;
   
 	@hasOne(() => Settings)
 	public settings: HasOne<typeof Settings>;
@@ -61,7 +61,11 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	public get isAdmin() {
 		return this.role === 'admin';
 	}
-  
+	
+	public async avatarUrl() {
+		return await this.avatar?.getUrl() 
+		  ?? this.socialAvatarUrl;
+	}
   
   public markAsVerified() {
     this.verified = true;

@@ -39,7 +39,7 @@ test.group('Auth/Register', (group) => {
 		});
 	});
 
-	test('should register a user with profile', async ({ expect, client }) => {
+	test('should register a user with avatar', async ({ expect, client }) => {
 		const drive = Drive.fake();
 
 		const data = {
@@ -50,7 +50,7 @@ test.group('Auth/Register', (group) => {
 
 		const response = await client
 			.post('/api/v1/auth/register')
-			.file('profile', filePath('image.png'))
+			.file('avatar', filePath('image.png'))
 			.fields(data);
 
 		const user = await User.query().whereEqual(omit(data, 'password')).preload('settings').first();

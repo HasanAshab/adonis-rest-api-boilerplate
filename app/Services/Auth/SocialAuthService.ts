@@ -14,7 +14,7 @@ export default class SocialAuthService {
       },
       {
         name: allyUser.name.substring(0, 35),
-        socialAvatar: allyUser.avatarUrl
+        socialAvatarUrl: allyUser.avatarUrl
       }
     );
     

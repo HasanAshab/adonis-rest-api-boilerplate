@@ -14,7 +14,7 @@ export default class UserProfileResource extends JsonResource<UserDocument> {
         role: this.resource.role
       },
       links: {
-        profile: this.resource.profile,
+        avatar: await this.resource.avatarUrl()      
       }
     }
   }

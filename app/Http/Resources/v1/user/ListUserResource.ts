@@ -10,7 +10,7 @@ export default class ListUserResource extends JsonResource<UserDocument> {
         username: this.resource.username,
       },
       links: {
-        profile: this.resource.profile
+        avatar: await this.resource.avatarUrl()      
       }
     }
   }

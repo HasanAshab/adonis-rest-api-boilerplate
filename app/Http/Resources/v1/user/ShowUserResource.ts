@@ -12,7 +12,7 @@ export default class ShowUserResource extends JsonResource<UserDocument> {
         role: this.resource.role
       },
       links: {
-        profile: this.resource.profile
+        avatar: await this.resource.avatarUrl()      
       }
     }
   }

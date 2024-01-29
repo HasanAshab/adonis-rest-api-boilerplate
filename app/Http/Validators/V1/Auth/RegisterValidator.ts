@@ -26,7 +26,7 @@ export default class RegisterValidator extends Validator {
 		  rules.maxLength(128)
 		]),
 
-		profile: schema.file.optional({
+		avatar: schema.file.optional({
 			size: '1mb',
 			extnames: ['jpg', 'png'],
 		}),
