@@ -17,6 +17,7 @@ test.group("Users / List", group => {
     
     const response = await client.get("/api/v1/users").loginAs(admin);
 
+log(extractProperties(users, ['id']))
     response.assertStatus(200);
     response.assertBodyContains({
       data: pick(users, ['id'])
