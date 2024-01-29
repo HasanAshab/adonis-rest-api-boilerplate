@@ -1,6 +1,6 @@
 import { test } from '@japa/runner';
 import User from 'App/Models/User';
-import { pick } from 'lodash'
+import { extractProperty } from 'App/helpers';
 
 /*
 Run this suits:
@@ -17,15 +17,12 @@ test.group("Users / List", group => {
     
     const response = await client.get("/api/v1/users").loginAs(admin);
 
-log(extractProperties(users, ['id']))
     response.assertStatus(200);
     response.assertBodyContains({
-      data: pick(users, ['id'])
+      data: extractProperty(users, 'id')
     });
   });
   
-  const extractProperties = (array, properties) => array.map(item => _.pick(item, properties));
-
   
   test("User shouldn't get users list", async ({ client }) => {
 		const user = await User.factory().create();
