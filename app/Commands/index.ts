@@ -17,7 +17,8 @@ import Application from '@ioc:Adonis/Core/Application';
 |
 */
 export default [
-  './app/Commands/Search'
+  './app/Commands/Search',
+  './app/Commands/ClearUploads'
 ]
 
 /*

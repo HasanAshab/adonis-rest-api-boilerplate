@@ -31,6 +31,15 @@
         }
       ]
     },
+    "clear:uploads": {
+      "settings": {},
+      "commandPath": "./app/Commands/ClearUploads",
+      "commandName": "clear:uploads",
+      "description": "",
+      "args": [],
+      "aliases": [],
+      "flags": []
+    },
     "dump:rcfile": {
       "settings": {},
       "commandPath": "@adonisjs/core/build/commands/DumpRc",

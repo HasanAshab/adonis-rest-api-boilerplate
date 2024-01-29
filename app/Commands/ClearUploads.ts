@@ -1,12 +1,12 @@
-import { Command } from "samer-artisan";
+import { BaseCommand } from '@adonisjs/core/build/standalone'
 import { execSync } from "child_process";
 
-export default class ClearUploads extends Command {
-  signature = "clear:uploads";
+export default class ClearUploads extends BaseCommand {
+  public static commandName = "clear:uploads";
   
-  handle() {
-    execSync("rm -r storage/public/uploads");
-    execSync("mkdir  storage/public/uploads");
-    this.info("Uploads are cleared now!");
+  public run() {
+    execSync("rm -r tmp/uploads");
+    execSync("mkdir  tmp/uploads");
+    this.logger.success("Uploads are cleared now!");
   }
 }
