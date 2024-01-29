@@ -37,7 +37,7 @@ describe("Auth", () => {
       username: "foobar123",
       email: "foo@gmail.com",
       password: "Password@1234",
-      profile: fakeFile("image.png")
+      profile: fakeFilePath("image.png")
     };
     const response = await client.post("/api/v1/auth/register").multipart(data);
     const user = await User.findOne({ email: data.email });

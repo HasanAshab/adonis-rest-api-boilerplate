@@ -27,7 +27,7 @@ for(const method of methods) {
 global.request = request;
 
 
-global.fakeFile = (name: string) => {
+global.fakeFilePath = (name: string) => {
   return {
     _type: "file",
     path: `storage/test_files/${name}`

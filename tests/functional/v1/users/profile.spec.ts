@@ -1,6 +1,6 @@
 import { test } from '@japa/runner';
 import User from 'App/Models/User';
-import { extractProperty } from 'App/helpers';
+import { pick } from 'lodash';
 
 /*
 Run this suits:
@@ -20,14 +20,14 @@ test.group("Users / Profile", group => {
     
     response.assertStatus(200);
     response.assertBodyContains({
-      data: extractProperty(users, 'id')
+      data: pick(user, 'id')
     });
   });
 
   test("should update profile", async ({ client, expect }) => {
     const response = await client.patch("/api/v1/users/me").loginAs(user).multipart({
       username: "newName",
-      profile: fakeFile("image.png")
+      profile: fakeFilePath("image.png")
     });
     user = await User.findById(user._id);
     response.assertStatus(200);

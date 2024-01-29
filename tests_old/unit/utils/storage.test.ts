@@ -7,7 +7,7 @@ describe("storage", () => {
   test("Should store file", async ({ client, expect }) => {
     const file = {
       name: "test.png",
-      data: fs.readFileSync(fakeFile("image.png").path)
+      data: fs.readFileSync(fakeFilePath("image.png").path)
     }
     const path = await Storage.putFile("public/uploads", file);
     const data = fs.readFileSync(path);

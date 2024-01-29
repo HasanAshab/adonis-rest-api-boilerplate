@@ -50,7 +50,7 @@ test.group('Auth/Register', (group) => {
 
 		const response = await client
 			.post('/api/v1/auth/register')
-			.file('avatar', filePath('image.png'))
+			.file('avatar', fakeFilePathPath('image.png'))
 			.fields(data);
 
 		const user = await User.query().whereEqual(omit(data, 'password')).preload('settings').first();

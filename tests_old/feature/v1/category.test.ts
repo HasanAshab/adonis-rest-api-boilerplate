@@ -48,7 +48,7 @@ describe("Category", () => {
     const response = await client.post("/api/v1/admin/categories").loginAs(user).multipart({
       name: "foo bar",
       slug: "foo-bar",
-      icon: fakeFile("image.png")
+      icon: fakeFilePath("image.png")
     });
     
     response.assertStatus(201);
@@ -101,7 +101,7 @@ describe("Category", () => {
     const response = await client.patch("/api/v1/admin/categories/" + category._id).loginAs(user).multipart({
       name: "foo bar",
       slug: "foo-bar",
-      icon: fakeFile("image.png")
+      icon: fakeFilePath("image.png")
     });
     category = await Category.findById(category._id);
     response.assertStatus(200);
