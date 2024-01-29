@@ -20,32 +20,32 @@ describe("Contact", () => {
     }
   });
 
-  it("Should post contact", { user: false }, async () => {
+  test("Should post contact", { user: false }, async ({ client, expect }) => {
     const data = await Contact.factory().make();
-    const response = await request.post("/api/v1/contact").send(data);
+    const response = await client.post("/api/v1/contact").send(data);
 
-    expect(response.statusCode).toBe(201);
+    response.assertStatus(201);
     expect(await Contact.findOne(data)).not.toBeNull();
   });
   
-  it("Contact data should be sanitized", { user: false }, async () => {
+  test("Contact data should be sanitized", { user: false }, async ({ client, expect }) => {
     const data = {
       email: "foo@gmail.com",
       subject: "I'm trying XXS",
       message: "just a test, btw do u know i have a little experience of hacking??"
     };
     const script = "<script>alert('hacked')</script>";
-    const response = await request.post("/api/v1/contact").send({
+    const response = await client.post("/api/v1/contact").json({
       email: data.email,
       subject: data.subject + script,
       message: data.message + script
     });
-    expect(response.statusCode).toBe(201);
+    response.assertStatus(201);
     console.log(await Contact.find())
     expect(await Contact.findOne(data)).not.toBeNull();
   });
   
-  it("Contact management endpoints shouldn't be accessible by novice", { user: false }, async () => {
+  test("Contact management endpoints shouldn't be accessible by novice", { user: false }, async ({ client, expect }) => {
     const user = await User.factory().create();
     const userToken = user.createToken();
     const requests = [
@@ -64,55 +64,55 @@ describe("Contact", () => {
     expect(isNotAccessable).toBe(true);
   });
   
-  it("Should get all contacts", async () => {
+  test("Should get all contacts", async ({ client, expect }) => {
     const contacts = await Contact.factory().count(2).create();
-    const response = await request.get("/api/v1/contact/inquiries").actingAs(token);
-    expect(response.statusCode).toBe(200);
+    const response = await client.get("/api/v1/contact/inquiries").loginAs(user);
+    response.assertStatus(200);
     expect(response.body.data).toEqualDocument(contacts);
   });
   
-  it("Should get contact by id", async () => {
+  test("Should get contact by id", async ({ client, expect }) => {
     const contact = await Contact.factory().create();
-    const response = await request.get("/api/v1/contact/inquiries/" + contact._id).actingAs(token);
-    expect(response.statusCode).toBe(200);
+    const response = await client.get("/api/v1/contact/inquiries/" + contact._id).loginAs(user);
+    response.assertStatus(200);
     expect(response.body.data).toEqualDocument(contact);
   });
   
-  it("Should delete contact by id", async () => {
+  test("Should delete contact by id", async ({ client, expect }) => {
     const contact = await Contact.factory().create();
-    const response = await request.delete("/api/v1/contact/inquiries/" + contact._id).actingAs(token);
-    expect(response.statusCode).toBe(204);
+    const response = await client.delete("/api/v1/contact/inquiries/" + contact._id).loginAs(user);
+    response.assertStatus(204);
     expect(await Contact.findById(contact._id)).toBeNull();
   });
 
-  it("Should search contacts", async () => {
+  test("Should search contacts", async ({ client, expect }) => {
     const contact = await Contact.factory().create({ message });
-    const response = await request.get("/api/v1/contact/inquiries/search").actingAs(token).query({
+    const response = await client.get("/api/v1/contact/inquiries/search").loginAs(user).query({
       q: "website bug",
     });
     console.log(response.body)
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(response.body.data).toEqualDocument([contact]);
   });
   
-  it("Should filter search contacts", async () => {
+  test("Should filter search contacts", async ({ client, expect }) => {
     const [openedContact] = await Promise.all([
       Contact.factory().create({ message }),
       Contact.factory().closed().create({ message })
     ]);
-    const response = await request.get("/api/v1/contact/inquiries/search").actingAs(token).query({
+    const response = await client.get("/api/v1/contact/inquiries/search").loginAs(user).query({
       q: "website bug",
       status: "opened"
     });
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(response.body.data).toEqualDocument([openedContact]);
   });
   
-  it("Should update contact status", async () => {
+  test("Should update contact status", async ({ client, expect }) => {
     let contact = await Contact.factory().create();
-    const response = await request.patch(`/contact/inquiries/${contact._id}/status`).actingAs(token).send({ status: "closed" });
+    const response = await client.patch(`/contact/inquiries/${contact._id}/status`).loginAs(user).json({ status: "closed" });
     contact = await Contact.findById(contact._id);
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(contact.status).toBe("closed");
   });
 

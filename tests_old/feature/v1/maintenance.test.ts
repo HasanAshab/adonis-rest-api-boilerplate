@@ -5,18 +5,18 @@ describe("App", () => {
     Config.set({ app: { state: "down" } });
   });
   
-  it("shouldn't accessable when in maintenance mode", async () => {
-    const response = await request.get("/api/v1/");
-    expect(response.statusCode).toBe(503);
+  test("shouldn't accessable when in maintenance mode", async ({ client, expect }) => {
+    const response = await client.get("/api/v1/");
+    response.assertStatus(503);
   });
   
-  it("shouldn't accessable with invalid bypass key when in maintenance mode", async () => {
-    const response = await request.get("/api/v1/").query({ bypassKey: "foo-invalid-key" });
-    expect(response.statusCode).toBe(503);
+  test("shouldn't accessable with invalid bypass key when in maintenance mode", async ({ client, expect }) => {
+    const response = await client.get("/api/v1/").query({ bypassKey: "foo-invalid-key" });
+    response.assertStatus(503);
   });
   
-  it("should accessable with valid bypass key when in maintenance mode", async () => {
-    const response = await request.get("/api/v1/").query({ bypassKey: Config.get("app.key") });
-    expect(response.statusCode).toBe(404);
+  test("should accessable with valid bypass key when in maintenance mode", async ({ client, expect }) => {
+    const response = await client.get("/api/v1/").query({ bypassKey: Config.get("app.key") });
+    response.assertStatus(404);
   });
 });

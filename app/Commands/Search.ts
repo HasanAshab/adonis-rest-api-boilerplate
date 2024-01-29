@@ -75,7 +75,7 @@ export default class Search extends BaseCommand {
           const replacedContent = Wildcard.replace(fileContent, query, replace);
           const promise = fs.promises.writeFile(filePath, replacedContent);
           promises.push(promise);
-          this.logger.info('Replaced: ' + filePath);
+          this.logger.info('Modified: ' + filePath);
         }
       }
     }

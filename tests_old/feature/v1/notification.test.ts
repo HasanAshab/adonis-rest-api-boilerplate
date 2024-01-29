@@ -16,61 +16,61 @@ describe("Notification", () => {
     token = user.createToken();
   });
 
-  it("Should get notifications", async () => {
+  test("Should get notifications", async ({ client, expect }) => {
     const notifications = await Notification.factory().count(2).belongsTo(user).create();
-    const response = await request.get("/api/v1/notifications").actingAs(token);
-    expect(response.statusCode).toBe(200);
+    const response = await client.get("/api/v1/notifications").loginAs(user);
+    response.assertStatus(200);
     expect(response.body.data).toEqualDocument(notifications);
   });
   
-  it("Should mark notification as read", async () => {
+  test("Should mark notification as read", async ({ client, expect }) => {
     let notification = await Notification.factory().unread().belongsTo(user).create();
-    const response = await request.post("/api/v1/notifications/" + notification._id).actingAs(token);
-    expect(response.statusCode).toBe(200);
+    const response = await client.post("/api/v1/notifications/" + notification._id).loginAs(user);
+    response.assertStatus(200);
     notification = await Notification.findById(notification._id);
     expect(notification.readAt).not.toBeNull();
   });
   
-  it("Shouldn't mark others notification as read", async () => {
+  test("Shouldn't mark others notification as read", async ({ client, expect }) => {
     let notification = await Notification.factory().unread().create();
-    const response = await request.post("/api/v1/notifications/"+ notification._id).actingAs(token);
-    expect(response.statusCode).toBe(404);
+    const response = await client.post("/api/v1/notifications/"+ notification._id).loginAs(user);
+    response.assertStatus(404);
     notification = await Notification.findById(notification._id)
     expect(notification.readAt).toBeNull();
   });
   
-  it("Shouldn't get others notifications", async () => {
+  test("Shouldn't get others notifications", async ({ client, expect }) => {
     const [notifications] = await Promise.all([
       Notification.factory().count(2).belongsTo(user).create(),
       Notification.factory().create()
     ]);
-    const response = await request.get("/api/v1/notifications").actingAs(token);
-    expect(response.statusCode).toBe(200);
+    const response = await client.get("/api/v1/notifications").loginAs(user);
+    response.assertStatus(200);
     expect(response.body.data).toEqualDocument(notifications);
   });
   
-  it("Should get unread notifications count", async () => {
+  test("Should get unread notifications count", async ({ client, expect }) => {
     await Promise.all([
       Notification.factory().count(2).unread().belongsTo(user).create(),
       Notification.factory().create({userId: user._id})
     ]);
-    const response = await request.get("/api/v1/notifications/unread-count").actingAs(token);
-    expect(response.statusCode).toBe(200);
+    const response = await client.get("/api/v1/notifications/unread-count").loginAs(user);
+    response.assertStatus(200);
     expect(response.body.data.count).toBe(2);
   });
   
-  it("Should delete notification", async () => {
+  test("Should delete notification", async ({ client, expect }) => {
     let notification = await Notification.factory().belongsTo(user).create();
-    const response = await request.delete(`/notifications/${notification._id}`).actingAs(token);
-    expect(response.statusCode).toBe(204);
+    const response = await client.delete(`/notifications/${notification._id}`).loginAs(user);
+    response.assertStatus(204);
     notification = await Notification.findById(notification._id);
     expect(notification).toBeNull();
   });
   
-  it("Shouldn't delete others notification", async () => {
+  test("Shouldn't delete others notification", async ({ client, expect }) => {
     let notification = await Notification.factory().create();
-    const response = await request.delete(`/notifications/${notification._id}`).actingAs(token);
-    expect(response.statusCode).toBe(404);
+    const response = await client.delete(`/notifications/${notification._id}`).loginAs(user);
+    response.assertStatus(404);
     notification = await Notification.findById(notification._id);
     expect(notification).not.toBeNull();
   });

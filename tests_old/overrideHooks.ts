@@ -6,7 +6,7 @@ global.beforeEach = function(cb) {
 const realIt = global.it;
 
 const runTest = function(method, summery, config, cb) {
-  const wrappedCb = async () => {
+  const wrappedCb = async ({ client, expect }) => {
     if(!cb) {
       cb = config;
       config = {};

@@ -25,7 +25,7 @@ describe("notification", () => {
     Mail.mockClear();
   });
   
-  it("Should send notification via email", async () => {
+  test("Should send notification via email", async ({ client, expect }) => {
     class Test extends TestNotification {
       via = () => ["email"];
     }
@@ -34,7 +34,7 @@ describe("notification", () => {
     Mail.assertSentTo(user.email, TestMail);
   });
   
-  it("Should send notification via site (database)", async () => {
+  test("Should send notification via site (database)", async ({ client, expect }) => {
     const user = await User.factory().create();
     class Test extends TestNotification {
       via = () => ["site"];
@@ -47,7 +47,7 @@ describe("notification", () => {
     });
   });
 
-  it("Should send notification to multiple users", async () => {
+  test("Should send notification to multiple users", async ({ client, expect }) => {
     const users = await User.factory().count(2).make();
     class Test extends TestNotification {
       via = () => ["email"];
@@ -59,7 +59,7 @@ describe("notification", () => {
     });
   });
   
-  it("Should send notification via multiple channels", async () => {
+  test("Should send notification via multiple channels", async ({ client, expect }) => {
     const user = await User.factory().create();
     await notificationService.send(user, new TestNotification);
     

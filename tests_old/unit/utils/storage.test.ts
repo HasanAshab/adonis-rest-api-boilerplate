@@ -4,7 +4,7 @@ import Storage from "Storage";
 import fs from "fs";
 
 describe("storage", () => {
-  it("Should store file", async () => {
+  test("Should store file", async ({ client, expect }) => {
     const file = {
       name: "test.png",
       data: fs.readFileSync(fakeFile("image.png").path)

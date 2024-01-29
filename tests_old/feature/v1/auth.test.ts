@@ -32,16 +32,16 @@ describe("Auth", () => {
     }
   });
 
-  it.only("should register a user", async () => {
+  it.only("should register a user", async ({ client, expect }) => {
     const data = {
       username: "foobar123",
       email: "foo@gmail.com",
       password: "Password@1234",
       profile: fakeFile("image.png")
     };
-    const response = await request.post("/api/v1/auth/register").multipart(data);
+    const response = await client.post("/api/v1/auth/register").multipart(data);
     const user = await User.findOne({ email: data.email });
-    expect(response.statusCode).toBe(201);
+    response.assertStatus(201);
     expect(response.body.data).toHaveProperty("token");
     expect(user).not.toBeNull();
     expect(await user.settings).not.toBeNull();
@@ -54,15 +54,15 @@ describe("Auth", () => {
     Storage.assertStored("image.png");
   });
 
-  it("should register a user without profile", async () => {
+  test("should register a user without profile", async ({ client, expect }) => {
     const data = {
       username: "foobar123",
       email: "foo@gmail.com",
       password: "Password@1234"
     };
-    const response = await request.post("/api/v1/auth/register").multipart(data);
+    const response = await client.post("/api/v1/auth/register").multipart(data);
     const user = await User.findOne({ email: data.email });
-    expect(response.statusCode).toBe(201);
+    response.assertStatus(201);
     expect(response.body.data).toHaveProperty("token");
     expect(user).not.toBeNull();
     expect(await user.settings).not.toBeNull();
@@ -74,98 +74,98 @@ describe("Auth", () => {
     Storage.assertNothingStored();
   });
 
-  it("shouldn't register with existing email", { user: true }, async () => {
-    const response = await request.post("/api/v1/auth/register").multipart({
+  test("shouldn't register with existing email", { user: true }, async ({ client, expect }) => {
+    const response = await client.post("/api/v1/auth/register").multipart({
       username: "foo",
       email: user.email,
       password: "Password@1234"
     });
 
-    expect(response.statusCode).toBe(400);
+    response.assertStatus(400);
     expect(response.body).not.toHaveProperty("data");
   });
 
-  it("shouldn't register with existing username", { user: true }, async () => {
-    const response = await request.post("/api/v1/auth/register").multipart({
+  test("shouldn't register with existing username", { user: true }, async ({ client, expect }) => {
+    const response = await client.post("/api/v1/auth/register").multipart({
       username: user.username,
       email: "foo@test.com",
       password: "Password@1234"
     });
-    expect(response.statusCode).toBe(400);
+    response.assertStatus(400);
     expect(response.body).not.toHaveProperty("data");
   });
 
-  it("should login a user", async () => {
+  test("should login a user", async ({ client, expect }) => {
     const user = await User.factory().hasSettings().create();
-    const response = await request.post("/api/v1/auth/login").send({
+    const response = await client.post("/api/v1/auth/login").json({
       email: user.email,
       password: "password"
     });
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(response.body.data).toHaveProperty("token");
   });
 
-  it("shouldn't login with wrong password", { user: true }, async () => {
-    const response = await request.post("/api/v1/auth/login").send({
+  test("shouldn't login with wrong password", { user: true }, async ({ client, expect }) => {
+    const response = await client.post("/api/v1/auth/login").json({
       email: user.email,
       password: "wrong-pass"
     });
-    expect(response.statusCode).toBe(401);
+    response.assertStatus(401);
     expect(response.body.data?.token).toBe(undefined);
   });
     
-  it("shouldn't login manually in OAuth account", async () => {
+  test("shouldn't login manually in OAuth account", async ({ client, expect }) => {
     const user = await User.factory().oauth().create();
-    const response = await request.post("/api/v1/auth/login").send({
+    const response = await client.post("/api/v1/auth/login").json({
       email: user.email,
       password: "password"
     });
-    expect(response.statusCode).toBe(401);
+    response.assertStatus(401);
     expect(response.body.data?.token).toBe(undefined);
   });
 
-  it("Login should flag for otp if not provided in (2FA)", async () => {
+  test("Login should flag for otp if not provided in (2FA)", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const response = await request.post("/api/v1/auth/login").send({
+    const response = await client.post("/api/v1/auth/login").json({
       email: user.email,
       password: "password"
     });
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(response.body.data.twoFactorAuthRequired).toBe(true);
     expect(response.body.data).not.toHaveProperty("token");
   });
 
-  it("should login a user with valid otp (2FA)", async () => {
+  test("should login a user with valid otp (2FA)", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
     const otp = await twoFactorAuthService.createToken(user);
-    const response = await request.post("/api/v1/auth/login").send({
+    const response = await client.post("/api/v1/auth/login").json({
       otp,
       email: user.email,
       password: "password"
     });
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(response.body.data).toHaveProperty("token");
   });
 
-  it("shouldn't login a user with invalid OTP (2FA)", async () => {
+  test("shouldn't login a user with invalid OTP (2FA)", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const response = await request.post("/api/v1/auth/login").send({
+    const response = await client.post("/api/v1/auth/login").json({
       email: user.email,
       password: "password",
       otp: 999999
     });
-    expect(response.statusCode).toBe(401);
+    response.assertStatus(401);
     expect(response.body).not.toHaveProperty("body");
   });
   
-  it("should prevent Brute Force login", { user: true }, async () => {
+  test("should prevent Brute Force login", { user: true }, async ({ client, expect }) => {
     const payload = {
       email: user.email,
       password: "wrong-pass"
     };
     const responses = [];
     for (let i = 0; i < 5; i++) {
-      const response = await request.post("/api/v1/auth/login").send(payload);
+      const response = await client.post("/api/v1/auth/login").send(payload);
       responses.push(response);
     }
     expect(responses[0].statusCode).toBe(401);
@@ -175,49 +175,49 @@ describe("Auth", () => {
     expect(responses[4].statusCode).toBe(429);
   });
   
-  it("should login a user with valid recovery code", async () => {
+  test("should login a user with valid recovery code", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
     const [ code ] = await user.generateRecoveryCodes(1);
-    const response = await request.post("/api/v1/auth/login/recovery-code").send({
+    const response = await client.post("/api/v1/auth/login/recovery-code").json({
       email: user.email,
       code
     });
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(response.body.data).toHaveProperty("token");
   });
   
-  it("shouldn't login a user with same recovery code multiple times", async () => {
+  test("shouldn't login a user with same recovery code multiple times", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
     const [ code ] = await user.generateRecoveryCodes(1);
-    const response1 = await request.post("/api/v1/auth/login/recovery-code").send({ email: user.email, code });
-    const response2 = await request.post("/api/v1/auth/login/recovery-code").send({ email: user.email, code });
+    const response1 = await client.post("/api/v1/auth/login/recovery-code").json({ email: user.email, code });
+    const response2 = await client.post("/api/v1/auth/login/recovery-code").json({ email: user.email, code });
     expect(response1.statusCode).toBe(200);
     expect(response2.statusCode).toBe(401);
     expect(response1.body.data).toHaveProperty("token");
     expect(response2.body).not.toHaveProperty("data");
   });
   
-  it("shouldn't login a user with invalid recovery code", async () => {
+  test("shouldn't login a user with invalid recovery code", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
     await user.generateRecoveryCodes(1);
-    const response = await request.post("/api/v1/auth/login/recovery-code").send({
+    const response = await client.post("/api/v1/auth/login/recovery-code").json({
       email: user.email,
       code: "foo-bar"
     });
-    expect(response.statusCode).toBe(401);
+    response.assertStatus(401);
     expect(response.body).not.toHaveProperty("data");
   });
   
-  it("should generate new recovery codes", { user: true }, async () => {
+  test("should generate new recovery codes", { user: true }, async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
     const oldCodes = await user.generateRecoveryCodes();
-    const response = await request.post("/api/v1/auth/generate-recovery-codes").actingAs(user.createToken());
-    expect(response.statusCode).toBe(200);
+    const response = await client.post("/api/v1/auth/generate-recovery-codes").actingAs(user.createToken());
+    response.assertStatus(200);
     expect(response.body.data).toHaveLength(10);
     expect(response.body.data).not.toEqual(oldCodes);
   });
 
-  it("Should complete social login with username", async () => {
+  test("Should complete social login with username", async ({ client, expect }) => {
     const username = "FooBar123";
     const externalUser = {
       id: "10000",
@@ -226,13 +226,13 @@ describe("Auth", () => {
       picture: "www.foo.com"
     };
     const token = await authService.createExternalLoginFinalStepToken("google", externalUser);
-    const response = await request.post("/api/v1/auth/login/external/google/final-step").send({ 
+    const response = await client.post("/api/v1/auth/login/external/google/final-step").json({ 
       token,
       username,
       externalId: externalUser.id
     });
     const user = await User.findOne({ username });
-    expect(response.statusCode).toBe(201);
+    response.assertStatus(201);
     expect(user).not.toBeNull();
     expect(await user.settings).not.toBeNull();
     Event.assertEmitted("Registered", {
@@ -242,7 +242,7 @@ describe("Auth", () => {
     });
   });
   
-  it("Should complete social login with email and username", async () => {
+  test("Should complete social login with email and username", async ({ client, expect }) => {
     const data = {
       username: "FooBar123",
       email: "foo@bar.com"
@@ -253,13 +253,13 @@ describe("Auth", () => {
       picture: "www.foo.com"
     };
     const token = await authService.createExternalLoginFinalStepToken("google", externalUser);
-    const response = await request.post("/api/v1/auth/login/external/google/final-step").send({ 
+    const response = await client.post("/api/v1/auth/login/external/google/final-step").json({ 
       token,
       externalId: externalUser.id,
       ...data
     });
     const user = await User.findOne(data);
-    expect(response.statusCode).toBe(201);
+    response.assertStatus(201);
     expect(user).not.toBeNull();
     expect(await user.settings).not.toBeNull();
     Event.assertEmitted("Registered", {
@@ -269,19 +269,19 @@ describe("Auth", () => {
     });
   });
 
-  it("Shouldn't complete social login with invalid token", async () => {
+  test("Shouldn't complete social login with invalid token", async ({ client, expect }) => {
     const username = "FooBar123";
-    const response = await request.post("/api/v1/auth/login/external/google/final-step").send({
+    const response = await client.post("/api/v1/auth/login/external/google/final-step").json({
       username,
       token: "invalid-token",
       externalId: "1000"
     });
     const user = await User.findOne({ username });
-    expect(response.statusCode).toBe(401);
+    response.assertStatus(401);
     expect(user).toBeNull();
   })
   
-  it("Shouldn't complete social login with same token multiple times", async () => {
+  test("Shouldn't complete social login with same token multiple times", async ({ client, expect }) => {
     const externalUser = {
       id: "10000",
       name: "Foo Bar",
@@ -289,139 +289,139 @@ describe("Auth", () => {
       picture: "www.foo.com"
     };
     const token = await authService.createExternalLoginFinalStepToken("google", externalUser);
-    await request.post("/api/v1/auth/login/external/google/final-step").send({ 
+    await client.post("/api/v1/auth/login/external/google/final-step").json({ 
       token,
       username: "foo12",
       externalId: externalUser.id
     });
-    const response = await request.post("/api/v1/auth/login/external/google/final-step").send({ 
+    const response = await client.post("/api/v1/auth/login/external/google/final-step").json({ 
       token,
       username: "foo95",
       externalId: externalUser.id
     });
-    expect(response.statusCode).toBe(401);
+    response.assertStatus(401);
   });
 
-  it("Should send otp", async () => {
+  test("Should send otp", async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create();
-    const response = await request.post("/api/v1/auth/send-otp/" + user._id);
+    const response = await client.post("/api/v1/auth/send-otp/" + user._id);
     await sleep(2000)
     const token = await Token.findOne({ key: user._id, type: "2fa" });
     
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(otp).not.toBeNull();
   });
   
-  it("should verify email", async () => {
+  test("should verify email", async ({ client, expect }) => {
     const user = await User.factory().unverified().create();
     const token = await (new EmailVerificationNotification).createVerificationToken(user);
-    const response = await request.get(`/auth/verify/${user._id}/${token}`);
+    const response = await client.get(`/auth/verify/${user._id}/${token}`);
     await user.refresh();
     expect(response.status).toBe(200);
     expect(user.verified).toBe(true);
   });
 
-  it("shouldn't verify email with invalid token", async () => {
+  test("shouldn't verify email with invalid token", async ({ client, expect }) => {
     const user = await User.factory().unverified().create();
-    const response = await request.get(`/auth/verify/${user._id}/invalid-token`);
+    const response = await client.get(`/auth/verify/${user._id}/invalid-token`);
     await user.refresh();
     expect(response.status).toBe(401);
     expect(user.verified).toBe(false);
   });
 
-  it("should resend verification email", async () => {
+  test("should resend verification email", async ({ client, expect }) => {
     const user = await User.factory().unverified().create();
-    const response = await request.post("/api/v1/auth/verify/resend").send({
+    const response = await client.post("/api/v1/auth/verify/resend").json({
       email: user.email
     });
 
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     Notification.assertSentTo(user, EmailVerificationNotification);
   });
 
-  it("should change password", { user: true }, async () => {
+  test("should change password", { user: true }, async ({ client, expect }) => {
     const data = {
       oldPassword: "password",
       newPassword: "Password@1234",
     };
-    const response = await request.patch("/api/v1/auth/password/change").actingAs(token).send(data);
+    const response = await client.patch("/api/v1/auth/password/change").loginAs(user).send(data);
     await user.refresh();
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(await user.attempt(data.newPassword)).toBe(true);
   });
 
-  it("shouldn't change password of OAuth account", async () => {
+  test("shouldn't change password of OAuth account", async ({ client, expect }) => {
     const user = await User.factory().oauth().create();
-    const response = await request.patch("/api/v1/auth/password/change").actingAs(user.createToken()).send({
+    const response = await client.patch("/api/v1/auth/password/change").actingAs(user.createToken()).json({
       oldPassword: "password",
       newPassword: "Password@1234"
     });
-    expect(response.statusCode).toBe(403);
+    response.assertStatus(403);
   });
 
-  it("Should send reset email", { user: true }, async () => {
-    const response = await request.post("/api/v1/auth/password/forgot").send({ email: user.email });
-    expect(response.statusCode).toBe(202);
+  test("Should send reset email", { user: true }, async ({ client, expect }) => {
+    const response = await client.post("/api/v1/auth/password/forgot").json({ email: user.email });
+    response.assertStatus(202);
     Notification.assertSentTo(user, ForgotPasswordNotification);
   });
 
-  it("Shouldn't send reset email of OAuth account", async () => {
+  test("Shouldn't send reset email of OAuth account", async ({ client, expect }) => {
     const user = await User.factory().oauth().create();
-    const response = await request.post("/api/v1/auth/password/forgot").send({
+    const response = await client.post("/api/v1/auth/password/forgot").json({
       email: user.email
     });
     Notification.assertNothingSent();
   });
 
-  it("should reset password", { user: true }, async () => {
+  test("should reset password", { user: true }, async ({ client, expect }) => {
     const token = await (new ForgotPasswordNotification).createForgotPasswordToken(user);
     const password = "Password@1234";
-    const response = await request.patch("/api/v1/auth/password/reset").send({
+    const response = await client.patch("/api/v1/auth/password/reset").json({
       id: user._id.toString(),
       password,
       token
     });
     await user.refresh();
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(await user.attempt(password)).toBe(true);
   });
 
-  it("shouldn't reset password with invalid token", { user: true }, async () => {
+  test("shouldn't reset password with invalid token", { user: true }, async ({ client, expect }) => {
     const password = "Password@1234";
-    const response = await request.patch("/api/v1/auth/password/reset").send({
+    const response = await client.patch("/api/v1/auth/password/reset").json({
       id: user._id.toString(),
       token: "foo",
       password
     });
     await user.refresh();
-    expect(response.statusCode).toBe(401);
+    response.assertStatus(401);
     expect(await user.attempt(password)).toBe(false);
   });
 
-  it("Should update phone number with valid otp", async () => {
+  test("Should update phone number with valid otp", async ({ client, expect }) => {
     const user = await User.factory().hasSettings().create();
     const phoneNumber = "+14155552671";
     const otp = await twoFactorAuthService.createToken(user);
-    const response = await request.patch("/api/v1/auth/change-phone-number").actingAs(user.createToken()).send({ phoneNumber, otp });
+    const response = await client.patch("/api/v1/auth/change-phone-number").actingAs(user.createToken()).json({ phoneNumber, otp });
     await user.refresh();
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(user.phoneNumber).toBe(phoneNumber);
   });
   
-  it("Shouldn't update phone number with invalid otp", { user: true }, async () => {
+  test("Shouldn't update phone number with invalid otp", { user: true }, async ({ client, expect }) => {
     const phoneNumber = "+14155552671";
-    const response = await request.patch("/api/v1/auth/change-phone-number").actingAs(token).send({ phoneNumber, otp: 123456 });
+    const response = await client.patch("/api/v1/auth/change-phone-number").loginAs(user).json({ phoneNumber, otp: 123456 });
     await user.refresh();
-    expect(response.statusCode).toBe(401);
+    response.assertStatus(401);
     expect(user.phoneNumber).not.toBe(phoneNumber);
   });
   
-  it("Update phone number should send otp if otp code not provided", { user: true }, async () => {
+  test("Update phone number should send otp if otp code not provided", { user: true }, async ({ client, expect }) => {
     const phoneNumber = "+14155552671";
-    const response = await request.patch("/api/v1/auth/change-phone-number").actingAs(token).send({ phoneNumber });
+    const response = await client.patch("/api/v1/auth/change-phone-number").loginAs(user).json({ phoneNumber });
     const otp = await Token.findOne({ key: user._id, type: "2fa" });
     await user.refresh();
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(user.phoneNumber).not.toBe(phoneNumber);
     expect(otp).not.toBeNull();
   });

@@ -17,19 +17,19 @@ describe("Dashboard", () => {
     }
   });
   
-  it("Novice users shouldn't get admin dashboard", { user: false }, async () => {
+  test("Novice users shouldn't get admin dashboard", { user: false }, async ({ client, expect }) => {
     const user = await User.factory().create();
-    const response = await request.get("/api/v1/admin/dashboard").actingAs(user.createToken());
-    expect(response.statusCode).toBe(403);
+    const response = await client.get("/api/v1/admin/dashboard").actingAs(user.createToken());
+    response.assertStatus(403);
   });
   
-  it("Admin should get dashboard", async () => {
+  test("Admin should get dashboard", async ({ client, expect }) => {
     const [todayUser, oldUser] = await Promise.all([
       User.factory().count(2).create(),
       User.factory().count(3).create({ createdAt: new Date(2022, 0, 1) })
     ]);
-    const response = await request.get("/api/v1/admin/dashboard").actingAs(token);
-    expect(response.statusCode).toBe(200);
+    const response = await client.get("/api/v1/admin/dashboard").loginAs(user);
+    response.assertStatus(200);
     expect(response.body.data.totalUsers).toBe(5);
     expect(response.body.data.newUsersToday).toBe(2);
   });

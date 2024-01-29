@@ -15,7 +15,7 @@ describe("Registered Event", () => {
     user = await User.factory().unverified().create();
   });
 
-  it("should send verification email on internal method", async () => {
+  test("should send verification email on internal method", async ({ client, expect }) => {
     user.sendVerificationNotification = jest.fn();
     
     await new SendEmailVerificationNotification().dispatch({
@@ -30,7 +30,7 @@ describe("Registered Event", () => {
     Notification.assertSentTo(user, EmailVerificationNotification);
   });
   
-  it("shouldn't send verification email on social method", async () => {
+  test("shouldn't send verification email on social method", async ({ client, expect }) => {
     user.sendVerificationNotification = jest.fn();
     
     await new SendEmailVerificationNotification().dispatch({
@@ -44,7 +44,7 @@ describe("Registered Event", () => {
   });
 
   
-  it("should notify admins about new user", async () => {
+  test("should notify admins about new user", async ({ client, expect }) => {
     const admins = await User.factory().count(3).hasSettings().withRole("admin").create();
     
     await new SendNewUserJoinedNotificationToAdmins().dispatch({ 

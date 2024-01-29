@@ -59,7 +59,7 @@ describe("user", () => {
   });
 
   test("Should update profile without profile", async ({ client, expect }) => {
-    const response = await client.patch("/api/v1/users/me").loginAs(token).send({ username: "newName" });
+    const response = await client.patch("/api/v1/users/me").loginAs(token).json({ username: "newName" });
     user = await User.findById(user._id);
     response.assertStatus(200);
     expect(user.username).toBe("newName");
@@ -69,7 +69,7 @@ describe("user", () => {
   test("Shouldn't update profile with existing username", async ({ client, expect }) => {
     const existingUser = await User.factory().create();
     const usernameBefore = user.username;
-    const response = await client.patch("/api/v1/users/me").loginAs(token).send({ username: existingUser.username });
+    const response = await client.patch("/api/v1/users/me").loginAs(token).json({ username: existingUser.username });
     await user.refresh();
     response.assertStatus(400);
     expect(user.username).toBe(usernameBefore);
@@ -77,7 +77,7 @@ describe("user", () => {
 
   test("Shouldn't update profile with existing email", async ({ client, expect }) => {
     const existingUser = await User.factory().create();
-    const response = await client.patch("/api/v1/users/me").loginAs(token).send({ email: existingUser.email });
+    const response = await client.patch("/api/v1/users/me").loginAs(token).json({ email: existingUser.email });
     const userAfterRequest = await User.findById(user._id);
     response.assertStatus(400);
     expect(userAfterRequest.email).toBe(user.email);
@@ -86,7 +86,7 @@ describe("user", () => {
 
   test("updating email should send verification email", async ({ client, expect }) => {
     const email = "foo@test.com";
-    const response = await client.patch("/api/v1/api/v1/users/me").send({ email });
+    const response = await client.patch("/api/v1/api/v1/users/me").json({ email });
     user = await User.findById(user._id);
     response.assertStatus(200);
     expect(user.email).toBe(email);

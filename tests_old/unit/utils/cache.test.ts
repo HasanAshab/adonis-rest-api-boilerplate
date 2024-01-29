@@ -11,26 +11,26 @@ describe("Cache", () => {
   });
   
   
-  it("Should cache with default driver", async () => {
+  test("Should cache with default driver", async ({ client, expect }) => {
     await Cache.put("key", "data");
     expect(await Cache.driver("memory").get("key")).toBe("data");
     expect(await Cache.driver("redis").get("key")).toBeNull();
   });
   
-  it("Should reset to default driver", async () => {
+  test("Should reset to default driver", async ({ client, expect }) => {
     await Cache.driver("redis").put("key", "data");
     await Cache.put("key2", "data2");
     expect(await Cache.driver("memory").get("key2")).toBe("data2");
   });
   
-  it("Should cache", async () => {
+  test("Should cache", async ({ client, expect }) => {
     for(const driverName of drivers){
       await Cache.driver(driverName).put("key", "data")
       expect(await Cache.driver(driverName).get("key")).toBe("data");
     }
   });
   
-  it("Should delete cache", async () => {
+  test("Should delete cache", async ({ client, expect }) => {
     for(const driverName of drivers){
       await Cache.driver(driverName).put("key", "data")
       await Cache.driver(driverName).delete("key")
@@ -38,14 +38,14 @@ describe("Cache", () => {
     }
   });
   
-  it("Should driver cache with expiry time", async () => {
+  test("Should driver cache with expiry time", async ({ client, expect }) => {
     for(const driverName of drivers){
       await Cache.driver(driverName).put("key", "data", 10)
       expect(await Cache.driver(driverName).get("key")).toBe("data");
     }
   });
   
-  it("Shouldn't get expired cache", async () => {
+  test("Shouldn't get expired cache", async ({ client, expect }) => {
     for(const driverName of drivers){
       await Cache.driver(driverName).put("key", "data", 1)
     }
@@ -55,7 +55,7 @@ describe("Cache", () => {
     }
   });
   
-  it("Should remember cache", async () => {
+  test("Should remember cache", async ({ client, expect }) => {
     for(const driverName of drivers) {
       Cache.driver(driverName).put("key", "data")
       const value = Cache.driver(driverName).remember("key", 1000, () => {});

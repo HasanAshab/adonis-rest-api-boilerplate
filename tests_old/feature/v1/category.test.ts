@@ -20,7 +20,7 @@ describe("Category", () => {
     }
   });
   
-  it("Shouldn't accessable by general users", { user: false }, async () => {
+  test("Shouldn't accessable by general users", { user: false }, async ({ client, expect }) => {
     const user = await User.factory().create();
     const userToken = user.createToken();
     const requests = [
@@ -37,93 +37,93 @@ describe("Category", () => {
     expect(isNotAccessable).toBe(true);
   });
   
-  it("Should get all categories", async () => {
+  test("Should get all categories", async ({ client, expect }) => {
     const categories = await Category.factory().count(3).create();
-    const response = await request.get("/api/v1/admin/categories").actingAs(token);
-    expect(response.statusCode).toBe(200);
+    const response = await client.get("/api/v1/admin/categories").loginAs(user);
+    response.assertStatus(200);
     expect(response.body.data).toEqualDocument(categories);
   });
   
-  it("Should create category", async () => {
-    const response = await request.post("/api/v1/admin/categories").actingAs(token).multipart({
+  test("Should create category", async ({ client, expect }) => {
+    const response = await client.post("/api/v1/admin/categories").loginAs(user).multipart({
       name: "foo bar",
       slug: "foo-bar",
       icon: fakeFile("image.png")
     });
     
-    expect(response.statusCode).toBe(201);
+    response.assertStatus(201);
     expect(await Category.findOne({ slug: "foo-bar" })).not.toBeNull();
     Storage.assertStoredCount(1);
     Storage.assertStored("image.png");
   });
   
-  it("Should create category without icon", async () => {
-    const response = await request.post("/api/v1/admin/categories").actingAs(token).multipart({
+  test("Should create category without icon", async ({ client, expect }) => {
+    const response = await client.post("/api/v1/admin/categories").loginAs(user).multipart({
       name: "foo bar",
       slug: "foo-bar"
     });
 
-    expect(response.statusCode).toBe(201);
+    response.assertStatus(201);
     expect(await Category.findOne({ slug: "foo-bar" })).not.toBeNull();
     Storage.assertNothingStored();
   });
 
-  it("Shouldn't create category with existing slug", async () => {
+  test("Shouldn't create category with existing slug", async ({ client, expect }) => {
     const category = await Category.factory().create();
-    const response = await request.post("/api/v1/admin/categories").actingAs(token).multipart({
+    const response = await client.post("/api/v1/admin/categories").loginAs(user).multipart({
       name: "foo bar",
       slug: category.slug,
     });
-    expect(response.statusCode).toBe(400);
+    response.assertStatus(400);
   });
 
-  it.only("Should get category by id", async () => {
+  it.only("Should get category by id", async ({ client, expect }) => {
     const category = await Category.factory().create();
-    const response = await request.get("/api/v1/admin/categories/" + category._id).actingAs(token);
-    expect(response.statusCode).toBe(200);
+    const response = await client.get("/api/v1/admin/categories/" + category._id).loginAs(user);
+    response.assertStatus(200);
     expect(response.body.data).toEqualDocument(category);
   });
   
-  it("Should update category", async () => {
+  test("Should update category", async ({ client, expect }) => {
     let category = await Category.factory().create();
-    const response = await request.patch("/api/v1/admin/categories/" + category._id).actingAs(token).multipart({
+    const response = await client.patch("/api/v1/admin/categories/" + category._id).loginAs(user).multipart({
       name: "foo bar",
       slug: "foo-bar"
     });
     category = await Category.findById(category._id);
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(category.name).toBe("foo bar");
     expect(category.slug).toBe("foo-bar");
   });
   
-  it("Should update category with icon", async () => {
+  test("Should update category with icon", async ({ client, expect }) => {
     let category = await Category.factory().create();
-    const response = await request.patch("/api/v1/admin/categories/" + category._id).actingAs(token).multipart({
+    const response = await client.patch("/api/v1/admin/categories/" + category._id).loginAs(user).multipart({
       name: "foo bar",
       slug: "foo-bar",
       icon: fakeFile("image.png")
     });
     category = await Category.findById(category._id);
-    expect(response.statusCode).toBe(200);
+    response.assertStatus(200);
     expect(category.name).toBe("foo bar");
     expect(category.slug).toBe("foo-bar");
     Storage.assertStoredCount(1);
     Storage.assertStored("image.png");
   });
   
-  it("Shouldn't update category with existing slug", async () => {
+  test("Shouldn't update category with existing slug", async ({ client, expect }) => {
     let categories = await Category.factory().count(2).create();
-    const response = await request.patch("/api/v1/admin/categories/" + categories[0]._id).actingAs(token).multipart({
+    const response = await client.patch("/api/v1/admin/categories/" + categories[0]._id).loginAs(user).multipart({
       name: "foo bar",
       slug: categories[1].slug,
     });
-    expect(response.statusCode).toBe(400);
+    response.assertStatus(400);
   });
 
-  it("Should delete category", async () => {
+  test("Should delete category", async ({ client, expect }) => {
     const category = await Category.factory().create();
-    const response = await request.delete("/api/v1/admin/categories/" + category._id).actingAs(token);
-    expect(response.statusCode).toBe(204);
+    const response = await client.delete("/api/v1/admin/categories/" + category._id).loginAs(user);
+    response.assertStatus(204);
     expect(await Category.findById(category._id)).toBeNull();
   });
   
