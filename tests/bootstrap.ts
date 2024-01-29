@@ -58,6 +58,7 @@ export const runnerHooks: Pick<Required<Config>, 'setup' | 'teardown'> = {
 	setup: [
 		() => TestUtils.ace().loadCommands(),
 		() => TestUtils.db().truncate(),
+		() => import('Tests/Helpers/extend_api_response'),
 		() => import('Tests/Helpers/AppendGlobalHelpers')
 	],
 	teardown: [],
@@ -77,6 +78,5 @@ export const runnerHooks: Pick<Required<Config>, 'setup' | 'teardown'> = {
 export const configureSuite: Required<Config>['configureSuite'] = (suite) => {
 	if (['functional', 'unit'].includes(suite.name)) {
 		suite.setup(() => TestUtils.httpServer().start());
-		suite.setup(() => import('Tests/Helpers/AppendApiResponseHelpers'));
 	}
 };
