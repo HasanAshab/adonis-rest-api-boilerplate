@@ -12,7 +12,6 @@ import ChangePhoneNumberValidator from "App/Http/Validators/V1/user/ChangePhoneN
 export default class UserController {
   public static readonly VERSION = 'v1';
   
-  //TODO
   public async index({ request }: HttpContextContract) {
     //return ListUserResource.collection(
       //await User.where("role").equals("user").lean().paginateCursor(req)
@@ -29,8 +28,7 @@ export default class UserController {
     return serialized;
   }
   
-  //TODO
-  async profile({ auth }) {
+  public async profile({ auth }: HttpContextContract) {
     return UserProfileResource.make(auth.user!);
   }
   
@@ -58,11 +56,13 @@ export default class UserController {
     return "Profile updated!";
   }
   
-  //TODO
-  async show(username: string) {
-    return ShowUserResource.make(
-      await User.findOneOrFail({ username }).select("-email -phoneNumber").lean()
-    );
+  public async show({ params }: HttpContextContract) {
+    const user = await User.query()
+      .where('username', params.username)
+      .select('id', 'name', 'username', 'role')
+      .firstOrFail();
+
+    return ShowUserResource.make(user);
   }
   
   @bind()

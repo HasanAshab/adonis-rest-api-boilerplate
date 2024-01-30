@@ -1,33 +1,30 @@
-import Controller from "~/app/http/controllers/Controller";
-import { RequestHandler } from "~/core/decorators";
-import { AuthenticRequest } from "~/core/express";
-import Config from "Config";
-import Settings from "~/app/models/Settings";
-import SetupNotificationPreferenceRequest from "~/app/http/requests/v1/settings/SetupNotificationPreferenceRequest";
-import UpdateAppSettingsRequest from "~/app/http/requests/v1/settings/UpdateAppSettingsRequest";
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import User from "App/Models/User";
+import Settings from "App/Models/Settings";
+import SetupNotificationPreferenceValidator from "App/Http/Validators/v1/settings/SetupNotificationPreferenceValidator";
+//import UpdateAppSettingsValidator from "App/Http/Validators/v1/settings/UpdateAppSettingsValidator";
 
-export default class SettingsController extends Controller {
-  public static readonly VERSION = 'v1';
 
-  @RequestHandler
-  async index(req: AuthenticRequest) {
-    return await req.user.settings.lean();
+export default class SettingsController {
+  async index({ auth }: HttpContextContract) {
+    await auth.user!.load('settings');
+    return auth.user!.settings;
   }
   
-  @RequestHandler
-  async setupNotificationPreference(req: SetupNotificationPreferenceRequest) {
-    await Settings.updateOne({ userId: req.user._id }, { notification: req.body });
+  async setupNotificationPreference({ request, auth }: HttpContextContract) {
+    const notificationPreference = await request.validate(setupNotificationPreference);
+    await auth.user!.related('settings').query().update({ notificationPreference });
     return "Settings saved!";
   }
   
-  @RequestHandler
+  
+  /*
   async getAppSettings() {
     return Config.get();
   }
-
-  @RequestHandler
   async updateAppSettings({ body }: UpdateAppSettingsRequest) {
     Config.set(body);
     return "App Settings updated!";
   }
+  */
 }

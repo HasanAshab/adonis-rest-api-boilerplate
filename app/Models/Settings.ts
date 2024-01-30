@@ -20,7 +20,7 @@ export default class Settings extends BaseModel {
   public twoFactorAuth: TwoFactorAuthSettings;
 
   @column()
-  public notification: Record<string, Record<string, boolean>>;
+  public notificationPreference: Record<string, Record<string, boolean>>;
 
   @column.dateTime({
     autoCreate: true
