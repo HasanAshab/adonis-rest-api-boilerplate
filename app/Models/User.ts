@@ -38,7 +38,7 @@ export default class User extends compose(BaseModel, HasFactory, HasTimestamps, 
 	public role: Role;
 
 	@column()
-	public verified = false;
+	public verified: boolean;
 
 	@column({ serializeAs: null })
 	public password?: string;

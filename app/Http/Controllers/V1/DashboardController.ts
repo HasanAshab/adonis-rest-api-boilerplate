@@ -1,20 +1,19 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { DateTime } from 'luxon';
 import User from "App/Models/User";
+import Database from '@ioc:Adonis/Lucid/Database';
 
-export default class DashboardController extends Controller {
+
+export default class DashboardController {
   public async admin() {
-    const now = DateTime.local();
-    const today = now.set({ hour: 0, minute: 0, second: 0 });
-  
-    const [ totalUsers, newUsersToday ] = await Promise.all([
-      User.query().where('role', 'user').count('*'),
-      User.query().where('role', 'user').where('created_at', '>=', today.toJSDate()).count('*')
-    ]);
+   const data = await User.query()
+    .where('role', 'user')
+    .getCount({
+      totalUsers: '*',
+      newUsersToday: 'CASE WHEN DATE_TRUNC(\'day\', created_at) = CURRENT_DATE THEN 1 END'
+    })
     
-    return { 
-      data: { totalUsers, newUsersToday }
-    }
+    return { data };
   }
 }
 

@@ -3,8 +3,8 @@ import Route from '@ioc:Adonis/Core/Route';
 // import CategoryController from "~/app/http/controllers/v1/CategoryController";
 
 
-Router.group(() => {
-  Router.get("/dashboard", "DashboardController.admin");
-  //Router.apiResource("categories", CategoryController);
+Route.group(() => {
+  Route.get("/dashboard", "DashboardController.admin");
+  //Route.apiResource("categories", CategoryController);
 })
 .middleware(["auth", "roles:admin"]);

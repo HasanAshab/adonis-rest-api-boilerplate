@@ -1,38 +1,71 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application';
 import { getStatusText } from 'http-status-codes';
+import { forIn, reduce } from 'lodash';
 
 export default class AppProvider {
 	constructor(protected app: ApplicationContract) {}
 
 	private extendModelQueryBuilder() {
-	  const { ModelQueryBuilder } = this.app.container.use('Adonis/Lucid/Database');
+	  const Database = this.app.container.use('Adonis/Lucid/Database');
     const { BaseModel } = this.app.container.use('Adonis/Lucid/Orm');
 
-
-    ModelQueryBuilder.macro('whereEqual', function (fields: Record<string, any>) {
+    Database.ModelQueryBuilder.macro('whereEqual', function (fields: Record<string, any>) {
       for(const name in fields) {
 	      this.where(name, fields[name]);
 	    }
 	    return this;
     });
     
-    ModelQueryBuilder.macro('exists', async function () {
+    Database.ModelQueryBuilder.macro('exists', async function () {
 	    return !!await this.first();
     });
     
-    ModelQueryBuilder.macro('except', function (modelOrId: BaseModel | number) {
+    Database.ModelQueryBuilder.macro('except', function (modelOrId: BaseModel | number) {
 	    const id = modelOrId instanceof BaseModel
   	    ? modelOrId.id
   	    : modelOrId;
 	    return this.whereNot('id', id);
     });
     
-    ModelQueryBuilder.macro('when', function(condition: boolean, cb: QueryBuilderCallback) {
+    Database.ModelQueryBuilder.macro('when', function(condition: boolean, cb: QueryBuilderCallback) {
 	    if(condition) {
 	      cb(this);
 	    }
 	    return this;
     });
+	
+	  Database.ModelQueryBuilder.macro('getCount', async function (column = '*') {
+      const isString = typeof column === 'string';
+      const parse = (rawCount: string) => parseInt(BigInt(rawCount));
+      
+      if(isString) {
+        this.select(
+          Database.raw(`COUNT(${column}) as total`)
+        );
+      }
+      else {
+        forIn(column, (columnName, alias) => {
+          this.select(
+            Database.raw(`COUNT(${columnName}) as ${alias}`)
+          );
+        });
+	    }
+      
+      const result = await this.pojo().first();
+      
+      if(isString) {
+        return parse(result.total);
+      }
+
+      forIn(column, (columnName, alias) => {
+        result[alias] = parse(
+          result[alias.toLowerCase()]
+        );
+      });
+      
+      return result;
+    })
+    
 	}
 
 	private extendHttpResponse() {
