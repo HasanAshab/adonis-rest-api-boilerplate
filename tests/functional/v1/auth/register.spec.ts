@@ -1,6 +1,5 @@
 import { test } from '@japa/runner';
 import { omit, pick } from 'lodash';
-import Drive from '@ioc:Adonis/Core/Drive';
 import User from 'App/Models/User';
 import Event from 'Tests/Assertors/EventAssertor';
 
@@ -12,11 +11,6 @@ test.group('Auth/Register', (group) => {
 		Event.fake();
 	});
   
-  
-	group.each.setup(async () => {
-		Drive.restore();
-	});
-
 	test('should register a user', async ({ expect, client }) => {
 		const data = {
 			username: 'foobar123',
@@ -40,8 +34,6 @@ test.group('Auth/Register', (group) => {
 	});
 
 	test('should register a user with avatar', async ({ expect, client }) => {
-		const drive = Drive.fake();
-
 		const data = {
 			username: 'foobar123',
 			email: 'foo@gmail.com',

@@ -10,11 +10,18 @@ export function trace(...args: unknown[]) {
 	console.log(...args, '\n\t', '\x1b[90m', lastCaller, '\x1b[0m', '\n');
 };
 
-export function extractProperty<T extends Array>(array: T, ...props: (keyof T[number])[]) {
-  return array.map(item => {
-    return props.reduce((obj, prop) => {
-      obj[prop] = item[prop];
-      return obj;
-    }, {})
-  });
+export function extractFromObject<T extends object>(obj: T, ...props: (keyof T)[]) {
+  return props.reduce((extracted: Pick<T, keyof T>, prop) => {
+    extracted[prop] = obj[prop];
+    return extracted;
+  }, {})
+}
+
+export function extract<
+  T extends object | object[],
+  P = T extends object ? keyof T : keyof T[number]
+>(obj: T, ...props: P[]) {
+  return Array.isArray(obj)
+    ? obj.map(extractFromObject)
+    : extractFromObject(obj);
 }

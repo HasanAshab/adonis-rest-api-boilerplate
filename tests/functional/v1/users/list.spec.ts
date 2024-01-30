@@ -1,6 +1,6 @@
 import { test } from '@japa/runner';
 import User from 'App/Models/User';
-import { extractProperty } from 'App/helpers';
+import { extract } from 'App/helpers';
 
 /*
 Run this suits:
@@ -19,7 +19,7 @@ test.group("Users / List", group => {
 
     response.assertStatus(200);
     response.assertBodyContains({
-      data: extractProperty(users, 'id')
+      data: extract(users, 'id')
     });
   });
   
