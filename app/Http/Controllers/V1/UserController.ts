@@ -14,25 +14,9 @@ export default class UserController {
   public static readonly VERSION = 'v1';
   
   public async index({ request }: HttpContextContract) {
-    //return ListUserResource.collection(
-      //await User.where("role").equals("user").lean().paginateCursor(req)
-   // );
-   
     return ListUserResource.collection(
-      await User.withRole("user")
+      await User.withRole("user").paginate(2)
     )
-   
-   
-    const paginated = await User.withRole("user").paginate();
-    const serialized = paginated.toJSON();
-    
-    serialized.data = serialized.data.map(user => ({
-      id: user.id,
-      username: user.username,
-      avatar: user.avatar
-    }))
-    
-    return serialized;
   }
   
   public async profile({ auth }: HttpContextContract) {

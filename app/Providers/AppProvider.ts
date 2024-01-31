@@ -83,7 +83,7 @@ export default class AppProvider {
 		Response.macro('sendOriginal', Response.prototype.send);
 
 		Response.macro(
-			'send',
+			'sendd',
 			function (
 				body: null | string | Record<string, any> | any[] = {},
 				generateEtag = this.config.etag,

@@ -1,16 +1,14 @@
-import JsonResource from "~/core/http/resources/JsonResource";
-import { Request } from "~/core/express";
-import { UserDocument } from "~/app/models/User";
+import JsonResource from "./json_resource";
 
-export default class ListUserResource extends JsonResource<UserDocument> {
-  toObject(req: Request) {
+export default class ListUserResource extends JsonResource {
+  serialize() {
     return {
-      data: {
-        id: this.resource._id,
+      profile: {
+        id: this.resource.id,
         username: this.resource.username,
       },
       links: {
-        avatar: await this.resource.avatarUrl()      
+        avatar: this.resource.avatarUrl()      
       }
     }
   }
