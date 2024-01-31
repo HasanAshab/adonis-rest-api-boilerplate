@@ -6,8 +6,7 @@ export default class ContactFactory extends Factory<IContact, ContactDocument> {
 		return {
 			email: this.faker.internet.email(),
 			subject: this.faker.lorem.words(5),
-			message: this.faker.lorem.words(15),
-			status: 'opened' as const,
+			message: this.faker.lorem.words(15)
 		};
 	}
 

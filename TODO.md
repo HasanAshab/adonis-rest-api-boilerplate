@@ -1,3 +1,6 @@
+This:
+Api Resource
+AsyncJson
 
 t: feature/socialauth
 t: unit/socialauth

@@ -1,7 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import { DateTime } from 'luxon';
 import User from "App/Models/User";
-import Database from '@ioc:Adonis/Lucid/Database';
 
 
 export default class DashboardController {

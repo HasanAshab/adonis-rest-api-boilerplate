@@ -1,7 +1,6 @@
-import Controller from "~/app/http/controllers/Controller";
-import { RequestHandler } from "~/core/decorators";
-import { AuthenticRequest, Response } from "~/core/express";
-import Contact, { IContact } from "~/app/models/Contact";
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import User from "App/Models/User";
+import Contact from "App/Models/Contact";
 import Cache from "Cache";
 import ContactRequest from "~/app/http/requests/v1/contact/ContactRequest";
 import SuggestContactRequest from "~/app/http/requests/v1/contact/SuggestContactRequest";
@@ -11,8 +10,7 @@ import ListContactResource from "~/app/http/resources/v1/contact/ListContactReso
 import ShowContactResource from "~/app/http/resources/v1/contact/ShowContactResource";
 
 export default class ContactController extends Controller {
-  @RequestHandler
-  async index(req: AuthenticRequest) {
+  public async index() {
     return ListContactResource.collection(
       //await Contact.paginateCursor(req).lean()
       await Contact.find().lean().paginateCursor(req)

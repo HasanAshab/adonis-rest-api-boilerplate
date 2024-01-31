@@ -8,7 +8,6 @@ export type StateCustomizer<Attributes> = (state: Attributes) => Attributes;
 export type ExternalCallback<Model> = (model: Model) => Promise<void> | void;
 
 
-
 export default abstract class Factory<
 	Model extends BaseModel,
 	Attributes extends object = Record<string, any>
@@ -39,12 +38,16 @@ export default abstract class Factory<
 	 * Create factory instance
 	 */
 	constructor(
-		private Model: typeof Model,
+		protected Model: typeof Model,
 		protected options: Record<string, unknown> = {},
 	) {
 		this.Model = Model;
 		// this options will be available everywhere
 		this.options = options;
+	}
+	
+	static new(options = {}) {
+	  return new this(this.Model, options)
 	}
   
   /**

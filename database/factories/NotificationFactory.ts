@@ -1,34 +1,40 @@
-import Factory from '@ioc:Adonis/Mongoose/Factory';
-import User, { UserDocument } from 'App/Models/User';
-import type {
-	INotification,
-	NotificationDocument,
-} from 'App/Models/Notification';
+import Factory from 'App/Models/Traits/HasFactory/Factory';
+import User from 'App/Models/User';
+import createNotificationModel from '@verful/notifications/build/src/Models/DatabaseNotification'
+import { DateTime } from 'luxon';
 
-export default class NotificationFactory extends Factory<
-	INotification,
-	NotificationDocument
-> {
+
+export default class NotificationFactory extends Factory {
+  static Model = createNotificationModel('notifications');
+  
 	definition() {
 		return {
-			userId: new User()._id,
-			type: 'TestNotification',
+			notifiableId: 1,
 			data: { text: this.faker.lorem.words(5) },
-			readAt: new Date(),
+			readAt: DateTime.local(),
 		};
 	}
 
 	unread() {
-		return this.state((notification: any) => {
+		return this.state(notification => {
+			//delete notification.readAt;
 			notification.readAt = null;
 			return notification;
 		});
 	}
+	
+	betweenLastYear() {
+		return this.state(notification => {
+			notification.createdAt = DateTime.fromJSDate(this.faker.date.past());
+			return notification;
+		});
+	}
 
-	belongsTo(user: UserDocument) {
-		return this.state((notification: INotification) => {
-			notification.userId = user._id;
+	belongsTo(user: User) {
+		return this.state(notification => {
+			notification.notifiableId = user.id;
 			return notification;
 		});
 	}
 }
+

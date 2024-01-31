@@ -7,6 +7,7 @@ import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import UpdateProfileValidator from "App/Http/Validators/V1/user/UpdateProfileValidator";
 import ChangePasswordValidator from "App/Http/Validators/V1/user/ChangePasswordValidator";
 import ChangePhoneNumberValidator from "App/Http/Validators/V1/user/ChangePhoneNumberValidator";
+import ListUserResource from "App/Http/Resources/v1/user/ListUserResource";
 
 
 export default class UserController {
@@ -16,6 +17,12 @@ export default class UserController {
     //return ListUserResource.collection(
       //await User.where("role").equals("user").lean().paginateCursor(req)
    // );
+   
+    return ListUserResource.collection(
+      await User.withRole("user")
+    )
+   
+   
     const paginated = await User.withRole("user").paginate();
     const serialized = paginated.toJSON();
     

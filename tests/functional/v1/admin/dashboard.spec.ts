@@ -7,7 +7,6 @@ Run this suits:
 node ace test functional --files="v1/admin/dashboard.spec.ts"
 */
 test.group("Admin / Dashboard", group => {
-
   refreshDatabase(group);
 
   test("Users shouldn't get admin dashboard", async ({ client, expect }) => {

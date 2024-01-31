@@ -9,7 +9,7 @@ node ace test functional --files="v1/users/list.spec.ts"
 test.group("Users / List", group => {
   refreshDatabase(group);
 	
-	test("Admin should list all users", async ({ client }) => {
+	test("Should list users", async ({ client }) => {
     const [admin, users] = await Promise.all([
       User.factory().withRole("admin").create(),
       User.factory().count(2).create()
