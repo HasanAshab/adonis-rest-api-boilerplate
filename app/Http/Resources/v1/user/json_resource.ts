@@ -26,10 +26,9 @@ export default abstract class JsonResource {
   }
   
   protected when(condition: boolean, value: unknown | (() => unknown)) {
-    if(condition) {
-      return typeof value === "function" 
-        ? value()
-        : value;
-    }
+    if(!condition) return;
+    return typeof value === "function" 
+      ? value()
+      : value;
   }
 }

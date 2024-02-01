@@ -83,9 +83,9 @@ export default class AppProvider {
 		Response.macro('sendOriginal', Response.prototype.send);
 
 		Response.macro(
-			'sendd',
+			'send',
 			function (
-				body: null | string | Record<string, any> | any[] = {},
+				body: null | number | string | Record<string, any> | any[] = {},
 				generateEtag = this.config.etag,
 			) {
 				const acceptsJson = this.request.headers.accept === 'application/json';
@@ -95,11 +95,11 @@ export default class AppProvider {
 					} 
 					else if (types.isString(body)) {
 						body = { message: body };
-					} 
+					}
 					else if(body.toJSON) {
 				    body = body.toJSON()
 				  }
-					else if (types.isArray(body)) {
+					else if (types.isNumber(body) || types.isArray(body)) {
 						body = { data: body };
 					}
 

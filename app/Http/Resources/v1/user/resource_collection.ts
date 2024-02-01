@@ -17,10 +17,10 @@ export default abstract class ResourceCollection {
   
   public toJSON() {
     if(this.resources instanceof SimplePaginator) {
-      this.resources.rows = this.transformCollection(this.resources.rows);
+      this.resources.rows = this.serializeCollection(this.resources.rows);
       return this.resources.toJSON();
     }
-    this.collection = this.transformCollection(this.resources);
+    this.collection = this.serializeCollection(this.resources);
     return this.serialize();
   }
   
@@ -29,7 +29,7 @@ export default abstract class ResourceCollection {
   }
   
 
-  private transformCollection(collection: Array<Record<string, any>>) {
+  protected serializeCollection(collection: Array<Record<string, any>>) {
     return collection.map(resource => {
       return this.collects.make(resource).serialize();
     });

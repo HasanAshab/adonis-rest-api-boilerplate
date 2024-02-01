@@ -6,35 +6,33 @@ import ShowNotificationResource from "~/app/http/resources/v1/notification/ShowN
 
 export default class NotificationController {
 
-  public async index({ auth }: HttpContextContract) {
-    return await auth.user.related('notifications').paginateCursor(req)
-
-    return ListNotificationResource.collection(
-      await auth.user.notifications.paginateCursor(req)
-    );
+  public async index({ auth, request }: HttpContextContract) {
+    const notifications = await auth.user!.related('notifications').query().paginateUsingRequest(request);
+    return ListNotificationResource.collection(notifications);
   }
   
-  async show({}, notification: Notification) {
+  public async show({ params, auth }: HttpContextContract) {
+    const notification = await auth.user!.related('notification').query().where('id', params.id).first();
     return ShowNotificationResource.make(notification);
   }
-  
 
-  async markAsRead(req: AuthenticRequest, id: string) {
-    await req.user.unreadNotifications.where("_id").equals(id).markAsReadOrFail();
+  public async markAsRead({ params, auth }: HttpContextContract) {
+    await auth.user!.related('notifications').query().where('id', params.id).markAsReadOrFail();
     return 'Notification marked as read';
   }
   
 
-  async unreadCount(req: AuthenticRequest) {
-    return {
-      data: await req.user.unreadNotifications.count()
-    };
+  public async unreadCount({ auth }: HttpContextContract) {
+    return await auth.user!.related('notifications')
+      .query()
+      .whereNull('readAt')
+      .getCount();
   }
   
 
-  async delete(req: AuthenticRequest, res: Response, id: string) {
-    await req.user.notifications.where("_id").equals(id).deleteOneOrFail();
-    res.sendStatus(204);
+  public async delete({ response, params, auth }: HttpContextContract) {
+    await auth.user!.related('notifications').query().where('id', params.id).deleteOrFail();
+    response.noContent();
   }
 }
 

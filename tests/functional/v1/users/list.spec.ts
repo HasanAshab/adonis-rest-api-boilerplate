@@ -1,6 +1,7 @@
 import { test } from '@japa/runner';
 import User from 'App/Models/User';
 import { extract } from 'App/helpers';
+import ListUserResource from "App/Http/Resources/v1/user/ListUserResource";
 
 /*
 Run this suits:
@@ -15,12 +16,13 @@ test.group("Users / List", group => {
       User.factory().count(2).create()
     ]);
     
+    
     const response = await client.get("/api/v1/users").loginAs(admin);
 
     response.assertStatus(200);
-    response.assertBodyContains({
-      data: extract(users, 'id')
-    });
+    response.assertBodyContains(
+      ListUserResource.collection(users).toJSON()
+    );
   });
   
   

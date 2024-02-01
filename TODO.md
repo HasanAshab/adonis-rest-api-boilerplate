@@ -1,6 +1,4 @@
-This:
-Api Resource
-AsyncJson
+T: AsyncToJson
 
 t: feature/socialauth
 t: unit/socialauth

@@ -8,7 +8,8 @@ export default class UserFactory extends Factory<User> {
 			username: this.faker.person.firstName(),
 			email: this.faker.internet.email(),
 			password: 'password',
-			verified: true,
+			role: 'user',
+			verified: true
 		}
 	}
 

@@ -15,7 +15,7 @@ export default class UserController {
   
   public async index({ request }: HttpContextContract) {
     return ListUserResource.collection(
-      await User.withRole("user").paginate(2)
+      await User.withRole("user").paginate()
     )
   }
   
