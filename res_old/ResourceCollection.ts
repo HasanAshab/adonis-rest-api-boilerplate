@@ -17,15 +17,15 @@ export default abstract class ResourceCollection<DocType extends Document> {
   
   transform(req: Request) {
     if(this.resource instanceof CursorPaginator) {
-      const paginated = this.resource.toObject();
+      const paginated = this.resource.serialize--dir();
       paginated.data = this.transformCollections(req, paginated.data);
       return paginated;
     }
     this.collection = this.transformCollections(req, this.resource);
-    return this.toObject(req);
+    return this.serialize--dir(req);
   }
   
-  toObject(req: Request) {
+  serialize--dir(req: Request) {
     return { [this.collects.wrap]: this.collection }
   }
   

@@ -1,29 +1,33 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import User from "App/Models/User";
+import { bind } from '@adonisjs/route-model-binding'
 import Contact from "App/Models/Contact";
-import Cache from "Cache";
-import ContactRequest from "~/app/http/requests/v1/contact/ContactRequest";
-import SuggestContactRequest from "~/app/http/requests/v1/contact/SuggestContactRequest";
-import SearchContactRequest from "~/app/http/requests/v1/contact/SearchContactRequest";
-import UpdateContactStatusRequest from "~/app/http/requests/v1/contact/UpdateContactStatusRequest";
-import ListContactResource from "~/app/http/resources/v1/contact/ListContactResource";
-import ShowContactResource from "~/app/http/resources/v1/contact/ShowContactResource";
+//import Cache from "Cache";
+//import ContactRequest from "App/Http/requests/v1/contact/ContactRequest";
+//import SuggestContactRequest from "App/Http/requests/v1/contact/SuggestContactRequest";
+//import SearchContactRequest from "App/Http/requests/v1/contact/SearchContactRequest";
+//import UpdateContactStatusValidator from "App/Http/Validators/V1/contact/UpdateContactStatusValidator";
+import ListContactResource from "App/Http/Resources/v1/contact/ListContactResource";
+//import ShowContactResource from "App/Http/Resources/v1/contact/ShowContactResource";
 
-export default class ContactController extends Controller {
-  public async index() {
+export default class ContactController {
+  public async index({ request }: HttpContextContract) {
     return ListContactResource.collection(
-      //await Contact.paginateCursor(req).lean()
-      await Contact.find().lean().paginateCursor(req)
+      await Contact.query().pojo().paginateUsing(request)
     );
   }
   
-  @RequestHandler
-  async store(req: ContactRequest, res: Response) {
-    await Contact.create(req.body);
-    res.status(201).message("Thanks for contacting us!");
+  public async store({ request, response }: HttpContextContract) {
+    const data = await request.validate(CreateContactValidator);
+    await Contact.create(data);
+    response.created("Thanks for contacting us!");
   }
   
-  @RequestHandler
+  public async updateStatus({ request, params }: HttpContextContract) {
+    const data = await request.validate(UpdateContactStatusValidator);
+    await Contact.updateOrFail(params.id, data);
+    return `Contact form ${data.status}!`;
+  }
+
   async suggest(req: SuggestContactRequest, res: Response) {
     const { q, status, limit } = req.query;
     const cacheKey = `contacts.suggest:${q},${status},${limit}`;
@@ -44,7 +48,6 @@ export default class ContactController extends Controller {
     res.json(results);
   }
   
-  @RequestHandler
   async search(req: SearchContactRequest, res: Response) {
     const { q, status, limit, cursor } = req.query;
     const cacheKey = `contacts.search:${q},${status},${limit},${cursor}`;
@@ -58,21 +61,14 @@ export default class ContactController extends Controller {
     res.json(results);
   }
   
-  @RequestHandler
-  async show(rawContact: IContact) {
-    return ShowContactResource.make(rawContact);
+  @bind()
+  public show(_, contact: Contact) {
+    return ShowContactResource.make(contact);
   }
   
-  @RequestHandler
-  async delete(res: Response, id: string) {
-    await Contact.deleteByIdOrFail(id);
-    res.sendStatus(204);
-  }
-
-  @RequestHandler
-  async updateStatus(req: UpdateContactStatusRequest, id: string) {
-    await Contact.updateByIdOrFail(id, req.body);
-    return `Contact form ${req.body.status}!`;
+  public async delete({ response, params }: HttpContextContract) {
+    await Contact.deleteOrFail(params.id);
+    response.noContent();
   }
 }
 

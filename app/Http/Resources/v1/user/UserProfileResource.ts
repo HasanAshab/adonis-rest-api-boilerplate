@@ -1,9 +1,9 @@
-import JsonResource from "~/core/http/resources/JsonResource";
+import JsonResource from "@samer/api-resource/resources/json_resource";
 import { Request } from "~/core/express";
 import { UserDocument } from "~/app/models/User";
 
 export default class UserProfileResource extends JsonResource<UserDocument> {
-  toObject(req: Request) {
+  serialize() {
     return {
       data: { 
         id: this.resource._id,

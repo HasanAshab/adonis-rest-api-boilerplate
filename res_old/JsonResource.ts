@@ -20,11 +20,11 @@ export default abstract class JsonResource<DocType extends Document> {
   
   transform(req: Request, isRoot = true) {
     return isRoot 
-      ? { [this.constructor.wrap]: this.toObject(req) }
-      : this.toObject(req);
+      ? { [this.constructor.wrap]: this.serialize--dir(req) }
+      : this.serialize--dir(req);
   }
   
-  public abstract toObject(req: Request): object; 
+  public abstract serialize--dir(req: Request): object; 
   
   withResponse(req: Request, res: Response) {}
 

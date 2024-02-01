@@ -3,10 +3,10 @@ import { DateTime } from 'luxon'
 import { compose } from '@poppinss/utils/build/helpers'
 import { column } from '@ioc:Adonis/Lucid/Orm'
 import HasFactory from 'App/Models/Traits/HasFactory'
-import Searchable from 'App/Models/Traits/Searchable';
+//import Searchable from 'App/Models/Traits/Searchable';
 
 
-export default class Contact extends compose(BaseModel, HasFactory, Searchable) {
+export default class Contact extends compose(BaseModel, HasFactory) {//, Searchable) {
  @column({ isPrimary: true })
  public id: number
 
@@ -26,4 +26,4 @@ export default class Contact extends compose(BaseModel, HasFactory, Searchable) 
  public createdAt: DateTime
 }
 
-ContactSchema.index({ subject: 'text', message: 'text' });
+//ContactSchema.index({ subject: 'text', message: 'text' });

@@ -1,4 +1,4 @@
-import JsonResource from "./json_resource";
+import JsonResource from "@samer/api-resource/resources/json_resource";
 
 export default class ListUserResource extends JsonResource {
   serialize() {

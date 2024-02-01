@@ -13,7 +13,27 @@ export default class BaseModel extends Model {
 	  return query.first();
 	}
 	
-	public static async exists<
+	public static except(modelOrId: Model | number) {
+	  return this.query().except(modelOrId);
+	}
+	
+	public static update(uid: number, data: object) {
+	  return this.query().find(uid).update(data);
+	}
+	
+	public static updateOrFail(uid: number, data: object) {
+	  return this.query().find(uid).updateOrFail(data);
+	}
+	
+	public static delete(uid: number) {
+	  return this.query().find(uid).delete();
+	}
+	
+	public static deleteOrFail(uid: number) {
+	  return this.query().find(uid).deleteOrFail();
+	}
+	
+  public static async exists<
 	  T extends number | string | object
 	>(idOrFieldOrData: T, value: T extends string ? unknown : never) {
 	  if(types.isNumber(idOrFieldOrData)) {
@@ -33,16 +53,12 @@ export default class BaseModel extends Model {
 	  return !await this.exists(idOrFieldOrData, value);
 	}
 
-	public static except(modelOrId: Model | number) {
-	  return this.query().except(modelOrId);
-	}
-	
-	public async loadIfNotLoaded(relation: string) {
+  public async loadIfNotLoaded(relation: string) {
     if(this[relation] === undefined) {
-      return await this.load(relation);
+      await this.load(relation);
     }
   }
-  
+
   public async exists() {
     const uid = this[this.constructor.primaryKey];
     return !!await this.constructor.find(uid);

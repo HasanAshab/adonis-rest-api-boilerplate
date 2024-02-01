@@ -22,7 +22,7 @@ test.group("Contact / Delete", group => {
     const response = await client.delete("/api/v1/contact/inquiries/" + contact.id).loginAs(admin);
     
     response.assertStatus(204);
-    await expect(contact.exists()).resolves.toBeNull();
+    await expect(contact.exists()).resolves.toBe(false);
   });
 	
 	test("Users should not delete contact", async ({ client, expect }) => {
@@ -31,6 +31,6 @@ test.group("Contact / Delete", group => {
     const response = await client.delete("/api/v1/contact/inquiries/" + contact.id).loginAs(user);
     
     response.assertStatus(403);
-    await expect(contact.exists()).resolves.not.toBeNull();
+    await expect(contact.exists()).resolves.toBe(true);
   });
 });

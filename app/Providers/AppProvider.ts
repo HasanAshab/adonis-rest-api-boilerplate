@@ -1,6 +1,7 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application';
 import { getStatusText } from 'http-status-codes';
 import { forIn, reduce } from 'lodash';
+import { Exception } from '@poppinss/utils'
 
 export default class AppProvider {
 	constructor(protected app: ApplicationContract) {}
@@ -9,6 +10,24 @@ export default class AppProvider {
 	  const Database = this.app.container.use('Adonis/Lucid/Database');
     const { BaseModel } = this.app.container.use('Adonis/Lucid/Orm');
 
+    Database.ModelQueryBuilder.macro('find', function (uid: number) {
+      return this.where(this.model.primaryKey, uid);
+    });
+    
+    Database.ModelQueryBuilder.macro('updateOrFail', async function (data: object) {
+      const count = await this.update(data);
+      if(!count) {
+        throw new Exception('Row not found', 404, 'E_ROW_NOT_FOUND');
+      }
+    });
+    
+    Database.ModelQueryBuilder.macro('deleteOrFail', async function () {
+      const count = await this.delete();
+      if(!count) {
+        throw new Exception('Row not found', 404, 'E_ROW_NOT_FOUND');
+      }
+    });
+    
     Database.ModelQueryBuilder.macro('whereEqual', function (fields: Record<string, any>) {
       for(const name in fields) {
 	      this.where(name, fields[name]);
@@ -66,6 +85,11 @@ export default class AppProvider {
       return result;
     })
     
+    Database.ModelQueryBuilder.macro('paginateUsing', function (request: Request) {
+      const page = request.input('page', 1);
+      const limit = request.input('limit', 15);
+      return this.paginate(page, limit);
+    });
 	}
 
 	private extendHttpResponse() {

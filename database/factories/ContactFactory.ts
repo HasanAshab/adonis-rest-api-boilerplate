@@ -1,7 +1,7 @@
-import Factory from '@ioc:Adonis/Mongoose/Factory';
-import { IContact, ContactDocument } from 'App/Models/Contact';
+import Factory from 'App/Models/Traits/HasFactory/Factory';
+import Contact from 'App/Models/Contact';
 
-export default class ContactFactory extends Factory<IContact, ContactDocument> {
+export default class ContactFactory extends Factory<Contact> {
 	definition() {
 		return {
 			email: this.faker.internet.email(),
@@ -11,7 +11,7 @@ export default class ContactFactory extends Factory<IContact, ContactDocument> {
 	}
 
 	closed() {
-		return this.state((contact: IContact) => {
+		return this.state(contact => {
 			contact.status = 'closed';
 			return contact;
 		});

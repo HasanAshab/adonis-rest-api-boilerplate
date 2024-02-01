@@ -7,7 +7,7 @@ import ShowNotificationResource from "~/app/http/resources/v1/notification/ShowN
 export default class NotificationController {
 
   public async index({ auth, request }: HttpContextContract) {
-    const notifications = await auth.user!.related('notifications').query().paginateUsingRequest(request);
+    const notifications = await auth.user!.related('notifications').query().paginateUsing(request);
     return ListNotificationResource.collection(notifications);
   }
   
