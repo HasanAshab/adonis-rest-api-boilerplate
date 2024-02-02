@@ -57,6 +57,7 @@ export const runnerHooks: Pick<Required<Config>, 'setup' | 'teardown'> = {
   setup: [
     () => TestUtils.ace().loadCommands(),
     () => TestUtils.db().truncate(),
+    () => import('Tests/Helpers/expect/extend'),
     () => import('Tests/Helpers/extend_api_response'),
     () => import('Tests/Helpers/AppendGlobalHelpers'),
   ],

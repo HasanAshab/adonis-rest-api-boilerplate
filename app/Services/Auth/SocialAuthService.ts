@@ -1,6 +1,12 @@
 import type { AllyUserContract } from '@ioc:Adonis/Addons/Ally'
 import User from 'App/Models/User'
-import ValidationException from 'App/Exceptions/ValidationException'
+import EmailAndUsernameRequiredException from 'App/Exceptions/Validation/EmailAndUsernameRequiredException'
+import EmailRequiredException from 'App/Exceptions/Validation/EmailRequiredException'
+import UsernameRequiredException from 'App/Exceptions/Validation/UsernameRequiredException'
+import DuplicateEmailAndUsernameException from 'App/Exceptions/Validation/DuplicateEmailAndUsernameException'
+import DuplicateUsernameException from 'App/Exceptions/Validation/DuplicateUsernameException'
+import DuplicateEmailException from 'App/Exceptions/Validation/DuplicateEmailException'
+
 
 export default class SocialAuthService {
   public async upsertUser(provider: string, allyUser: AllyUserContract, username?: string) {
@@ -20,7 +26,7 @@ export default class SocialAuthService {
     // The user is not ready
     if (!user.email || !user.username) {
       if (!allyUser.email) {
-        throw ValidationException.field('email', 'required')
+        throw new EmailRequiredException()
       }
 
       const existingUser = await User.query()
@@ -35,14 +41,11 @@ export default class SocialAuthService {
       const usernameExists = username && existingUser?.username === username
 
       if (emailExists && usernameExists) {
-        throw new ValidationException({
-          email: 'unique',
-          username: 'unique',
-        })
+        throw new DuplicateEmailAndUsernameException()
       }
 
       if (emailExists) {
-        throw ValidationException.field('email', 'unique')
+        throw new DuplicateEmailException()
       }
 
       user.email = allyUser.email
@@ -57,13 +60,16 @@ export default class SocialAuthService {
       await user.save()
 
       if (usernameExists) {
-        throw ValidationException.field('username', username ? 'unique' : 'required')
+        if(username) {
+          throw new DuplicateUsernameException()
+        }
+        throw new UsernameRequiredException()
       }
 
       isRegisteredNow = true
     }
 
-    // Insuring if the user have all critical data
+    // Insuring if the user have all critically required data
     this.assertAccountIsReady(user)
 
     return { user, isRegisteredNow }
@@ -71,18 +77,15 @@ export default class SocialAuthService {
 
   private assertAccountIsReady(user: User) {
     if (!user.email && !user.username) {
-      throw new ValidationException({
-        email: 'required',
-        username: 'required',
-      })
+      throw new EmailAndUsernameRequiredException()
     }
 
     if (!user.email) {
-      throw ValidationException.field('email', 'required')
+      throw new EmailRequiredException()
     }
 
     if (!user.username) {
-      throw ValidationException.field('username', 'required')
+      throw new UsernameRequiredException();
     }
   }
 }

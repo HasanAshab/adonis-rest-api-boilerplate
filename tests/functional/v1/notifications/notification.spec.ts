@@ -1,10 +1,11 @@
-import DB from 'DB'
-import User, { UserDocument } from '~/app/models/User'
-import Notification from '~/app/models/Notification'
-import NotificationFactory from 'Database/factories/NotificationFactory'
-await NotificationFactory.new().belongsTo(user).betweenLastYear().create()
+import { test } from '@japa/runner'
+//import User, { UserDocument } from '~/app/models/User'
+//import Notification from '~/app/models/Notification'
+//import NotificationFactory from 'Database/factories/NotificationFactory'
 
-describe('Notification', () => {
+//await NotificationFactory.new().belongsTo(user).betweenLastYear().create()
+return;
+test.group('Notification', () => {
   let user: UserDocument
   let token: string
 

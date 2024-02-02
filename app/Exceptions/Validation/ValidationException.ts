@@ -8,7 +8,7 @@ type RuleName = keyof CustomMessages
 export default class ValidationException extends ApiException {
   public status = 422
 
-  constructor(public fieldsWithRule: Record<string, RuleName>) {
+  constructor(public fieldsWithRule: Record<string, RuleName> = {}) {
     super()
   }
 

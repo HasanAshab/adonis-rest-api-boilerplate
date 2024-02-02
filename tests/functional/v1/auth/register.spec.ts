@@ -3,7 +3,7 @@ import { omit, pick } from 'lodash'
 import User from 'App/Models/User'
 import Event from 'Tests/Assertors/EventAssertor'
 
-test.group('Auth/Register', (group) => {
+test.group('Auth / Register', (group) => {
   refreshDatabase(group)
 
   group.setup(async () => {
@@ -49,6 +49,7 @@ test.group('Auth/Register', (group) => {
     expect(response.status()).toBe(201)
     expect(response.body()).toHaveProperty('data.token')
     expect(user).not.toBeNull()
+    expect(user.avatar).not.toBeNull()
     expect(user.settings).not.toBeNull()
 
     Event.assertDispatchedContain('registered', {
@@ -56,9 +57,7 @@ test.group('Auth/Register', (group) => {
       method: 'internal',
       user: pick(user, 'id'),
     })
-
-    expect(await drive.exists('image.png')).toBe(true)
-  }).pin()
+  })
 
   test("shouldn't register with existing email", async ({ client, expect }) => {
     const user = await User.factory().create()
