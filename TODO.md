@@ -7,4 +7,4 @@ t: unit/socialauth
 T: Contribute adonisjs query builder
 F: listenners Test
 
-Fallback: solve type, Eslint, Commands
+Fallback: solve type, Commands

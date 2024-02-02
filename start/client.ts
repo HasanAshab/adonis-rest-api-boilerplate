@@ -6,3 +6,9 @@ Client.addPaths({
   'auth.social.success': '/login/social/:provider/success/:token',
   'auth.social.finalStep': '/login/social/:provider/final-step/:externalId}/:token?fields=:fields',
 })
+
+//TODO
+import JsonResource from '../res_dev/json_resource' 
+globalThis.JsonResource = JsonResource
+globalThis.log = console.log
+
