@@ -16,7 +16,6 @@ declare module '@ioc:Verful/Notification' {
   |
   */
   interface NotificationChannelsList {
-
     /*
     |--------------------------------------------------------------------------
     | Database Channel

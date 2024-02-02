@@ -1,6 +1,6 @@
-import Logger from '@ioc:Adonis/Core/Logger';
-import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler';
-import { range } from 'lodash';
+import Logger from '@ioc:Adonis/Core/Logger'
+import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
+import { range } from 'lodash'
 
 /*
 |--------------------------------------------------------------------------
@@ -11,13 +11,13 @@ import { range } from 'lodash';
 | the following class.
 */
 export default class ExceptionHandler extends HttpExceptionHandler {
-	ignoreStatuses = range(1, 499);
+  ignoreStatuses = range(1, 499)
 
-	constructor() {
-		super(Logger);
-	}
-	
-	/*
+  constructor() {
+    super(Logger)
+  }
+
+  /*
 	handle(error: any, ctx) {
 	  if(error.code === 'E_UNAUTHORIZED_ACCESS') {
 	    ctx.response.send({

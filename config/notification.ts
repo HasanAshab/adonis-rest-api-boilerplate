@@ -38,9 +38,9 @@ const notificationsConfig: NotificationConfig = {
     |
     */
     mail: {
-      driver: 'mail'
+      driver: 'mail',
     },
-  }
+  },
 }
 
 export default notificationsConfig

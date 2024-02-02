@@ -5,7 +5,7 @@
  * file.
  */
 
-import Bouncer from '@ioc:Adonis/Addons/Bouncer';
+import Bouncer from '@ioc:Adonis/Addons/Bouncer'
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ import Bouncer from '@ioc:Adonis/Addons/Bouncer';
 | NOTE: Always export the "actions" const from this file
 |****************************************************************
 */
-export const { actions } = Bouncer;
+export const { actions } = Bouncer
 
 /*
 |--------------------------------------------------------------------------
@@ -56,4 +56,4 @@ export const { actions } = Bouncer;
 */
 export const { policies } = Bouncer.registerPolicies({
   UserPolicy: () => import('App/Policies/UserPolicy'),
-});
+})

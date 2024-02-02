@@ -1,5 +1,5 @@
 //import JsonResource from "@samer/api-resource/resources/json_resource";
-import JsonResource from "../user/json_resource";
+import JsonResource from '../user/json_resource'
 
 export default abstract class ListContactResource extends JsonResource<ContactDocument> {
   serialize() {
@@ -13,4 +13,3 @@ export default abstract class ListContactResource extends JsonResource<ContactDo
     }
   }
 }
- 

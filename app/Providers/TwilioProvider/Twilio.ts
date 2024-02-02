@@ -1,70 +1,65 @@
-import { Twilio as TwilioClient } from 'twilio';
-import { TwilioFakedData, TwilioConfig } from '@ioc:Adonis/Addons/Twilio';
-import expect from 'expect';
-
+import { Twilio as TwilioClient } from 'twilio'
+import { TwilioFakedData, TwilioConfig } from '@ioc:Adonis/Addons/Twilio'
+import expect from 'expect'
 
 export default class Twilio {
-  private client: TwilioClient;
-  private isFaked = false;
+  private client: TwilioClient
+  private isFaked = false
   private faked: TwilioFakedData = {
     messages: [],
-    calls: []
-  };
+    calls: [],
+  }
 
   constructor(private config: TwilioConfig) {
-    this.config = config;
-    this.client = new TwilioClient(
-      config.sid, 
-      config.authToken
-    );
+    this.config = config
+    this.client = new TwilioClient(config.sid, config.authToken)
   }
-  
+
   public fake() {
-    this.isFaked = true;
-    this.restore();
+    this.isFaked = true
+    this.restore()
   }
-  
+
   public restore() {
     this.faked = {
       messages: [],
-      calls: []
+      calls: [],
     }
   }
-  
-	public async sendMessage(to: string, body: string) {
-		if(this.isFaked) {
-		  return this.faked.messages.push(to);
-		}
-		
-		await this.client.messages.create({
-			from: this.config.from,
-			body,
-			to
-		});
-	}
 
-	public async makeCall(to: string, twiml: string) {
-		if(this.isFaked) {
-		  return this.faked.calls.push(to);
-		}
-		
-		await this.client.calls.create({
-			from: this.config.from,
-			to,
-			twiml,
-		});
-	}
+  public async sendMessage(to: string, body: string) {
+    if (this.isFaked) {
+      return this.faked.messages.push(to)
+    }
 
-  
-  public assertMessaged(phoneNumber: string) {
-    assertWithContext(() => {
-      expect(this.faked.messages.includes(phoneNumber)).toBe(true);
+    await this.client.messages.create({
+      from: this.config.from,
+      body,
+      to,
     })
   }
-  
+
+  public async makeCall(to: string, twiml: string) {
+    if (this.isFaked) {
+      return this.faked.calls.push(to)
+    }
+
+    await this.client.calls.create({
+      from: this.config.from,
+      to,
+      twiml,
+    })
+  }
+
+  public assertMessaged(phoneNumber: string) {
+    assertWithContext(() => {
+      expect(this.faked.messages.includes(phoneNumber)).toBe(true)
+    })
+  }
+
   public assertCalled(phoneNumber: string) {
     assertWithContext(() => {
-      expect(this.faked.calls.includes(phoneNumber)).toBe(true);
+      expect(this.faked.calls.includes(phoneNumber)).toBe(true)
     })
   }
 }

@@ -5,10 +5,10 @@
  * file.
  */
 
-import { limiterConfig } from '@adonisjs/limiter/build/config';
+import { limiterConfig } from '@adonisjs/limiter/build/config'
 
 export default limiterConfig({
-	/*
+  /*
   |--------------------------------------------------------------------------
   | Default store
   |--------------------------------------------------------------------------
@@ -16,9 +16,9 @@ export default limiterConfig({
   | The default store for persisting rate limiter data
   |
   */
-	default: 'redis',
+  default: 'redis',
 
-	/*
+  /*
   |--------------------------------------------------------------------------
   | Stores
   |--------------------------------------------------------------------------
@@ -27,8 +27,8 @@ export default limiterConfig({
   | can switch the stores at runtime using the `Limiter.use` method.
   |
   */
-	stores: {
-		/*
+  stores: {
+    /*
     |--------------------------------------------------------------------------
     | Redis
     |--------------------------------------------------------------------------
@@ -40,10 +40,10 @@ export default limiterConfig({
     | npm i @adonisjs/redis
     |
     */
-		redis: {
-			client: 'redis',
+    redis: {
+      client: 'redis',
 
-			/*
+      /*
       |--------------------------------------------------------------------------
       | Redis connection
       |--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ export default limiterConfig({
       | this file, you just have to reference the connection name.
       |
       */
-			connectionName: 'local',
-		},
-	},
-});
+      connectionName: 'local',
+    },
+  },
+})

@@ -1,6 +1,6 @@
-import type { Request } from "~/core/express";
-import JsonResource from "@samer/api-resource/resources/json_resource";
-import { NotificationDocument } from "~/app/models/Notification";
+import type { Request } from '~/core/express'
+import JsonResource from '@samer/api-resource/resources/json_resource'
+import { NotificationDocument } from '~/app/models/Notification'
 
 export default abstract class ShowNotificationResource extends JsonResource<NotificationDocument> {
   serialize() {
@@ -10,8 +10,7 @@ export default abstract class ShowNotificationResource extends JsonResource<Noti
       data: this.resource.data,
       unread: this.resource.readAt === null,
       readAt: this.resource.readAt,
-      createdAt: toHumanReadableFormat(this.resource.createdAt)
+      createdAt: toHumanReadableFormat(this.resource.createdAt),
     }
   }
 }
- 

@@ -5,17 +5,17 @@
  * file.
  */
 declare module '@ioc:Adonis/Core/Event' {
-  import type User from 'App/Models/User';
+  import type User from 'App/Models/User'
 
-	interface EventsList {
-		registered: {
-			user: User;
-			version: string;
-			method: 'internal' | 'social';
-		};
-	}
-	
-	interface Listener<Event extends keyof EventsList> {
-	  dispatch(event: EventsList[Event]): void | Promise<void>;
-	}
+  interface EventsList {
+    registered: {
+      user: User
+      version: string
+      method: 'internal' | 'social'
+    }
+  }
+
+  interface Listener<Event extends keyof EventsList> {
+    dispatch(event: EventsList[Event]): void | Promise<void>
+  }
 }

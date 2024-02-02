@@ -5,7 +5,7 @@
  * file.
  */
 
-import type { AuthConfigExtended } from '@ioc:Adonis/Addons/Auth';
+import type { AuthConfigExtended } from '@ioc:Adonis/Addons/Auth'
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +17,9 @@ import type { AuthConfigExtended } from '@ioc:Adonis/Addons/Auth';
 |
 */
 const authConfig: AuthConfigExtended = {
-	guard: 'api',
-	guards: {
-		/*
+  guard: 'api',
+  guards: {
+    /*
     |--------------------------------------------------------------------------
     | OAT Guard
     |--------------------------------------------------------------------------
@@ -32,10 +32,10 @@ const authConfig: AuthConfigExtended = {
     | on cookies/sessions.
     |
     */
-		api: {
-			driver: 'oat',
+    api: {
+      driver: 'oat',
 
-			/*
+      /*
       |--------------------------------------------------------------------------
       | Tokens provider
       |--------------------------------------------------------------------------
@@ -48,15 +48,15 @@ const authConfig: AuthConfigExtended = {
       | and the token. You are free to use any column name here.
       |
       */
-			tokenProvider: {
-				type: 'api',
-				driver: 'database',
-				table: 'api_tokens',
-				foreignKey: 'user_id',
-        expiresIn: '30 days'
-			},
-			provider: {
-				/*
+      tokenProvider: {
+        type: 'api',
+        driver: 'database',
+        table: 'api_tokens',
+        foreignKey: 'user_id',
+        expiresIn: '30 days',
+      },
+      provider: {
+        /*
         |--------------------------------------------------------------------------
         | Driver
         |--------------------------------------------------------------------------
@@ -64,9 +64,9 @@ const authConfig: AuthConfigExtended = {
         | Name of the driver
         |
         */
-				driver: 'lucid',
+        driver: 'lucid',
 
-				/*
+        /*
         |--------------------------------------------------------------------------
         | Identifier key
         |--------------------------------------------------------------------------
@@ -75,9 +75,9 @@ const authConfig: AuthConfigExtended = {
         | the primary key is the right choice.
         |
         */
-				identifierKey: 'id',
+        identifierKey: 'id',
 
-				/*
+        /*
         |--------------------------------------------------------------------------
         | Uids
         |--------------------------------------------------------------------------
@@ -87,9 +87,9 @@ const authConfig: AuthConfigExtended = {
         | of the mentioned columns to find their user record.
         |
         */
-				uids: ['email'],
+        uids: ['email'],
 
-				/*
+        /*
         |--------------------------------------------------------------------------
         | Model
         |--------------------------------------------------------------------------
@@ -100,29 +100,29 @@ const authConfig: AuthConfigExtended = {
         | that time.
         |
         */
-				model: () => import('App/Models/User'),
-			},
-		},
-	},
+        model: () => import('App/Models/User'),
+      },
+    },
+  },
 
-	/**
-	 * Failed Login Attempt Throttler config.
-	 * that will be used in BasicAuthService
-	 */
-	loginAttemptThrottler: {
-		enabled: true,
-		key: 'login__{{ email }}_{{ ip }}',
-		maxFailedAttempts: 5,
-		duration: '15 minutes',
-		blockDuration: '1 hour',
-	},
-	
-	/**
-	 * 
- 	 */
- 	 twoFactor: {
- 	   methods: ['sms', 'call', 'app']
- 	 }
-};
+  /**
+   * Failed Login Attempt Throttler config.
+   * that will be used in BasicAuthService
+   */
+  loginAttemptThrottler: {
+    enabled: true,
+    key: 'login__{{ email }}_{{ ip }}',
+    maxFailedAttempts: 5,
+    duration: '15 minutes',
+    blockDuration: '1 hour',
+  },
 
-export default authConfig;
+  /**
+   *
+   */
+  twoFactor: {
+    methods: ['sms', 'call', 'app'],
+  },
+}
+
+export default authConfig

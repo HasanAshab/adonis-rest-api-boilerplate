@@ -1,1 +1,1 @@
-export default {} as any;
+export default {} as any

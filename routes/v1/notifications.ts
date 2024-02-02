@@ -1,7 +1,7 @@
 // import Router from "~/core/http/routing";
 // import NotificationController from "~/app/http/controllers/v1/NotificationController";
 //
-//Endpoints for notification
+// Endpoints for notification
 //
 // await Router.group({
 //   controller: NotificationController,

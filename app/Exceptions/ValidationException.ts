@@ -1,37 +1,38 @@
-import ApiException from 'App/Exceptions/ApiException';
-import type { CustomMessages } from '@ioc:Adonis/Core/Validator';
-import { reduce } from 'lodash';
-import Config from '@ioc:Adonis/Core/Config';
+import ApiException from 'App/Exceptions/ApiException'
+import type { CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { reduce } from 'lodash'
+import Config from '@ioc:Adonis/Core/Config'
 
-
-type RuleName = keyof CustomMessages;
+type RuleName = keyof CustomMessages
 
 export default class ValidationException extends ApiException {
-  public status = 422;
+  public status = 422
 
   constructor(public fieldsWithRule: Record<string, RuleName>) {
-    super();
+    super()
   }
-  
+
   static field(name: string, rule: RuleName) {
     return new this({
-      [name]: rule
-    });
+      [name]: rule,
+    })
   }
-  
 
   public get payload() {
     return {
-      errors: this.makeValidationErrors()
+      errors: this.makeValidationErrors(),
     }
   }
 
-  
   private makeValidationErrors() {
-    return reduce(this.fieldsWithRule, (result, rule, field) => {
-      const message = Config.get('validator.customMessages.' + rule);
-      result.push({ field, rule, message });
-      return result; 
-    }, []); 
+    return reduce(
+      this.fieldsWithRule,
+      (result, rule, field) => {
+        const message = Config.get('validator.customMessages.' + rule)
+        result.push({ field, rule, message })
+        return result
+      },
+      []
+    )
   }
 }

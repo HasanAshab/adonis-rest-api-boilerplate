@@ -1,11 +1,9 @@
-import { PasswordValidationStrategy } from '@ioc:Adonis/Core/Validator/Rules/Password';
+import { PasswordValidationStrategy } from '@ioc:Adonis/Core/Validator/Rules/Password'
 
-export default class WeakPasswordStrategy
-	implements PasswordValidationStrategy
-{
-	message = 'must be at least 6 characters long';
+export default class WeakPasswordStrategy implements PasswordValidationStrategy {
+  message = 'must be at least 6 characters long'
 
-	validate(value: unknown) {
-		return value.length >= 6;
-	}
+  validate(value: unknown) {
+    return value.length >= 6
+  }
 }

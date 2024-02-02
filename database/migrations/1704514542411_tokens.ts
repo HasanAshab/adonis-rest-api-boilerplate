@@ -3,7 +3,7 @@ import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 export default class extends BaseSchema {
   protected tableName = 'tokens'
 
-  public async up () {
+  public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.string('key').notNullable().index()
@@ -12,10 +12,10 @@ export default class extends BaseSchema {
       table.jsonb('data').nullable()
       table.string('secret').notNullable()
       table.timestamp('expires_at', { useTz: true })
-    });
+    })
   }
 
-  public async down () {
+  public async down() {
     this.schema.dropTable(this.tableName)
   }
 }

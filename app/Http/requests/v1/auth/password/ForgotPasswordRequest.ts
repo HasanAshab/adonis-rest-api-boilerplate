@@ -1,16 +1,16 @@
-import { Request } from "~/core/express";
-import Validator from "Validator";
+import { Request } from '~/core/express'
+import Validator from 'Validator'
 
 interface ForgotPasswordRequest {
-  body: { email: string };
+  body: { email: string }
 }
 
 class ForgotPasswordRequest extends Request {
   static rules() {
     return {
-      email: Validator.string().email().required()
+      email: Validator.string().email().required(),
     }
   }
 }
 
-export default  ForgotPasswordRequest;
+export default ForgotPasswordRequest

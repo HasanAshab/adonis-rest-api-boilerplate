@@ -1,6 +1,6 @@
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import { Exception } from '@adonisjs/core/build/standalone';
-import recaptcha2 from '@ioc:Adonis/Addons/Recaptcha2';
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { Exception } from '@adonisjs/core/build/standalone'
+import recaptcha2 from '@ioc:Adonis/Addons/Recaptcha2'
 
 /**
  * ReCAPTCHA middleware is meant to check recaptcha response
@@ -10,20 +10,17 @@ import recaptcha2 from '@ioc:Adonis/Addons/Recaptcha2';
  * of named middleware
  */
 export default class VerifyRecaptcha {
-	public async handle(
-		{ request }: HttpContextContract,
-		next: () => Promise<void>,
-	): Promise<void> {
-		return await next();
-		try {
-			await recaptcha2.validate(request.input('recaptchaResponse'));
-		} catch (errors) {
-			throw new Exception(
-				recaptcha2.translateErrors(errors || 'invalid-input-response'),
-				400,
-				'E_CAPTCHA',
-			);
-		}
-		await next();
-	}
+  public async handle({ request }: HttpContextContract, next: () => Promise<void>): Promise<void> {
+    return await next()
+    try {
+      await recaptcha2.validate(request.input('recaptchaResponse'))
+    } catch (errors) {
+      throw new Exception(
+        recaptcha2.translateErrors(errors || 'invalid-input-response'),
+        400,
+        'E_CAPTCHA'
+      )
+    }
+    await next()
+  }
 }

@@ -1,4 +1,4 @@
-import JsonResource from "@samer/api-resource/resources/json_resource";
+import JsonResource from '@samer/api-resource/resources/json_resource'
 
 export default class ListUserResource extends JsonResource {
   serialize() {
@@ -8,8 +8,8 @@ export default class ListUserResource extends JsonResource {
         username: this.resource.username,
       },
       links: {
-        avatar: this.resource.avatarUrl()      
-      }
+        avatar: this.resource.avatarUrl(),
+      },
     }
   }
 }

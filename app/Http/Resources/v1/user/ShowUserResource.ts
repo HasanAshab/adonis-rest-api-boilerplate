@@ -1,6 +1,6 @@
-import JsonResource from "@samer/api-resource/resources/json_resource";
-import { Request } from "~/core/express";
-import { UserDocument } from "~/app/models/User";
+import JsonResource from '@samer/api-resource/resources/json_resource'
+import { Request } from '~/core/express'
+import { UserDocument } from '~/app/models/User'
 
 export default class ShowUserResource extends JsonResource<UserDocument> {
   serialize() {
@@ -9,11 +9,11 @@ export default class ShowUserResource extends JsonResource<UserDocument> {
         id: this.resource._id,
         name: this.resource.name,
         username: this.resource.username,
-        role: this.resource.role
+        role: this.resource.role,
       },
       links: {
-        avatar: await this.resource.avatarUrl()      
-      }
+        avatar: await this.resource.avatarUrl(),
+      },
     }
   }
 }

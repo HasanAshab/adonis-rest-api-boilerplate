@@ -1,11 +1,11 @@
-import { Request } from "~/core/express";
-import Validator from "Validator";
+import { Request } from '~/core/express'
+import Validator from 'Validator'
 
 interface LoginRequest {
-  body: { 
-    email: string;
-    password: string;
-    otp?: string;
+  body: {
+    email: string
+    password: string
+    otp?: string
   }
 }
 
@@ -14,9 +14,9 @@ class LoginRequest extends Request {
     return {
       email: Validator.string().email().required(),
       password: Validator.string().required(),
-      otp: Validator.string()
+      otp: Validator.string(),
     }
   }
 }
 
-export default LoginRequest;
+export default LoginRequest

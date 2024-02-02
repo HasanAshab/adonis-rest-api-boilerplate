@@ -1,12 +1,9 @@
-import Validator from 'App/Http/Validators/Validator';
-import { schema, rules } from '@ioc:Adonis/Core/Validator';
+import Validator from 'App/Http/Validators/Validator'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 export default class ResetPasswordValidator extends Validator {
-	public schema = schema.create({
-		token: schema.string(),
-		password: schema.string([
-		  rules.password(),
-		  rules.maxLength(128)
-		]),
-	});
+  public schema = schema.create({
+    token: schema.string(),
+    password: schema.string([rules.password(), rules.maxLength(128)]),
+  })
 }

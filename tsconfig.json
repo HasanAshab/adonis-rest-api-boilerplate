@@ -1,50 +1,34 @@
 {
-	"extends": "adonis-preset-ts/tsconfig.json",
-	"include": [
-		"**/*"
-	],
-	"exclude": [
-		"node_modules",
-		"build",
-		"tests"
-	],
-	"compilerOptions": {
-		"outDir": "build",
-		"rootDir": "./",
-		"sourceMap": true,
-		"paths": {
-			"App/*": [
-				"./app/*"
-			],
-			"Config/*": [
-				"./config/*"
-			],
-			"Contracts/*": [
-				"./contracts/*"
-			],
-			"Database/*": [
-				"./database/*"
-			],
-			"Tests/*": [
-				"./tests/*"
-			]
-		},
-		"types": [
-			"@adonisjs/core",
-			"@adonisjs/repl",
-			"@japa/preset-adonis/build/adonis-typings",
-			"@adonisjs/bouncer",
-			"@adonisjs/ally",
-			"@adonisjs/auth",
-			"@adonisjs/lucid",
-			"@adonisjs/redis",
-			"adonis-recaptcha2",
-			"@adonisjs/limiter",
-			"@adonisjs/attachment-lite",
-			"@adonisjs/route-model-binding/build/adonis-typings",
-			"@adonisjs/mail",
-			"@verful/notifications",
-			"@adonisjs/view"
-		]
-	}
+  "extends": "adonis-preset-ts/tsconfig.json",
+  "include": ["**/*"],
+  "exclude": ["node_modules", "build", "tests"],
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": "./",
+    "sourceMap": true,
+    "paths": {
+      "App/*": ["./app/*"],
+      "Config/*": ["./config/*"],
+      "Contracts/*": ["./contracts/*"],
+      "Database/*": ["./database/*"],
+      "Tests/*": ["./tests/*"],
+    },
+    "types": [
+      "@adonisjs/core",
+      "@adonisjs/repl",
+      "@japa/preset-adonis/build/adonis-typings",
+      "@adonisjs/bouncer",
+      "@adonisjs/ally",
+      "@adonisjs/auth",
+      "@adonisjs/lucid",
+      "@adonisjs/redis",
+      "adonis-recaptcha2",
+      "@adonisjs/limiter",
+      "@adonisjs/attachment-lite",
+      "@adonisjs/route-model-binding/build/adonis-typings",
+      "@adonisjs/mail",
+      "@verful/notifications",
+      "@adonisjs/view",
+    ],
+  },
 }

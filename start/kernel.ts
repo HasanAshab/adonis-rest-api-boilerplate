@@ -9,7 +9,7 @@
 |
 */
 
-import Server from '@ioc:Adonis/Core/Server';
+import Server from '@ioc:Adonis/Core/Server'
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +22,8 @@ import Server from '@ioc:Adonis/Core/Server';
 */
 Server.middleware.register([
   () => import('@ioc:Adonis/Core/BodyParser'),
-  () => import('@ioc:Adonis/Addons/RmbMiddleware')
-]);
+  () => import('@ioc:Adonis/Addons/RmbMiddleware'),
+])
 
 /*
 |--------------------------------------------------------------------------
@@ -42,14 +42,13 @@ Server.middleware.register([
 |
 */
 Server.middleware.registerNamed({
-	throttle: () => import('App/Http/Middleware/LimitRequestRate'),
-	auth: () => import('App/Http/Middleware/Auth'),
-	verified: () => import('App/Http/Middleware/EnsureEmailIsVerified'),
-	signed: () => import('App/Http/Middleware/ValidateSignature'),
-	roles: () => import('App/Http/Middleware/CheckRole'),
-	recaptcha: () => import('App/Http/Middleware/VerifyRecaptcha'),
-	'response.cache': () => import('App/Http/Middleware/CacheResponse'),
-});
+  'throttle': () => import('App/Http/Middleware/LimitRequestRate'),
+  'auth': () => import('App/Http/Middleware/Auth'),
+  'verified': () => import('App/Http/Middleware/EnsureEmailIsVerified'),
+  'signed': () => import('App/Http/Middleware/ValidateSignature'),
+  'roles': () => import('App/Http/Middleware/CheckRole'),
+  'recaptcha': () => import('App/Http/Middleware/VerifyRecaptcha'),
+  'response.cache': () => import('App/Http/Middleware/CacheResponse'),
+})
 
-
-globalThis.log = console.log;
+globalThis.log = console.log

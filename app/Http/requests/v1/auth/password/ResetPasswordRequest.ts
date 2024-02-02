@@ -1,11 +1,11 @@
-import { Request } from "~/core/express";
-import Validator from "Validator";
+import { Request } from '~/core/express'
+import Validator from 'Validator'
 
 interface ResetPasswordRequest {
-  body: { 
-    id: string;
-    token: string;
-    password: string;
+  body: {
+    id: string
+    token: string
+    password: string
   }
 }
 
@@ -14,9 +14,9 @@ class ResetPasswordRequest extends Request {
     return {
       id: Validator.string().required(),
       token: Validator.string().required(),
-      password: Validator.string().password().required()
+      password: Validator.string().password().required(),
     }
   }
 }
 
-export default ResetPasswordRequest;
+export default ResetPasswordRequest

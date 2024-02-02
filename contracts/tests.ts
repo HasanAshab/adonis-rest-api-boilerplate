@@ -5,14 +5,14 @@
  * file.
  */
 
-import '@japa/runner';
+import '@japa/runner'
 
 declare module '@japa/runner' {
-	interface TestContext {
-		// Extend context
-	}
+  interface TestContext {
+    // Extend context
+  }
 
-	interface Test<TestData> {
-		// Extend test
-	}
+  interface Test<TestData> {
+    // Extend test
+  }
 }

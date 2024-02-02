@@ -1,5 +1,5 @@
-import { listDirectoryFiles } from '@adonisjs/core/build/standalone';
-import Application from '@ioc:Adonis/Core/Application';
+import { listDirectoryFiles } from '@adonisjs/core/build/standalone'
+import Application from '@ioc:Adonis/Core/Application'
 
 /*
 |--------------------------------------------------------------------------
@@ -16,10 +16,7 @@ import Application from '@ioc:Adonis/Core/Application';
 | 2. We must ignore this file to avoid getting into an infinite loop
 |
 */
-export default [
-  './app/Commands/Search',
-  './app/Commands/ClearUploads'
-]
+export default ['./app/Commands/Search', './app/Commands/ClearUploads']
 
 /*
 export default listDirectoryFiles(__dirname, Application.appRoot, [
