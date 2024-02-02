@@ -23,10 +23,8 @@ export default class UserController {
     return UserProfileResource.make(auth.user!);
   }
   
-  public async updateProfile({ request, auth }: HttpContextContract) {
+  public async updateProfile({ request, auth: { user } }: HttpContextContract) {
     const { avatar, ...data } = await request.validate(UpdateProfileValidator);
-    const user = auth.user!;
-
     user.merge(data);
     
     if(data.email) {
