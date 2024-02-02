@@ -7,14 +7,17 @@
 		"build": "node ace build --production",
 		"start": "node server.js",
 		"test": "node ace test",
-		"lint": "eslint . --ext=.ts"
+		"lint": "eslint . --ext=.ts --fix"
 	},
 	"eslintConfig": {
 		"extends": "@adonisjs/eslint-config/app"
 	},
+	"prettier": "@adonisjs/prettier-config"
+
 	"devDependencies": {
 		"@adonisjs/assembler": "^5.9.6",
 		"@adonisjs/eslint-config": "^1.2.1",
+		"@adonisjs/prettier-config": "^1.2.1",
 		"@japa/expect": "^2.0.2",
 		"@japa/preset-adonis": "^1.2.0",
 		"@japa/runner": "^2.5.1",
