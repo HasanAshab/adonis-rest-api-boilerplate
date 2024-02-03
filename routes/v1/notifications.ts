@@ -11,6 +11,7 @@
 //   Router.get("/", "index");
 //   Router.get("/:rawNotification", "show");
 //   Router.get("/unread-count", "unreadCount");
-//   Router.post("/:id", "markAsRead").name("markAsRead");
+//   Router.patch("/read/all", "markAsRead").name("markAsRead");
+//   Router.patch("/:id/read", "markAsRead").name("markAsRead");
 //   Router.delete("/:id", "delete").name("delete");
 // });

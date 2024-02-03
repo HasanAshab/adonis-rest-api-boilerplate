@@ -20,7 +20,7 @@ export default class NotificationController {
   }
 
   public async markAsRead({ params, auth }: HttpContextContract) {
-    await auth.user!.related('notifications').query().where('id', params.id).markAsReadOrFail()
+    await auth.user!.related('notifications').query().find(params.id).markAsReadOrFail()
     return 'Notification marked as read'
   }
 
@@ -29,7 +29,7 @@ export default class NotificationController {
   }
 
   public async delete({ response, params, auth }: HttpContextContract) {
-    await auth.user!.related('notifications').query().where('id', params.id).deleteOrFail()
+    await auth.user!.related('notifications').query().find(params.id).deleteOrFail()
     response.noContent()
   }
 }

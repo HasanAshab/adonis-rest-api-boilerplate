@@ -19,7 +19,9 @@ test.group('Users / List', (group) => {
     const response = await client.get('/api/v1/users').loginAs(admin)
 
     response.assertStatus(200)
-    response.assertBodyContains(ListUserResource.collection(users).toJSON())
+    response.assertBodyContains(
+      ListUserResource.collection(users).toJSON()
+    )
   })
 
   test("User shouldn't get users list", async ({ client }) => {

@@ -2,7 +2,6 @@ import { test } from '@japa/runner';
 import type { AllyUserContract } from '@ioc:Adonis/Addons/Ally'
 import User from 'App/Models/User';
 import SocialAuthService from 'App/Services/Auth/SocialAuthService';
-eda koi
 //import EmailAndUsernameRequiredException from 'App/Exceptions/Validation/EmailAndUsernameRequiredException'
 import EmailRequiredException from 'App/Exceptions/Validation/EmailRequiredException'
 import UsernameRequiredException from 'App/Exceptions/Validation/UsernameRequiredException'
@@ -266,7 +265,7 @@ test.group('Services/Auth/SocialAuthService', group => {
   
   
   //Validation Exception
-  test('should throw validation exception when email not provided by the oauth provider', async ({ expect, assert }) => {
+  test('should throw validation exception when email not provided by the oauth', async ({ expect, assert }) => {
     const allyUser: Partial<AllyUserContract> = {
       id: '1',
       name: 'Test User',
@@ -294,6 +293,24 @@ test.group('Services/Auth/SocialAuthService', group => {
     await expect(result).rejects.toThrow(DuplicateEmailException);
   })
 
+  test('should throw validation exception if user have a email and username not provided', async ({ expect }) => {
+    const socialProvider = 'google'
+    const allyUser: Partial<AllyUserContract> = {
+      id: '1',
+      name: 'Test User',
+    }
+    
+    await User.create({ 
+      email: 'test@gmail.com',
+      socialId: allyUser.id,
+      socialProvider,
+    })
+
+    const result = service.upsertUser(socialProvider, allyUser)
+    
+    await expect(result).rejects.toThrow(UsernameRequiredException);
+  })
+  
   test('should throw validation exception if failed to generate unique username', async ({ expect }) => {
     const allyUser: Partial<AllyUserContract> = {
       id: '1',
@@ -309,7 +326,7 @@ test.group('Services/Auth/SocialAuthService', group => {
     await expect(result).rejects.toThrow(UsernameRequiredException);
   })
   
-  test('should throw validation exception if provided username is not unique', async ({ expect }) => {
+  test('should throw validation exception if username is not unique', async ({ expect }) => {
     const username = 'test'
     const allyUser: Partial<AllyUserContract> = {
       id: '1',
@@ -324,7 +341,7 @@ test.group('Services/Auth/SocialAuthService', group => {
     await expect(result).rejects.toThrow(DuplicateUsernameException);
   })
 
-  test('should throw validation exception if email and provided username is not unique', async ({ expect }) => {
+  test('should throw validation exception if email and username is not unique', async ({ expect }) => {
     const email = 'test@example.com'
     const username = 'test'
     
@@ -342,5 +359,3 @@ test.group('Services/Auth/SocialAuthService', group => {
     await expect(result).rejects.toThrow(DuplicateEmailAndUsernameException);
   })
 })
-
-	

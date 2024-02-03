@@ -1,7 +1,7 @@
 //import JsonResource from '@samer/api-resource/resources/json_resource'
 
 export default class ListUserResource extends JsonResource {
-  serialize() {
+  public serialize() {
     return {
       profile: {
         id: this.resource.id,
@@ -9,7 +9,7 @@ export default class ListUserResource extends JsonResource {
       },
       links: {
         avatar: this.resource.avatarUrl(),
-      },
+      }
     }
   }
 }

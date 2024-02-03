@@ -22,23 +22,19 @@ export default class SocialAuthService {
         socialAvatarUrl: allyUser.avatarUrl,
       }
     )
-
-    // The user is not ready
-    if (!user.email || !user.username) {
+    
+    if(!user.email && username) {
       if (!allyUser.email) {
         throw new EmailRequiredException()
       }
 
-      const existingUser = await User.query()
+      const existingUsers = await User.query()
         .where('email', allyUser.email)
-        .when(username, (query) => {
-          query.orWhere('username', username)
-        })
+        .orWhere('username', username)
         .select('email', 'username')
-        .first()
 
-      const emailExists = existingUser?.email === allyUser.email
-      const usernameExists = username && existingUser?.username === username
+      const emailExists = existingUsers.some(user => user?.email === allyUser.email)
+      const usernameExists = existingUsers.some(user => user?.username === username)
 
       if (emailExists && usernameExists) {
         throw new DuplicateEmailAndUsernameException()
@@ -50,42 +46,45 @@ export default class SocialAuthService {
 
       user.email = allyUser.email
       user.verified = allyUser.emailVerificationState === 'verified'
-
-      if (username && !usernameExists) {
+      if (!usernameExists) {
         user.username = username
-      } else {
-        await user.generateUsername(10)
       }
-
       await user.save()
 
       if (usernameExists) {
-        if(username) {
-          throw new DuplicateUsernameException()
-        }
+        throw new DuplicateUsernameException()
+      }
+
+      isRegisteredNow = true
+    }
+    
+    else if(!user.email && !username) {
+      if (!allyUser.email) {
+        throw new EmailRequiredException()
+      }
+
+      const emailExists = await User.exists('email', allyUser.email)
+        
+      if (emailExists) {
+        throw new DuplicateEmailException()
+      }
+
+      user.email = allyUser.email
+      user.verified = allyUser.emailVerificationState === 'verified'
+      await user.generateUsername(10)
+      await user.save()
+
+      if(!user.username) {
         throw new UsernameRequiredException()
       }
 
       isRegisteredNow = true
     }
 
-    // Insuring if the user have all critically required data
-    this.assertAccountIsReady(user)
-
-    return { user, isRegisteredNow }
-  }
-
-  private assertAccountIsReady(user: User) {
-    if (!user.email && !user.username) {
-      throw new EmailAndUsernameRequiredException()
-    }
-
-    if (!user.email) {
-      throw new EmailRequiredException()
-    }
-
     if (!user.username) {
       throw new UsernameRequiredException();
     }
+    
+    return { user, isRegisteredNow }
   }
 }
