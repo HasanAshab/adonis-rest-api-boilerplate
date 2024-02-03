@@ -1,11 +1,15 @@
 import { ApiResponse } from '@japa/api-client'
+import { get } from 'lodash'
 
-ApiResponse.macro('assertBodyHaveProperty', function (property: string) {
+ApiResponse.macro('assertBodyHaveProperty', function (property: string, value?: unknown) {
   this.ensureHasAssert()
-  this.assert.property(this.body(), property)
+  const recieved = get(this.body(), property)
+  this.assert.isDefined(recieved)
+  value && this.assert.equal(recieved, value)
 })
 
 ApiResponse.macro('assertBodyNotHaveProperty', function (property: string) {
   this.ensureHasAssert()
-  this.assert.notProperty(this.body(), property)
+  const recieved = get(this.body(), property)
+  this.assert.isUndefined(recieved)
 })

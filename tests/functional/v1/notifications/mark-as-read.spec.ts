@@ -4,6 +4,10 @@ import NotificationFactory from 'Database/factories/NotificationFactory'
 import ListNotificationResource from '~/app/http/resources/v1/notification/ListNotificationResource'
 
 
+/*
+Run this suits:
+node ace test functional --files="v1/notifications/mark-as-read.spec.ts"
+*/
 test.group('Notifications / Mark As Read', group => {
   let user: User
 

@@ -3,8 +3,11 @@ import User from 'App/Models/User'
 import NotificationFactory from 'Database/factories/NotificationFactory'
 import ListNotificationResource from '~/app/http/resources/v1/notification/ListNotificationResource'
 
-//await NotificationFactory.new().belongsTo(user).betweenLastYear().create()
 
+/*
+Run this suits:
+node ace test functional --files="v1/notifications/list.spec.ts"
+*/
 test.group('Notifications / List', group => {
   let user: User
 

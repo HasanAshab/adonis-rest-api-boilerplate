@@ -3,45 +3,35 @@ import User from 'App/Models/User'
 import NotificationFactory from 'Database/factories/NotificationFactory'
 
 
-test.group('Notifications / Mark As Read', group => {
+/*
+Run this suits:
+node ace test functional --files="v1/notifications/delete.spec.ts"
+*/
+test.group('Notifications / Delete', group => {
   let user: User
-
+  let notification
+  
   refreshDatabase(group)
 
   group.each.setup(async () => {
     user = await User.factory().create()
-  })
-
-  test('Should mark notification as read', async ({ client, expect }) => {
-    let notification = await NotificationFactory.new().belongsTo(user).unread().belongsTo(user).create()
-    
-    const response = await client.post(`/api/v1/notifications/${notification.id}/read`).loginAs(user)
-    await notification.refresh()
-
-    response.assertStatus(200)
-    expect(notification.readAt).not.toBeNull()
+    notification = await NotificationFactory.new().belongsTo(user).create()
   })
   
-  test('Should mark all notifications as read', async ({ client, expect }) => {
-    const notifications = await NotificationFactory.new().belongsTo(user).count(3).unread().belongsTo(user).create()
-    
-    const response = await client.post('/api/v1/notifications/read/all').loginAs(user)
-    
-    response.assertStatus(200)
-    for (const notification of notifications) {
-      await notification.refresh()
-      expect(notification.readAt).not.toBeNull()
-    }
+  
+  test('Should delete notification', async ({ client, expect }) => {
+    const response = await client.delete(`/notifications/${notification.id}`).loginAs(user)
+
+    response.assertStatus(204)
+    await expect(notification.exists()).resolves.toBe(false)
   })
   
-  test("Shouldn't mark others notification as read", async ({ client, expect }) => {
+  test("Shouldn't delete others notification", async ({ client, expect }) => {
     const anotherUser = await User.factory().create()
-    const notification = await NotificationFactory.new().belongsTo(anotherUser).unread().create()
-    
-    const response = await client.post(`/api/v1/notifications/${notification.id}/read`).loginAs(user)
-    await notification.refresh()
 
-    response.assertStatus(404)
-    expect(notification.readAt).toBeNull()
+    const response = await client.delete(`/notifications/${notification.id}`).loginAs(anotherUser)
+    
+    response.assertStatus(403)
+    await expect(notification.exists()).resolves.toBe(true)
   })
 })

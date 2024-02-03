@@ -2,7 +2,6 @@ import { test } from '@japa/runner';
 import type { AllyUserContract } from '@ioc:Adonis/Addons/Ally'
 import User from 'App/Models/User';
 import SocialAuthService from 'App/Services/Auth/SocialAuthService';
-//import EmailAndUsernameRequiredException from 'App/Exceptions/Validation/EmailAndUsernameRequiredException'
 import EmailRequiredException from 'App/Exceptions/Validation/EmailRequiredException'
 import UsernameRequiredException from 'App/Exceptions/Validation/UsernameRequiredException'
 import DuplicateEmailAndUsernameException from 'App/Exceptions/Validation/DuplicateEmailAndUsernameException'
