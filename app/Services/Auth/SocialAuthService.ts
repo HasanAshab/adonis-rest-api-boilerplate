@@ -7,33 +7,37 @@ import DuplicateUsernameException from 'App/Exceptions/Validation/DuplicateUsern
 import DuplicateEmailException from 'App/Exceptions/Validation/DuplicateEmailException'
 
 
+export interface SocialAuthData extends AllyUserContract {
+  username?: string
+}
+
 export default class SocialAuthService {
-  public async upsertUser(provider: string, allyUser: AllyUserContract, username?: string) {
+  public async upsertUser(provider: string, data: SocialAuthData) {
     let isRegisteredNow = false
 
     const user = await User.updateOrCreate(
       {
         socialProvider: provider,
-        socialId: allyUser.id,
+        socialId: data.id,
       },
       {
-        name: allyUser.name.substring(0, 35),
-        socialAvatarUrl: allyUser.avatarUrl,
+        name: data.name.substring(0, 35),
+        socialAvatarUrl: data.avatarUrl,
       }
     )
     
-    if(!user.email && username) {
-      if (!allyUser.email) {
+    if(!user.email && data.username) {
+      if (!data.email) {
         throw new EmailRequiredException()
       }
 
       const existingUsers = await User.query()
-        .where('email', allyUser.email)
-        .orWhere('username', username)
+        .where('email', data.email)
+        .orWhere('username', data.username)
         .select('email', 'username')
 
-      const emailExists = existingUsers.some(user => user?.email === allyUser.email)
-      const usernameExists = existingUsers.some(user => user?.username === username)
+      const emailExists = existingUsers.some(user => user?.email === data.email)
+      const usernameExists = existingUsers.some(user => user?.username === data.username)
 
       if (emailExists && usernameExists) {
         throw new DuplicateEmailAndUsernameException()
@@ -43,10 +47,10 @@ export default class SocialAuthService {
         throw new DuplicateEmailException()
       }
 
-      user.email = allyUser.email
-      user.verified = allyUser.emailVerificationState === 'verified'
+      user.email = data.email
+      user.verified = data.emailVerificationState === 'verified'
       if (!usernameExists) {
-        user.username = username
+        user.username = data.username
       }
       await user.save()
 
@@ -57,19 +61,19 @@ export default class SocialAuthService {
       isRegisteredNow = true
     }
     
-    else if(!user.email && !username) {
-      if (!allyUser.email) {
+    else if(!user.email && !data.username) {
+      if (!data.email) {
         throw new EmailRequiredException()
       }
 
-      const emailExists = await User.exists('email', allyUser.email)
+      const emailExists = await User.exists('email', data.email)
         
       if (emailExists) {
         throw new DuplicateEmailException()
       }
 
-      user.email = allyUser.email
-      user.verified = allyUser.emailVerificationState === 'verified'
+      user.email = data.email
+      user.verified = data.emailVerificationState === 'verified'
       await user.generateUsername(10)
       await user.save()
 

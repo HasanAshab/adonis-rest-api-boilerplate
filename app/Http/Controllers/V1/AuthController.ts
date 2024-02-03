@@ -5,7 +5,7 @@ import Event from '@ioc:Adonis/Core/Event'
 import User from 'App/Models/User'
 import BasicAuthService from 'App/Services/Auth/BasicAuthService'
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
-import SocialAuthService from 'App/Services/Auth/SocialAuthService'
+import SocialAuthService, { SocialAuthData } from 'App/Services/Auth/SocialAuthService'
 import PasswordChangedMail from 'App/Mails/PasswordChangedMail'
 import RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator'
 import LoginValidator from 'App/Http/Validators/V1/Auth/Login/LoginValidator'
@@ -142,28 +142,19 @@ export default class AuthController {
     }
   }
 
-  /* 
-  Tokens(haoronaldo): 
-    google:
-ya29.a0AfB_byAYrekR8lWC8hyclxQh7JxO-h-snsAPivnpH7kftmbkdO9f5iXiPtpHfbhmW2Bq5Ew7e6Brmsnp0iS_OA6YFjRv-q7zQmXrQRCRjIzcEVJvgRjl8DgNKtkjXqDtX8RYtM_nwvLbuYZQT6KkOIgDHXIRdsrUYJu9aCgYKATsSARISFQHGX2MiA8-0rCV4kCd-K73QlmQO6Q0171
-facebook:
-EAACZBwjX8c54BOZCrAF6xYcpYT6a5emzzCKUF0DlVq2geDe7bd4zkGqGoB0w6CrzdcrSdLaZCtaTy8Y5ZC5OgpyvbTvjGK8QJnK4jNkq1CaLb8qp8PJNZCTJMLexjE5RzzLgx5K0ROybkOdfJbitgSVsuzckfIE9viiXgI9bRHq95BXgCJPTqBg0POWtyfL6pvRxhiAU7yEyAxsWgXWIZAdW9PntApt37wvQn4KH0sMrJsz1gHt3h6
-*/
   public async loginWithSocialAuthToken({ params, ally, request }: HttpContextContract) {
     let { token, email, username } = await request.validate(SocialAuthTokenLoginValidator)
 
-    const allyUser = await ally.use(params.provider).userFromToken(token)
-
+    const data: SocialAuthData = await ally.use(params.provider).userFromToken(token)
+    
+    data.username = username
+    
     if (email) {
-      allyUser.email = email
-      allyUser.emailVerificationState = 'unverified'
+      data.email = email
+      data.emailVerificationState = 'unverified'
     }
 
-    const { user, isRegisteredNow } = await this.socialAuthService.upsertUser(
-      params.provider,
-      allyUser,
-      username
-    )
+    const { user, isRegisteredNow } = await this.socialAuthService.upsertUser(params.provider, data)
 
     if (isRegisteredNow) {
       Event.emit('registered', {
