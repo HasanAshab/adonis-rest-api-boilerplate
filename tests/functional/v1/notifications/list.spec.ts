@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
 import NotificationFactory from 'Database/factories/NotificationFactory'
-import ListNotificationResource from '~/app/http/resources/v1/notification/ListNotificationResource'
-import ShowNotificationResource from 'App/Http/Resources/V1/notification/ShowNotificationResource'
+import ListNotificationResource from 'App/Http/Resources/v1/notification/ListNotificationResource'
+import ShowNotificationResource from 'App/Http/Resources/v1/notification/ShowNotificationResource'
 
 
 /*
@@ -10,7 +10,7 @@ Run this suits:
 node ace test functional --files="v1/notifications/list.spec.ts"
 */
 test.group('Notifications / List', group => {
-  let user: User
+  let user: User;
 
   refreshDatabase(group)
 
@@ -31,7 +31,7 @@ test.group('Notifications / List', group => {
   
   test("Shouldn't get others notifications list", async ({ client }) => {
     const anotherUser = await User.factory().create()
-    await NotificationFactory.new().belongsTo(anotherUser).create(),
+    await NotificationFactory.new().belongsTo(anotherUser).create()
 
     const response = await client.get('/api/v1/notifications').loginAs(user)
     
@@ -45,9 +45,9 @@ test.group('Notifications / List', group => {
    
     response.assertStatus(200)
     response.assertBodyContains(
-      ShowNotificationResource.make(notifications).toJSON()
+      ShowNotificationResource.make(notification).toJSON()
     )
-  }).pin()
+  })
   
   test('Should not get others notification', async ({ client }) => {
     const anotherUser = await User.factory().create()
@@ -55,7 +55,7 @@ test.group('Notifications / List', group => {
 
     const response = await client.get('/api/v1/notifications/' + notification.id).loginAs(user)
     
-    response.assertStatus(403)
+    response.assertStatus(404)
     response.assertBodyNotHaveProperty('data')
   })
 })

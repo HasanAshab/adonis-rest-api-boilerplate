@@ -1,6 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import ListNotificationResource from 'App/Http/Resources/V1/notification/ListNotificationResource'
-import ShowNotificationResource from 'App/Http/Resources/V1/notification/ShowNotificationResource'
+import ListNotificationResource from 'App/Http/Resources/v1/notification/ListNotificationResource'
+import ShowNotificationResource from 'App/Http/Resources/v1/notification/ShowNotificationResource'
 
 export default class NotificationController {
   public async index({ auth, request }: HttpContextContract) {
@@ -9,7 +9,7 @@ export default class NotificationController {
   }
 
   public async show({ params, auth }: HttpContextContract) {
-    const notification = await auth.user!.related('notification').query().findOrFail(params.id)
+    const notification = await auth.user!.related('notifications').query().findOrFail(params.id)
     return ShowNotificationResource.make(notification)
   }
 

@@ -1,6 +1,8 @@
 This:
 tests
 
+I: list notfi grouped by date
+L: PG search
 t: feature/socialauth
 t: unit/socialauth
 T: Contribute adonisjs query builder

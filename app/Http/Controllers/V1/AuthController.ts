@@ -94,6 +94,7 @@ export default class AuthController {
     return 'Verification link sent to email!'
   }
 
+  
   public async forgotPassword({ request, response }: HttpContextContract) {
     const { email } = await request.validate(ForgotPasswordValidator)
     await this.authService.sendResetPasswordMail(email)
@@ -122,12 +123,20 @@ export default class AuthController {
     }
   }
 
+  /**
+   * @generateRecoveryCodes
+   * @responseBody 200 - { message: string }
+   */
   @bind()
   public async sendOtp({}, user: User) {
     await this.twoFactorAuthService.sendOtp(user)
     return '6 digit OTP code sent to phone number!'
   }
-
+  
+  /**
+   * @generateRecoveryCodes
+   * @responseBody 200 - { data: string[] }
+   */
   public generateRecoveryCodes({ auth }: AuthenticRequest) {
     return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
   }

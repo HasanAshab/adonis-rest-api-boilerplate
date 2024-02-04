@@ -1,7 +1,7 @@
 import { AuthenticRequest, Response } from '~/core/express'
 
 export default class EnsureEmailIsVerified {
-  handle({ response, user }: HttpContextContract, next: NextFunction) {
+  handle({ response, auth: { user } }: HttpContextContract, next: NextFunction) {
     if (!user) {
       throw new Error('You have to use "auth" middleware before using "verified" middleware.')
     }

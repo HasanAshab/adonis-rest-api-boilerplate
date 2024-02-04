@@ -16,6 +16,8 @@ Route.group(() => {
     Route.patch('/phone-number', 'UserController.changePhoneNumber')
   }).prefix('me')
 
-  Route.get('/:username', 'UserController.show').as('users.show')
+  Route.get('/:username', 'UserController.show').as('show')
   Route.delete('/:id', 'UserController.delete')
-}).middleware('auth', 'verified')
+})
+.as('users')
+.middleware('auth', 'verified')

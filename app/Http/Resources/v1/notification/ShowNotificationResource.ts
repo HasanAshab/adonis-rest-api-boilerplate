@@ -5,11 +5,10 @@ import { NotificationDocument } from '~/app/models/Notification'
 export default abstract class ShowNotificationResource extends JsonResource<NotificationDocument> {
   serialize() {
     return {
-      id: this.resource._id,
-      type: this.resource.type,
+      id: this.resource.id,
       data: this.resource.data,
-      unread: this.resource.readAt === null,
-      readAt: this.resource.readAt,
+      isRead: !!this.resource.readAt,
+      readAt: this.resource.readAt?.toRelative(),
       createdAt: this.resource.createdAt.toRelative(),
     }
   }

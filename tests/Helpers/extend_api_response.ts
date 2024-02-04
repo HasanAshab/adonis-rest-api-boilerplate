@@ -5,7 +5,7 @@ ApiResponse.macro('assertBodyHaveProperty', function (property: string, value?: 
   this.ensureHasAssert()
   const recieved = get(this.body(), property)
   this.assert.isDefined(recieved)
-  value && this.assert.equal(recieved, value)
+  value && this.assert.deepEqual(recieved, value)
 })
 
 ApiResponse.macro('assertBodyNotHaveProperty', function (property: string) {
