@@ -1,8 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import type { INotification } from '~/app/models/Notification'
-import Notification from '~/app/models/Notification'
-import ListNotificationResource from '~/app/http/resources/v1/notification/ListNotificationResource'
-import ShowNotificationResource from '~/app/http/resources/v1/notification/ShowNotificationResource'
+import ListNotificationResource from 'App/Http/Resources/V1/notification/ListNotificationResource'
+import ShowNotificationResource from 'App/Http/Resources/V1/notification/ShowNotificationResource'
 
 export default class NotificationController {
   public async index({ auth, request }: HttpContextContract) {
@@ -11,25 +9,25 @@ export default class NotificationController {
   }
 
   public async show({ params, auth }: HttpContextContract) {
-    const notification = await auth
-      .user!.related('notification')
-      .query()
-      .where('id', params.id)
-      .first()
+    const notification = await auth.user!.related('notification').query().findOrFail(params.id)
     return ShowNotificationResource.make(notification)
   }
 
   public async markAsRead({ params, auth }: HttpContextContract) {
+    await auth.user!.related('notifications').query().find(params.id).update({
+      readAt: DateTime.local()
+    })
     await auth.user!.related('notifications').query().find(params.id).markAsReadOrFail()
     return 'Notification marked as read'
   }
 
   public async unreadCount({ auth }: HttpContextContract) {
-    return await auth.user!.related('notifications').query().whereNull('readAt').getCount()
+    const count = await auth.user!.related('notifications').query().whereNull('readAt').getCount()
+    return { data: { count } }
   }
 
   public async delete({ response, params, auth }: HttpContextContract) {
-    await auth.user!.related('notifications').query().find(params.id).deleteOrFail()
+    await auth.user!.related('notifications').query().whereUid(params.id).deleteOrFail()
     response.noContent()
   }
 }

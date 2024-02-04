@@ -10,7 +10,7 @@ export default abstract class ShowNotificationResource extends JsonResource<Noti
       data: this.resource.data,
       unread: this.resource.readAt === null,
       readAt: this.resource.readAt,
-      createdAt: toHumanReadableFormat(this.resource.createdAt),
+      createdAt: this.resource.createdAt.toRelative(),
     }
   }
 }

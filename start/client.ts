@@ -11,4 +11,3 @@ Client.addPaths({
 import JsonResource from '../res_dev/json_resource' 
 globalThis.JsonResource = JsonResource
 globalThis.log = console.log
-

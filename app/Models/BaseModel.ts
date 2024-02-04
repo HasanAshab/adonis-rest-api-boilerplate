@@ -1,15 +1,10 @@
 import { BaseModel as Model } from '@ioc:Adonis/Lucid/Orm'
 import { types } from '@ioc:Adonis/Core/Helpers'
+import Database from '@ioc:Adonis/Lucid/Database'
 
 export default class BaseModel extends Model {
   public static findByFields(fields: Record<string, any>, options?) {
-    const query = this.query(options)
-
-    for (const name in fields) {
-      query.where(name, fields[name])
-    }
-
-    return query.first()
+    return this.query(options).whereEqual(fields).first()
   }
 
   public static except(modelOrId: Model | number) {
@@ -17,34 +12,36 @@ export default class BaseModel extends Model {
   }
 
   public static update(uid: number, data: object) {
-    return this.query().find(uid).update(data)
+    return this.query().whereUid(uid).update(data)
   }
 
   public static updateOrFail(uid: number, data: object) {
-    return this.query().find(uid).updateOrFail(data)
+    return this.query().whereUid(uid).updateOrFail(data)
   }
 
   public static delete(uid: number) {
-    return this.query().find(uid).delete()
+    return this.query().whereUid(uid).delete()
   }
 
   public static deleteOrFail(uid: number) {
-    return this.query().find(uid).deleteOrFail()
+    return this.query().whereUid(uid).deleteOrFail()
   }
 
-  public static async exists<T extends number | string | object>(
+  public static exists<T extends number | string | object>(
     idOrFieldOrData: T,
     value: T extends string ? unknown : never
   ) {
-    if (types.isNumber(idOrFieldOrData)) {
-      return !!(await this.find(value))
-    }
-
-    if (types.isString(idOrFieldOrData)) {
-      return await this.query().where(idOrFieldOrData, value).exists()
-    }
-
-    return !!(await this.findByFields(idOrFieldOrData))
+    return this.query()
+    .when(types.isNumber(idOrFieldOrData), query => {
+      query.whereUid(idOrFieldOrData)
+    })
+    .when(types.isString(idOrFieldOrData), query => {
+      query.where(idOrFieldOrData, value)
+    }) 
+    .when(types.isObject(idOrFieldOrData), query => {
+      query.whereEqual(idOrFieldOrData)
+    })
+    .exists()
   }
 
   public static async notExists<T extends number | string | object>(
@@ -60,8 +57,8 @@ export default class BaseModel extends Model {
     }
   }
 
-  public async exists() {
+  public exists() {
     const uid = this[this.constructor.primaryKey]
-    return !!(await this.constructor.find(uid))
+    return this.constructor.exists(uid)
   }
 }

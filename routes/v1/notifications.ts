@@ -1,17 +1,16 @@
-// import Router from "~/core/http/routing";
-// import NotificationController from "~/app/http/controllers/v1/NotificationController";
-//
-// Endpoints for notification
-//
-// await Router.group({
-//   controller: NotificationController,
-//   middlewares: ["auth", "verified"],
-//   as: "notification."
-// }, () => {
-//   Router.get("/", "index");
-//   Router.get("/:rawNotification", "show");
-//   Router.get("/unread-count", "unreadCount");
-//   Router.patch("/read/all", "markAsRead").name("markAsRead");
-//   Router.patch("/:id/read", "markAsRead").name("markAsRead");
-//   Router.delete("/:id", "delete").name("delete");
-// });
+import Route from '@ioc:Adonis/Core/Route'
+
+//Endpoints for notification management
+
+Route.group(() => {
+ Route.get('/', 'NotificationController.index')
+ Route.get('/:rawNotification', 'NotificationController.show')
+ Route.get('/unread-count', 'NotificationController.unreadCount')
+ Route.patch('/read/all', 'NotificationController.markAsRead').as('markAsRead.all')
+ Route.patch('/:id/read', 'NotificationController.markAsRead').as('markAsRead')
+ Route.delete('/:id', 'NotificationController.delete').as('delete')
+})
+.prefix('notification')
+.as('notification')
+.middleware(['auth', 'verified'])
+

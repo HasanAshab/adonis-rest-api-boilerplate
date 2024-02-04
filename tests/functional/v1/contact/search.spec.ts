@@ -16,11 +16,10 @@ test.group('Contact / Search', (group) => {
     const admin = await User.factory().withRole('admin').create()
     const contact = await Contact.factory().create({ message })
 
-    const response = await client.get('/api/v1/contact/inquiries/search').loginAs(user).query({
+    const response = await client.get('/api/v1/contact/inquiries/search').loginAs(admin).query({
       q: 'website bug',
     })
 
-    console.log(response.body())
     response.assertStatus(200)
     response.assertBodyContains({
       data: [extract(contact, 'id')],
@@ -28,6 +27,7 @@ test.group('Contact / Search', (group) => {
   })
 
   test('Users should not search contacts', async ({ client }) => {
+    const user = await User.factory().create()
     const contact = await Contact.factory().create({ message })
 
     const response = await client.get('/api/v1/contact/inquiries/search').loginAs(user).query({
@@ -38,12 +38,14 @@ test.group('Contact / Search', (group) => {
     response.assertBodyNotHaveProperty('data')
   })
 
-  test('Should filter search contacts', async ({ client, expect }) => {
+  test('Should filter search contacts', async ({ client }) => {
+    const admin = await User.factory().withRole('admin').create()
     const [openedContact] = await Promise.all([
       Contact.factory().create({ message }),
       Contact.factory().closed().create({ message }),
     ])
-    const response = await client.get('/api/v1/contact/inquiries/search').loginAs(user).query({
+    
+    const response = await client.get('/api/v1/contact/inquiries/search').loginAs(admin).query({
       q: 'website bug',
       status: 'opened',
     })

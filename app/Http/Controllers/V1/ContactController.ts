@@ -7,7 +7,7 @@ import Contact from 'App/Models/Contact'
 //import SearchContactRequest from "App/Http/requests/v1/contact/SearchContactRequest";
 //import UpdateContactStatusValidator from "App/Http/Validators/V1/contact/UpdateContactStatusValidator";
 import ListContactResource from 'App/Http/Resources/v1/contact/ListContactResource'
-//import ShowContactResource from "App/Http/Resources/v1/contact/ShowContactResource";
+import ShowContactResource from "App/Http/Resources/v1/contact/ShowContactResource";
 
 export default class ContactController {
   public async index({ request }: HttpContextContract) {

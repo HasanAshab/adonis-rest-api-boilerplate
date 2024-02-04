@@ -10,7 +10,7 @@ export default abstract class ShowContactResource extends JsonResource<ContactDo
       subject: this.resource.subject,
       message: this.resource.message,
       status: this.resource.status,
-      createdAt: toHumanReadableFormat(this.resource.createdAt),
+      createdAt: this.resource.createdAt.toRelative(),
     }
   }
 }

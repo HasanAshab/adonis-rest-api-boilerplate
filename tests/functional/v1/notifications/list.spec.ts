@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import User from 'App/Models/User'
 import NotificationFactory from 'Database/factories/NotificationFactory'
 import ListNotificationResource from '~/app/http/resources/v1/notification/ListNotificationResource'
+import ShowNotificationResource from 'App/Http/Resources/V1/notification/ShowNotificationResource'
 
 
 /*
@@ -17,8 +18,9 @@ test.group('Notifications / List', group => {
     user = await User.factory().create()
   })
 
-  test('Should get notifications', async ({ client }) => {
+  test('Should get notifications list', async ({ client }) => {
     const notifications = await NotificationFactory.new().count(2).belongsTo(user).create()
+    
     const response = await client.get('/api/v1/notifications').loginAs(user)
    
     response.assertStatus(200)
@@ -27,19 +29,33 @@ test.group('Notifications / List', group => {
     )
   })
   
-  test("Shouldn't get others notifications", async ({ client, expect }) => {
+  test("Shouldn't get others notifications list", async ({ client }) => {
     const anotherUser = await User.factory().create()
-   
-    const [notifications] = await Promise.all([
-      NotificationFactory.new().count(2).belongsTo(user).create(),
-      NotificationFactory.new().belongsTo(anotherUser).create(),
-    ])
-    
+    await NotificationFactory.new().belongsTo(anotherUser).create(),
+
     const response = await client.get('/api/v1/notifications').loginAs(user)
     
     response.assertStatus(200)
+    response.assertBodyHaveProperty('data', [])
+  })
+
+  test('Should get notification', async ({ client }) => {
+    const notification = await NotificationFactory.new().belongsTo(user).create()
+    const response = await client.get('/api/v1/notifications/' + notification.id).loginAs(user)
+   
+    response.assertStatus(200)
     response.assertBodyContains(
-      ListNotificationResource.collection(notifications).toJSON()
+      ShowNotificationResource.make(notifications).toJSON()
     )
+  }).pin()
+  
+  test('Should not get others notification', async ({ client }) => {
+    const anotherUser = await User.factory().create()
+    const notification = await NotificationFactory.new().belongsTo(anotherUser).create(),
+
+    const response = await client.get('/api/v1/notifications/' + notification.id).loginAs(user)
+    
+    response.assertStatus(403)
+    response.assertBodyNotHaveProperty('data')
   })
 })

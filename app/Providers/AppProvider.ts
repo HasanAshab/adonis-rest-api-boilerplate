@@ -9,9 +9,24 @@ export default class AppProvider {
   private extendModelQueryBuilder() {
     const Database = this.app.container.use('Adonis/Lucid/Database')
     const { BaseModel } = this.app.container.use('Adonis/Lucid/Orm')
+    
+    Database.ModelQueryBuilder.macro('whereEqual', function (fields: Record<string, any>) {
+      for (const name in fields) {
+        this.where(name, fields[name])
+      }
+      return this
+    })
 
-    Database.ModelQueryBuilder.macro('find', function (uid: number) {
+    Database.ModelQueryBuilder.macro('whereUid', function (uid: number) {
       return this.where(this.model.primaryKey, uid)
+    })
+    
+    Database.ModelQueryBuilder.macro('find', function (uid: number) {
+      return this.whereUid(uid).first()
+    })
+    
+    Database.ModelQueryBuilder.macro('findOrFail', function (uid: number) {
+      return this.whereUid(uid).firstOrFail()
     })
 
     Database.ModelQueryBuilder.macro('updateOrFail', async function (data: object) {
@@ -28,15 +43,9 @@ export default class AppProvider {
       }
     })
 
-    Database.ModelQueryBuilder.macro('whereEqual', function (fields: Record<string, any>) {
-      for (const name in fields) {
-        this.where(name, fields[name])
-      }
-      return this
-    })
 
     Database.ModelQueryBuilder.macro('exists', async function () {
-      return !!(await this.first())
+      return await !!(this.select(1).pojo().first())
     })
 
     Database.ModelQueryBuilder.macro('except', function (modelOrId: BaseModel | number) {
