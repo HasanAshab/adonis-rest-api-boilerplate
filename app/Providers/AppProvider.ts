@@ -31,21 +31,21 @@ export default class AppProvider {
 
     Database.ModelQueryBuilder.macro('updateOrFail', async function (data: object) {
       const count = await this.update(data)
-      if (!count) {
+      if (!parseInt(count)) {
         throw new Exception('Row not found', 404, 'E_ROW_NOT_FOUND')
       }
     })
 
     Database.ModelQueryBuilder.macro('deleteOrFail', async function () {
       const count = await this.delete()
-      if (!count) {
+      if (!parseInt(count)) {
         throw new Exception('Row not found', 404, 'E_ROW_NOT_FOUND')
       }
     })
 
 
     Database.ModelQueryBuilder.macro('exists', async function () {
-      return await !!(this.select(1).pojo().first())
+      return !!(await this.select(1).pojo().first())
     })
 
     Database.ModelQueryBuilder.macro('except', function (modelOrId: BaseModel | number) {

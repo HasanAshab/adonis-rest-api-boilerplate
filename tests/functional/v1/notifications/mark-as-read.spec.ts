@@ -18,9 +18,9 @@ test.group('Notifications / Mark As Read', group => {
   })
 
   test('Should mark notification as read', async ({ client, expect }) => {
-    let notification = await NotificationFactory.new().belongsTo(user).unread().belongsTo(user).create()
+    const notification = await NotificationFactory.new().unread().belongsTo(user).create()
     
-    const response = await client.post(`/api/v1/notifications/${notification.id}/read`).loginAs(user)
+    const response = await client.patch(`/api/v1/notifications/${notification.id}/read`).loginAs(user)
     await notification.refresh()
 
     response.assertStatus(200)
@@ -30,7 +30,7 @@ test.group('Notifications / Mark As Read', group => {
   test('Should mark all notifications as read', async ({ client, expect }) => {
     const notifications = await NotificationFactory.new().belongsTo(user).count(3).unread().belongsTo(user).create()
     
-    const response = await client.post('/api/v1/notifications/read/all').loginAs(user)
+    const response = await client.patch('/api/v1/notifications/read/all').loginAs(user)
     
     response.assertStatus(200)
     for (const notification of notifications) {
@@ -43,7 +43,7 @@ test.group('Notifications / Mark As Read', group => {
     const anotherUser = await User.factory().create()
     const notification = await NotificationFactory.new().belongsTo(anotherUser).unread().create()
     
-    const response = await client.post(`/api/v1/notifications/${notification.id}/read`).loginAs(user)
+    const response = await client.patch(`/api/v1/notifications/${notification.id}/read`).loginAs(user)
     await notification.refresh()
 
     response.assertStatus(404)

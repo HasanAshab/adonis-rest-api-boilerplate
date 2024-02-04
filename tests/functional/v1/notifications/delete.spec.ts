@@ -20,7 +20,7 @@ test.group('Notifications / Delete', group => {
   
   
   test('Should delete notification', async ({ client, expect }) => {
-    const response = await client.delete(`/notifications/${notification.id}`).loginAs(user)
+    const response = await client.delete(`/api/v1/notifications/${notification.id}`).loginAs(user)
 
     response.assertStatus(204)
     await expect(notification.exists()).resolves.toBe(false)
@@ -29,9 +29,9 @@ test.group('Notifications / Delete', group => {
   test("Shouldn't delete others notification", async ({ client, expect }) => {
     const anotherUser = await User.factory().create()
 
-    const response = await client.delete(`/notifications/${notification.id}`).loginAs(anotherUser)
+    const response = await client.delete(`/api/v1/notifications/${notification.id}`).loginAs(anotherUser)
     
-    response.assertStatus(403)
+    response.assertStatus(404)
     await expect(notification.exists()).resolves.toBe(true)
   })
 })

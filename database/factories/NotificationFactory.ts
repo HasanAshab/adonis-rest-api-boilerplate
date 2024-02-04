@@ -1,10 +1,18 @@
 import Factory from 'App/Models/Traits/HasFactory/Factory'
 import User from 'App/Models/User'
+import BaseModel from 'App/Models/BaseModel'
 import createNotificationModel from '@verful/notifications/build/src/Models/DatabaseNotification'
 import { DateTime } from 'luxon'
 
+//TODO
+const Notification = createNotificationModel('notifications')
+Notification.prototype.exists = function() {
+  return Notification.query().whereUid(this.id).exists()
+}
+Notification.prototype.refresh = BaseModel.prototype.refresh
+
 export default class NotificationFactory extends Factory {
-  static Model = createNotificationModel('notifications')
+  static Model = Notification
 
   definition() {
     return {
