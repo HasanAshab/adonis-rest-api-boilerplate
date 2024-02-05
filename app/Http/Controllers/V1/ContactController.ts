@@ -42,7 +42,8 @@ export default class ContactController {
     })
     res.json(results)
     */
-    return Contact.search(q)
+      
+    return await Contact.search(q)
       .limit(limit)
       .select('subject')
       .when(status, query => {
@@ -51,10 +52,11 @@ export default class ContactController {
       .pluck('subject')
   }
 
-  async search({ request }: HttpContextContract) {
+  public async search({ request }: HttpContextContract) {
     const { q, status } = await request.validate(SearchContactValidator)
-    //const { q, status, limit = 15, cursor } = await request.validate(SearchContactValidator)
-  /*  const cacheKey = `contacts.search:${q},${status},${limit},${cursor}`
+  /*  
+    const { q, status, limit = 15, cursor } = await request.validate(SearchContactValidator)
+    const cacheKey = `contacts.search:${q},${status},${limit},${cursor}`
     const results = await Cache.rememberSerialized(cacheKey, 5 * 60 * 60, () => {
       return Contact.search(q)
         .when(status, (query) => {
@@ -63,11 +65,13 @@ export default class ContactController {
         .paginateCursor(req)
     })
     */
-    return Contact.search(q)
-      .paginateUsing(request)
+    const contacts = await Contact.search(q)
       .when(status, query => {
-        query.where('status').equals(status)
+        query.where('status', status)
       })
+      .paginateUsing(request)
+      
+    return ListContactResource.collection(contacts)
   }
 
   @bind()

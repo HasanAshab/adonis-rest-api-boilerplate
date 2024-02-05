@@ -1,7 +1,6 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
 import Contact from 'App/Models/Contact'
-import { extract } from 'App/helpers'
 
 /*
 Run this suits:
@@ -16,13 +15,13 @@ test.group('Contact / Suggest', (group) => {
     const admin = await User.factory().withRole('admin').create()
     const contact = await Contact.factory().create({ message })
 
-    const response = await client.get('/api/v1/contact/inquiries/search').loginAs(admin).query({
+    const response = await client.get('/api/v1/contact/inquiries/suggest').loginAs(admin).qs({
       q: 'website bug',
     })
 
     response.assertStatus(200)
     response.assertBodyContains({
-      data: [extract(contact, 'subject')],
+      data: [contact.subject],
     })
   })
 
@@ -30,7 +29,7 @@ test.group('Contact / Suggest', (group) => {
     const user = await User.factory().create()
     const contact = await Contact.factory().create({ message })
 
-    const response = await client.get('/api/v1/contact/inquiries/search').loginAs(user).query({
+    const response = await client.get('/api/v1/contact/inquiries/suggest').loginAs(user).qs({
       q: 'website bug',
     })
 
@@ -44,14 +43,14 @@ test.group('Contact / Suggest', (group) => {
       Contact.factory().create({ message }),
       Contact.factory().closed().create({ message }),
     ])
-    const response = await client.get('/api/v1/contact/inquiries/search').loginAs(user).query({
+    const response = await client.get('/api/v1/contact/inquiries/suggest').loginAs(admin).qs({
       q: 'website bug',
       status: 'opened',
     })
 
     response.assertStatus(200)
     response.assertBodyContains({
-      data: [extract(openedContact, 'suggest')],
+      data: [openedContact.subject],
     })
   })
 })

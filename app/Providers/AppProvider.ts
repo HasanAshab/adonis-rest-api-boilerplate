@@ -95,7 +95,7 @@ export default class AppProvider {
     })
     
     Database.ModelQueryBuilder.macro('search', function (query: string, vectorColumn = 'search_vector') {
-      return this.whereRaw("?? @@ to_tsquery('??')", [vectorColumn, query]);
+      return this.where(vectorColumn, '@@', Database.raw(`plainto_tsquery('${query}')`));
     })
 
     Database.ModelQueryBuilder.macro('paginateUsing', function (request: Request) {
