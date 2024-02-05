@@ -87,6 +87,10 @@ export default class AppProvider {
 
       return result
     })
+    
+    Database.ModelQueryBuilder.macro('search', function (query: string, vectorColumn = 'search_vector') {
+      return this.where(vectorColumn, '@@', Database.raw(`to_tsquery('${query}')`))
+    })
 
     Database.ModelQueryBuilder.macro('paginateUsing', function (request: Request) {
       const page = request.input('page', 1)

@@ -11,3 +11,33 @@ Client.addPaths({
 import JsonResource from '../res_dev/json_resource' 
 globalThis.JsonResource = JsonResource
 globalThis.log = console.log
+
+
+
+
+import Contact from 'App/Models/Contact'
+import DB from '@ioc:Adonis/Lucid/Database' 
+
+const dummyData = [
+  { subject: "Meeting Request", message: "Hello, let's schedule a meeting to discuss the upcoming project." },
+  { subject: "Important Update", message: "Please be informed that there is an important update regarding our services." },
+  { subject: "Interview Confirmation", message: "This is to confirm your interview scheduled for next week. Be prepared!" },
+  { subject: "Product Inquiry", message: "I'm interested in learning more about your latest product. Can you provide details?" },
+  { subject: "Project Collaboration", message: "I believe our companies can collaborate on an exciting project. Let's explore the possibilities." },
+  { subject: "Feedback Request", message: "We value your opinion. Please share your feedback about our recent services." },
+  { subject: "Urgent Matter", message: "An urgent matter requires your attention. Please get back to us at your earliest convenience." },
+  { subject: "Networking Opportunity", message: "Join us for a networking event next month. It's a great opportunity to connect with industry professionals." },
+  { subject: "Payment Reminder", message: "Friendly reminder: your payment is due by the end of the week. Please ensure timely payment." },
+  { subject: "Thank You Note", message: "Thank you for your collaboration. We appreciate your contributions to the project." }
+];
+
+//Contact.query().delete().then(log)
+
+(async () => {
+  //dummyData.forEach(d => Contact.factory().create(d).then(log) )
+
+//const c =  await Contact.search('project')
+
+//const c =  await Contact.query().where('search_vector', '@@', DB.raw("to_tsquery('project')")).select('subject', 'message').pojo()
+//log(c)
+})()

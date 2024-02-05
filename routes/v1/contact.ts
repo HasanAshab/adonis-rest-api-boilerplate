@@ -12,4 +12,4 @@ Route.group(() => {
   Route.patch('/:id/status', 'ContactController.updateStatus')
 })
 .prefix('/inquiries')
-.middleware(['auth', 'roles:admin'])
+//.middleware(['auth', 'roles:admin'])

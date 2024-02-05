@@ -12,7 +12,7 @@ import ShowContactResource from "App/Http/Resources/v1/contact/ShowContactResour
 export default class ContactController {
   public async index({ request }: HttpContextContract) {
     return ListContactResource.collection(
-      await Contact.query().paginateUsing(request)
+      await Contact.paginateUsing(request)
     )
   }
 
@@ -28,27 +28,26 @@ export default class ContactController {
     return `Contact form ${data.status}!`
   }
 
-  async suggest(req: SuggestContactRequest, res: Response) {
-    const { q, status, limit } = req.query
-    const cacheKey = `contacts.suggest:${q},${status},${limit}`
-    /*   
-    const qq = Contact.search(q).limit(limit).select("subject").select("message").when(status, query => {
-        query.where("status").equals(status);
-      });
-   // qq._fields["score"] = 0
+  public async suggest({ request }: HttpContextContract) {
+    const { q, status, limit } = await request.validate(SuggestContactValidator)
     
-    log(qq)
-    return await qq*/
+   /* const cacheKey = `contacts.suggest:${q},${status},${limit}`
     const results = await Cache.rememberSerialized(cacheKey, 5 * 60 * 60, () => {
       return Contact.search(q)
         .limit(limit)
-        .select('-_id +score subject')
+        .select('score', 'subject')
         .when(status, (query) => {
           query.where('status').equals(status)
         })
     })
-
     res.json(results)
+    */
+    return Contact.search(q)
+      .limit(limit)
+      .select('subject')
+      .when(status, query => {
+        query.where('status', status)
+      })
   }
 
   async search(req: SearchContactRequest, res: Response) {

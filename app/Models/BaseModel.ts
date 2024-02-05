@@ -1,4 +1,4 @@
-import { BaseModel as Model } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel as Model, ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 import { types } from '@ioc:Adonis/Core/Helpers'
 import Database from '@ioc:Adonis/Lucid/Database'
 
@@ -26,7 +26,7 @@ export default class BaseModel extends Model {
   public static deleteOrFail(uid: number) {
     return this.query().whereUid(uid).deleteOrFail()
   }
-
+  
   public static exists<T extends number | string | object>(
     idOrFieldOrData: T,
     value: T extends string ? unknown : never
@@ -49,6 +49,19 @@ export default class BaseModel extends Model {
     value: T extends string ? unknown : never
   ) {
     return !(await this.exists(idOrFieldOrData, value))
+  }
+  
+  
+  public static search(...args: Parameters<ModelQueryBuilderContract['search']>) {
+    return this.query().search(...args)
+  }
+
+  public static paginate(...args: Parameters<ModelQueryBuilderContract['paginate']>) {
+    return this.query().paginate(...args)
+  }
+  
+  public static paginateUsing(...args: Parameters<ModelQueryBuilderContract['paginateUsing']>) {
+    return this.query().paginateUsing(...args)
   }
 
   public async loadIfNotLoaded(relation: string) {
