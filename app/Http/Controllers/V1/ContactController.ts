@@ -4,7 +4,7 @@ import Contact from 'App/Models/Contact'
 //import Cache from "Cache";
 import CreateContactValidator from "App/Http/Validators/V1/contact/CreateContactValidator";
 import SuggestContactValidator from "App/Http/Validators/V1/contact/SuggestContactValidator";
-//import SearchContactRequest from "App/Http/requests/v1/contact/SearchContactRequest";
+import SearchContactValidator from "App/Http/Validators/V1/contact/SearchContactValidator";
 import UpdateContactStatusValidator from "App/Http/Validators/V1/contact/UpdateContactStatusValidator";
 import ListContactResource from 'App/Http/Resources/v1/contact/ListContactResource'
 import ShowContactResource from "App/Http/Resources/v1/contact/ShowContactResource";
@@ -49,13 +49,12 @@ export default class ContactController {
         query.where('status', status)
       })
       .pluck('subject')
-
   }
 
-  async search(req: SearchContactRequest, res: Response) {
-    const { q, status, limit = 15, cursor } = req.query
-    const cacheKey = `contacts.search:${q},${status},${limit},${cursor}`
-
+  async search({ request }: HttpContextContract) {
+    const { q, status } = await request.validate(SearchContactValidator)
+    //const { q, status, limit = 15, cursor } = await request.validate(SearchContactValidator)
+  /*  const cacheKey = `contacts.search:${q},${status},${limit},${cursor}`
     const results = await Cache.rememberSerialized(cacheKey, 5 * 60 * 60, () => {
       return Contact.search(q)
         .when(status, (query) => {
@@ -63,8 +62,12 @@ export default class ContactController {
         })
         .paginateCursor(req)
     })
-
-    res.json(results)
+    */
+    return Contact.search(q)
+      .paginateUsing(request)
+      .when(status, query => {
+        query.where('status').equals(status)
+      })
   }
 
   @bind()
