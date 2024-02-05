@@ -10,6 +10,7 @@ export default class AppProvider {
     const Database = this.app.container.use('Adonis/Lucid/Database')
     const { BaseModel } = this.app.container.use('Adonis/Lucid/Orm')
     
+    
     Database.ModelQueryBuilder.macro('whereEqual', function (fields: Record<string, any>) {
       for (const name in fields) {
         this.where(name, fields[name])
@@ -19,6 +20,11 @@ export default class AppProvider {
 
     Database.ModelQueryBuilder.macro('whereUid', function (uid: number) {
       return this.where(this.model.primaryKey, uid)
+    })
+    
+    Database.ModelQueryBuilder.macro('pluck', async function (column: string) {
+      const records = await this.pojo()
+      return records.map(record => record[column])
     })
     
     Database.ModelQueryBuilder.macro('find', function (uid: number) {

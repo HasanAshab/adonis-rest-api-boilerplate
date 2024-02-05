@@ -3,7 +3,7 @@ import { bind } from '@adonisjs/route-model-binding'
 import Contact from 'App/Models/Contact'
 //import Cache from "Cache";
 import CreateContactValidator from "App/Http/Validators/V1/contact/CreateContactValidator";
-//import SuggestContactRequest from "App/Http/requests/v1/contact/SuggestContactRequest";
+import SuggestContactValidator from "App/Http/Validators/V1/contact/SuggestContactValidator";
 //import SearchContactRequest from "App/Http/requests/v1/contact/SearchContactRequest";
 import UpdateContactStatusValidator from "App/Http/Validators/V1/contact/UpdateContactStatusValidator";
 import ListContactResource from 'App/Http/Resources/v1/contact/ListContactResource'
@@ -29,7 +29,7 @@ export default class ContactController {
   }
 
   public async suggest({ request }: HttpContextContract) {
-    const { q, status, limit } = await request.validate(SuggestContactValidator)
+    const { q, status, limit = 10 } = await request.validate(SuggestContactValidator)
     
    /* const cacheKey = `contacts.suggest:${q},${status},${limit}`
     const results = await Cache.rememberSerialized(cacheKey, 5 * 60 * 60, () => {
@@ -48,10 +48,12 @@ export default class ContactController {
       .when(status, query => {
         query.where('status', status)
       })
+      .pluck('subject')
+
   }
 
   async search(req: SearchContactRequest, res: Response) {
-    const { q, status, limit, cursor } = req.query
+    const { q, status, limit = 15, cursor } = req.query
     const cacheKey = `contacts.search:${q},${status},${limit},${cursor}`
 
     const results = await Cache.rememberSerialized(cacheKey, 5 * 60 * 60, () => {
