@@ -39,7 +39,7 @@ test.group('Users/PhoneNumber', (group) => {
 
     const response = await client.patch('/api/v1/users/me/phone-number').loginAs(user).json({
       phoneNumber,
-      otp: 123456,
+      otp: '123456',
     })
     await user.refresh()
 

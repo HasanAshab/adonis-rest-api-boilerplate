@@ -6,15 +6,16 @@ export default class UserProfileResource extends JsonResource<UserDocument> {
   serialize() {
     return {
       data: {
-        id: this.resource._id,
+        id: this.resource.id,
         name: this.resource.name,
+        username: this.resource.username,
         email: this.resource.email,
         phoneNumber: this.resource.phoneNumber,
         username: this.resource.username,
         role: this.resource.role,
       },
       links: {
-        avatar: await this.resource.avatarUrl(),
+        avatar: this.resource.avatarUrl(),
       },
     }
   }

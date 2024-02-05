@@ -4,7 +4,7 @@ import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
 
 /*
 Run this suits:
-node ace test feature --files="v1/users/password.spec.ts"
+node ace test functional --files="v1/users/password.spec.ts"
 */
 
 test.group('Users/Password', (group) => {
@@ -12,16 +12,16 @@ test.group('Users/Password', (group) => {
 
   test('should change password', async ({ client, expect }) => {
     const user = await User.factory().create()
-    const data = {
-      oldPassword: 'password',
-      newPassword: 'Password@1234',
-    }
+    const newPassword = 'Password@1234'
 
-    const response = await client.patch('/api/v1/users/me/password').loginAs(user).json(data)
+    const response = await client.patch('/api/v1/users/me/password').loginAs(user).json({
+      oldPassword: 'password',
+      newPassword
+    })
     await user.refresh()
 
     response.assertStatus(200)
-    await expect(user.attempt(data.newPassword)).resolves.toBe(true)
+    await expect(user.comparePassword(newPassword)).resolves.toBe(true)
   })
 
   test("shouldn't change password of social account", async ({ client, expect }) => {

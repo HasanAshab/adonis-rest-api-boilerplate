@@ -1,7 +1,11 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
 
-test.group('Auth/Logout', (group) => {
+/*
+Run this suits:
+node ace test functional --files="v1/auth/logout.spec.ts"
+*/
+test.group('Auth / Logout', (group) => {
   test('API token should be invalid after logout', async ({ client, expect }) => {
     const user = await User.factory().hasSettings().create()
     const { token } = await user.createToken()

@@ -7,6 +7,7 @@ export default class ContactFactory extends Factory<Contact> {
       email: this.faker.internet.email(),
       subject: this.faker.lorem.words(5),
       message: this.faker.lorem.words(15),
+      status: 'opened'
     }
   }
 

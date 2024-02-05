@@ -2,25 +2,35 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { bind } from '@adonisjs/route-model-binding'
 import { inject } from '@adonisjs/core'
 import User from 'App/Models/User'
+import BasicAuthService from 'App/Services/Auth/BasicAuthService'
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
 import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import UpdateProfileValidator from 'App/Http/Validators/V1/user/UpdateProfileValidator'
 import ChangePasswordValidator from 'App/Http/Validators/V1/user/ChangePasswordValidator'
 import ChangePhoneNumberValidator from 'App/Http/Validators/V1/user/ChangePhoneNumberValidator'
 import ListUserResource from 'App/Http/Resources/v1/user/ListUserResource'
+import UserProfileResource from 'App/Http/Resources/v1/user/UserProfileResource'
+import ShowUserResource from 'App/Http/Resources/v1/user/ShowUserResource'
 
 export default class UserController {
   public static readonly VERSION = 'v1'
 
   public async index({ request }: HttpContextContract) {
-    return ListUserResource.collection(await User.withRole('user').paginateUsing(request))
+    return ListUserResource.collection(
+      await User.withRole('user').paginateUsing(request)
+    )
   }
 
   public async profile({ auth }: HttpContextContract) {
     return UserProfileResource.make(auth.user!)
   }
-
-  public async updateProfile({ request, auth: { user } }: HttpContextContract) {
+  
+  //TODO
+  //@inject()
+  public async updateProfile(
+    { request, auth: { user } }: HttpContextContract,
+    authService: BasicAuthService = new BasicAuthService
+  ) {
     const { avatar, ...data } = await request.validate(UpdateProfileValidator)
     user.merge(data)
 
@@ -35,7 +45,7 @@ export default class UserController {
     await user.save()
 
     if (data.email) {
-      await user.sendVerificationMail(UserController.VERSION)
+      await authService.sendVerificationMail(user, UserController.VERSION)
       return 'Verification email sent to your new email address!'
     }
 
@@ -66,21 +76,23 @@ export default class UserController {
       : response.notFound('User not found')
   }
 
+  //TODO
   //@inject()
   public async changePassword(
     { request, auth }: HttpContextContract,
-    authService: BasicAuthService
+    authService: BasicAuthService = new BasicAuthService
   ) {
     const { oldPassword, newPassword } = await request.validate(ChangePasswordValidator)
     await authService.changePassword(auth.user!, oldPassword, newPassword)
-    await Mail.to(user.email).send(new PasswordChangedMail())
+    //await Mail.to(user.email).send(new PasswordChangedMail())
     return 'Password changed!'
   }
-
+  
+  //TODO
   //@inject()
   async changePhoneNumber(
     { request, response, auth }: HttpContextContract,
-    twoFactorAuthService: TwoFactorAuthService
+    twoFactorAuthService: TwoFactorAuthService = new TwoFactorAuthService
   ) {
     const { phoneNumber, otp } = await request.validate(ChangePhoneNumberValidator)
     const user = auth.user!

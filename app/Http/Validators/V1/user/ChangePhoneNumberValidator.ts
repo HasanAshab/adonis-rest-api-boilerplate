@@ -3,7 +3,9 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 export default class ChangePhoneNumberValidator extends Validator {
   public schema = schema.create({
-    phoneNumber: schema.string(),
-    otp: schema.string(),
+    phoneNumber: schema.string([
+      rules.mobile({ strict: true })
+    ]),
+    otp: schema.string.optional(),
   })
 }

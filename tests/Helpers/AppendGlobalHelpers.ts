@@ -4,7 +4,7 @@ import { trace } from 'App/helpers'
 
 globalThis.trace = trace
 
-globalThis.fakeFilePathPath = function fakeFilePathPath(name: string) {
+globalThis.fakeFilePath = function fakeFilePathPath(name: string) {
   return join(__dirname, '../../tmp/test/', name)
 }
 

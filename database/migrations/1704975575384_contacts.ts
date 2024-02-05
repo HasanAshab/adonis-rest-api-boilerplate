@@ -11,7 +11,6 @@ export default class extends BaseSchema {
       table.string('message').notNullable()
       table.enum('status', ['opened', 'closed']).defaultTo('opened')
       table.timestamp('created_at', { useTz: true })
-      table.timestamp('updated_at', { useTz: true })
     })
   }
 

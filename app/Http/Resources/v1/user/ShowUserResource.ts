@@ -6,13 +6,13 @@ export default class ShowUserResource extends JsonResource<UserDocument> {
   serialize() {
     return {
       data: {
-        id: this.resource._id,
+        id: this.resource.id,
         name: this.resource.name,
         username: this.resource.username,
         role: this.resource.role,
       },
       links: {
-        avatar: await this.resource.avatarUrl(),
+     //   avatar: this.resource.avatarUrl(),
       },
     }
   }

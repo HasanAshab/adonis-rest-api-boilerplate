@@ -4,6 +4,11 @@ import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
 import Token from 'App/Models/Token'
 import Twilio from '@ioc:Adonis/Addons/Twilio'
 
+
+/*
+Run this suits:
+node ace test functional --files="v1/auth/two-factor.spec.ts"
+*/
 test.group('Auth/TwoFactor', (group) => {
   const twoFactorAuthService = new TwoFactorAuthService()
   let user

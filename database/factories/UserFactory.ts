@@ -20,10 +20,11 @@ export default class UserFactory extends Factory<User> {
     })
   }
 
-  social(provider = 'google', id = '100020') {
+  social(provider = 'google', id = '100000') {
     return this.state((user) => {
       user.password = null
-      user.socialId[provider] = id
+      user.socialProvider = provider
+      user.socialId = id
       return user
     })
   }

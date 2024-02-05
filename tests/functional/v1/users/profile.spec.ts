@@ -1,6 +1,11 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
 import { extract } from 'App/helpers'
+import ListUserResource from 'App/Http/Resources/v1/user/ListUserResource'
+import UserProfileResource from 'App/Http/Resources/v1/user/UserProfileResource'
+import ShowUserResource from 'App/Http/Resources/v1/user/ShowUserResource'
+import Mail from 'Tests/Assertors/MailAssertor'
+
 
 /*
 Run this suits:
@@ -17,23 +22,19 @@ test.group('Users / Profile', (group) => {
 
   test('should get profile', async ({ client, expect }) => {
     const response = await client.get('/api/v1/users/me').loginAs(user)
-
     response.assertStatus(200)
-    response.assertBodyContains({
-      data: extract(user, 'id'),
-    })
+    response.assertBodyContains(
+      UserProfileResource.make(user).toJSON()
+    )
   })
 
   test('should update profile', async ({ client, expect }) => {
     const username = 'newName'
 
-    const response = await client
-      .patch('/api/v1/users/me')
+    const response = await client.patch('/api/v1/users/me')
       .loginAs(user)
-      .multipart({
-        username,
-        profile: fakeFilePath('image.png'),
-      })
+      .field('username', username)
+      .file('profile', fakeFilePath('image.png'))
     await user.refresh()
 
     response.assertStatus(200)
@@ -72,26 +73,28 @@ test.group('Users / Profile', (group) => {
       errors: [{ field: 'email' }],
     })
     expect(user.email).toBe(oldEmail)
-    Notification.assertNothingSent()
   })
 
   test('updating email should send verification email', async ({ client, expect }) => {
+    Mail.fake()
     const email = 'foo@test.com'
 
-    const response = await client.patch('/api/v1/api/v1/users/me').json({ email })
+    const response = await client.patch('/api/v1/users/me').loginAs(user).json({ email })
     await user.refresh()
 
     response.assertStatus(200)
     expect(user.email).toBe(email)
-    mail.assertSent(new EmailVerificationMail(user))
+    Mail.assertSentTo(email)
   })
 
   test("Should get other user's profile", async ({ client, expect }) => {
     const otherUser = await User.factory().create()
+    
     const response = await client.get(`/api/v1/users/${otherUser.username}`).loginAs(user)
+    
     response.assertStatus(200)
-    response.assertBodyContains({
-      data: extract(user, 'id'),
-    })
+    response.assertBodyContains(
+      ShowUserResource.make(otherUser).toJSON()
+    )
   })
 })

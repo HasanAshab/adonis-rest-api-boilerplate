@@ -26,19 +26,19 @@ export default class User extends compose(
   public id: number
 
   @column()
-  public name?: string
+  public name: string = null
 
   @column()
-  public username?: string
+  public username: string = null
 
   @column()
   public email: string
 
   @attachment()
-  public avatar?: AttachmentContract
+  public avatar: AttachmentContract = null
 
   @column()
-  public phoneNumber?: string
+  public phoneNumber: string = null
 
   @column()
   public role: Role
@@ -47,7 +47,7 @@ export default class User extends compose(
   public verified: boolean
 
   @column({ serializeAs: null })
-  public password?: string
+  public password: string = null
 
   @column({ serializeAs: null })
   public recoveryCodes?: string[]

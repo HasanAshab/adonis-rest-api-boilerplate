@@ -4,7 +4,12 @@ import User from 'App/Models/User'
 import ResetPasswordMail from 'App/Mails/ResetPasswordMail'
 import { Settings } from 'luxon'
 
-test.group('Auth/Password', (group) => {
+
+/*
+Run this suits:
+node ace test functional --files="v1/auth/password.spec.ts"
+*/
+test.group('Auth / Password', (group) => {
   const redirectUrl = 'https://myapp.com/password/reset/{{id}}/{{token}}'
   let user
 

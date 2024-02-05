@@ -10,7 +10,7 @@ test.group('Contact / Post', (group) => {
     const data = {
       email: 'test@gmail.com',
       subject: 'Just Testing',
-      message: 'bla bla bla ...',
+      message: 'bla'.repeat(10),
     }
 
     const response = await client.post('/api/v1/contact').json(data)

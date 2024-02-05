@@ -3,7 +3,12 @@ import User from 'App/Models/User'
 import Config from '@ioc:Adonis/Core/Config'
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
 
-test.group('Auth/Login', (group) => {
+
+/*
+Run this suits:
+node ace test functional --files="v1/auth/login.spec.ts"
+*/
+test.group('Auth / Login', (group) => {
   const twoFactorAuthService = new TwoFactorAuthService()
   let user
 
@@ -13,14 +18,14 @@ test.group('Auth/Login', (group) => {
     user = await User.factory().hasSettings().create()
   })
 
-  test('should login a user', async ({ client, expect }) => {
+  test('should login a user', async ({ client }) => {
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
       password: 'password',
     })
-
-    expect(response.body()).toHaveProperty('data.token')
-    expect(response.status()).toBe(200)
+    
+    response.assertStatus(200)
+    response.assertBodyHaveProperty('data.token')
   })
 
   test("shouldn't login with wrong password", async ({ client, expect }) => {
