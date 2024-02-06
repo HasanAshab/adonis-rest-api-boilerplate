@@ -41,9 +41,7 @@ test.group('Notifications / List', group => {
     const response = await client.get('/api/v1/notifications/' + notification.id).loginAs(user)
    
     response.assertStatus(200)
-    response.assertBodyContains(
-      ShowNotificationResource.make(notification).toJSON()
-    )
+    response.assertBodyContains(ShowNotificationResource.make(notification))
   })
   
   test('Should not get others notification', async ({ client }) => {
