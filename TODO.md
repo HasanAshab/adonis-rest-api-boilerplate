@@ -1,6 +1,6 @@
 This:
-Test delete
 links
+Test users/me contact/update status
 
 K: Advanced FTS PG, Docs
 

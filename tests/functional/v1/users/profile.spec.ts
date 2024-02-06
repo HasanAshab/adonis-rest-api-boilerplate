@@ -20,12 +20,12 @@ test.group('Users / Profile', (group) => {
     user = await User.factory().create()
   })
 
-  test('should get profile', async ({ client, expect }) => {
+  test('should get profile', async ({ client }) => {
     const response = await client.get('/api/v1/users/me').loginAs(user)
+    
+    log(response.body())
     response.assertStatus(200)
-    response.assertBodyContains(
-      UserProfileResource.make(user).toJSON()
-    )
+    response.assertBodyContains(UserProfileResource.make(user))
   })
 
   test('should update profile', async ({ client, expect }) => {

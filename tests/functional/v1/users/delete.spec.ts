@@ -14,17 +14,24 @@ test.group('Users/Delete', (group) => {
     user = await User.factory().create()
   })
 
-  test('{$self} should delete own account')
-    .with(['user', 'admin'])
-    .run(async ({ client, expect }, role) => {
-      const user = await User.factory().withRole(role).create()
+  test('Should delete own account', async ({ client, expect }) => {
+    const user = await User.factory().create()
 
-      const response = await client.delete(`/api/v1/users/${user.id}`).loginAs(user)
+    const response = await client.delete(`/api/v1/users/me`).loginAs(user)
 
-      response.assertStatus(204)
-      await expect(user.exists()).resolves.toBe(false)
-    })
+    response.assertStatus(204)
+    await expect(user.exists()).resolves.toBe(false)
+  })
 
+  test("User shouldn't delete others", async ({ client, expect }) => {
+    const anotherUser = await User.factory().create()
+
+    const response = await client.delete(`/api/v1/users/${anotherUser.id}`).loginAs(user)
+
+    response.assertStatus(403)
+    await expect(anotherUser.exists()).resolves.toBe(true)
+  })
+  
   test('Admin should delete user', async ({ client, expect }) => {
     const admin = await User.factory().withRole('admin').create()
 
@@ -34,15 +41,6 @@ test.group('Users/Delete', (group) => {
     await expect(user.exists()).resolves.toBe(false)
   })
 
-  test("User shouldn't delete admin", async ({ client, expect }) => {
-    const admin = await User.factory().withRole('admin').create()
-
-    const response = await client.delete(`/api/v1/users/${admin.id}`).loginAs(user)
-
-    response.assertStatus(403)
-    await expect(admin.exists()).resolves.toBe(true)
-  })
-
   test("Admins shouldn't delete each other", async ({ client, expect }) => {
     const [admin, anotherAdmin] = await User.factory().count(2).withRole('admin').create()
 
@@ -50,14 +48,5 @@ test.group('Users/Delete', (group) => {
 
     response.assertStatus(403)
     await expect(anotherAdmin.exists()).resolves.toBe(true)
-  })
-
-  test("Users shouldn't delete each other", async ({ client, expect }) => {
-    const anotherUser = await User.factory().create()
-
-    const response = await client.delete(`/api/v1/users/${anotherUser.id}`).loginAs(user)
-
-    response.assertStatus(403)
-    await expect(anotherUser.exists()).resolves.toBe(true)
   })
 })

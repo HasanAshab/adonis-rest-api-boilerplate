@@ -20,9 +20,7 @@ Route.group(() => {
     Route.patch('/:id/make-admin', 'UserController.makeAdmin').as('makeAdmin')
     Route.delete('/:id', 'UserController.deleteById').as('delete')
   })
-//  .middleware("roles:admin");
-  
-   
+  .middleware("roles:admin");
 })
 .as('users')
-//.middleware(['auth', 'verified'])
+.middleware(['auth', 'verified'])

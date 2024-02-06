@@ -21,7 +21,8 @@ export default class UserController {
     )
   }
 
-  public async profile({ auth }: HttpContextContract) {
+  public profile({ auth }: HttpContextContract) {
+    log('yo')
     return UserProfileResource.make(auth.user!)
   }
   

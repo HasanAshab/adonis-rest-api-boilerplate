@@ -22,10 +22,18 @@ export default class ContactController {
     response.created('Thanks for contacting us!')
   }
 
-  public async updateStatus({ request, params }: HttpContextContract) {
-    const data = await request.validate(UpdateContactStatusValidator)
-    await Contact.updateOrFail(params.id, data)
-    return `Contact form ${data.status}!`
+  public async close({ params }: HttpContextContract) {
+    await Contact.updateOrFail(params.id, {
+      status: 'closed'
+    })
+    return `Contact form closed!`
+  }
+  
+  public async reopen({ params }: HttpContextContract) {
+    await Contact.updateOrFail(params.id, {
+      status: 'opened'
+    })
+    return `Contact form reopened!`
   }
 
   public async suggest({ request }: HttpContextContract) {

@@ -16,7 +16,8 @@ export default class UserProfileResource extends JsonResource<UserDocument> {
       },
       links: {
         avatar: this.resource.avatarUrl(),
-      },
+        delete: this.makeUrl('v1.users.delete')
+      }
     }
   }
 }

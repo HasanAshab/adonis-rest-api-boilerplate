@@ -8,8 +8,8 @@ export default class ShowUserResource extends JsonResource<UserDocument> {
       username: this.resource.username,
       role: this.resource.role,
       links: {
-     //   avatar: this.resource.avatarUrl(),
-      },
+        avatar: this.resource.avatarUrl(),
+      }
     }
   }
 }
