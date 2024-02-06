@@ -10,5 +10,4 @@ Route.group(() => {
   Route.delete('/:id', 'NotificationController.delete').as('delete')
 })
 .as('notifications')
-//.middleware('auth')
 .middleware(['auth', 'verified'])

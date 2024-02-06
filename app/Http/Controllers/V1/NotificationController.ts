@@ -5,7 +5,11 @@ import ShowNotificationResource from 'App/Http/Resources/v1/notification/ShowNot
 
 export default class NotificationController {
   public async index({ auth, request }: HttpContextContract) {
-    const notifications = await auth.user!.related('notifications').query().paginateUsing(request)
+    const notifications = await auth.user!.related('notifications')
+      .query()
+      .select('id', 'createdAt', 'readAt')
+      .paginateUsing(request)
+      
     return NotificationCollection.make(notifications)
   }
 
