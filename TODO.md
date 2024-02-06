@@ -1,5 +1,4 @@
 This:
-list notfi grouped by date
 solve type
 
 K: Advanced FTS PG, Docs

@@ -1,4 +1,5 @@
 import AnonymousResourceCollection from './anonymous_resource_collection'
+import Route from '@ioc:Adonis/Core/Route'
 
 export default abstract class JsonResource {
   public static wrap = 'data'
@@ -28,5 +29,11 @@ export default abstract class JsonResource {
   protected when(condition: boolean, value: unknown | (() => unknown)) {
     if (!condition) return
     return typeof value === 'function' ? value() : value
+  }
+  
+  protected makeUrl(name: string) {
+    return Route.makeUrl(name, {
+      id: this.resource.id
+    })
   }
 }

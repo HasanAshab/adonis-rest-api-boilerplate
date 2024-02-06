@@ -39,7 +39,7 @@ test.group('Notifications / List', group => {
   test('Should get notification', async ({ client }) => {
     const notification = await NotificationFactory.new().belongsTo(user).create()
     const response = await client.get('/api/v1/notifications/' + notification.id).loginAs(user)
-   
+
     response.assertStatus(200)
     response.assertBodyContains(ShowNotificationResource.make(notification))
   })
