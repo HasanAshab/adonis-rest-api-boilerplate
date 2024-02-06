@@ -120,7 +120,7 @@ export default class AppProvider {
     Response.macro('sendOriginal', Response.prototype.send)
 
     Response.macro(
-      'send',
+      'sendd',
       function (
         body: null | number | string | Record<string, any> | any[] = {},
         generateEtag = this.config.etag
@@ -129,11 +129,14 @@ export default class AppProvider {
         if (acceptsJson) {
           if (types.isNull(body)) {
             body = {}
-          } else if (types.isString(body)) {
+          } 
+          else if (types.isString(body)) {
             body = { message: body }
-          } else if (body.toJSON) {
+          } 
+          else if (body.toJSON) {
             body = body.toJSON()
-          } else if (types.isNumber(body) || types.isArray(body)) {
+          } 
+          else if (types.isNumber(body) || types.isArray(body)) {
             body = { data: body }
           }
 

@@ -3,6 +3,7 @@ import Route from '@ioc:Adonis/Core/Route'
 
 export default abstract class JsonResource {
   public static wrap = 'data'
+  protected shouldWrap = true
 
   constructor(protected readonly resource: Record<string, any>) {}
 
@@ -17,13 +18,20 @@ export default abstract class JsonResource {
   public static collection(resources: Array<Record<string, any>>) {
     return new AnonymousResourceCollection(resources, this)
   }
+  
+  public dontWrap() {
+    this.shouldWrap = false;
+    return this;
+  }
 
   public abstract serialize(): Record<string, any>
 
   public toJSON() {
-    return {
-      [this.constructor.wrap]: this.serialize(),
-    }
+    return this.shouldWrap 
+    ? {
+        [this.constructor.wrap]: this.serialize(),
+      }
+    : this.serialize()
   }
 
   protected when(condition: boolean, value: unknown | (() => unknown)) {
@@ -32,8 +40,6 @@ export default abstract class JsonResource {
   }
   
   protected makeUrl(name: string) {
-    return Route.makeUrl(name, {
-      id: this.resource.id
-    })
+    return Route.makeUrl(name, this.resource)
   }
 }

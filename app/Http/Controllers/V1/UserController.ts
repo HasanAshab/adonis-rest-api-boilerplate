@@ -61,8 +61,13 @@ export default class UserController {
     return ShowUserResource.make(user)
   }
 
+  public async delete({ response, auth }: HttpContextContract) {
+    await auth.user!.delete()
+    response.noContent()
+  }
+  
   @bind()
-  public async delete({ request, response, bouncer }: HttpContextContract, user: User) {
+  public async deleteById({ request, response, bouncer }: HttpContextContract, user: User) {
     if (await bouncer.with('UserPolicy').denies('delete', user)) {
       return response.forbidden()
     }

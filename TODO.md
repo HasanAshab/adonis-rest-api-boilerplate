@@ -1,5 +1,6 @@
 This:
-solve type
+Test delete
+links
 
 K: Advanced FTS PG, Docs
 
@@ -9,4 +10,4 @@ T: Contribute adonisjs query builder
 F: listenners Test
 T: Commands
 
-Fallback: doc, 
+Fallback: solve type, doc, 
