@@ -1,9 +1,8 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
 import NotificationFactory from 'Database/factories/NotificationFactory'
-import ListNotificationResource from 'App/Http/Resources/v1/notification/ListNotificationResource'
+import NotificationCollection from 'App/Http/Resources/v1/notification/NotificationCollection'
 import ShowNotificationResource from 'App/Http/Resources/v1/notification/ShowNotificationResource'
-
 
 /*
 Run this suits:
@@ -22,11 +21,9 @@ test.group('Notifications / List', group => {
     const notifications = await NotificationFactory.new().count(2).belongsTo(user).create()
     
     const response = await client.get('/api/v1/notifications').loginAs(user)
-   
+
     response.assertStatus(200)
-    response.assertBodyContains(
-      ListNotificationResource.collection(notifications).toJSON()
-    )
+    response.assertBodyContains(NotificationCollection.make(notifications))
   })
   
   test("Shouldn't get others notifications list", async ({ client }) => {
@@ -36,7 +33,7 @@ test.group('Notifications / List', group => {
     const response = await client.get('/api/v1/notifications').loginAs(user)
     
     response.assertStatus(200)
-    response.assertBodyHaveProperty('data', [])
+    response.assertBodyHaveProperty('data', {})
   })
 
   test('Should get notification', async ({ client }) => {

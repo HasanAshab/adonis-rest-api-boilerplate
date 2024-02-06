@@ -1,5 +1,11 @@
 import { ApiResponse } from '@japa/api-client'
 import { get } from 'lodash'
+import { toJSON } from 'App/helpers'
+
+ApiResponse.macro('assertBodyContains', function (subset: object) {
+  this.ensureHasAssert()
+  this.assert.containsSubset(this.body(), toJSON(subset))
+})
 
 ApiResponse.macro('assertBodyHaveProperty', function (property: string, value?: unknown) {
   this.ensureHasAssert()

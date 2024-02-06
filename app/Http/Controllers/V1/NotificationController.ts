@@ -1,12 +1,12 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { DateTime } from 'luxon'
-import ListNotificationResource from 'App/Http/Resources/v1/notification/ListNotificationResource'
+import NotificationCollection from 'App/Http/Resources/v1/notification/NotificationCollection'
 import ShowNotificationResource from 'App/Http/Resources/v1/notification/ShowNotificationResource'
 
 export default class NotificationController {
   public async index({ auth, request }: HttpContextContract) {
     const notifications = await auth.user!.related('notifications').query().paginateUsing(request)
-    return ListNotificationResource.collection(notifications)
+    return NotificationCollection.make(notifications)
   }
 
   public async show({ params, auth }: HttpContextContract) {

@@ -3,7 +3,7 @@ import { SimplePaginator } from '@adonisjs/lucid/build/src/Database/Paginator/Si
 
 export default abstract class ResourceCollection {
   protected abstract collects: typeof JsonResource
-  protected collection!: Record<string, any>[]
+  protected collection!: this['collects'][]
 
   constructor(protected readonly resources: Array<Record<string, any>>) {}
 
@@ -17,10 +17,13 @@ export default abstract class ResourceCollection {
 
   public toJSON() {
     if (this.resources instanceof SimplePaginator) {
-      this.resources.rows = this.serializeCollection(this.resources.rows)
-      return this.resources.toJSON()
+      this.setCollection(this.resources.rows)
+      return { 
+        meta: this.resources.serialize().meta,
+        ...this.serialize()
+      }
     }
-    this.collection = this.serializeCollection(this.resources)
+    this.setCollection(this.resources)
     return this.serialize()
   }
 
@@ -28,9 +31,7 @@ export default abstract class ResourceCollection {
     return { [this.collects.wrap]: this.collection }
   }
 
-  protected serializeCollection(collection: Array<Record<string, any>>) {
-    return collection.map((resource) => {
-      return this.collects.make(resource).serialize()
-    })
+  protected setCollection(collection: Array<Record<string, any>>) {
+    return this.collection = collection.map(resource => this.collects.make(resource))
   }
 }

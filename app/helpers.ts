@@ -27,3 +27,8 @@ export function extract<
 
   return extractFromObject(obj, props)
 }
+
+
+export function toJSON(obj: object) {
+  return JSON.parse(JSON.stringify(obj))
+}

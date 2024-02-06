@@ -9,11 +9,16 @@ Client.addPaths({
 
 //TODO
 import JsonResource from '../res_dev/json_resource' 
+import ResourceCollection from '../res_dev/resource_collection' 
 globalThis.JsonResource = JsonResource
+globalThis.ResourceCollection = ResourceCollection
 globalThis.log = console.log
 
 
 
+
+import User from 'App/Models/User'
+import NotificationFactory from 'Database/factories/NotificationFactory'
 
 import Contact from 'App/Models/Contact'
 import DB from '@ioc:Adonis/Lucid/Database' 
@@ -34,6 +39,14 @@ const dummyData = [
 //Contact.query().delete().then(log)
 
 (async () => {
+  
+//MQ.3saV0THmVNcn0cQMa_QGj4SWJaD9N_03CXJmKZuo750Akw61Rml0UyTglzis
+  //const user = await User.factory().create()
+  
+  //log(await user.createToken())
+  
+  //await NotificationFactory.new().count(6).belongsTo(user).create()
+  //await NotificationFactory.new().count(3).belongsTo(user).betweenLastYear().create()
   //dummyData.forEach(d => Contact.factory().create(d).then(log) )
 
 //const c =  await Contact.search('project')

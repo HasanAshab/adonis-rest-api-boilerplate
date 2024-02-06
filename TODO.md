@@ -1,13 +1,13 @@
 This:
-tests ( contact.search + suggest )
 list notfi grouped by date
+solve type
 
-L: Advanced FTS PG
-F: FTS vuln
+K: Advanced FTS PG, Docs
+
 T: Complete todo marks
 t: feature/socialauth
 T: Contribute adonisjs query builder
 F: listenners Test
 T: Commands
 
-Fallback: doc, solve type, 
+Fallback: doc, 
