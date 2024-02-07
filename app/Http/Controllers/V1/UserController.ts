@@ -22,7 +22,6 @@ export default class UserController {
   }
 
   public profile({ auth }: HttpContextContract) {
-    log('yo')
     return UserProfileResource.make(auth.user!)
   }
   

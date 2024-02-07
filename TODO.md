@@ -1,8 +1,7 @@
 This:
-links
-Test users/me contact/update status
+Rank Contact
 
-K: Advanced FTS PG, Docs
+K: Advanced FTS PG
 
 T: Complete todo marks
 t: feature/socialauth

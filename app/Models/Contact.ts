@@ -6,7 +6,6 @@ import HasFactory from 'App/Models/Traits/HasFactory'
 //import Searchable from 'App/Models/Traits/Searchable';
 
 export default class Contact extends compose(BaseModel, HasFactory) {
-  //, Searchable) {
   @column({ isPrimary: true })
   public id: number
 
@@ -24,6 +23,14 @@ export default class Contact extends compose(BaseModel, HasFactory) {
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
+  
+  public isOpened() {
+    return this.status === 'opened'
+  }
+  
+  public isClosed() {
+    return !this.isOpened()
+  }
 }
 
 //ContactSchema.index({ subject: 'text', message: 'text' });

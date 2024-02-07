@@ -24,9 +24,7 @@ test.group('Contact / List', (group) => {
     const response = await client.get('/api/v1/contact/inquiries').loginAs(admin)
 
     response.assertStatus(200)
-    response.assertBodyContains(
-      ListContactResource.collection(contacts).toJSON()
-    )
+    response.assertBodyContains(ListContactResource.collection(contacts))
   })
 
   test('Users should not get contacts list', async ({ client }) => {
@@ -46,7 +44,7 @@ test.group('Contact / List', (group) => {
 
     response.assertStatus(200)
     response.assertBodyContains(
-      ShowContactResource.make(contact).toJSON(),
+      ShowContactResource.make(contact)
     )
   })
 

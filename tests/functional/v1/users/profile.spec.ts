@@ -26,7 +26,7 @@ test.group('Users / Profile', (group) => {
     log(response.body())
     response.assertStatus(200)
     response.assertBodyContains(UserProfileResource.make(user))
-  })
+  }).pin()
 
   test('should update profile', async ({ client, expect }) => {
     const username = 'newName'

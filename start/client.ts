@@ -36,18 +36,16 @@ const dummyData = [
   { subject: "Thank You Note", message: "Thank you for your collaboration. We appreciate your contributions to the project." }
 ];
 
-//Contact.query().delete().then(log)
+Contact.query().delete().then(log)
 
 (async () => {
   
 //MQ.3saV0THmVNcn0cQMa_QGj4SWJaD9N_03CXJmKZuo750Akw61Rml0UyTglzis
-  //const user = await User.factory().create()
+  const user = await User.factory().create()
   
-  //log(await user.createToken())
-  
-  //await NotificationFactory.new().count(6).belongsTo(user).create()
-  //await NotificationFactory.new().count(3).belongsTo(user).betweenLastYear().create()
-  //dummyData.forEach(d => Contact.factory().create(d).then(log) )
+  log((await user.createToken()).token)
+  let i = 0
+  dummyData.forEach(d => Contact.factory().create(d).then(() => log(++i)) )
 
 //const c =  await Contact.search('project')
 
