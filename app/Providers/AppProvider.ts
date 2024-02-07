@@ -17,7 +17,7 @@ export default class AppProvider {
       }
       return this
     })
-
+    
     Database.ModelQueryBuilder.macro('whereUid', function (uid: number) {
       return this.where(this.model.primaryKey, uid)
     })
@@ -95,9 +95,20 @@ export default class AppProvider {
     })
     
     Database.ModelQueryBuilder.macro('search', function (query: string, vectorColumn = 'search_vector') {
-      return this.where(vectorColumn, '@@', Database.raw(`plainto_tsquery('${query}')`));
+      this._tsQuery = `plainto_tsquery('${query}')`
+      return this.where(vectorColumn, '@@', Database.raw(this._tsQuery))
     })
+    
+    Database.ModelQueryBuilder.macro('rank', function (vectorColumn = 'search_vector') {
+      if(!this._tsQuery) {
+        throw new Error('Must use search() before using rank()')
+      }
 
+      return this
+        .select(Database.raw(`ts_rank_cd(${vectorColumn}, ${this._tsQuery}) AS rank`))
+        .orderBy('rank', 'DESC');
+    })
+    
     Database.ModelQueryBuilder.macro('paginateUsing', function (request: Request) {
       const page = request.input('page', 1)
       const limit = request.input('limit', 15)

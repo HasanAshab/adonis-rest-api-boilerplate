@@ -94,7 +94,7 @@ test.group('Users / Profile', (group) => {
     
     response.assertStatus(200)
     response.assertBodyContains(
-      ShowUserResource.make(otherUser).toJSON()
+      ShowUserResource.make(otherUser) 
     )
   })
 })

@@ -22,7 +22,7 @@ test.group('Contact / Search', (group) => {
 
     response.assertStatus(200)
     response.assertBodyContains(
-      ListContactResource.collection([contact]).toJSON()
+      ListContactResource.collection([contact]) 
     )
   })
 
@@ -52,7 +52,7 @@ test.group('Contact / Search', (group) => {
 
     response.assertStatus(200)
     response.assertBodyContains(
-      ListContactResource.collection([openedContact]).toJSON()
+      ListContactResource.collection([openedContact]) 
     )
   })
 })

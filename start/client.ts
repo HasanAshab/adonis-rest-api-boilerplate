@@ -36,7 +36,7 @@ const dummyData = [
   { subject: "Thank You Note", message: "Thank you for your collaboration. We appreciate your contributions to the project." }
 ];
 
-Contact.query().delete().then(log)
+//Contact.query().delete().then(log)
 
 (async () => {
   
@@ -51,4 +51,4 @@ Contact.query().delete().then(log)
 
 //const c =  await Contact.query().where('search_vector', '@@', DB.raw("to_tsquery('project')")).select('subject', 'message').pojo()
 //log(c)
-})()
+})

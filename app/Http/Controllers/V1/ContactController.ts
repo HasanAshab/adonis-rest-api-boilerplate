@@ -50,8 +50,9 @@ export default class ContactController {
     })
     res.json(results)
     */
-      
+
     return await Contact.search(q)
+      .rank()
       .limit(limit)
       .select('subject')
       .when(status, query => {
@@ -74,11 +75,13 @@ export default class ContactController {
     })
     */
     const contacts = await Contact.search(q)
+      .rank()
+      .select('*')
       .when(status, query => {
         query.where('status', status)
       })
       .paginateUsing(request)
-      
+
     return ListContactResource.collection(contacts)
   }
 
