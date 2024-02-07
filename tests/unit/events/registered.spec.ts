@@ -1,11 +1,16 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
-// import Mail from '@ioc:Adonis/Addons/Mail';
 import Mail from 'Tests/Assertors/MailAssertor'
 import SendEmailVerificationMail from 'App/Listeners/SendEmailVerificationMail'
 import SendNewUserJoinedNotificationToAdmins from 'App/Listeners/SendNewUserJoinedNotificationToAdmins'
+import Notification from '@ioc:Verful/Notification'
 
-test.group('Events/Registered', (group) => {
+
+/*
+Run this suits:
+node ace test unit --files="events/registered.spec.ts"
+*/
+test.group('Events / Registered', (group) => {
   let user
 
   group.setup(async () => {
@@ -26,29 +31,36 @@ test.group('Events/Registered', (group) => {
     Mail.assertSentTo(user.email)
   })
 
-  test("shouldn't send verification email on social method", async ({ expect }) => {
+  test("shouldn't send verification email for verified user", async ({ expect }) => {
     await new SendEmailVerificationMail().dispatch({
-      user,
+      user: await User.factory().create(),
       version: 'v1',
-      method: 'social',
+      method: 'internal',
     })
 
     Mail.assertNothingSent()
   })
+  
+  
 
   test('should notify admins about new user', async ({ expect }) => {
-    const admins = await User.factory().count(3).hasSettings().withRole('admin').create()
+    const admins = await User.factory().count(2).hasSettings().withRole('admin').create()
+    const anotherUser = await User.factory().create()
+    
+
+    Notification.trap((data, to) => {
+      
+    })
 
     await new SendNewUserJoinedNotificationToAdmins().dispatch({
       user,
       version: 'v1',
       method: 'internal',
     })
-
+    
     admins.forEach((admin) => {
       Mail.assertSentTo(admin.email)
     })
 
-    // TODO db notif assertions
-  })
+  }).pin()
 })

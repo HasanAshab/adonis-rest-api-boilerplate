@@ -76,7 +76,10 @@ export default class BasicAuthService {
   public async sendVerificationMail(user: User | string, version: string) {
     if (typeof user === 'string') {
       user = await User.internals().where('email', user).first()
-      if (!user || user.verified) return false
+    }
+    
+    if (!user || user.verified) {
+      return false
     }
 
     await new EmailVerificationMail(user, version).sendLater()

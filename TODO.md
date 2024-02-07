@@ -1,12 +1,14 @@
 This:
-Rank Contact
+listenners Test
+Api Res
+
 
 K: Advanced FTS PG
 
 T: Complete todo marks
 t: feature/socialauth
-T: Contribute adonisjs query builder
-F: listenners Test
 T: Commands
+T: Contribute adonisjs query builder
 
-Fallback: solve type, doc, 
+
+Fallback: solve type, doc

@@ -140,7 +140,7 @@ export default class BaseModel extends Model {
   }
 
   /**
-   * Check if the current record exists.
+   * Check if the current record still exists in database.
    * @returns A boolean indicating whether the record exists.
    */
   public exists() {

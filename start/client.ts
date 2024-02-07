@@ -43,6 +43,7 @@ const dummyData = [
 //MQ.3saV0THmVNcn0cQMa_QGj4SWJaD9N_03CXJmKZuo750Akw61Rml0UyTglzis
   const user = await User.factory().create()
   
+
   log((await user.createToken()).token)
   let i = 0
   dummyData.forEach(d => Contact.factory().create(d).then(() => log(++i)) )
