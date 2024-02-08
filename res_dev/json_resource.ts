@@ -18,27 +18,27 @@ export default abstract class JsonResource {
   public static collection(resources: Array<Record<string, any>>) {
     return new AnonymousResourceCollection(resources, this)
   }
-  
+
   public dontWrap() {
-    this.shouldWrap = false;
-    return this;
+    this.shouldWrap = false
+    return this
   }
 
   public abstract serialize(): Record<string, any>
 
   public toJSON() {
-    return this.shouldWrap 
-    ? {
-        [this.constructor.wrap]: this.serialize(),
-      }
-    : this.serialize()
+    return this.shouldWrap
+      ? {
+          [this.constructor.wrap]: this.serialize(),
+        }
+      : this.serialize()
   }
 
   protected when(condition: boolean, value: unknown | (() => unknown)) {
     if (!condition) return
     return typeof value === 'function' ? value() : value
   }
-  
+
   protected makeUrl(name: string) {
     return Route.makeUrl(name, this.resource)
   }

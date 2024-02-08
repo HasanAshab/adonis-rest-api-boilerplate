@@ -21,13 +21,12 @@ export function extract<
   T extends object | object[],
   P = T extends object ? keyof T : keyof T[number],
 >(obj: T, ...props: P[]) {
-  if(Array.isArray(obj)) {
-    return obj.map(item => extractFromObject(item, props))
+  if (Array.isArray(obj)) {
+    return obj.map((item) => extractFromObject(item, props))
   }
 
   return extractFromObject(obj, props)
 }
-
 
 export function toJSON(obj: object) {
   return JSON.parse(JSON.stringify(obj))

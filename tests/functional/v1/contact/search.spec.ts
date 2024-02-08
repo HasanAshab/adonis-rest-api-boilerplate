@@ -21,9 +21,7 @@ test.group('Contact / Search', (group) => {
     })
 
     response.assertStatus(200)
-    response.assertBodyContains(
-      ListContactResource.collection([contact]) 
-    )
+    response.assertBodyContains(ListContactResource.collection([contact]))
   })
 
   test('Users should not search contacts', async ({ client }) => {
@@ -44,15 +42,13 @@ test.group('Contact / Search', (group) => {
       Contact.factory().create({ message }),
       Contact.factory().closed().create({ message }),
     ])
-    
+
     const response = await client.get('/api/v1/contact/inquiries/search').loginAs(admin).qs({
       q: 'website bug',
       status: 'opened',
     })
 
     response.assertStatus(200)
-    response.assertBodyContains(
-      ListContactResource.collection([openedContact]) 
-    )
+    response.assertBodyContains(ListContactResource.collection([openedContact]))
   })
 })

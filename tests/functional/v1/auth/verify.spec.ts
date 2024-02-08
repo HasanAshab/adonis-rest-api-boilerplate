@@ -4,7 +4,6 @@ import EmailVerificationMail from 'App/Mails/EmailVerificationMail'
 import Client from '@ioc:Adonis/Addons/Client'
 import Mail from '@ioc:Adonis/Addons/Mail'
 
-
 /*
 Run this suits:
 node ace test functional --files="v1/auth/verify.spec.ts"

@@ -18,8 +18,8 @@ export default class ListContactResource extends JsonResource {
         reopen: this.when(this.resource.isClosed(), () => {
           return this.makeUrl('v1.contact.reopen')
         }),
-        delete: this.makeUrl('v1.contact.delete')
-      }
+        delete: this.makeUrl('v1.contact.delete'),
+      },
     }
   }
 }

@@ -10,8 +10,8 @@ export default abstract class ShowNotificationResource extends JsonResource {
       createdAt: this.resource.createdAt.toRelative(),
       links: {
         markAsRead: this.makeUrl('v1.notifications.markAsRead'),
-        delete: this.makeUrl('v1.notifications.delete')
-      }
+        delete: this.makeUrl('v1.notifications.delete'),
+      },
     }
   }
 }

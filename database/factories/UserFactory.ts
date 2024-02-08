@@ -9,7 +9,7 @@ export default class UserFactory extends Factory<User> {
       email: this.faker.internet.email(),
       password: 'password',
       role: 'user',
-      verified: true
+      verified: true,
     }
   }
 

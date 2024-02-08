@@ -81,10 +81,10 @@ export default class User extends compose(
     if (!this.email) {
       throw new Error('User must have an email before trying to generate username')
     }
-    
-    return this.username = await User.generateUsername(this.email, maxAttempts)
+
+    return (this.username = await User.generateUsername(this.email, maxAttempts))
   }
-  
+
   public static async generateUsername(email: string, maxAttempts = 10) {
     const name = email.split('@')[0].replace(/[&/\\#,+()$~%._@'":*?<>{}]/g, '')
     let username = name
@@ -96,13 +96,14 @@ export default class User extends compose(
 
       username = name + attempt
       if (username.length > USERNAME_MAX_LENGTH) {
-        username = name.substring(0, name.length - (username.length - USERNAME_MAX_LENGTH)) + attempt
+        username =
+          name.substring(0, name.length - (username.length - USERNAME_MAX_LENGTH)) + attempt
       }
     }
 
     return null
   }
-  
+
   @beforeSave()
   public static async hashPasswordIfModified(user: User) {
     if (user.$dirty.password) {

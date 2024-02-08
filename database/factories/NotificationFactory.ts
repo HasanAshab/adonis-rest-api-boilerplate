@@ -6,7 +6,7 @@ import { DateTime } from 'luxon'
 
 //TODO
 const Notification = createNotificationModel('notifications')
-Notification.prototype.exists = function() {
+Notification.prototype.exists = function () {
   return Notification.query().whereUid(this.id).exists()
 }
 Notification.prototype.refresh = BaseModel.prototype.refresh

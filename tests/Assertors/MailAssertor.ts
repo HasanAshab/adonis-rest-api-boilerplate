@@ -1,6 +1,5 @@
 import Assertor from './Assertor'
 import Mail from '@ioc:Adonis/Addons/Mail'
-import expect from 'expect'
 
 type FakeMailer = ReturnType<Mail['fake']>
 

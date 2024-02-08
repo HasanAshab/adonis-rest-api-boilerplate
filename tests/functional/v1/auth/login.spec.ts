@@ -3,7 +3,6 @@ import User from 'App/Models/User'
 import Config from '@ioc:Adonis/Core/Config'
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
 
-
 /*
 Run this suits:
 node ace test functional --files="v1/auth/login.spec.ts"
@@ -23,7 +22,7 @@ test.group('Auth / Login', (group) => {
       email: user.email,
       password: 'password',
     })
-    
+
     response.assertStatus(200)
     response.assertBodyHaveProperty('data.token')
   })

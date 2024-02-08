@@ -3,7 +3,7 @@ import Route from '@ioc:Adonis/Core/Route'
 // Endpoints for contact
 Route.group(() => {
   Route.post('/', 'ContactController.store')
-  
+
   Route.group(() => {
     Route.get('/', 'ContactController.index')
     Route.get('/suggest', 'ContactController.suggest')
@@ -13,7 +13,6 @@ Route.group(() => {
     Route.patch('/:id/reopen', 'ContactController.reopen').as('reopen')
     Route.delete('/:id', 'ContactController.delete').as('delete')
   })
-  .prefix('/inquiries')
-  .middleware(['auth', 'roles:admin'])
-})
-.as('contact')
+    .prefix('/inquiries')
+    .middleware(['auth', 'roles:admin'])
+}).as('contact')

@@ -15,12 +15,12 @@ export default abstract class ResourceCollection {
 
     return new (this as any)(resources)
   }
-  
+
   public dontWrap() {
-    this.shouldWrap = false;
-    return this;
+    this.shouldWrap = false
+    return this
   }
-  
+
   public isPaginated(): this is this & { resources: SimplePaginator } {
     return this.resources instanceof SimplePaginator
   }
@@ -28,9 +28,9 @@ export default abstract class ResourceCollection {
   public toJSON() {
     if (this.isPaginated()) {
       this.setCollection(this.resources.rows)
-      return { 
+      return {
         meta: this.resources.serialize().meta,
-        ...this.serialize()
+        ...this.serialize(),
       }
     }
     this.setCollection(this.resources)
@@ -40,14 +40,14 @@ export default abstract class ResourceCollection {
   protected serialize() {
     return this.shouldWrap || this.isPaginated()
       ? {
-        [this.collects.wrap]: this.collection
-      }
+          [this.collects.wrap]: this.collection,
+        }
       : this.collection
   }
 
   protected setCollection(collection: Array<Record<string, any>>) {
-    return this.collection = collection.map(resource => {
+    return (this.collection = collection.map((resource) => {
       return this.collects.make(resource).dontWrap()
-    })
+    }))
   }
 }

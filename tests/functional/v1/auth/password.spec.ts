@@ -4,7 +4,6 @@ import User from 'App/Models/User'
 import ResetPasswordMail from 'App/Mails/ResetPasswordMail'
 import { Settings } from 'luxon'
 
-
 /*
 Run this suits:
 node ace test functional --files="v1/auth/password.spec.ts"

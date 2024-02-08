@@ -17,7 +17,7 @@ test.group('Users / List', (group) => {
     ])
 
     const response = await client.get('/api/v1/users').loginAs(admin)
-log(response.body().data)
+    log(response.body().data)
     response.assertStatus(200)
     response.assertBodyContains(ListUserResource.collection(users))
   })

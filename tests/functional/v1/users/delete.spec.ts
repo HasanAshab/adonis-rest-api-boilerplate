@@ -31,7 +31,7 @@ test.group('Users/Delete', (group) => {
     response.assertStatus(403)
     await expect(anotherUser.exists()).resolves.toBe(true)
   })
-  
+
   test('Admin should delete user', async ({ client, expect }) => {
     const admin = await User.factory().withRole('admin').create()
 

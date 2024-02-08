@@ -9,7 +9,7 @@ export default class ShowUserResource extends JsonResource<UserDocument> {
       role: this.resource.role,
       links: {
         avatar: this.resource.avatarUrl(),
-      }
+      },
     }
   }
 }

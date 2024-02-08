@@ -94,7 +94,6 @@ export default class AuthController {
     return 'Verification link sent to email!'
   }
 
-  
   public async forgotPassword({ request, response }: HttpContextContract) {
     const { email } = await request.validate(ForgotPasswordValidator)
     await this.authService.sendResetPasswordMail(email)
@@ -132,7 +131,7 @@ export default class AuthController {
     await this.twoFactorAuthService.sendOtp(user)
     return '6 digit OTP code sent to phone number!'
   }
-  
+
   /**
    * @generateRecoveryCodes
    * @responseBody 200 - { data: string[] }
@@ -155,9 +154,9 @@ export default class AuthController {
     let { token, email, username } = await request.validate(SocialAuthTokenLoginValidator)
 
     const data: SocialAuthData = await ally.use(params.provider).userFromToken(token)
-    
+
     data.username = username
-    
+
     if (email) {
       data.email = email
       data.emailVerificationState = 'unverified'

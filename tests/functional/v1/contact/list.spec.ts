@@ -3,7 +3,7 @@ import User from 'App/Models/User'
 import Contact from 'App/Models/Contact'
 import { extract } from 'App/helpers'
 import ListContactResource from 'App/Http/Resources/v1/contact/ListContactResource'
-import ShowContactResource from "App/Http/Resources/v1/contact/ShowContactResource";
+import ShowContactResource from 'App/Http/Resources/v1/contact/ShowContactResource'
 
 /*
 Run this suits:
@@ -43,9 +43,7 @@ test.group('Contact / List', (group) => {
     const response = await client.get('/api/v1/contact/inquiries/' + contact.id).loginAs(admin)
 
     response.assertStatus(200)
-    response.assertBodyContains(
-      ShowContactResource.make(contact)
-    )
+    response.assertBodyContains(ShowContactResource.make(contact))
   })
 
   test('Users should not get contact', async ({ client }) => {

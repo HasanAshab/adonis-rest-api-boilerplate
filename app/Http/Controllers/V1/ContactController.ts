@@ -1,19 +1,16 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { bind } from '@adonisjs/route-model-binding'
 import Contact from 'App/Models/Contact'
-import CreateContactValidator from "App/Http/Validators/V1/contact/CreateContactValidator";
-import SuggestContactValidator from "App/Http/Validators/V1/contact/SuggestContactValidator";
-import SearchContactValidator from "App/Http/Validators/V1/contact/SearchContactValidator";
-import UpdateContactStatusValidator from "App/Http/Validators/V1/contact/UpdateContactStatusValidator";
+import CreateContactValidator from 'App/Http/Validators/V1/contact/CreateContactValidator'
+import SuggestContactValidator from 'App/Http/Validators/V1/contact/SuggestContactValidator'
+import SearchContactValidator from 'App/Http/Validators/V1/contact/SearchContactValidator'
+import UpdateContactStatusValidator from 'App/Http/Validators/V1/contact/UpdateContactStatusValidator'
 import ListContactResource from 'App/Http/Resources/v1/contact/ListContactResource'
-import ShowContactResource from "App/Http/Resources/v1/contact/ShowContactResource";
-
+import ShowContactResource from 'App/Http/Resources/v1/contact/ShowContactResource'
 
 export default class ContactController {
   public async index({ request }: HttpContextContract) {
-    return ListContactResource.collection(
-      await Contact.paginateUsing(request)
-    )
+    return ListContactResource.collection(await Contact.paginateUsing(request))
   }
 
   public async store({ request, response }: HttpContextContract) {
@@ -24,26 +21,26 @@ export default class ContactController {
 
   public async close({ params }: HttpContextContract) {
     await Contact.updateOrFail(params.id, {
-      status: 'closed'
+      status: 'closed',
     })
     return `Contact form closed!`
   }
-  
+
   public async reopen({ params }: HttpContextContract) {
     await Contact.updateOrFail(params.id, {
-      status: 'opened'
+      status: 'opened',
     })
     return `Contact form reopened!`
   }
 
   public async suggest({ request }: HttpContextContract) {
     const { q, status, limit = 10 } = await request.validate(SuggestContactValidator)
-    
+
     return await Contact.search(q)
       .rank()
       .limit(limit)
       .select('subject')
-      .when(status, query => {
+      .when(status, (query) => {
         query.where('status', status)
       })
       .pluck('subject')
@@ -55,7 +52,7 @@ export default class ContactController {
     const contacts = await Contact.search(q)
       .rank()
       .select('*')
-      .when(status, query => {
+      .when(status, (query) => {
         query.where('status', status)
       })
       .paginateUsing(request)

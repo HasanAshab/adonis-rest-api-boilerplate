@@ -6,7 +6,6 @@ import DuplicateEmailAndUsernameException from 'App/Exceptions/Validation/Duplic
 import DuplicateUsernameException from 'App/Exceptions/Validation/DuplicateUsernameException'
 import DuplicateEmailException from 'App/Exceptions/Validation/DuplicateEmailException'
 
-
 export interface SocialAuthData extends AllyUserContract {
   username?: string
 }
@@ -25,8 +24,8 @@ export default class SocialAuthService {
         socialAvatarUrl: data.avatarUrl,
       }
     )
-    
-    if(!user.email && data.username) {
+
+    if (!user.email && data.username) {
       if (!data.email) {
         throw new EmailRequiredException()
       }
@@ -36,8 +35,8 @@ export default class SocialAuthService {
         .orWhere('username', data.username)
         .select('email', 'username')
 
-      const emailExists = existingUsers.some(user => user?.email === data.email)
-      const usernameExists = existingUsers.some(user => user?.username === data.username)
+      const emailExists = existingUsers.some((user) => user?.email === data.email)
+      const usernameExists = existingUsers.some((user) => user?.username === data.username)
 
       if (emailExists && usernameExists) {
         throw new DuplicateEmailAndUsernameException()
@@ -59,15 +58,13 @@ export default class SocialAuthService {
       }
 
       isRegisteredNow = true
-    }
-    
-    else if(!user.email && !data.username) {
+    } else if (!user.email && !data.username) {
       if (!data.email) {
         throw new EmailRequiredException()
       }
 
       const emailExists = await User.exists('email', data.email)
-        
+
       if (emailExists) {
         throw new DuplicateEmailException()
       }
@@ -77,7 +74,7 @@ export default class SocialAuthService {
       await user.generateUsername(10)
       await user.save()
 
-      if(!user.username) {
+      if (!user.username) {
         throw new UsernameRequiredException()
       }
 
@@ -85,9 +82,9 @@ export default class SocialAuthService {
     }
 
     if (!user.username) {
-      throw new UsernameRequiredException();
+      throw new UsernameRequiredException()
     }
-    
+
     return { user, isRegisteredNow }
   }
 }

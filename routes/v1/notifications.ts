@@ -9,5 +9,5 @@ Route.group(() => {
   Route.get('/:id', 'NotificationController.show').as('show')
   Route.delete('/:id', 'NotificationController.delete').as('delete')
 })
-.as('notifications')
-.middleware(['auth', 'verified'])
+  .as('notifications')
+  .middleware(['auth', 'verified'])

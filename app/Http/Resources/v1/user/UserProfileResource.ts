@@ -11,8 +11,8 @@ export default class UserProfileResource extends JsonResource {
       username: this.resource.username,
       role: this.resource.role,
       links: {
-        avatar: this.resource.avatarUrl()
-      }
+        avatar: this.resource.avatarUrl(),
+      },
     }
   }
 }

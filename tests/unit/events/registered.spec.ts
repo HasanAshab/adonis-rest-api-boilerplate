@@ -5,7 +5,6 @@ import Notification from 'Tests/Assertors/NotificationAssertor'
 import SendEmailVerificationMail from 'App/Listeners/SendEmailVerificationMail'
 import SendNewUserJoinedNotificationToAdmins from 'App/Listeners/SendNewUserJoinedNotificationToAdmins'
 
-
 /*
 Run this suits:
 node ace test unit --files="events/registered.spec.ts"
@@ -41,18 +40,17 @@ test.group('Events / Registered', (group) => {
 
     Mail.assertNothingSent()
   })
-  
+
   test('should notify admins about new user', async ({ expect }) => {
     const admins = await User.factory().count(3).hasSettings().withRole('admin').create()
     const anotherUser = await User.factory().create()
-    
 
     await new SendNewUserJoinedNotificationToAdmins().dispatch({
       user,
       version: 'v1',
       method: 'internal',
     })
-    
+
     Notification.assertSentTo(admins)
     Notification.assertNotSentTo(anotherUser)
     Notification.assertNotSentTo(user)

@@ -23,11 +23,11 @@ export default class Contact extends compose(BaseModel, HasFactory) {
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
-  
+
   public isOpened() {
     return this.status === 'opened'
   }
-  
+
   public isClosed() {
     return !this.isOpened()
   }

@@ -77,7 +77,7 @@ export default class BasicAuthService {
     if (typeof user === 'string') {
       user = await User.internals().where('email', user).first()
     }
-    
+
     if (!user || user.verified) {
       return false
     }

@@ -16,7 +16,7 @@ test.group('Users/Password', (group) => {
 
     const response = await client.patch('/api/v1/users/me/password').loginAs(user).json({
       oldPassword: 'password',
-      newPassword
+      newPassword,
     })
     await user.refresh()
 

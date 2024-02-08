@@ -6,7 +6,6 @@ import UserProfileResource from 'App/Http/Resources/v1/user/UserProfileResource'
 import ShowUserResource from 'App/Http/Resources/v1/user/ShowUserResource'
 import Mail from 'Tests/Assertors/MailAssertor'
 
-
 /*
 Run this suits:
 node ace test functional --files="v1/users/profile.spec.ts"
@@ -22,7 +21,7 @@ test.group('Users / Profile', (group) => {
 
   test('should get profile', async ({ client }) => {
     const response = await client.get('/api/v1/users/me').loginAs(user)
-    
+
     log(response.body())
     response.assertStatus(200)
     response.assertBodyContains(UserProfileResource.make(user))
@@ -31,7 +30,8 @@ test.group('Users / Profile', (group) => {
   test('should update profile', async ({ client, expect }) => {
     const username = 'newName'
 
-    const response = await client.patch('/api/v1/users/me')
+    const response = await client
+      .patch('/api/v1/users/me')
       .loginAs(user)
       .field('username', username)
       .file('profile', fakeFilePath('image.png'))
@@ -89,12 +89,10 @@ test.group('Users / Profile', (group) => {
 
   test("Should get other user's profile", async ({ client, expect }) => {
     const otherUser = await User.factory().create()
-    
+
     const response = await client.get(`/api/v1/users/${otherUser.username}`).loginAs(user)
-    
+
     response.assertStatus(200)
-    response.assertBodyContains(
-      ShowUserResource.make(otherUser) 
-    )
+    response.assertBodyContains(ShowUserResource.make(otherUser))
   })
 })

@@ -3,44 +3,43 @@ import Assertor from './Assertor'
 import Notification, { NotifiableModel } from '@ioc:Verful/Notification'
 import { isEqual } from 'lodash'
 
-
 interface Notifiable {
-  table: string;
-  id: number;
+  table: string
+  id: number
 }
 
 export class NotificationAssertor extends Assertor {
   private notifiables: Notifiable[] = []
-  
+
   private extractData(user: NotifiableModel) {
     return {
       table: user.constructor.table,
-      id: user.id
+      id: user.id,
     }
   }
-  
+
   public fake() {
     Notification.trap((_, to) => {
       this.notifiables.push(this.extractData(to))
     })
   }
-  
+
   public isSentTo(user: NotifiableModel) {
-    return !!this.notifiables.find(notifiable => {
+    return !!this.notifiables.find((notifiable) => {
       return isEqual(notifiable, this.extractData(user))
     })
   }
-  
+
   public assertSentTo(users: NotifiableModel | NotifiableModel[]) {
-    if(Array.isArray(users)) {
-      return users.forEach(user => this.assertSentTo(user))
+    if (Array.isArray(users)) {
+      return users.forEach((user) => this.assertSentTo(user))
     }
     this.assertTrue(this.isSentTo(users))
   }
 
   public assertNotSentTo(users: NotifiableModel | NotifiableModel[]) {
-    if(Array.isArray(users)) {
-      return users.forEach(user => this.assertNotSentTo(user))
+    if (Array.isArray(users)) {
+      return users.forEach((user) => this.assertNotSentTo(user))
     }
     this.assertFalse(this.isSentTo(users))
   }

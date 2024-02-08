@@ -1,6 +1,5 @@
 //import JsonResource from '@samer/api-resource/resources/json_resource'
 
-
 export default class ListNotificationResource extends JsonResource {
   public serialize() {
     return {
@@ -10,8 +9,8 @@ export default class ListNotificationResource extends JsonResource {
       links: {
         self: this.makeUrl('v1.notifications.show'),
         markAsRead: this.makeUrl('v1.notifications.markAsRead'),
-        delete: this.makeUrl('v1.notifications.delete')
-      }
+        delete: this.makeUrl('v1.notifications.delete'),
+      },
     }
   }
 }

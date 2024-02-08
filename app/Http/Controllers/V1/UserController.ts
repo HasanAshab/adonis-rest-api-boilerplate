@@ -16,20 +16,18 @@ export default class UserController {
   public static readonly VERSION = 'v1'
 
   public async index({ request }: HttpContextContract) {
-    return ListUserResource.collection(
-      await User.withRole('user').paginateUsing(request)
-    )
+    return ListUserResource.collection(await User.withRole('user').paginateUsing(request))
   }
 
   public profile({ auth }: HttpContextContract) {
     return UserProfileResource.make(auth.user!)
   }
-  
+
   //TODO
   //@inject()
   public async updateProfile(
     { request, auth: { user } }: HttpContextContract,
-    authService: BasicAuthService = new BasicAuthService
+    authService: BasicAuthService = new BasicAuthService()
   ) {
     const { avatar, ...data } = await request.validate(UpdateProfileValidator)
     user.merge(data)
@@ -65,7 +63,7 @@ export default class UserController {
     await auth.user!.delete()
     response.noContent()
   }
-  
+
   @bind()
   public async deleteById({ request, response, bouncer }: HttpContextContract, user: User) {
     if (await bouncer.with('UserPolicy').denies('delete', user)) {
@@ -85,19 +83,19 @@ export default class UserController {
   //@inject()
   public async changePassword(
     { request, auth }: HttpContextContract,
-    authService: BasicAuthService = new BasicAuthService
+    authService: BasicAuthService = new BasicAuthService()
   ) {
     const { oldPassword, newPassword } = await request.validate(ChangePasswordValidator)
     await authService.changePassword(auth.user!, oldPassword, newPassword)
     //await Mail.to(user.email).send(new PasswordChangedMail())
     return 'Password changed!'
   }
-  
+
   //TODO
   //@inject()
   async changePhoneNumber(
     { request, response, auth }: HttpContextContract,
-    twoFactorAuthService: TwoFactorAuthService = new TwoFactorAuthService
+    twoFactorAuthService: TwoFactorAuthService = new TwoFactorAuthService()
   ) {
     const { phoneNumber, otp } = await request.validate(ChangePhoneNumberValidator)
     const user = auth.user!

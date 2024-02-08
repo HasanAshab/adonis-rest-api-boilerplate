@@ -3,7 +3,6 @@ import { omit, pick } from 'lodash'
 import User from 'App/Models/User'
 import Event from 'Tests/Assertors/EventAssertor'
 
-
 /*
 Run this suits:
 node ace test functional --files="v1/auth/register.spec.ts"

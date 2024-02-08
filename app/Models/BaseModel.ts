@@ -6,7 +6,6 @@ import Database from '@ioc:Adonis/Lucid/Database'
  * Base model class with common utility methods.
  */
 export default class BaseModel extends Model {
-
   /**
    * Find a record by specified fields.
    * @param fields - The fields to search by.
@@ -65,7 +64,7 @@ export default class BaseModel extends Model {
   public static deleteOrFail(uid: number) {
     return this.query().whereUid(uid).deleteOrFail()
   }
-  
+
   /**
    * Check if a record exists based on various criteria.
    * @param idOrFieldOrData - ID, field name, or data to check.
@@ -77,16 +76,16 @@ export default class BaseModel extends Model {
     value: T extends string ? unknown : never
   ) {
     return this.query()
-    .when(types.isNumber(idOrFieldOrData), query => {
-      query.whereUid(idOrFieldOrData)
-    })
-    .when(types.isString(idOrFieldOrData), query => {
-      query.where(idOrFieldOrData, value)
-    }) 
-    .when(types.isObject(idOrFieldOrData), query => {
-      query.whereEqual(idOrFieldOrData)
-    })
-    .exists()
+      .when(types.isNumber(idOrFieldOrData), (query) => {
+        query.whereUid(idOrFieldOrData)
+      })
+      .when(types.isString(idOrFieldOrData), (query) => {
+        query.where(idOrFieldOrData, value)
+      })
+      .when(types.isObject(idOrFieldOrData), (query) => {
+        query.whereEqual(idOrFieldOrData)
+      })
+      .exists()
   }
 
   /**
@@ -101,7 +100,7 @@ export default class BaseModel extends Model {
   ) {
     return !(await this.exists(idOrFieldOrData, value))
   }
-  
+
   /**
    * Search for records using a custom search method.
    * @param args - Parameters for the search method.
@@ -119,7 +118,7 @@ export default class BaseModel extends Model {
   public static paginate(...args: Parameters<ModelQueryBuilderContract['paginate']>) {
     return this.query().paginate(...args)
   }
-  
+
   /**
    * Paginate through records using a custom paginator.
    * @param args - Parameters for pagination using a custom paginator.
