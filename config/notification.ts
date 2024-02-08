@@ -41,6 +41,9 @@ const notificationsConfig: NotificationConfig = {
       driver: 'mail',
     },
   },
+  types: [
+    'App Updates',
+  ]
 }
 
 export default notificationsConfig
