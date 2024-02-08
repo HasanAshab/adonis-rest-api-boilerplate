@@ -2,7 +2,7 @@ import Assertor from './Assertor'
 import Event from '@ioc:Adonis/Core/Event'
 import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
 import expect from 'expect'
-import { isEqual, isEqualWith } from 'lodash'
+import { isEqual } from 'lodash'
 
 type FakeEmitter = ReturnType<Event['fake']>
 

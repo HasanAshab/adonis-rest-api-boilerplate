@@ -1,4 +1,4 @@
-import { ResourceCollection } from './resource_collection'
+import ResourceCollection from './resource_collection'
 import type { JsonResource } from './json_resource'
 
 export default class AnonymousResourceCollection extends ResourceCollection {

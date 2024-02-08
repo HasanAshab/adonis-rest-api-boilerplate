@@ -1,68 +1,53 @@
+import { BaseMailer } from '@ioc:Adonis/Addons/Mail'
 import Assertor from './Assertor'
-import Event from '@ioc:Adonis/Core/Event'
-import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
-import expect from 'expect'
-import { isEqual, isEqualWith } from 'lodash'
+import Notification, { NotifiableModel } from '@ioc:Verful/Notification'
+import { isEqual } from 'lodash'
 
-type FakeEmitter = ReturnType<Event['fake']>
+
+interface Notifiable {
+  table: string;
+  id: number;
+}
 
 export class NotificationAssertor extends Assertor {
-  public fakeEmitter?: FakeEmitter
-
-  public fake(...args: Parameters<Event['fake']>) {
-    return (this.fakeEmitter = Event.fake(...args))
-  }
-
-  public isDispatched(eventName: string, data?: object) {
-    this.assertFaked()
-    return this.fakeEmitter.exists((event) => {
-      if (event.name !== eventName) {
-        return false
-      }
-      if (data && !isEqual(event.data, data)) {
-        return false
-      }
-      return true
-    })
-  }
-
-  public isDispatchedContain(eventName: string, data: object) {
-    this.assertFaked()
-    return this.fakeEmitter.exists((event) => {
-      return event.name === eventName && this.deepContainsObject(event.data, data)
-    })
-  }
-
-  public assertDispatched(...args: Parameters<this['isDispatched']>) {
-    this.assertTrue(this.isDispatched(...args))
-  }
-
-  public assertDispatchedContain(...args: Parameters<this['isDispatchedContain']>) {
-    this.assertTrue(this.isDispatchedContain(...args))
-  }
-
-  public assertNotDispatched(eventName: string) {
-    this.assertFalse(this.isDispatched(...args))
-  }
-
-  public assertNothingDispatched() {
-    this.assertFalse(this.fakeEmitter.events.length)
-  }
-
-  private deepContainsObject(obj1: object, obj2: object) {
-    for (const key in obj2) {
-      if (obj2.hasOwnProperty(key)) {
-        if (typeof obj2[key] === 'object' && obj2[key] !== null) {
-          if (!this.deepContainsObject(obj1[key], obj2[key])) {
-            return false
-          }
-        } else if (obj1[key] !== obj2[key]) {
-          return false
-        }
-      }
+  private notifiables: Notifiable[] = []
+  
+  private extractData(user: NotifiableModel) {
+    return {
+      table: user.constructor.table,
+      id: user.id
     }
-    return true
+  }
+  
+  public fake() {
+    Notification.trap((_, to) => {
+      this.notifiables.push(this.extractData(to))
+    })
+  }
+  
+  public isSentTo(user: NotifiableModel) {
+    return !!this.notifiables.find(notifiable => {
+      return isEqual(notifiable, this.extractData(user))
+    })
+  }
+  
+  public assertSentTo(users: NotifiableModel | NotifiableModel[]) {
+    if(Array.isArray(users)) {
+      return users.forEach(user => this.assertSentTo(user))
+    }
+    this.assertTrue(this.isSentTo(users))
+  }
+
+  public assertNotSentTo(users: NotifiableModel | NotifiableModel[]) {
+    if(Array.isArray(users)) {
+      return users.forEach(user => this.assertNotSentTo(user))
+    }
+    this.assertFalse(this.isSentTo(users))
+  }
+
+  public assertNothingSent() {
+    this.assertTrue(this.notifiables.length === 0)
   }
 }
 
-export default new EventAssertor()
+export default new NotificationAssertor()
