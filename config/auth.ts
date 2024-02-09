@@ -118,7 +118,7 @@ const authConfig: AuthConfigExtended = {
   },
 
   /**
-   *
+   * Two Factor Authentication config
    */
   twoFactor: {
     methods: ['sms', 'call', 'app'],

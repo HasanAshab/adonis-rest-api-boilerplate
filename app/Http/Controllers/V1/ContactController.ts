@@ -4,7 +4,6 @@ import Contact from 'App/Models/Contact'
 import CreateContactValidator from 'App/Http/Validators/V1/contact/CreateContactValidator'
 import SuggestContactValidator from 'App/Http/Validators/V1/contact/SuggestContactValidator'
 import SearchContactValidator from 'App/Http/Validators/V1/contact/SearchContactValidator'
-import UpdateContactStatusValidator from 'App/Http/Validators/V1/contact/UpdateContactStatusValidator'
 import ListContactResource from 'App/Http/Resources/v1/contact/ListContactResource'
 import ShowContactResource from 'App/Http/Resources/v1/contact/ShowContactResource'
 

@@ -234,3 +234,46 @@ export const profiler: ProfilerConfig = {
 |
 */
 export const validator: ValidatorConfig = {}
+
+
+/*
+  |--------------------------------------------------------------------------
+  | Application Constraints
+  |--------------------------------------------------------------------------
+  |
+  | This section contains constraints and settings for your application.
+  | You can define various constraints
+  |
+*/
+export const constraints = {
+  user: {
+    name: {
+      maxLength: 35
+    },
+    username: {
+      minLength: 3,
+      maxLength: 20
+    },
+    password: {
+      maxLength: 128,
+      strategy: 'standard'
+    },
+    avatar: {
+      size: '1mb',
+      extnames: ['jpg', 'png'],
+    }
+  },
+  contact: {
+    subject: {
+      minLength: 5,
+      maxLength: 72
+    },
+    message: {
+      minLength: 20,
+      maxLength: 300
+    }
+  }
+}
+
+
+

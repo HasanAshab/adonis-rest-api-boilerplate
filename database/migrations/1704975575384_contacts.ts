@@ -1,4 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import Config from '@ioc:Adonis/Core/Config'
+
 
 export default class extends BaseSchema {
   protected tableName = 'contacts'
@@ -6,9 +8,9 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.string('email', 254).notNullable()
-      table.string('subject').notNullable().index()
-      table.string('message').notNullable()
+      table.string('email', Config.get('app.user.email.maxLength')).notNullable()
+      table.string('subject', Config.get('app.contact.subject.maxLength')).notNullable().index()
+      table.string('message', Config.get('app.contact.message.maxLength')).notNullable()
       table.enum('status', ['opened', 'closed']).defaultTo('opened')
       table.timestamp('created_at', { useTz: true })
     })

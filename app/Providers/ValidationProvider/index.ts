@@ -1,4 +1,5 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
+import Config from '@ioc:Adonis/Core/Config'
 import PasswordStrategyManager from './Password/PasswordStrategyManager'
 
 export default class ValidationProvider {
@@ -10,14 +11,16 @@ export default class ValidationProvider {
     this.app.container.singleton('Adonis/Core/Validator/Rules/Password', () => ({
       PasswordStrategyManager: this.passwordStrategyManager,
     }))
-
-    this.passwordStrategyManager
-      .register('standard', () => {
-        const StandardPasswordStrategy =
-          require('./Password/Strategies/StandardPasswordStrategy').default
-        return new StandardPasswordStrategy()
-      })
-      .asDefault()
+    
+    this.passwordStrategyManager.defaultStrategy(
+      Config.get('app.constraints.user.password.strategy')
+    )
+    
+    this.passwordStrategyManager.register('standard', () => {
+      const StandardPasswordStrategy =
+        require('./Password/Strategies/StandardPasswordStrategy').default
+      return new StandardPasswordStrategy()
+    })
 
     this.passwordStrategyManager.register('complex', () => {
       const ComplexPasswordStrategy =

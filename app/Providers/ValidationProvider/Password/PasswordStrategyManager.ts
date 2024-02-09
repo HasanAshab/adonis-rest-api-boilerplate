@@ -3,11 +3,15 @@ import { PasswordValidationStrategy } from '@ioc:Adonis/Core/Validator/Rules/Pas
 export type PasswordValidationStrategyFactory = () => PasswordValidationStrategy
 
 export default class PasswordStrategyManager {
-  protected defaultStrategy?: string
+  protected _defaultStrategy?: string
   protected strategies = new Map<string, PasswordValidationStrategy>()
   protected factories = new Map<string, PasswordValidationStrategyFactory>()
-
-  register(name: string, strategyFactory: string | PasswordValidationStrategyFactory) {
+  
+  public defaultStrategy(name: string) {
+    this._defaultStrategy = name;
+    return this;
+  }
+  public register(name: string, strategyFactory: string | PasswordValidationStrategyFactory) {
     if (typeof strategyFactory === 'string') {
       const path = strategyFactory
       strategyFactory = () => {
@@ -19,13 +23,13 @@ export default class PasswordStrategyManager {
     this.factories.set(name, strategyFactory)
 
     const markAsDefault = () => {
-      this.defaultStrategy = name
+      this._defaultStrategy = name
     }
 
     return { asDefault: markAsDefault }
   }
 
-  get(name = this.defaultStrategy) {
+  public get(name = this._defaultStrategy) {
     if (!name) {
       throw new Error('Must provide a strategy name as no default strategy registered')
     }

@@ -1,14 +1,15 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
+
 export default class extends BaseSchema {
   protected tableName = 'users'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.string('name', 35).nullable()
-      table.string('username', 20).unique().nullable().index()
-      table.string('email', 254).unique().nullable().index()
+      table.string('name', Config.get('app.user.name.maxLength')).nullable()
+      table.string('username', Config.get('app.user.username.maxLength')).unique().nullable().index()
+      table.string('email').unique().nullable().index()
       table.string('phone_number').nullable()
       table.enum('role', ['user', 'admin']).defaultTo('user')
       table.boolean('verified').notNullable().defaultTo(false)

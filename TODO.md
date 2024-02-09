@@ -2,6 +2,8 @@ This:
 BaseNotif
 
 
+
+F: Conf tfa
 D: Api Res
 I: trust device
 T: Complete todo marks

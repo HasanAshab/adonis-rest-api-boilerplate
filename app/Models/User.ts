@@ -3,6 +3,7 @@ import { column, hasOne, beforeSave, HasOne, HasMany } from '@ioc:Adonis/Lucid/O
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
 import { Exception } from '@adonisjs/core/build/standalone'
 import { compose } from '@poppinss/utils/build/helpers'
+import Config from '@ioc:Adonis/Core/Config'
 import Hash from '@ioc:Adonis/Core/Hash'
 import Settings from 'App/Models/Settings'
 import HasFactory from 'App/Models/Traits/HasFactory'
@@ -11,9 +12,9 @@ import HasApiTokens from 'App/Models/Traits/HasApiTokens'
 import { Notifiable } from '@ioc:Verful/Notification/Mixins'
 import InvalidPasswordException from 'App/Exceptions/InvalidPasswordException'
 
-const USERNAME_MAX_LENGTH = 20
 
 export type Role = 'user' | 'admin'
+//export type Role = typeof import('Config/app')['constraints']['user']['role'][number]
 
 export default class User extends compose(
   BaseModel,
@@ -86,6 +87,7 @@ export default class User extends compose(
   }
 
   public static async generateUsername(email: string, maxAttempts = 10) {
+    const USERNAME_MAX_LENGTH = Config.get('app.constraints.user.username.maxLength')
     const name = email.split('@')[0].replace(/[&/\\#,+()$~%._@'":*?<>{}]/g, '')
     let username = name
 

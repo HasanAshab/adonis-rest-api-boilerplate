@@ -1,15 +1,23 @@
 import Validator from 'App/Http/Validators/Validator'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import Config from '@ioc:Adonis/Core/Config'
+
 
 export default class UpdateProfileValidator extends Validator {
   public schema = schema.create({
     name: schema.string.optional([
-      rules.lengthRange(3, 25),
-      // rules.sanitize()
+      rules.lengthRange(
+        Config.get('app.constraints.user.name.minLength'),
+        Config.get('app.constraints.user.name.maxLength')
+      ), 
+   // rules.sanitize()
     ]),
     username: schema.string.optional([
       rules.alphaNum(),
-      rules.lengthRange(3, 20),
+      rules.lengthRange(
+        Config.get('app.constraints.user.username.minLength'),
+        Config.get('app.constraints.user.username.maxLength')
+      ),
       rules.unique({
         table: 'users',
         column: 'username',
@@ -17,15 +25,13 @@ export default class UpdateProfileValidator extends Validator {
     ]),
     email: schema.string.optional([
       rules.email(),
-      rules.maxLength(254),
       rules.unique({
         table: 'users',
         column: 'email',
-      }),
+      })
     ]),
-    avatar: schema.file.optional({
-      size: '1mb',
-      extnames: ['jpg', 'png'],
-    }),
+    avatar: schema.file.optional(
+      Config.get('app.constraints.user.avatar')
+    )
   })
 }
