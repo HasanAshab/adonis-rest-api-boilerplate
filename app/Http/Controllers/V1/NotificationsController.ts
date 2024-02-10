@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import NotificationCollection from 'App/Http/Resources/v1/notification/NotificationCollection'
 import ShowNotificationResource from 'App/Http/Resources/v1/notification/ShowNotificationResource'
 
-export default class NotificationController {
+export default class NotificationsController {
   public async index({ auth, request }: HttpContextContract) {
     const notifications = await auth
       .user!.related('notifications')

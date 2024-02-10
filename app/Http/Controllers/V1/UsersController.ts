@@ -12,7 +12,7 @@ import ListUserResource from 'App/Http/Resources/v1/user/ListUserResource'
 import UserProfileResource from 'App/Http/Resources/v1/user/UserProfileResource'
 import ShowUserResource from 'App/Http/Resources/v1/user/ShowUserResource'
 
-export default class UserController {
+export default class UsersController {
   public static readonly VERSION = 'v1'
 
   public async index({ request }: HttpContextContract) {
@@ -43,7 +43,7 @@ export default class UserController {
     await user.save()
 
     if (data.email) {
-      await authService.sendVerificationMail(user, UserController.VERSION)
+      await authService.sendVerificationMail(user, UsersController.VERSION)
       return 'Verification email sent to your new email address!'
     }
 

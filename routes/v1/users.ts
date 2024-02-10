@@ -4,19 +4,19 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
   Route.group(() => {
-    Route.get('/', 'UserController.profile')
-    Route.delete('/', 'UserController.delete')
-    Route.patch('/', 'UserController.updateProfile')
-    Route.patch('/password', 'UserController.changePassword')
-    Route.patch('/phone-number', 'UserController.changePhoneNumber')
+    Route.get('/', 'UsersController.profile')
+    Route.delete('/', 'UsersController.delete')
+    Route.patch('/', 'UsersController.updateProfile')
+    Route.patch('/password', 'UsersController.changePassword')
+    Route.patch('/phone-number', 'UsersController.changePhoneNumber')
   }).prefix('me')
 
-  Route.get('/:username', 'UserController.show').as('show')
+  Route.get('/:username', 'UsersController.show').as('show')
 
   Route.group(() => {
-    Route.get('/', 'UserController.index')
-    Route.patch('/:id/make-admin', 'UserController.makeAdmin').as('makeAdmin')
-    Route.delete('/:id', 'UserController.deleteById').as('delete')
+    Route.get('/', 'UsersController.index')
+    Route.patch('/:id/make-admin', 'UsersController.makeAdmin').as('makeAdmin')
+    Route.delete('/:id', 'UsersController.deleteById').as('delete')
   }).middleware('roles:admin')
 })
   .as('users')
