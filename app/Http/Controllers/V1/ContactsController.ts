@@ -7,7 +7,7 @@ import SearchContactValidator from 'App/Http/Validators/V1/contact/SearchContact
 import ListContactResource from 'App/Http/Resources/v1/contact/ListContactResource'
 import ShowContactResource from 'App/Http/Resources/v1/contact/ShowContactResource'
 
-export default class ContactController {
+export default class ContactsController {
   public async index({ request }: HttpContextContract) {
     return ListContactResource.collection(await Contact.paginateUsing(request))
   }

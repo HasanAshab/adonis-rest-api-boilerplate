@@ -13,3 +13,7 @@ T: Contribute adonisjs query builder
 
 
 Fallback: solve type, doc
+
+
+Ghema
+Sat -> co

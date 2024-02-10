@@ -10,9 +10,16 @@ export default class SettingsController {
     return auth.user!.settings
   }
 
-  async setupNotificationPreference({ request, auth }: HttpContextContract) {
-    const notificationPreference = await request.validate(setNotificationPreference)
-    await auth.user!.related('settings').query().update({ notificationPreference })
+  async setupNotificationPreference({ request, auth }: HttpContextContract, notificationService = ) {
+    const notificationPreference = notificationService.formatPreference(
+      await request.validate(UpdateNotificationPreferenceValidator)
+    )
+  
+    await auth.user!
+      .related('settings')
+      .query()
+      .update({ notificationPreference })
+    
     return 'Settings saved!'
   }
 

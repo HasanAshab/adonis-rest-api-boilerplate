@@ -1,5 +1,6 @@
+import BaseModel from 'App/Models/BaseModel'
 import { DateTime } from 'luxon'
-import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { column } from '@ioc:Adonis/Lucid/Orm'
 //import type AuthConfig from 'Config/auth';
 
 export interface TwoFactorAuthSettings {
@@ -19,16 +20,5 @@ export default class Settings extends BaseModel {
   public twoFactorAuth: TwoFactorAuthSettings
 
   @column()
-  public notificationPreference: Record<string, Record<string, boolean>>
-
-  @column.dateTime({
-    autoCreate: true,
-  })
-  public createdAt: DateTime
-
-  @column.dateTime({
-    autoCreate: true,
-    autoUpdate: true,
-  })
-  public updatedAt: DateTime
+  public notificationPreference: Record<string, string[]>
 }

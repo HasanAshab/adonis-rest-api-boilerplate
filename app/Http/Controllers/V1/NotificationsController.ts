@@ -20,6 +20,8 @@ export default class NotificationController {
   }
 
   public async markAllAsRead({ params, auth }: HttpContextContract) {
+    await this.notificationService.markAsRead(auth.user)
+    
     await auth.user!.related('notifications').query().whereNull('readAt').update({
       readAt: DateTime.local(),
     })
@@ -28,6 +30,8 @@ export default class NotificationController {
   }
 
   public async markAsRead({ params, auth }: HttpContextContract) {
+    await this.notificationService.markAsRead(auth.user, params.id)
+
     await auth.user!.related('notifications').query().whereUid(params.id).updateOrFail({
       readAt: DateTime.local(),
     })
@@ -36,6 +40,8 @@ export default class NotificationController {
   }
 
   public async unreadCount({ auth }: HttpContextContract) {
+    await this.notificationService.getUnreadCount(auth.user)
+
     const count = await auth.user!.related('notifications').query().whereNull('readAt').getCount()
 
     return { data: { count } }
@@ -43,7 +49,6 @@ export default class NotificationController {
 
   public async delete({ response, params, auth }: HttpContextContract) {
     await auth.user!.related('notifications').query().whereUid(params.id).deleteOrFail()
-
     response.noContent()
   }
 }

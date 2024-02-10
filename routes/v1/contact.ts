@@ -2,16 +2,16 @@ import Route from '@ioc:Adonis/Core/Route'
 
 // Endpoints for contact
 Route.group(() => {
-  Route.post('/', 'ContactController.store')
+  Route.post('/', 'ContactsController.store')
 
   Route.group(() => {
-    Route.get('/', 'ContactController.index')
-    Route.get('/suggest', 'ContactController.suggest')
-    Route.get('/search', 'ContactController.search')
-    Route.get('/:id', 'ContactController.show').as('show')
-    Route.patch('/:id/close', 'ContactController.close').as('close')
-    Route.patch('/:id/reopen', 'ContactController.reopen').as('reopen')
-    Route.delete('/:id', 'ContactController.delete').as('delete')
+    Route.get('/', 'ContactsController.index')
+    Route.get('/suggest', 'ContactsController.suggest')
+    Route.get('/search', 'ContactsController.search')
+    Route.get('/:id', 'ContactsController.show').as('show')
+    Route.patch('/:id/close', 'ContactsController.close').as('close')
+    Route.patch('/:id/reopen', 'ContactsController.reopen').as('reopen')
+    Route.delete('/:id', 'ContactsController.delete').as('delete')
   })
     .prefix('/inquiries')
     .middleware(['auth', 'roles:admin'])
