@@ -7,7 +7,7 @@
 
 import type { Config } from '@japa/runner'
 import TestUtils from '@ioc:Adonis/Core/TestUtils'
-import { runFailedTests, specReporter, assert, apiClient } from '@japa/preset-adonis'
+import { specReporter, assert, apiClient } from '@japa/preset-adonis'
 import { expect } from '@japa/expect'
 
 /*

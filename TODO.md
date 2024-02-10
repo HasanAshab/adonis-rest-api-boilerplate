@@ -1,4 +1,5 @@
 This:
+NotifType
 BaseNotif
 
 

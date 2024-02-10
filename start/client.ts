@@ -14,6 +14,8 @@ globalThis.JsonResource = JsonResource
 globalThis.ResourceCollection = ResourceCollection
 globalThis.log = console.log
 
+
+/*
 import User from 'App/Models/User'
 import NotificationFactory from 'Database/factories/NotificationFactory'
 
@@ -86,3 +88,4 @@ const dummyData = [
   //const c =  await Contact.query().where('search_vector', '@@', DB.raw("to_tsquery('project')")).select('subject', 'message').pojo()
   //log(c)
 }
+*/
