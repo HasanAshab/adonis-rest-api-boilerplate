@@ -9,6 +9,18 @@ export default class extends BaseSeeder {
         name: 'Announcements',
         groupName: 'App Updates',
         description: 'bla'.repeat(20)
+      },
+      {
+        type: 'feature',
+        name: 'Feature News',
+        groupName: 'App Updates',
+        description: 'bla'.repeat(20)
+      },
+      {
+        type: 'liked',
+        name: 'Liked',
+        groupName: 'Community',
+        description: 'bla'.repeat(20)
       }
     ])
   }

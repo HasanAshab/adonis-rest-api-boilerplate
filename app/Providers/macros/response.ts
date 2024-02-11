@@ -1,4 +1,6 @@
 import Response from '@ioc:Adonis/Core/Response'
+import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { SimplePaginator } from '@adonisjs/lucid/build/src/Database/Paginator/SimplePaginator'
 import { types } from '@ioc:Adonis/Core/Helpers'
 import { getStatusText } from 'http-status-codes'
 
@@ -34,23 +36,23 @@ Response.macro(
   ) {
     const acceptsJson = this.request.headers.accept === 'application/json'
     if (acceptsJson) {
-      if (types.isNull(body)) {
-        body = {}
-      } else if (types.isString(body)) {
-        body = { message: body }
-      } else if (body.toJSON) {
+      if (body instanceof SimplePaginator || body instanceof ResourceCollection || body instanceof JsonResource) {
         body = body.toJSON()
-      } else if (types.isNumber(body) || types.isArray(body)) {
+      }
+
+      else if (types.isNull(body)) {
+        body = {}
+      } 
+      else if (types.isString(body)) {
+        body = { message: body }
+      }
+      else if (types.isNumber(body) || types.isArray(body) || body instanceof BaseModel) {
         body = { data: body }
       }
 
-      if (!body.success) {
-        body.success = this.isSuccessful
-      }
-
-      if (!body.message) {
-        body.message = this.standardMessage
-      }
+      
+      body.success = body.success ?? this.isSuccessful
+      body.message = body.message ?? this.standardMessage
     }
 
     return this.sendOriginal(body, generateEtag)

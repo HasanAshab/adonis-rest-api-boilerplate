@@ -2,10 +2,11 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import NotificationType from 'App/Models/NotificationType'
 import CreateNotificationTypeValidator from 'App/Http/Validators/V1/NotificationType/CreateNotificationTypeValidator'
 import UpdateNotificationTypeValidator from 'App/Http/Validators/V1/NotificationType/UpdateNotificationTypeValidator'
+import NotificationTypeResource from 'App/Http/Resources/v1/NotificationType/NotificationTypeResource'
 
 export default class NotificationTypesController {
-  public index() {
-    return NotificationType.all()
+  public async index() {
+    return NotificationTypeCollection.make(await NotificationType.all())
   }
   
   public async store({ request, response }: HttpContextContract) {

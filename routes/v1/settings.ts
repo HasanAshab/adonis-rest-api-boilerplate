@@ -5,7 +5,7 @@ Route.group(() => {
   Route.get('/', 'SettingsController.index')
   Route.patch('/notification-preference', 'SettingsController.updateNotificationPreference')
 })
-//.middleware(['auth', 'verified'])
+.middleware(['auth', 'verified'])
 
 // App settings managenent
 /* await Router.middleware(["auth", "roles:admin"]).group(() => {

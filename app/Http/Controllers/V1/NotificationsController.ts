@@ -5,6 +5,7 @@ import ShowNotificationResource from 'App/Http/Resources/v1/notification/ShowNot
 
 
 export default class NotificationsController {
+  //TODO
   constructor(private readonly notificationService = new NotificationService) {}
 
   public async index({ auth, request }: HttpContextContract) {
