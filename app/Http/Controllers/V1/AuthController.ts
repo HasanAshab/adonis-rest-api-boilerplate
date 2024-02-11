@@ -18,7 +18,8 @@ import SocialAuthTokenLoginValidator from 'App/Http/Validators/V1/Auth/Login/Soc
 
 export default class AuthController {
   public static readonly VERSION = 'v1'
-
+  
+  // TODO
   constructor(
     private readonly authService = new BasicAuthService(),
     private readonly twoFactorAuthService = new TwoFactorAuthService(),

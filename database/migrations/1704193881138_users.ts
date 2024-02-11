@@ -1,4 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import Config from '@ioc:Adonis/Core/Config'
 
 
 export default class extends BaseSchema {

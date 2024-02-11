@@ -15,6 +15,11 @@ export default class BaseModel extends Model {
   public static findByFields(fields: Record<string, any>, options?) {
     return this.query(options).whereEqual(fields).first()
   }
+  
+  
+  public static pluck(column: string) {
+    return this.query().pluck(column)
+  }
 
   /**
    * Exclude a model or ID from the query result.

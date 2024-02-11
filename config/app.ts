@@ -272,6 +272,23 @@ export const constraints = {
       minLength: 20,
       maxLength: 300
     }
+  },
+  notificationType: {
+    type: {
+      maxLength: 50
+    },
+    name: {
+      maxLength: 30,
+      minLength: 3
+    },
+    groupName: {
+      maxLength: 20,
+      minLength: 3
+    },
+    description: {
+      maxLength: 200,
+      minLength: 5
+    }
   }
 }
 

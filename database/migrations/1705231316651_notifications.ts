@@ -15,6 +15,7 @@ export default class Notifications extends BaseSchema {
         .onDelete('CASCADE')
       table.timestamp('read_at', { useTz: true })
       table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).notNullable()
     })
   }
 

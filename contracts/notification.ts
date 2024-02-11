@@ -32,9 +32,4 @@ declare module '@ioc:Verful/Notification' {
     mail: NotificationChannels['mail']
 
   }
-  
-  interface NotificationConfig {
-    types: string[]
-  }
-  
 }

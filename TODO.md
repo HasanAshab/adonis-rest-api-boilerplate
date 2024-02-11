@@ -2,7 +2,7 @@ This:
 NotifType
 BaseNotif
 
-
+K: notifPref() what gpt
 
 F: Conf tfa
 D: Api Res

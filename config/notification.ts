@@ -16,34 +16,31 @@ import { NotificationConfig } from '@ioc:Verful/Notification'
 |
 */
 const notificationsConfig: NotificationConfig = {
-  channel: 'database',
+  channel: 'app',
   channels: {
     /*
     |--------------------------------------------------------------------------
-    | Database channel
+    | App channel
     |--------------------------------------------------------------------------
     |
     | Use this channel to store notifications in the database.
     |
     */
-    database: {
+    app: {
       driver: 'database',
     },
     /*
     |--------------------------------------------------------------------------
-    | Mail channel
+    | Email channel
     |--------------------------------------------------------------------------
     |
     | Use this channel to send notifications via email.
     |
     */
-    mail: {
+    email: {
       driver: 'mail',
     },
   },
-  types: [
-    'App Updates',
-  ]
 }
 
 export default notificationsConfig
