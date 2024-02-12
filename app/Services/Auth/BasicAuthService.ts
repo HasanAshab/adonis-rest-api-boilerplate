@@ -10,7 +10,7 @@ import EmailVerificationMail from 'App/Mails/EmailVerificationMail'
 import ResetPasswordMail from 'App/Mails/ResetPasswordMail'
 import InvalidCredentialException from 'App/Exceptions/InvalidCredentialException'
 import LoginAttemptLimitExceededException from 'App/Exceptions/LoginAttemptLimitExceededException'
-import OtpRequiredException from 'App/Exceptions/OtpRequiredException'
+import OtpRequiredException from 'App/Exceptions/Validation/OtpRequiredException'
 import PasswordChangeNotAllowedException from 'App/Exceptions/PasswordChangeNotAllowedException'
 
 export interface LoginCredentials {

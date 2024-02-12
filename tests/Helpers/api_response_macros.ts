@@ -7,11 +7,18 @@ ApiResponse.macro('assertBodyContains', function (subset: object) {
   this.assert!.containsSubset(this.body(), toJSON(subset))
 })
 
+ApiResponse.macro('assertBodyContainProperty', function (property: string, subset: object) {
+  this.ensureHasAssert()
+  const recieved = get(this.body(), property)
+
+  this.assert!.containsSubset(recieved, toJSON(subset))
+})
+
 ApiResponse.macro('assertBodyHaveProperty', function (property: string, value?: unknown) {
   this.ensureHasAssert()
   const recieved = get(this.body(), property)
   this.assert!.isDefined(recieved)
-  value && this.assert!.deepEqual(recieved, value)
+  value && this.assert!.deepEqual(recieved, toJSON(value))
 })
 
 ApiResponse.macro('assertBodyNotHaveProperty', function (property: string) {

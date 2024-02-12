@@ -18,7 +18,7 @@ export default class ValidationException extends ApiException {
     })
   }
 
-  public get payload() {
+  public payload() {
     return {
       errors: this.makeValidationErrors(),
     }
@@ -28,7 +28,10 @@ export default class ValidationException extends ApiException {
     return reduce(
       this.fieldsWithRule,
       (result, rule, field) => {
-        const message = Config.get('validator.customMessages.' + rule)
+        const message = Config
+          .get('validator.customMessages.' + rule)
+          .replace('{{ field }}', field)
+          
         result.push({ field, rule, message })
         return result
       },

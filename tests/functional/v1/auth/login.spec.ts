@@ -33,7 +33,7 @@ test.group('Auth / Login', (group) => {
       password: 'wrong-pass',
     })
 
-    expect(response.status()).toBe(401)
+    response.assertStatus(401)
     expect(response.body()).not.toHaveProperty('data.token')
   })
 
@@ -44,7 +44,7 @@ test.group('Auth / Login', (group) => {
       password: 'password',
     })
 
-    expect(response.status()).toBe(401)
+    response.assertStatus(401)
     expect(response.body()).not.toHaveProperty('data.token')
   })
 
@@ -68,10 +68,7 @@ test.group('Auth / Login', (group) => {
     expect(lockedResponse.status()).toBe(429)
   })
 
-  test('Login should flag for otp if not provided for 2FA enabled account', async ({
-    client,
-    expect,
-  }) => {
+  test('Login should flag for otp if not provided for 2FA enabled account', async ({ client }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create()
 
     const response = await client.post('/api/v1/auth/login').json({
@@ -79,9 +76,9 @@ test.group('Auth / Login', (group) => {
       password: 'password',
     })
 
-    expect(response.status()).toBe(401)
-    expect(response.header('x-2fa-code')).toBe('required')
-    expect(response.body()).not.toHaveProperty('data.token')
+    response.assertStatus(422)
+    response.assertBodyNotHaveProperty('data.token')
+    response.assertBodyContainProperty('errors[0]', { field: 'otp' })
   })
 
   test('should login a user with valid otp (2FA)', async ({ client, expect }) => {
@@ -93,7 +90,7 @@ test.group('Auth / Login', (group) => {
       otp,
     })
 
-    expect(response.status()).toBe(200)
+    response.assertStatus(200)
     expect(response.body()).toHaveProperty('data.token')
   })
 
@@ -106,6 +103,6 @@ test.group('Auth / Login', (group) => {
     })
 
     expect(response.body()).not.toHaveProperty('data.token')
-    expect(response.status()).toBe(401)
+    response.assertStatus(401)
   })
 })

@@ -5,6 +5,14 @@ import { DateTime } from 'luxon'
 import { reduce } from 'lodash'
 
 export default class NotificationService {
+  public notificationTypes() {
+    return NotificationType.pluck('type')
+  }
+  
+  public channels() {
+    return Object.keys(Config.get('notification.channels'))
+  }
+  
   public formatPreference(preference: Record<string, Record<string, boolean>>) {
     return reduce(preference, (formated: Record<string, string[]>, value, key) => {
       formated[key] = Object.keys(value)
@@ -12,9 +20,22 @@ export default class NotificationService {
     })
   }
   
-  public async notificationPreferenceSchema() {
-    const channels = Object.keys(Config.get('notification.channels'))
-    const types = await NotificationType.pluck('type')
+  public async defaultPrefrence() {
+    const channels = this.channels()
+    const types = await this.notificationTypes()
+    return reduce(types, (accumulator, type) => {
+      accumulator[type] = reduce(channels, (preferenceAccumulator, channel) => {
+        preferenceAccumulator[channel] = true
+        return schemaAccumulator
+      }, {})
+    
+      return accumulator
+    }, {})
+  }
+  
+  public async preferenceValidationSchema() {
+    const channels = this.channels()
+    const types = await this.notificationTypes()
   
     const schemaDefinition = reduce(types, (accumulator, type) => {
       const typeSchema = reduce(channels, (schemaAccumulator, channel) => {

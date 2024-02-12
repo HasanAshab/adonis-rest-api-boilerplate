@@ -6,21 +6,34 @@ import UpdateNotificationPreferenceValidator from 'App/Http/Validators/V1/Settin
 //import UpdateAppSettingsValidator from "App/Http/Validators/v1/settings/UpdateAppSettingsValidator";
 
 export default class SettingsController {
-  async index({ auth }: HttpContextContract) {
-    await auth.user!.load('settings')
-    return auth.user!.settings
+  //TODO
+  constructor(private readonly notificationService = new NotificationService) {}
+  
+  public async index({ auth: { user } }: HttpContextContract) {
+    await user!.load('settings')
+    return user!.settings
+  }
+  
+  public async twoFactorAuth({ auth: { user } }: HttpContextContract) {
+    await user!.load('settings')
+    return {
+      data: user!.settings.twoFactorAuth
+    }
+  }
+  
+  public async notificationPreference({ auth }: HttpContextContract) {
+    const preference = await this.notificationService.preferenceOf(auth.user!)
+    return { data: preference }
   }
 
-  async updateNotificationPreference({ request, auth }: HttpContextContract, notificationService = new NotificationService) {
-    const schema = await notificationService.notificationPreferenceSchema()
-    const preference = await request.validate({ schema })
+  public async updateNotificationPreference({ request, auth }: HttpContextContract) {
+    const schema = await this.notificationService.preferenceValidationSchema()
+    const notificationPreference = await request.validate({ schema })
     
     await auth.user!
       .related('settings')
       .query()
-      .update({ 
-        notificationPreference: notificationService.formatPreference(preference)
-      })
+      .update({ notificationPreference })
     
     return 'Settings saved!'
   }

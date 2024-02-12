@@ -50,7 +50,7 @@ export default class UserFactory extends Factory<User> {
           enabled: enableTwoFactorAuth,
           method,
           secret: null,
-        },
+        }
       })
     })
   }

@@ -12,10 +12,10 @@ export default class extends BaseSchema {
       table.json('two_factor_auth').defaultTo({
         enabled: false,
         method: 'sms',
-        secret: null,
+        secret: null
       })
 
-      table.json('notification_preference').defaultTo({})
+      table.json('notification_preference').notNullable()
     })
   }
 

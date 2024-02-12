@@ -1,9 +1,10 @@
 This:
-NotifType
-BaseNotif
+otp
+test
 
 K: notifPref() what gpt
 
+I: cicd
 F: Conf tfa
 D: Api Res
 I: trust device
