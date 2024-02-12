@@ -20,14 +20,14 @@ export default class NotificationService {
     return reduce(types, (accumulator, type) => {
       accumulator[type] = reduce(channels, (preferenceAccumulator, channel) => {
         preferenceAccumulator[channel] = true
-        return schemaAccumulator
+        return preferenceAccumulator
       }, {})
     
       return accumulator
     }, {})
   }
   
-  public async preferenceValidationSchema() {
+  public async preferenceValidator() {
     const channels = this.channels()
     const types = await this.notificationTypes()
   
@@ -41,7 +41,10 @@ export default class NotificationService {
       return accumulator
     }, {})
 
-    return schema.create(schemaDefinition)
+    return {
+      schema: schema.create(schemaDefinition),
+      messages: Config.get('validator.customMessages')
+    }
   }
 
   public unread(user: User) {
