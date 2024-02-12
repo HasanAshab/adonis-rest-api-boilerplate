@@ -274,10 +274,10 @@ export const constraints = {
     }
   },
   notificationType: {
-    type: {
+    name: {
       maxLength: 50
     },
-    name: {
+    displayText: {
       maxLength: 30,
       minLength: 3
     },

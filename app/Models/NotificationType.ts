@@ -9,10 +9,10 @@ export default class NotificationType extends compose(BaseModel, HasFactory) {
   public id: number   
   
   @column()
-  public type: string 
+  public name: string 
   
   @column()
-  public name: string
+  public displayText: string
   
   @column()
   public groupName: string 

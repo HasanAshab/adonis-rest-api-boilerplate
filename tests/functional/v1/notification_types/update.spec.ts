@@ -20,8 +20,8 @@ test.group('Notification Types / Update', (group) => {
 
   test('Should update notification type', async ({ client, expect }) => {
     const data = {
-      type: 'new_type',
-      name: 'New Name',
+      name: 'new_name',
+      displayText: 'New Text',
       groupName: 'Group Name',
       description: 'new description bla bla ...'
     }
@@ -36,26 +36,26 @@ test.group('Notification Types / Update', (group) => {
 
   test('Users should not update notification type', async ({ client, expect }) => {
     const user = await User.factory().create()
-    const name = 'New Name'
+    const displayText = 'New Text'
     
-    const response = await client.patch('/api/v1/notification-types/' + notificationType.id).loginAs(user).json({ name })
+    const response = await client.patch('/api/v1/notification-types/' + notificationType.id).loginAs(user).json({ displayText })
     await notificationType.refresh()
 
     response.assertStatus(403)
-    expect(notificationType.name).not.toBe(name)
+    expect(notificationType.displayText).not.toBe(displayText)
   })
 
-  test('Should update notification type with existing type', async ({ client, expect }) => {
-    const name = 'New Name'
+  test('Should update notification type with existing name', async ({ client, expect }) => {
+    const displayText = 'New Text'
     const existingNotificationType = await NotificationType.factory().create()
     
     const response = await client.patch('/api/v1/notification-types/' + notificationType.id).loginAs(admin).json({ 
-      type: existingNotificationType.type
+      name: existingNotificationType.name
     })
     await notificationType.refresh()
 
     
     response.assertStatus(422)
-    expect(notificationType.type).not.toBe(existingNotificationType.type)
+    expect(notificationType.name).not.toBe(existingNotificationType.name)
   })
 })

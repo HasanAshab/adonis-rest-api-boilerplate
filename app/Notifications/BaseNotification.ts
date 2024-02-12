@@ -5,6 +5,17 @@ import { keys, pickBy } from 'lodash'
 export default abstract class BaseNotification implements NotificationContract {
   public abstract notificationType: string;
   
+  public via(notifiable: User) {
+    //await notifiable.loadIfNotLoaded('settings')
+    
+    return notifiable.related('notificationPreferences')
+      .query()
+      .whereHas('notificationType', () => {
+        query.where('type', this.notificationType)
+      })
+      .pluck('channel')
+  }
+  
   public async via(notifiable: User) {
     await notifiable.loadIfNotLoaded('settings')
     const preference = notifiable.settings.notificationPreference[this.notificationType]

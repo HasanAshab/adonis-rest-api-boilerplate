@@ -7,6 +7,7 @@ Route.group(() => {
   Route.get('/:id', 'NotificationTypesController.show').as('show')
 
   Route.group(() => {
+    Route.post('/', 'NotificationTypesController.store')
     Route.patch('/:id', 'NotificationTypesController.update')
     Route.delete('/:id', 'NotificationTypesController.delete')
   })

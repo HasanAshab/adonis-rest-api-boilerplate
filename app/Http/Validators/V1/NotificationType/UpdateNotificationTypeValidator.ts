@@ -5,20 +5,20 @@ import Config from '@ioc:Adonis/Core/Config'
 
 export default class UpdateNotificationTypeValidator extends Validator {
   public schema = schema.create({
-    type: schema.string.optional([ 
+    name: schema.string.optional([ 
       rules.regex(/^[a-zA-Z0-9_-]+$/),
       rules.unique({
         table: 'notification_types',
-        column: 'type',
+        column: 'name',
       }),
       rules.maxLength(
-        Config.get('app.constraints.notificationType.type.maxLength')
+        Config.get('app.constraints.notificationType.name.maxLength')
       )
     ]),
-    name: schema.string.optional([
+    displayText: schema.string.optional([
       rules.lengthRange(
-        Config.get('app.constraints.notificationType.name.minLength'),
-        Config.get('app.constraints.notificationType.name.maxLength')
+        Config.get('app.constraints.notificationType.displayText.minLength'),
+        Config.get('app.constraints.notificationType.displayText.maxLength')
       )
     ]),
     groupName: schema.string.optional([
