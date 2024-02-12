@@ -70,40 +70,54 @@ export default class BaseModel extends Model {
     return this.query().whereUid(uid).deleteOrFail()
   }
 
+  
   /**
-   * Check if a record exists based on various criteria.
-   * @param idOrFieldOrData - ID, field name, or data to check.
-   * @param value - The value to check if matching.
-   * @returns A boolean indicating whether the record exists.
+   * Check if a record exists in the database based on a unique identifier.
+   * @param uid - The unique identifier of the record.
+   * @returns A boolean indicating whether the record with the specified UID exists.
    */
-  public static exists<T extends number | string | object>(
-    idOrFieldOrData: T,
-    value: T extends string ? unknown : never
-  ) {
-    return this.query()
-      .when(types.isNumber(idOrFieldOrData), (query) => {
-        query.whereUid(idOrFieldOrData)
+  public static exists(uid: string | number): Promise<boolean>;
+  
+  /**
+   * Check if a record exists in the database based on a column value.
+   * @param column - The name of the column to check.
+   * @param value - The value to check for in the specified column.
+   * @returns A boolean indicating whether a record with the specified value in the specified column exists.
+   */
+  public static exists(column: string, value: unknown): Promise<boolean>;
+  
+  /**
+   * Check if a record exists in the database based on provided data.
+   * @param data - An object representing the data to check for existence.
+   * @returns A boolean indicating whether a record with the specified data exists.
+   */
+  public static exists(data: object): Promise<boolean>;
+  
+  /**
+   * Implementation of the exists() method.
+   */
+  public static async exists(uidOrColumnOrData: string | number | object, value?: unknown) {
+    return await this.query()
+      .when(types.isObject(uidOrColumnOrData), (query) => {
+        query.whereEqual(uidOrColumnOrData)
       })
-      .when(types.isString(idOrFieldOrData), (query) => {
-        query.where(idOrFieldOrData, value)
+      .when(!types.isObject(uidOrColumnOrData) && types.isUndefined(value), (query) => {
+        query.whereUid(uidOrColumnOrData)
       })
-      .when(types.isObject(idOrFieldOrData), (query) => {
-        query.whereEqual(idOrFieldOrData)
+      .when(!types.isObject(uidOrColumnOrData) && !types.isUndefined(value), (query) => {
+        query.where(uidOrColumnOrData, value)
       })
       .exists()
   }
 
   /**
    * Check if a record does not exist based on various criteria.
-   * @param idOrFieldOrData - ID, field name, or data to check.
+   * @param uidOrColumnOrData - ID, field name, or data to check.
    * @param value - The value to check if matching.
    * @returns A boolean indicating whether the record does not exist.
    */
-  public static async notExists<T extends number | string | object>(
-    idOrFieldOrData: T,
-    value: T extends string ? unknown : never
-  ) {
-    return !(await this.exists(idOrFieldOrData, value))
+  public static async notExists(...args: Parameters<typeof BaseModel.exists>) {
+    return !(await this.exists(...args))
   }
 
   /**

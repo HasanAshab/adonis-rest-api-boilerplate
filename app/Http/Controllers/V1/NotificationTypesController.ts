@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { bind } from '@adonisjs/route-model-binding'
 import NotificationType from 'App/Models/NotificationType'
 import CreateNotificationTypeValidator from 'App/Http/Validators/V1/NotificationType/CreateNotificationTypeValidator'
 import UpdateNotificationTypeValidator from 'App/Http/Validators/V1/NotificationType/UpdateNotificationTypeValidator'
@@ -17,19 +18,20 @@ export default class NotificationTypesController {
     return response.created('Notification type created!')
   }
 
-  public show({ params }: HttpContextContract) {
-    return NotificationType.findOrFail(params.type)
+  @bind()
+  public show({ params }: HttpContextContract, notificationType: NotificationType) {
+    return notificationType
   }
   
   public async update({ request, params }: HttpContextContract) {
     const data = await request.validate(UpdateNotificationTypeValidator)
-    await NotificationType.updateOrFail(params.type, data)
+    await NotificationType.updateOrFail(params.id, data)
     
     return 'Notification type updated!'
   }
   
   public async delete({ response, params }: HttpContextContract) {
-    await NotificationType.deleteOrFail(params.type)
+    await NotificationType.deleteOrFail(params.id)
     response.noContent()
   }
 }

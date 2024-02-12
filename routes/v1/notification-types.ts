@@ -4,13 +4,12 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
   Route.get('/', 'NotificationTypesController.index')
-  Route.get('/:type', 'NotificationTypesController.show').as('show')
+  Route.get('/:id', 'NotificationTypesController.show').as('show')
 
   Route.group(() => {
-    Route.patch('/', 'NotificationTypesController.update')
-    Route.delete('/', 'NotificationTypesController.delete')
+    Route.patch('/:id', 'NotificationTypesController.update')
+    Route.delete('/:id', 'NotificationTypesController.delete')
   })
-  .prefix(':type')
   .middleware('roles:admin')
 })
 .as('notificationTypes')

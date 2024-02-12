@@ -5,7 +5,7 @@ import NotificationTypeCollection from 'App/Http/Resources/v1/NotificationType/N
 
 /*
 Run this suits:
-node ace test functional --files="v1/notification_type/list.spec.ts"
+node ace test functional --files="v1/notification_types/list.spec.ts"
 */
 test.group('Notification Types / List', (group) => {
   let user: User
@@ -28,7 +28,7 @@ test.group('Notification Types / List', (group) => {
 
   test('Should get notification', async ({ client }) => {
     const notificationType = await NotificationType.factory().create()
-    const response = await client.get('/api/v1/notification-types/' + notificationType.type).loginAs(user)
+    const response = await client.get('/api/v1/notification-types/' + notificationType.id).loginAs(user)
 
     response.assertStatus(200)
     response.assertBodyHaveProperty('data', notificationType)

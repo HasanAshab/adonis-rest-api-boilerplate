@@ -6,6 +6,9 @@ import HasFactory from 'App/Models/Traits/HasFactory'
 
 export default class NotificationType extends compose(BaseModel, HasFactory) {
   @column({ isPrimary: true })
+  public id: number   
+  
+  @column()
   public type: string 
   
   @column()
