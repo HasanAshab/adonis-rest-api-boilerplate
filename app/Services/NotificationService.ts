@@ -13,13 +13,7 @@ export default class NotificationService {
     return Object.keys(Config.get('notification.channels'))
   }
   
-  public formatPreference(preference: Record<string, Record<string, boolean>>) {
-    return reduce(preference, (formated: Record<string, string[]>, value, key) => {
-      formated[key] = Object.keys(value)
-      return formated
-    })
-  }
-  
+
   public async defaultPrefrence() {
     const channels = this.channels()
     const types = await this.notificationTypes()

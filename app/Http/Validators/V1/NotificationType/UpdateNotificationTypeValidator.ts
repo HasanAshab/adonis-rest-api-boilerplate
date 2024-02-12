@@ -6,7 +6,7 @@ import Config from '@ioc:Adonis/Core/Config'
 export default class UpdateNotificationTypeValidator extends Validator {
   public schema = schema.create({
     type: schema.string.optional([ 
-      rules.alphaNum(),
+      rules.regex(/^[a-zA-Z0-9_-]+$/),
       rules.unique({
         table: 'notification_types',
         column: 'type',

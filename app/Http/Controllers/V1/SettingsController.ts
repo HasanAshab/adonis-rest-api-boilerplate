@@ -6,9 +6,6 @@ import UpdateNotificationPreferenceValidator from 'App/Http/Validators/V1/Settin
 //import UpdateAppSettingsValidator from "App/Http/Validators/v1/settings/UpdateAppSettingsValidator";
 
 export default class SettingsController {
-  //TODO
-  constructor(private readonly notificationService = new NotificationService) {}
-  
   public async index({ auth: { user } }: HttpContextContract) {
     await user!.load('settings')
     return user!.settings
@@ -21,13 +18,16 @@ export default class SettingsController {
     }
   }
   
-  public async notificationPreference({ auth }: HttpContextContract) {
-    const preference = await this.notificationService.preferenceOf(auth.user!)
-    return { data: preference }
+  public async notificationPreference({ auth: { user } }: HttpContextContract) {
+    await user.load('settings')
+    return { 
+      data: user.settings.notificationPreference 
+    }
   }
 
-  public async updateNotificationPreference({ request, auth }: HttpContextContract) {
-    const schema = await this.notificationService.preferenceValidationSchema()
+  //TODO
+  public async updateNotificationPreference({ request, auth }: HttpContextContract, notificationService = new NotificationService) {
+    const schema = await notificationService.preferenceValidationSchema()
     const notificationPreference = await request.validate({ schema })
     
     await auth.user!

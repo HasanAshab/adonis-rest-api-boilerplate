@@ -1,8 +1,6 @@
 This:
-otp
 test
 
-K: notifPref() what gpt
 
 I: cicd
 F: Conf tfa
