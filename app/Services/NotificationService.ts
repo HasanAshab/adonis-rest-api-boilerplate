@@ -1,8 +1,8 @@
 import Config from '@ioc:Adonis/Core/Config'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import NotificationType from 'App/Models/NotificationType'
-import { DateTime } from 'luxon'
 import { reduce } from 'lodash'
+
 
 export default class NotificationService {
   public notificationTypes() {
@@ -13,7 +13,6 @@ export default class NotificationService {
     return Object.keys(Config.get('notification.channels'))
   }
   
-
   public async defaultPrefrence() {
     const channels = this.channels()
     const types = await this.notificationTypes()
@@ -45,17 +44,5 @@ export default class NotificationService {
       schema: schema.create(schemaDefinition),
       messages: Config.get('validator.customMessages')
     }
-  }
-
-  public unread(user: User) {
-    return user.related('notifications').query().whereNull('readAt')
-  }
-  
-  public markAsRead(user: User, id?: number) {
-    return this.unread(user)
-      .when(id, query => query.whereUid(id))
-      .updateOrFail({
-        readAt: DateTime.local(),
-      })
   }
 }

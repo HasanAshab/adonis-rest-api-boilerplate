@@ -14,21 +14,16 @@ export default class ContactsController {
 
   public async store({ request, response }: HttpContextContract) {
     const data = await request.validate(CreateContactValidator)
-    await Contact.create(data)
-    response.created('Thanks for contacting us!')
+    response.created(await Contact.create(data))
   }
 
   public async close({ params }: HttpContextContract) {
-    await Contact.updateOrFail(params.id, {
-      status: 'closed',
-    })
+    await Contact.close(params.id)
     return `Contact form closed!`
   }
 
   public async reopen({ params }: HttpContextContract) {
-    await Contact.updateOrFail(params.id, {
-      status: 'opened',
-    })
+    await Contact.open(params.id)
     return `Contact form reopened!`
   }
 

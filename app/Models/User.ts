@@ -9,7 +9,7 @@ import Settings from 'App/Models/Settings'
 import HasFactory from 'App/Models/Traits/HasFactory'
 import HasTimestamps from 'App/Models/Traits/HasTimestamps'
 import HasApiTokens from 'App/Models/Traits/HasApiTokens'
-import { Notifiable } from '@ioc:Verful/Notification/Mixins'
+import OptInNotifiable from 'App/Models/Traits/OptInNotifiable'
 import InvalidPasswordException from 'App/Exceptions/InvalidPasswordException'
 
 
@@ -21,7 +21,7 @@ export default class User extends compose(
   HasFactory,
   HasTimestamps,
   HasApiTokens,
-  Notifiable('notifications')
+  OptInNotifiable
 ) {
   @column({ isPrimary: true })
   public id: number

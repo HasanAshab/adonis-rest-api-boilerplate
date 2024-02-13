@@ -13,9 +13,7 @@ export default class NotificationTypesController {
   
   public async store({ request, response }: HttpContextContract) {
     const data = await request.validate(CreateNotificationTypeValidator)
-    await NotificationType.create(data)
-    
-    return response.created('Notification type created!')
+    return response.created(await NotificationType.create(data))
   }
 
   @bind()

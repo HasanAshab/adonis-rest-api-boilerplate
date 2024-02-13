@@ -15,7 +15,7 @@ export default class extends BaseSchema {
       table.enum('role', ['user', 'admin']).defaultTo('user')
       table.boolean('verified').notNullable().defaultTo(false)
       table.string('password').nullable()
-      table.specificType('recovery_codes', 'text[]').nullable()
+      table.specificType('recovery_codes', 'TEXT[]').nullable()
       table.string('social_provider').nullable()
       table.string('social_id').nullable()
       table.string('social_avatar_url').nullable()

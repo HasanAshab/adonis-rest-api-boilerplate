@@ -31,6 +31,28 @@ export default class Contact extends compose(BaseModel, HasFactory) {
   public isClosed() {
     return !this.isOpened()
   }
+  
+  public open() {
+    this.status = 'opened'
+    return this.save()
+  }
+  
+  public close() {
+    this.status = 'closed'
+    return this.save()
+  }
+  
+  public static open(id: number) {
+    return this.updateOrFail(id, {
+      status: 'opened',
+    })
+  }
+  
+  public static close(id: number) {
+    return this.updateOrFail(id, {
+      status: 'closed',
+    })
+  }
 }
 
 //ContactSchema.index({ subject: 'text', message: 'text' });

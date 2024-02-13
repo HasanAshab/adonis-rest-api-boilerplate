@@ -5,20 +5,20 @@ export default class extends BaseSeeder {
   public async run () {
     await NotificationType.createMany([
       {
-        type: 'announcement',
-        name: 'Announcements',
+        name: 'announcement',
+        displayText: 'Announcements',
         groupName: 'App Updates',
         description: 'bla'.repeat(20)
       },
       {
-        type: 'feature',
-        name: 'Feature News',
+        name: 'feature',
+        displayText: 'Feature News',
         groupName: 'App Updates',
         description: 'bla'.repeat(20)
       },
       {
-        type: 'liked',
-        name: 'Liked',
+        name: 'liked',
+        displayText: 'Liked',
         groupName: 'Community',
         description: 'bla'.repeat(20)
       }

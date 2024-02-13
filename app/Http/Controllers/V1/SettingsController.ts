@@ -27,8 +27,9 @@ export default class SettingsController {
   //TODO
   public async updateNotificationPreference({ request, auth }: HttpContextContract, notificationService = new NotificationService) {
     const validator = await notificationService.preferenceValidator()
-    const notificationPreference = await request.validate(validator)
-    
+    const preferences = await request.validate(validator)
+    await auth.user!.syncPreference(preferences)
+
     await auth.user!
       .related('settings')
       .query()

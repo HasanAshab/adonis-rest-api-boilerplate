@@ -1,29 +1,28 @@
 import type { NotificationContract } from '@ioc:Verful/Notification'
 import type User from 'App/Models/User'
-import { keys, pickBy } from 'lodash'
 
 export default abstract class BaseNotification implements NotificationContract {
   public abstract notificationType: string;
   
-  public via(notifiable: User) {
-    //await notifiable.loadIfNotLoaded('settings')
-    
-    return notifiable.related('notificationPreferences')
+  public async via(notifiable: User) {
+    const preference = await notifiable.related('notificationPreferences')
       .query()
-      .whereHas('notificationType', () => {
-        query.where('type', this.notificationType)
-      })
-      .pluck('channel')
+      .where('name', this.notificationType)
+      .pojo()
+      .first()
+
+    return preference?.pivot_channels ?? []
   }
   
-  public async via(notifiable: User) {
-    await notifiable.loadIfNotLoaded('settings')
-    const preference = notifiable.settings.notificationPreference[this.notificationType]
+  public async via_old(notifiable: User) {
+    const preference = await notifiable.related('notificationPreferences')
+      .query()
+      .whereHas('notificationType', query => {
+        query.where('name', this.notificationType)
+      })
+      .select('channels')
+      .first()
     
-    if(!preference) {
-      throw new Error(`Notification type "${this.notificationType}" doesn't exists.`)
-    }
-    
-    return keys(pickBy(preference))
+    return preference?.channels ?? []
   }
 }

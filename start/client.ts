@@ -15,77 +15,35 @@ globalThis.ResourceCollection = ResourceCollection
 globalThis.log = console.log
 
 
-/*
+
 import User from 'App/Models/User'
-import NotificationFactory from 'Database/factories/NotificationFactory'
-
-import Contact from 'App/Models/Contact'
 import DB from '@ioc:Adonis/Lucid/Database'
+import NotificationPreference from 'App/Models/NotificationPreference'
+import NotificationService from 'App/Services/NotificationService'
+import OptInNotification from 'App/Notifications/OptInNotification'
 
-const dummyData = [
-  {
-    subject: 'Meeting Request',
-    message: "Hello, let's schedule a meeting to discuss the upcoming project.",
-  },
-  {
-    subject: 'Important Update',
-    message: 'Please be informed that there is an important update regarding our services.',
-  },
-  {
-    subject: 'Interview Confirmation',
-    message: 'This is to confirm your interview scheduled for next week. Be prepared!',
-  },
-  {
-    subject: 'Product Inquiry',
-    message: "I'm interested in learning more about your latest product. Can you provide details?",
-  },
-  {
-    subject: 'Project Collaboration',
-    message:
-      "I believe our companies can collaborate on an exciting project. Let's explore the possibilities.",
-  },
-  {
-    subject: 'Feedback Request',
-    message: 'We value your opinion. Please share your feedback about our recent services.',
-  },
-  {
-    subject: 'Urgent Matter',
-    message:
-      'An urgent matter requires your attention. Please get back to us at your earliest convenience.',
-  },
-  {
-    subject: 'Networking Opportunity',
-    message:
-      "Join us for a networking event next month. It's a great opportunity to connect with industry professionals.",
-  },
-  {
-    subject: 'Payment Reminder',
-    message:
-      'Friendly reminder: your payment is due by the end of the week. Please ensure timely payment.',
-  },
-  {
-    subject: 'Thank You Note',
-    message: 'Thank you for your collaboration. We appreciate your contributions to the project.',
-  },
-]
 
-//Contact.query().delete().then(log)
+(async () => {
+ 
+ // const user = await User.factory().create()
+  const user = await User.firstOrFail()
+  await user.syncNotificationPreference({
+    [1]: {
+      email: true,
+      app: true
+    }
+  })
 
-;async () => {
-  //MQ.3saV0THmVNcn0cQMa_QGj4SWJaD9N_03CXJmKZuo750Akw61Rml0UyTglzis
-  const user = await User.factory().create()
-
-  log((await user.createToken()).token)
-  let i = 0
-  dummyData.forEach((d) =>
-    Contact.factory()
-      .create(d)
-      .then(() => log(++i))
-  )
-
+    //await user.syncNotificationPreference()
+    
+  const notif = new OptInNotification()
+  notif.notificationType = 'announcement'
+  log(await notif.via(user))
+  
+//log((await user.createToken()).token)
+//MQ.Kf6_q3-Ea4MkmqQxbNo7xCpqg3NFIRw8dA88vSdr8Fu0OkmHSEHnpAvXtOa0
   //const c =  await Contact.search('project')
 
   //const c =  await Contact.query().where('search_vector', '@@', DB.raw("to_tsquery('project')")).select('subject', 'message').pojo()
   //log(c)
-}
-*/
+})()
