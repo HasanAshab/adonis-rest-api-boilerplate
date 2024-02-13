@@ -5,7 +5,7 @@ export default abstract class OptInNotification implements NotificationContract 
   public abstract notificationType: string;
   
   public async via(notifiable: User) {
-    const preference = await notifiable.related('notificationPreferences')
+    const preference = await notifiable.related('notificationSettings')
       .query()
       .where('name', this.notificationType)
       .pojo()

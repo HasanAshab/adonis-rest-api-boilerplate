@@ -28,12 +28,8 @@ export default class SettingsController {
   public async updateNotificationPreference({ request, auth }: HttpContextContract, notificationService = new NotificationService) {
     const validator = await notificationService.preferenceValidator()
     const preferences = await request.validate(validator)
-    await auth.user!.syncPreference(preferences)
+    await auth.user!.syncNotificationPreference(preferences)
 
-    await auth.user!
-      .related('settings')
-      .query()
-      .update({ notificationPreference })
     
     return 'Settings saved!'
   }

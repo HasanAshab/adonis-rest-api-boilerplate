@@ -6,3 +6,4 @@ coverage
 .env
 tmp
 TODO.md
+.curl.sh

@@ -1,7 +1,6 @@
 import type { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
 import { BaseModel, HasMany } from '@ioc:Adonis/Lucid/Orm'
 import { Notifiable } from '@ioc:Verful/Notification/Mixins'
-import NotificationPreference from 'App/Models/NotificationPreference'
 import NotificationType from 'App/Models/NotificationType'
 import { compose } from '@poppinss/utils/build/helpers'
 import { mapValues, reduce } from 'lodash'
@@ -19,25 +18,16 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
       if (this.booted) return
       super.boot()
 
-      this.$addNotificationPreferencesRelation()
+      this.$addNotificationSettingsRelation()
     }
 
-    private static $addNotificationPreferencesRelation() {
+    private static $addNotificationSettingsRelation() {
       const relatedModel = () => NotificationType
-      this.$addRelation('notificationPreferences', 'manyToMany', relatedModel, {
+      this.$addRelation('notificationSettings', 'manyToMany', relatedModel, {
         pivotTable: 'notification_preferences',
         pivotColumns: ['channels']
       })
     }
-    
-    private static $addNotificationPreferencesRelation_old() {
-      const relatedModel = () => NotificationPreference
-      this.$addRelation('notificationPreferences', 'hasMany', relatedModel, {
-        localKey: 'id',
-        foreignKey: 'userId',
-      })
-    }
-   
    
     public notificationPreferences: HasMany<NotificationPreference>
     
@@ -59,7 +49,7 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
         return { channels: preferedChannels }
       })
 
-      return this.related('notificationPreferences').sync(formatedPreference)
+      return this.related('notificationSettings').sync(formatedPreference)
     }
   }
 }

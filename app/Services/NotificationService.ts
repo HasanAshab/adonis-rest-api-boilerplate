@@ -5,10 +5,6 @@ import { reduce } from 'lodash'
 
 
 export default class NotificationService {
-  public notificationTypes() {
-    return NotificationType.pluck('type')
-  }
-  
   public channels() {
     return Object.keys(Config.get('notification.channels'))
   }
@@ -28,15 +24,15 @@ export default class NotificationService {
   
   public async preferenceValidator() {
     const channels = this.channels()
-    const types = await this.notificationTypes()
+    const notificationTypesId = await NotificationType.pluck('id')
   
-    const schemaDefinition = reduce(types, (accumulator, type) => {
-      const typeSchema = reduce(channels, (schemaAccumulator, channel) => {
+    const schemaDefinition = reduce(notificationTypesId, (accumulator, id) => {
+      const channelPreferenceSchema = reduce(channels, (schemaAccumulator, channel) => {
         schemaAccumulator[channel] = schema.boolean()
         return schemaAccumulator
       }, {})
     
-      accumulator[type] = schema.object().members(typeSchema)
+      accumulator[id] = schema.object.optional().members(channelPreferenceSchema)
       return accumulator
     }, {})
 

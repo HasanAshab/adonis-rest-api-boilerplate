@@ -27,14 +27,16 @@ import OptInNotification from 'App/Notifications/OptInNotification'
  
  // const user = await User.factory().create()
   const user = await User.firstOrFail()
+  log(await NotificationPreference.all())
   await user.syncNotificationPreference({
     [1]: {
       email: true,
       app: true
     }
   })
+  
 
-    //await user.syncNotificationPreference()
+    await user.syncNotificationPreference()
     
   const notif = new OptInNotification()
   notif.notificationType = 'announcement'
