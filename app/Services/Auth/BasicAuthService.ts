@@ -73,6 +73,17 @@ export default class BasicAuthService {
     return await user.createToken()
   }
 
+  public async changePassword(user: User, oldPassword: string, newPassword: string) {
+    if (!user.password) {
+      throw new PasswordChangeNotAllowedException()
+    }
+
+    await user.verifyPassword(oldPassword)
+
+    user.password = newPassword
+    await user.save()
+  }
+  
   public async sendVerificationMail(user: User | string, version: string) {
     if (typeof user === 'string') {
       user = await User.internals().where('email', user).first()
@@ -85,16 +96,14 @@ export default class BasicAuthService {
     await new EmailVerificationMail(user, version).sendLater()
     return true
   }
-
-  public async changePassword(user: User, oldPassword: string, newPassword: string) {
-    if (!user.password) {
-      throw new PasswordChangeNotAllowedException()
-    }
-
-    await user.verifyPassword(oldPassword)
-
-    user.password = newPassword
-    await user.save()
+  
+  public async verifyEmail(id: number, token: string) {
+    await Token.verify(id, 'verification', token)
+    await this.markAsVerified(id)
+  }
+  
+  public async markAsVerified(id: number) {
+    await User.query().whereUid(id).updateOrFail({ verified: true });
   }
 
   public async sendResetPasswordMail(user: User | string) {
@@ -108,7 +117,7 @@ export default class BasicAuthService {
   }
 
   public async resetPassword(user: User, token: string, password: string) {
-    await Token.verify(user.id, 'resetPassword', token)
+    await Token.verify(user.id, 'password_reset', token)
     user.password = password
     await user.save()
   }

@@ -51,6 +51,6 @@ Route.group(() => {
 
 // Verify user
 Route.group(() => {
-  Route.get('/:id', 'AuthController.verifyEmail').as('verify').middleware('signed')
+  Route.post('/:id/:token', 'AuthController.verifyEmail')
   Route.post('/resend', 'AuthController.resendEmailVerification').middleware('throttle:60000,1')
 }).prefix('/verify')

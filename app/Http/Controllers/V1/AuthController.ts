@@ -80,19 +80,18 @@ export default class AuthController {
 
   /**
    * @verifyEmail
-   * @responseBody 301
+   * @responseBody 200
    */
-  @bind()
-  public async verifyEmail({ response }, user: User) {
-    await user.markAsVerified()
-    //await User.where('id', id).update({ verified: true });
-    response.redirectToClient('verify.success')
+  public async verifyEmail({ params }: HttpContextContract) {
+    await this.authService.verifyEmail(params.id, params.token)
+    return 'Email verified successfully!'  
   }
 
-  async resendEmailVerification({ request }: HttpContextContract) {
+
+  async resendEmailVerification({ request, response }: HttpContextContract) {
     const { email } = await request.validate(ResendEmailVerificationValidator)
-    await this.authService.sendVerificationMail(email, AuthController.VERSION)
-    return 'Verification link sent to email!'
+    await this.authService.sendVerificationMail(email)
+    response.accepted('Verification link sent to email!')
   }
 
   public async forgotPassword({ request, response }: HttpContextContract) {

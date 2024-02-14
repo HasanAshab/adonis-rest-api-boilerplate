@@ -1,10 +1,8 @@
 import Client from '@ioc:Adonis/Addons/Client'
 
 Client.addPaths({
-  'verify.success': '/email/verify/success',
+  'verify': '/email/verify/:id/:token',
   'password.reset': '/password/reset/:id/:token',
-  'auth.social.success': '/login/social/:provider/success/:token',
-  'auth.social.finalStep': '/login/social/:provider/final-step/:externalId}/:token?fields=:fields',
 })
 
 //TODO
@@ -27,6 +25,9 @@ import OptInNotification from 'App/Notifications/OptInNotification'
  
  // const user = await User.factory().create()
   const user = await User.firstOrFail()
+ user.verified = false
+ await user.save()
+ return log(user.email)
   log(await NotificationPreference.all())
   await user.syncNotificationPreference({
     [1]: {
@@ -48,4 +49,4 @@ import OptInNotification from 'App/Notifications/OptInNotification'
 
   //const c =  await Contact.query().where('search_vector', '@@', DB.raw("to_tsquery('project')")).select('subject', 'message').pojo()
   //log(c)
-})()
+})

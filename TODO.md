@@ -1,6 +1,6 @@
 This:
-test
-Pivot, no settings
+get prefer
+test ( settings, verify)
 
 I: cicd
 F: Conf tfa
