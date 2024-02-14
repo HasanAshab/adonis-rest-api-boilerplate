@@ -1,10 +1,11 @@
 import type { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
-import { BaseModel, HasMany } from '@ioc:Adonis/Lucid/Orm'
-import { Notifiable } from '@ioc:Verful/Notification/Mixins'
-import NotificationType from 'App/Models/NotificationType'
 import { compose } from '@poppinss/utils/build/helpers'
 import { mapValues, reduce } from 'lodash'
 import { DateTime } from 'luxon'
+import { BaseModel, ManyToMany } from '@ioc:Adonis/Lucid/Orm'
+import { Notifiable } from '@ioc:Verful/Notification/Mixins'
+import NotificationType from 'App/Models/NotificationType'
+import NotificationService from 'App/Services/NotificationService'
 
 
 export type NotificationPreferences = Record<string, Record<string, boolean>> 
@@ -18,18 +19,18 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
       if (this.booted) return
       super.boot()
 
-      this.$addNotificationSettingsRelation()
+      this.$addNotificationPreferencesRelation()
     }
 
-    private static $addNotificationSettingsRelation() {
+    private static $addNotificationPreferencesRelation() {
       const relatedModel = () => NotificationType
-      this.$addRelation('notificationSettings', 'manyToMany', relatedModel, {
+      this.$addRelation('notificationPreferences', 'manyToMany', relatedModel, {
         pivotTable: 'notification_preferences',
         pivotColumns: ['channels']
       })
     }
    
-    public notificationPreferences: HasMany<NotificationPreference>
+    public notificationPreference: ManyToMany<NotificationType>
     
     public markNotificationAsRead(id: number) {
       return this.unreadNotifications()
@@ -38,18 +39,33 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
           readAt: DateTime.local(),
         })
     }
-  
+    
+    
+    //todo
+    public async initNotificationPreference(notificationService = new NotificationService) {
+      const ids = await NotificationType.pluck('id')
+      const channelPreferences = notificationService.defaultChannelPreferences()
+      
+      const preferences = ids.reduce((preferences, id) => {
+        preferences[id] = channelPreferences
+        return preferences
+      }, {})
+      
+      await this.syncNotificationPreference(preferences)
+    }
+    
     public syncNotificationPreference(preferences: NotificationPreferences) {
-      const formatedPreference = mapValues(preferences, channelPreferences => {
+      const formatedPreferences = mapValues(preferences, channelPreferences => {
         const preferedChannels = reduce(channelPreferences, (preferedChannels, enabled, channel) => {
           enabled && preferedChannels.push(channel)
           return preferedChannels
         }, [])
-
+        
         return { channels: preferedChannels }
       })
+      log(formatedPreferences)
 
-      return this.related('notificationSettings').sync(formatedPreference)
+      return this.related('notificationPreferences').sync(formatedPreferences, false)
     }
   }
 }

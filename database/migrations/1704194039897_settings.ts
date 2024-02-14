@@ -14,8 +14,6 @@ export default class extends BaseSchema {
         method: 'sms',
         secret: null
       })
-
-      table.json('notification_preference').notNullable()
     })
   }
 

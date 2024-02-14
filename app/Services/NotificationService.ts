@@ -9,16 +9,10 @@ export default class NotificationService {
     return Object.keys(Config.get('notification.channels'))
   }
   
-  public async defaultPrefrence() {
-    const channels = this.channels()
-    const types = await this.notificationTypes()
-    return reduce(types, (accumulator, type) => {
-      accumulator[type] = reduce(channels, (preferenceAccumulator, channel) => {
-        preferenceAccumulator[channel] = true
-        return preferenceAccumulator
-      }, {})
-    
-      return accumulator
+  public defaultChannelPreferences(enabled = true) {
+    return this.channels().reduce((channelPreference, channel) => {
+      channelPreference[channel] = enabled
+      return channelPreference
     }, {})
   }
   

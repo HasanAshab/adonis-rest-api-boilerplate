@@ -58,7 +58,9 @@ export default class SocialAuthService {
       }
 
       isRegisteredNow = true
-    } else if (!user.email && !data.username) {
+      await user.initNotificationPreference()
+    } 
+    else if (!user.email && !data.username) {
       if (!data.email) {
         throw new EmailRequiredException()
       }

@@ -156,7 +156,6 @@ export default class AuthController {
     const data: SocialAuthData = await ally.use(params.provider).userFromToken(token)
 
     data.username = username
-
     if (email) {
       data.email = email
       data.emailVerificationState = 'unverified'

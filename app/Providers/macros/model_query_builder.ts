@@ -27,7 +27,7 @@ ModelQueryBuilder.macro('whereUid', function (uid: number) {
  * @param column - The name of the column to pluck.
  */
 ModelQueryBuilder.macro('pluck', async function (column: string) {
-  const records = await this.pojo()
+  const records = await this.select(column).pojo()
   return records.map((record) => record[column])
 })
 

@@ -16,18 +16,15 @@ globalThis.log = console.log
 
 import User from 'App/Models/User'
 import DB from '@ioc:Adonis/Lucid/Database'
-import NotificationPreference from 'App/Models/NotificationPreference'
 import NotificationService from 'App/Services/NotificationService'
 import OptInNotification from 'App/Notifications/OptInNotification'
 
 
 (async () => {
- 
- // const user = await User.factory().create()
-  const user = await User.firstOrFail()
- user.verified = false
- await user.save()
- return log(user.email)
+ // MzQ.elKc5me03sIQa6OVkYdGBNlxN_7r2XveilYKMG1Fr2HnqLXD0B3FE1sLKeHY 
+  const user = await User.factory().create()
+  //const user = await User.firstOrFail()
+// return log((await user.createToken()).token)
   log(await NotificationPreference.all())
   await user.syncNotificationPreference({
     [1]: {

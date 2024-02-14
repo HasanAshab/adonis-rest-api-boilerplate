@@ -1,10 +1,9 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
-import NotificationService from 'App/Services/NotificationService'
 
 
 export default class extends BaseSchema {
   protected tableName = 'notification_preferences'
-
+  
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
