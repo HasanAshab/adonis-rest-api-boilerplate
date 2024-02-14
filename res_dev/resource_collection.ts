@@ -1,19 +1,15 @@
 import JsonResource from './json_resource'
 import { SimplePaginator } from '@adonisjs/lucid/build/src/Database/Paginator/SimplePaginator'
 
-export default abstract class ResourceCollection {
+export default class ResourceCollection {
   protected shouldWrap = true
-  protected abstract collects: typeof JsonResource
+  protected collects = JsonResource
   protected collection!: this['collects'][]
 
   constructor(protected readonly resources: Array<Record<string, any>>) {}
 
   public static make(resources: Array<Record<string, any>>) {
-    if (this === ResourceCollection) {
-      throw new Error('Cannot create an instance of an abstract class.')
-    }
-
-    return new (this as any)(resources)
+    return new this(resources)
   }
 
   public dontWrap() {

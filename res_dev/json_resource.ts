@@ -1,18 +1,14 @@
 import AnonymousResourceCollection from './anonymous_resource_collection'
 import Route from '@ioc:Adonis/Core/Route'
 
-export default abstract class JsonResource {
+export default class JsonResource {
   public static wrap = 'data'
   protected shouldWrap = true
 
   constructor(protected readonly resource: Record<string, any>) {}
 
   public static make(resource: Record<string, any>) {
-    if (this === JsonResource) {
-      throw new Error('Cannot create an instance of an abstract class.')
-    }
-
-    return new (this as any)(resource)
+    return new this(resource)
   }
 
   public static collection(resources: Array<Record<string, any>>) {
@@ -24,7 +20,9 @@ export default abstract class JsonResource {
     return this
   }
 
-  public abstract serialize(): Record<string, any>
+  public serialize() {
+    return this.resource.toJSON?.() ?? this.resource
+  }
 
   public toJSON() {
     return this.shouldWrap

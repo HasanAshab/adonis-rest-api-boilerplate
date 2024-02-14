@@ -11,10 +11,8 @@ import NotificationService from 'App/Services/NotificationService'
 export type NotificationPreferences = Record<string, Record<string, boolean>> 
 
 
-export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof BaseModel>) {
-  const TABLE_NAME = 'notifications'
-  
-  return class extends compose(Superclass, Notifiable(TABLE_NAME)) {
+export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof BaseModel>, tableName = 'notifications') {
+  return class extends compose(Superclass, Notifiable(tableName)) {
     public static boot() {
       if (this.booted) return
       super.boot()
@@ -40,7 +38,6 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
         })
     }
     
-    
     //todo
     public async initNotificationPreference(notificationService = new NotificationService) {
       const ids = await NotificationType.pluck('id')
@@ -54,7 +51,7 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
       await this.syncNotificationPreference(preferences)
     }
     
-    public syncNotificationPreference(preferences: NotificationPreferences) {
+    public syncNotificationPreference(preferences: NotificationPreferences, detach = false) {
       const formatedPreferences = mapValues(preferences, channelPreferences => {
         const preferedChannels = reduce(channelPreferences, (preferedChannels, enabled, channel) => {
           enabled && preferedChannels.push(channel)
@@ -63,9 +60,8 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
         
         return { channels: preferedChannels }
       })
-      log(formatedPreferences)
 
-      return this.related('notificationPreferences').sync(formatedPreferences, false)
+      return this.related('notificationPreferences').sync(formatedPreferences, detach)
     }
   }
 }

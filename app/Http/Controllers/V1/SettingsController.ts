@@ -1,9 +1,9 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import Settings from 'App/Models/Settings'
-import NotificationService from 'App/Services/NotificationService'
+import UpdateNotificationPreferenceValidator from "App/Http/Validators/V1/Settings/UpdateNotificationPreferenceValidator";
 //import UpdateAppSettingsValidator from "App/Http/Validators/v1/settings/UpdateAppSettingsValidator";
-
+import NotificationPreferenceCollection from 'App/Http/Resources/v1/Settings/NotificationPreferenceCollection'
 
 export default class SettingsController {
   public async index({ auth: { user } }: HttpContextContract) {
@@ -19,17 +19,12 @@ export default class SettingsController {
   }
   
   public async notificationPreference({ auth: { user } }: HttpContextContract) {
-    //await user!.initNotificationPreference()
     await user!.load('notificationPreferences')
-    
-    return { 
-      data: user!.notificationPreferences
-    }
+    return NotificationPreferenceCollection.make(user!.notificationPreferences)
   }
 
-  //TODO
-  public async updateNotificationPreference({ request, auth }: HttpContextContract, notificationService = new NotificationService) {
-    const validator = await notificationService.preferenceValidator()
+  public async updateNotificationPreference({ request, auth }: HttpContextContract) {
+    const validator = await UpdateNotificationPreferenceValidator()
     const preferences = await request.validate(validator)
     await auth.user!.syncNotificationPreference(preferences)
     return 'Settings saved!'
