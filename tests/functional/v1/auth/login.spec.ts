@@ -83,7 +83,7 @@ test.group('Auth / Login', (group) => {
 
   test('should login a user with valid otp (2FA)', async ({ client, expect }) => {
     const user = await User.factory().withPhoneNumber().hasSettings(true).create()
-    const otp = await twoFactorAuthService.createToken(user)
+    const otp = await twoFactorAuthService.token(user)
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
       password: 'password',

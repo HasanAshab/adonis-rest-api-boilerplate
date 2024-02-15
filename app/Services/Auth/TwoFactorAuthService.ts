@@ -69,7 +69,7 @@ export default class TwoFactorAuthService {
       }
     }
 
-    const code = await this.createToken(user)
+    const code = await this.token(user)
 
     if (method === 'sms') {
       await Twilio.sendMessage(user.phoneNumber, 'Your verification code is: ' + code)
@@ -107,11 +107,12 @@ export default class TwoFactorAuthService {
     }
   }
 
-  public async createToken(user: User, code = this.generateOTPCode()) {
+  public async token(user: User, code = this.generateOTPCode()) {
     await Token.create({
       key: user.id,
       type: '2fa',
       secret: code,
+      oneTime: true,
       expiresAt: DateTime.local().plus({ days: 3 }),
     })
     return code

@@ -21,11 +21,20 @@ import OptInNotification from 'App/Notifications/OptInNotification'
 
 
 (async () => {
- // MzQ.elKc5me03sIQa6OVkYdGBNlxN_7r2XveilYKMG1Fr2HnqLXD0B3FE1sLKeHY 
-  const user = await User.factory().create()
-  //const user = await User.firstOrFail()
-// return log((await user.createToken()).token)
-  log(await NotificationPreference.all())
+ //MQ.evW90TaKoojN4E-bunByOW8D6rTIuRh68qaJ7rlG3uJVDUIDTCQBYKAAPkN4
+  //const user = await User.factory().create()
+    const user = await User.firstOrFail()
+
+
+//await user.initNotificationPreference()
+  await user.disableNotification(1, 'email')
+  
+  
+  log(
+//  await user.related('notificationPreferences').query().pojo()
+  )
+  return;
+return log((await user.createToken()).token)
   await user.syncNotificationPreference({
     [1]: {
       email: true,
@@ -46,4 +55,4 @@ import OptInNotification from 'App/Notifications/OptInNotification'
 
   //const c =  await Contact.query().where('search_vector', '@@', DB.raw("to_tsquery('project')")).select('subject', 'message').pojo()
   //log(c)
-})
+})()

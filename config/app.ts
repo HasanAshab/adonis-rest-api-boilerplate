@@ -274,6 +274,7 @@ export const constraints = {
     }
   },
   notificationType: {
+    pattern: /^[a-zA-Z0-9_-]+$/,
     name: {
       maxLength: 50
     },

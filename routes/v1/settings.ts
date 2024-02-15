@@ -4,10 +4,17 @@ import Route from '@ioc:Adonis/Core/Route'
 Route.group(() => {
   Route.get('/', 'SettingsController.index')
   Route.get('/two-factor-auth', 'SettingsController.twoFactorAuth')
-  Route.get('/notification-preference', 'SettingsController.notificationPreference')
-  Route.patch('/notification-preference', 'SettingsController.updateNotificationPreference')
+  
+  Route.group(() => {
+    Route.get('/', 'SettingsController.notificationPreference')
+    Route.patch('/', 'SettingsController.updateNotificationPreference')
+    Route.post('/email-unsubscribe', 'SettingsController.unsubscribeEmail')
+    Route.post('/email-resubscribe', 'SettingsController.resubscribeEmail')
+  })
+  .prefix('notification-preference')
 })
 .middleware(['auth', 'verified'])
+
 
 // App settings managenent
 /* await Router.middleware(["auth", "roles:admin"]).group(() => {
