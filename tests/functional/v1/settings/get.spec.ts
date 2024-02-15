@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
+import NotificationPreferenceCollection from 'App/Http/Resources/v1/Settings/NotificationPreferenceCollection'
 
 
 /*
@@ -28,12 +29,14 @@ test.group('Settings / Get', (group) => {
   })
   
   test('Should get notification preference settings', async ({ client }) => {
-    const user = await User.factory().hasSettings().create()
-    await user.load('settings')
+    const user = await User.factory().create()
+    await user.load('notificationPreferences')
     
     const response = await client.get('/api/v1/settings/notification-preference').loginAs(user)
     
     response.assertStatus(200)
-    response.assertBodyHaveProperty('data', user.settings.notificationPreference)
+    response.assertBodyContains(
+      NotificationPreferenceCollection.make(user.notificationPreferences)
+    )
   })
 })

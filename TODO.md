@@ -6,7 +6,7 @@
 
 This:
 subs
-test ( settings, verify, subs)
+test ( settings, subs)
 
 
 K: data on params?
