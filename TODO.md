@@ -8,6 +8,9 @@ This:
 subs
 test ( settings, verify, subs)
 
+
+K: data on params?
+
 F: Sql I
 F: Circ Dep Api Res
 I: cicd

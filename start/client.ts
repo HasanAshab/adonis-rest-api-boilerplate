@@ -55,4 +55,4 @@ return log((await user.createToken()).token)
 
   //const c =  await Contact.query().where('search_vector', '@@', DB.raw("to_tsquery('project')")).select('subject', 'message').pojo()
   //log(c)
-})()
+})
