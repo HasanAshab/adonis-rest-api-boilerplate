@@ -9,8 +9,7 @@ Run this suits:
 node ace test functional --files="v1/auth/password.spec.ts"
 */
 test.group('Auth / Password', (group) => {
-  const redirectUrl = 'https://myapp.com/password/reset/{{id}}/{{token}}'
-  let user
+  let user: User
 
   refreshDatabase(group)
 
@@ -22,8 +21,7 @@ test.group('Auth / Password', (group) => {
     const mailer = Mail.fake()
 
     const response = await client.post('/api/v1/auth/password/forgot').json({
-      email: user.email,
-      redirectUrl,
+      email: user.email
     })
 
     response.assertStatus(202)
@@ -34,7 +32,7 @@ test.group('Auth / Password', (group) => {
     const mailer = Mail.fake()
     const email = 'test@gmail.com'
 
-    const response = await client.post('/api/v1/auth/password/forgot').json({ email, redirectUrl })
+    const response = await client.post('/api/v1/auth/password/forgot').json({ email })
 
     response.assertStatus(202)
     expect(mailer.exists((mail) => mail.to[0].address === email)).toBe(false)
@@ -44,7 +42,7 @@ test.group('Auth / Password', (group) => {
     const mailer = Mail.fake()
     const { email } = await User.factory().social().create()
 
-    const response = await client.post('/api/v1/auth/password/forgot').json({ email, redirectUrl })
+    const response = await client.post('/api/v1/auth/password/forgot').json({ email })
 
     response.assertStatus(202)
     expect(mailer.exists((mail) => mail.to[0].address === email)).toBe(false)
@@ -55,9 +53,11 @@ test.group('Auth / Password', (group) => {
     const token = await new ResetPasswordMail(user).resetToken()
     const password = 'Password@1234'
 
-    const response = await client
-      .patch(`/api/v1/auth/password/reset/${user.id}`)
-      .json({ password, token })
+    const response = await client.patch('/api/v1/auth/password/reset').json({ 
+      id: user.id,
+      password,
+      token
+    })
     await user.refresh()
 
     response.assertStatus(200)
@@ -69,7 +69,10 @@ test.group('Auth / Password', (group) => {
     const mailer = Mail.fake()
     const password = 'Password@1234'
 
-    const response = await client.patch(`/api/v1/auth/password/reset/${user.id}`).json({ password })
+    const response = await client.patch('/api/v1/auth/password/reset').json({ 
+      id: user.id,
+      password
+    })
     await user.refresh()
 
     response.assertStatus(422)
@@ -90,8 +93,12 @@ test.group('Auth / Password', (group) => {
     }
 
     const response = await client
-      .patch(`/api/v1/auth/password/reset/${user.id}`)
-      .json({ password, token })
+      .patch('/api/v1/auth/password/reset')
+      .json({ 
+        id: user.id,
+        password,
+        token
+      })
     await user.refresh()
 
     response.assertStatus(401)
@@ -103,9 +110,10 @@ test.group('Auth / Password', (group) => {
     const mailer = Mail.fake()
     const password = 'Password@1234'
 
-    const response = await client.patch(`/api/v1/auth/password/reset/${user.id}`).json({
-      token: 'foo',
+    const response = await client.patch('/api/v1/auth/password/reset').json({ 
+      id: user.id,
       password,
+      token: 'invalid-token'
     })
     await user.refresh()
 
@@ -116,19 +124,24 @@ test.group('Auth / Password', (group) => {
 
   test("shouldn't reset password using same token multiple time", async ({ client, expect }) => {
     const token = await new ResetPasswordMail(user).resetToken()
-    const passwords = ['Password@1234', 'Password@12345']
+    const password = 'Password@12345'
 
-    await client
-      .patch(`/api/v1/auth/password/reset/${user.id}`)
-      .json({ password: passwords[0], token })
+    await client.patch('/api/v1/auth/password/reset')
+    .json({ 
+      id: user.id,
+      password: 'Password@1234',
+      token
+    })
     const mailer = Mail.fake()
-    const response = await client
-      .patch(`/api/v1/auth/password/reset/${user.id}`)
-      .json({ password: passwords[1], token })
+    const response = await client.patch('/api/v1/auth/password/reset').json({ 
+      id: user.id,
+      password,
+      token
+    }) 
     await user.refresh()
 
     response.assertStatus(401)
-    expect(await user.comparePassword(passwords[1])).toBe(false)
+    expect(await user.comparePassword(password)).toBe(false)
     expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBe(false)
   })
 })

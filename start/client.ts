@@ -22,11 +22,11 @@ import OptInNotification from 'App/Notifications/OptInNotification'
 
 (async () => {
  //MQ.evW90TaKoojN4E-bunByOW8D6rTIuRh68qaJ7rlG3uJVDUIDTCQBYKAAPkN4
-  //const user = await User.factory().create()
-    const user = await User.firstOrFail()
+  const user = await User.factory().create()
+    //const user = await User.firstOrFail()
 
 
-//await user.initNotificationPreference()
+await user.initNotificationPreference()
   await user.disableNotification(1, 'email')
   
   

@@ -9,7 +9,8 @@ import SocialAuthService, { SocialAuthData } from 'App/Services/Auth/SocialAuthS
 import PasswordChangedMail from 'App/Mails/PasswordChangedMail'
 import RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator'
 import LoginValidator from 'App/Http/Validators/V1/Auth/Login/LoginValidator'
-import ResendEmailVerificationValidator from 'App/Http/Validators/V1/Auth/ResendEmailVerificationValidator'
+import EmailVerificationValidator from 'App/Http/Validators/V1/Auth/Email/EmailVerificationValidator'
+import ResendEmailVerificationValidator from 'App/Http/Validators/V1/Auth/Email/ResendEmailVerificationValidator'
 import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator'
 import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPasswordValidator'
 import SetupTwoFactorAuthValidator from 'App/Http/Validators/V1/Auth/SetupTwoFactorAuthValidator'
@@ -82,13 +83,14 @@ export default class AuthController {
    * @verifyEmail
    * @responseBody 200
    */
-  public async verifyEmail({ params }: HttpContextContract) {
-    await this.authService.verifyEmail(params.id, params.token)
+  public async verifyEmail({ request }) {
+    const { id, token } = await request.validate(EmailVerificationValidator)
+    await this.authService.verifyEmail(id, token)
     return 'Email verified successfully!'  
   }
 
 
-  async resendEmailVerification({ request, response }: HttpContextContract) {
+  public async resendEmailVerification({ request, response }: HttpContextContract) {
     const { email } = await request.validate(ResendEmailVerificationValidator)
     await this.authService.sendVerificationMail(email)
     response.accepted('Verification link sent to email!')
@@ -96,13 +98,13 @@ export default class AuthController {
 
   public async forgotPassword({ request, response }: HttpContextContract) {
     const { email } = await request.validate(ForgotPasswordValidator)
-    await this.authService.sendResetPasswordMail(email)
+    await this.authService.forgotPassword(email)
     response.accepted('Password reset link sent to your email!')
   }
 
-  @bind()
-  public async resetPassword({ request }: HttpContextContract, user: User) {
-    const { password, token } = await request.validate(ResetPasswordValidator)
+  public async resetPassword({ request }: HttpContextContract) {
+    const { id, token, password } = await request.validate(ResetPasswordValidator)
+    const user = await User.findOrFail(id)
     await this.authService.resetPassword(user, token, password)
     await new PasswordChangedMail(user).sendLater()
     return 'Password changed successfully!'

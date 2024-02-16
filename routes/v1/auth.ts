@@ -15,14 +15,6 @@ Route.group(() => {
     'provider',
     /^(google|facebook)$/
   )
-
-  /*
- Route.get("social/callback/:provider", "AuthController.loginWithSocialProvider");
-  Route.group(() => {
-    Route.get("/", "AuthController.redirectToSocialLoginProvider");
-    Route.post("/final-step", "AuthController.socialLoginFinalStep");
-  }).prefix("/social/:provider");
-  */
 }).prefix('/login')
 
 Route.post('/logout', 'AuthController.logout').middleware('auth')
@@ -34,23 +26,22 @@ Route.group(() => {
 
   Route.group(() => {
     Route.post('/setup', 'AuthController.setupTwoFactorAuth')
-    Route.post('/generate-recovery-codes', 'AuthController.generateRecoveryCodes').middleware(
-      'recaptcha'
-    )
+    Route.post('/generate-recovery-codes', 'AuthController.generateRecoveryCodes').middleware('recaptcha')
   }).middleware('auth', 'verified')
 }).prefix('/two-factor')
 
 // Password Reset
 Route.group(() => {
-  Route.post('/forgot', 'AuthController.forgotPassword').middleware([
+  Route.post('/forgot', 'AuthController.forgotPassword')
+  .middleware([
     'recaptcha',
     'throttle:10000,2',
   ])
-  Route.patch('/reset/:id', 'AuthController.resetPassword')
+  Route.patch('/reset', 'AuthController.resetPassword')
 }).prefix('/password')
 
 // Verify user
 Route.group(() => {
-  Route.post('/:id/:token', 'AuthController.verifyEmail')
+  Route.post('/', 'AuthController.verifyEmail')
   Route.post('/resend', 'AuthController.resendEmailVerification').middleware('throttle:60000,1')
 }).prefix('/verify')

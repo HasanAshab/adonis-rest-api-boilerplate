@@ -79,7 +79,7 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
       return this.related('notificationPreferences').sync(formatedPreferences, detach)
     }
 
-    public async enableNotification(id: string, channel: string) {
+    public async enableNotification(id: number, channel: string) {
       await this.related('notificationPreferences')
         .pivotQuery()
         .whereUid(id)
@@ -88,7 +88,7 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
         })
     }
     
-    public async disableNotification(id: string, channel: string) {
+    public async disableNotification(id: number, channel: string) {
       await this.related('notificationPreferences')
         .pivotQuery()
         .whereUid(id)

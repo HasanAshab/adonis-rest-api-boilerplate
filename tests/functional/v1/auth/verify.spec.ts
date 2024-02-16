@@ -18,7 +18,11 @@ test.group('Auth/Verify', (group) => {
 
   test('should verify email', async ({ client, expect }) => {
     const token = await new EmailVerificationMail(user, 'v1').verificationToken()
-    const response = await client.post(`api/v1/auth/verify/${user.id}/${token}`)
+    
+    const response = await client.post('api/v1/auth/verify').json({
+      id: user.id,
+      token
+    })
     await user.refresh()
 
     response.assertStatus(200)
@@ -26,13 +30,17 @@ test.group('Auth/Verify', (group) => {
   })
 
   test("shouldn't verify email with invalid token", async ({ client, expect }) => {
-    const response = await client.post(`api/v1/auth/verify/${user.id}/invalid-token`)
+    const response = await client.post('api/v1/auth/verify').json({
+      id: user.id,
+      token: 'invalid-token'
+    })
     await user.refresh()
 
     response.assertStatus(401)
     expect(user.verified).toBe(false)
   })
-
+  
+  
   test('should resend verification email', async ({ client, expect }) => {
     const mailer = Mail.fake()
 

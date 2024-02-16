@@ -107,7 +107,7 @@ export default class BasicAuthService {
     await User.query().whereUid(id).updateOrFail({ verified: true });
   }
 
-  public async sendResetPasswordMail(user: User | string) {
+  public async forgotPassword(user: User | string) {
     if (typeof user === 'string') {
       user = await User.internals().where('email', user).first()
       if (!user) return false

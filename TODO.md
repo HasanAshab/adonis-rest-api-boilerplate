@@ -4,9 +4,12 @@
   I'm Stronger Than My NaFsS 
 
 
+Lara 2fa db setup, instr trust dev
+
 This:
+tfa -> /settings
 subs
-test ( settings, subs)
+test ( settings, subs, unit Token.verify)
 
 
 K: data on params?

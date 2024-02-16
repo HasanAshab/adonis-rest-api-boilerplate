@@ -4,6 +4,7 @@ import Config from '@ioc:Adonis/Core/Config'
 
 export default class ResetPasswordValidator extends Validator {
   public schema = schema.create({
+    id: schema.number(),
     token: schema.string(),
     password: schema.string([ 
       rules.password(),
