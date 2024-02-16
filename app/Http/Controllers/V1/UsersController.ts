@@ -95,7 +95,7 @@ export default class UsersController {
   //@inject()
   async changePhoneNumber(
     { request, response, auth }: HttpContextContract,
-    twoFactorAuthService: TwoFactorAuthService = new TwoFactorAuthService()
+    otpService: OtpService = new OtpService()
   ) {
     const { phoneNumber, otp } = await request.validate(ChangePhoneNumberValidator)
     const user = auth.user!
@@ -104,14 +104,13 @@ export default class UsersController {
       return response.badRequest('Phone number should not be same as old one!')
     }
 
-    user.phoneNumber = phoneNumber
-
     if (!otp) {
-      await twoFactorAuthService.sendOtp(user, 'sms')
-      return response.accepted('6 digit OTP code sent to phone number!')
+      await otpService.sendThroughSMS(phoneNumber)
+      return response.accepted('6 digit OTP code sent to the phone number!')
     }
 
     await twoFactorAuthService.verifyOtp(user, 'sms', otp)
+    user.phoneNumber = phoneNumber
     await user.save()
     return 'Phone number updated!'
   }

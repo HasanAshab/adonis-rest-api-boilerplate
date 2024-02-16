@@ -1,4 +1,3 @@
-import { inject } from '@adonisjs/fold'
 import { DateTime } from 'luxon'
 import { randomBytes } from 'crypto'
 import Hash from '@ioc:Adonis/Core/Hash'
@@ -18,7 +17,6 @@ export interface TwoFactorAuthData {
 }
 
 //TODO configurable
-@inject()
 export default class TwoFactorAuthService {
   //TODO with direct query
   public async enable(user: User, method?: TwoFactorAuthSettings['method']) {
@@ -30,58 +28,29 @@ export default class TwoFactorAuthService {
       recoveryCodes: await this.generateRecoveryCodes(user),
     }
 
-    await user.loadIfNotLoaded('settings')
-    const { twoFactorAuth } = user.settings
-    twoFactorAuth.enabled = true
-    twoFactorAuth.method = method ?? twoFactorAuth.method
+    user.twoFactorEnabled = true
+    user.twoFactorMethod = method ?? user.twoFactorAuthMethod
 
     if (method === 'app') {
-      twoFactorAuth.secret = speakeasy.generateSecret({ length: 20 }).ascii
+      user.twoFactorSecret = speakeasy.generateSecret({ length: 20 }).ascii
       const appName = Config.get<string>('app.name')
 
       data.otpAuthUrl = speakeasy.otpauthURL({
-        secret: twoFactorAuth.secret,
+        secret: user.twoFactorSecret,
         label: appName,
         issuer: appName,
       })
     }
 
-    await user.settings.save()
+    await user.save()
     return data
   }
 
   async disable(user: User) {
-    await user.loadIfNotLoaded('settings')
-    user.settings.twoFactorAuth.enabled = false
-    await user.settings.save()
+    user.twoFactorEnabled = false
+    await user.save()
   }
 
-  async sendOtp(user: User, method?: 'sms' | 'call') {
-    if (!user.phoneNumber) {
-      return null
-    }
-
-    if (!method) {
-      await user.loadIfNotLoaded('settings')
-      method = user.settings.twoFactorAuth.method
-      if (method === 'app') {
-        return null
-      }
-    }
-
-    const code = await this.token(user)
-
-    if (method === 'sms') {
-      await Twilio.sendMessage(user.phoneNumber, 'Your verification code is: ' + code)
-    } else if (method === 'call') {
-      await Twilio.makeCall(
-        user.phoneNumber,
-        `<Response><Say>Your verification code is ${code}</Say></Response>`
-      )
-    }
-
-    return code
-  }
 
   public async verifyOtp(user: User, method: TwoFactorAuthSettings['method'], code: string) {
     let isValid = false

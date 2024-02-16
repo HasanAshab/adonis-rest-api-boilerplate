@@ -50,7 +50,7 @@ export default class Twilio {
       twiml,
     })
   }
-
+  
   public assertMessaged(phoneNumber: string) {
     assertWithContext(() => {
       expect(this.faked.messages.includes(phoneNumber)).toBe(true)

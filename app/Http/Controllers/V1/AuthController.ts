@@ -125,11 +125,11 @@ export default class AuthController {
   }
 
   /**
-   * @generateRecoveryCodes
+   * @sendOtp
    * @responseBody 200 - { message: string }
    */
   @bind()
-  public async sendOtp({}, user: User) {
+  public async sendOtp(_, user: User) {
     await this.twoFactorAuthService.sendOtp(user)
     return '6 digit OTP code sent to phone number!'
   }
@@ -181,36 +181,4 @@ export default class AuthController {
       },
     }
   }
-
-  /* 
-  redirectToSocialLoginProvider({ params, ally }: HttpContextContract) {
-    return ally.use(params.provider).stateless().redirect();
-  }
-  
-  async loginWithSocialProvider({ request, params, ally }: HttpContextContract) {
-
-    const externalUser = await ally.use(params.provider).user();
-    log(externalUser)
-    return externalUser.token.token
-    const user = await User.findOneAndUpdate(
-      { [`externalId.${params.provider}`]: externalUser.id },
-      { 
-        name: externalUser.name,
-        email: externalUser.email,
-        verified: true,
-        profile: externalUser.picture
-      },
-      { new: true }
-    );
-    
-    if(user) {
-      return Route.makeClientUrl(`/login/social/${params.provider}/success/${user.createToken()}`);
-    }
-    
-    const fields = externalUser.email ? "username" : "email,username";
-    const token = await this.createSocialLoginFinalStepToken(params.provider, externalUser);
-    
-    return Route.makeClientUrl(`/login/social/${params.provider}/final-step/${externalUser.id}/${token}?fields=${fields}`);
-  }
-*/
 }
