@@ -6,6 +6,7 @@ import User from 'App/Models/User'
 import BasicAuthService from 'App/Services/Auth/BasicAuthService'
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
 import SocialAuthService, { SocialAuthData } from 'App/Services/Auth/SocialAuthService'
+import OtpService from 'App/Services/OtpService'
 import PasswordChangedMail from 'App/Mails/PasswordChangedMail'
 import RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator'
 import LoginValidator from 'App/Http/Validators/V1/Auth/Login/LoginValidator'
@@ -43,13 +44,15 @@ export default class AuthController {
     })
     //Event.fire(new Registered({}))
 
-    const profileUrl = '' //Route.makeUrl(AuthController.VERSION + ".users.show", [user.username]);
+    const profile = Route.makeUrl(AuthController.VERSION + ".users.show", {
+      username: user.username 
+    });
 
-    response.header('Location', profileUrl).created({
+    response.header('Location', profile).created({
       message: 'Verification email sent!',
       data: {
-        token: await user.createToken(),
         user,
+        token: await user.createToken()
       },
     })
   }
@@ -128,10 +131,18 @@ export default class AuthController {
    * @sendOtp
    * @responseBody 200 - { message: string }
    */
+  //Todo
   @bind()
-  public async sendOtp(_, user: User) {
-    await this.twoFactorAuthService.sendOtp(user)
-    return '6 digit OTP code sent to phone number!'
+  public async sendOtp(_, user: User, otpService = new OtpService) {
+    if (!user.phoneNumber || user.twoFactorMethod === 'app') {}
+    else if(user.twoFactorMethod === 'sms') {
+      await otpService.sendThroughSMS(user.phoneNumber)
+    } 
+    else {
+      await otpService.sendThroughCall(user.phoneNumber)
+    }
+    
+    return 'Verification code sent to your phone number!'
   }
 
   /**
@@ -152,7 +163,7 @@ export default class AuthController {
     }
   }
 
-  public async loginWithSocialAuthToken({ params, ally, request }: HttpContextContract) {
+  public async loginWithSocialAuthToken({ request, response, params, ally }: HttpContextContract) {
     let { token, email, username } = await request.validate(SocialAuthTokenLoginValidator)
 
     const data: SocialAuthData = await ally.use(params.provider).userFromToken(token)
@@ -164,21 +175,28 @@ export default class AuthController {
     }
 
     const { user, isRegisteredNow } = await this.socialAuthService.upsertUser(params.provider, data)
+    const token = await user.createToken(),
 
-    if (isRegisteredNow) {
-      Event.emit('registered', {
-        version: AuthController.VERSION,
-        method: 'social',
-        user,
-      })
+    if (!isRegisteredNow) {
+      return {
+        message: 'Logged in successfully!',
+        data: { token, user },
+      }
     }
-
-    return {
-      message: 'Logged in successfully!',
-      data: {
-        token: await user.createToken(),
-        user,
-      },
-    }
+    
+    Event.emit('registered', {
+      version: AuthController.VERSION,
+      method: 'social',
+      user,
+    })
+      
+    const profile = Route.makeUrl(AuthController.VERSION + ".users.show", {
+      username: user.username 
+    });
+    
+    response.header('Location', profile).created({
+      message: 'Registered successfully!',
+      data: { user, token },
+    })
   }
 }

@@ -4,14 +4,12 @@
   I'm Stronger Than My NaFsS 
 
 
-instr trust dev
 
 This:
 tfa -> /settings
 subs
 test ( settings, subs, unit Token.verify)
 
-Think: sendOtp
 
 F: Sql I
 F: Circ Dep Api Res

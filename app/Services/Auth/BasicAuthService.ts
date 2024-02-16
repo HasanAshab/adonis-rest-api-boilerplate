@@ -24,7 +24,6 @@ export default class BasicAuthService {
   private loginThrottler?: LimiterContract
 
   constructor(
-    private readonly twoFactorAuthService = new TwoFactorAuthService(),
     private loginAttemptThrottlerConfig = Config.get('auth.loginAttemptThrottler')
   ) {
     if (this.loginAttemptThrottlerConfig.enabled) {
@@ -44,11 +43,9 @@ export default class BasicAuthService {
     return user
   }
 
-  public async attempt(credentials: LoginCredentials) {
-    const { email, password, otp, ip } = credentials
-
+  public async attempt({ email, password, otp, ip }: LoginCredentials) {
     if (this.loginThrottler && !ip) {
-      throw new Error('Argument[3]: "ip" must be provided when login attempt throttle is enabled')
+      throw new Error('Argument[3]: "ip" must be provided when login attempt throttling is enabled')
     }
 
     const throttleKey = this.getThrottleKeyFor(email, ip)
@@ -85,7 +82,7 @@ export default class BasicAuthService {
     await user.save()
   }
   
-  public async sendVerificationMail(user: User | string, version: string) {
+  public async sendVerificationMail(user: User | string) {
     if (typeof user === 'string') {
       user = await User.internals().where('email', user).first()
     }
@@ -94,7 +91,7 @@ export default class BasicAuthService {
       return false
     }
 
-    await new EmailVerificationMail(user, version).sendLater()
+    await new EmailVerificationMail(user).sendLater()
     return true
   }
   
@@ -138,7 +135,8 @@ export default class BasicAuthService {
       .replace('{{ ip }}', ip)
   }
 
-  private async checkTwoFactorAuth(user: User, otp?: string) {
+  //todo
+  private async checkTwoFactorAuth(user: User, otp?: string, twoFactorAuthService = new TwoFactorAuthService) {
     if (!user.settings) {
       await user.load('settings')
     }

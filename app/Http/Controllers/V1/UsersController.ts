@@ -3,18 +3,19 @@ import { bind } from '@adonisjs/route-model-binding'
 import { inject } from '@adonisjs/core'
 import User from 'App/Models/User'
 import BasicAuthService from 'App/Services/Auth/BasicAuthService'
-import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
+import OtpService from 'App/Services/OtpService'
 import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import UpdateProfileValidator from 'App/Http/Validators/V1/user/UpdateProfileValidator'
 import ChangePasswordValidator from 'App/Http/Validators/V1/user/ChangePasswordValidator'
 import ChangePhoneNumberValidator from 'App/Http/Validators/V1/user/ChangePhoneNumberValidator'
+import SamePhoneNumberException from 'App/Exceptions/Validation/SamePhoneNumberException'
+import PasswordChangedMail from 'App/Mails/PasswordChangedMail'
 import ListUserResource from 'App/Http/Resources/v1/user/ListUserResource'
 import UserProfileResource from 'App/Http/Resources/v1/user/UserProfileResource'
 import ShowUserResource from 'App/Http/Resources/v1/user/ShowUserResource'
 
-export default class UsersController {
-  public static readonly VERSION = 'v1'
 
+export default class UsersController {
   public async index({ request }: HttpContextContract) {
     return ListUserResource.collection(await User.withRole('user').paginateUsing(request))
   }
@@ -43,7 +44,7 @@ export default class UsersController {
     await user.save()
 
     if (data.email) {
-      await authService.sendVerificationMail(user, UsersController.VERSION)
+      await authService.sendVerificationMail(user)
       return 'Verification email sent to your new email address!'
     }
 
@@ -87,7 +88,7 @@ export default class UsersController {
   ) {
     const { oldPassword, newPassword } = await request.validate(ChangePasswordValidator)
     await authService.changePassword(auth.user!, oldPassword, newPassword)
-    //await Mail.to(user.email).send(new PasswordChangedMail())
+    await new PasswordChangedMail(auth.user!).sendLater()
     return 'Password changed!'
   }
 
@@ -101,15 +102,15 @@ export default class UsersController {
     const user = auth.user!
 
     if (user.phoneNumber && user.phoneNumber === phoneNumber) {
-      return response.badRequest('Phone number should not be same as old one!')
+      throw new SamePhoneNumberException()
     }
 
     if (!otp) {
       await otpService.sendThroughSMS(phoneNumber)
-      return response.accepted('6 digit OTP code sent to the phone number!')
+      return response.accepted('Verification code sent to the phone number!')
     }
 
-    await twoFactorAuthService.verifyOtp(user, 'sms', otp)
+    await otpService.verify(phoneNumber, otp)
     user.phoneNumber = phoneNumber
     await user.save()
     return 'Phone number updated!'

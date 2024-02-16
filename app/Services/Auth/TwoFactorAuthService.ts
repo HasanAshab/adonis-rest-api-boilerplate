@@ -1,11 +1,8 @@
-import { DateTime } from 'luxon'
 import { randomBytes } from 'crypto'
 import Hash from '@ioc:Adonis/Core/Hash'
 import Config from '@ioc:Adonis/Core/Config'
-import Twilio from '@ioc:Adonis/Addons/Twilio'
 import User from 'App/Models/User'
-import type { TwoFactorAuthSettings } from 'App/Models/Settings'
-import Token from 'App/Models/Token'
+import OtpService from 'App/Services/OtpService'
 import speakeasy from 'speakeasy'
 import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException'
 import InvalidOtpException from 'App/Exceptions/InvalidOtpException'
@@ -19,7 +16,7 @@ export interface TwoFactorAuthData {
 //TODO configurable
 export default class TwoFactorAuthService {
   //TODO with direct query
-  public async enable(user: User, method?: TwoFactorAuthSettings['method']) {
+  public async enable(user: User, method?: User['twoFactorMethod']) {
     if (!user.phoneNumber && method !== 'app') {
       throw new PhoneNumberRequiredException()
     }
@@ -32,59 +29,41 @@ export default class TwoFactorAuthService {
     user.twoFactorMethod = method ?? user.twoFactorAuthMethod
 
     if (method === 'app') {
-      user.twoFactorSecret = speakeasy.generateSecret({ length: 20 }).ascii
-      const appName = Config.get<string>('app.name')
-
-      data.otpAuthUrl = speakeasy.otpauthURL({
-        secret: user.twoFactorSecret,
-        label: appName,
-        issuer: appName,
-      })
+      user.twoFactorSecret = this.secret()
+      data.otpAuthUrl = this.otpAuthUrl(user)
     }
 
     await user.save()
     return data
   }
 
-  async disable(user: User) {
+  public async disable(user: User) {
     user.twoFactorEnabled = false
     await user.save()
   }
 
-
-  public async verifyOtp(user: User, method: TwoFactorAuthSettings['method'], code: string) {
+  //todo
+  public async verifyOtp(user: User, code: string, otpService = new OtpService) {
     let isValid = false
 
     if (method === 'app') {
-      await user.loadIfNotLoaded('settings')
-      const { secret } = user.settings.twoFactorAuth
-      if (!secret) {
+      if (!user.twoFactorSecret) {
         throw new Error("Can not verify otp through 'app' method without having secret")
       }
+      
       isValid = speakeasy.totp.verify({
-        secret,
+        secret: user.twoFactorSecret,
         encoding: 'ascii',
         token: code,
         window: 2,
       })
     } else {
-      isValid = await Token.isValid(user.id, '2fa', code)
+      isValid = await otpService.isValid(user.phoneNumber, code)
     }
 
     if (!isValid) {
       throw new InvalidOtpException()
     }
-  }
-
-  public async token(user: User, code = this.generateOTPCode()) {
-    await Token.create({
-      key: user.id,
-      type: '2fa',
-      secret: code,
-      oneTime: true,
-      expiresAt: DateTime.local().plus({ days: 3 }),
-    })
-    return code
   }
 
   public async recover(email: string, code: string) {
@@ -120,7 +99,18 @@ export default class TwoFactorAuthService {
     throw new InvalidRecoveryCodeException()
   }
 
-  public generateOTPCode() {
-    return Math.floor(100000 + Math.random() * 900000).toString()
+  private secret(length = 20) {
+    return speakeasy.generateSecret({ length }).ascii
+  }
+  
+  private otpAuthUrl(user: User) {
+    if (!user.twoFactorSecret) {
+      throw new Error("Can not make otp auth url without having secret.")
+    }
+    return speakeasy.otpauthURL({
+      secret: user.twoFactorSecret,
+      label: Config.get('app.name'),
+      issuer: Config.get('app.name'),
+    })
   }
 }
