@@ -17,10 +17,6 @@ export default class extends BaseSchema {
       table.string('password').nullable()
       table.json('avatar').nullable()
 
-      table.string('two_factor_secret').nullable()
-      table.enum('two_factor_method', ['app', 'sms', 'call']).nullable()
-      table.specificType('recovery_codes', 'TEXT[]').nullable()
-      
       table.string('social_provider').nullable()
       table.string('social_id').nullable()
       table.string('social_avatar_url').nullable()

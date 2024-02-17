@@ -1,11 +1,8 @@
 import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
-import { DateTime } from 'luxon'
 import Client from '@ioc:Adonis/Addons/Client'
 import Token from 'App/Models/Token'
 
 export default class ResetPasswordMail extends BaseMailer {
-  private readonly TOKEN_LIFESPAN = 3 // days
-
   constructor(private user: User) {
     super()
   }
@@ -27,13 +24,10 @@ export default class ResetPasswordMail extends BaseMailer {
     })
   }
 
-  public async resetToken() {
-    const { secret } = await Token.create({
-      key: this.user.id,
-      type: 'password_reset',
-      oneTime: true,
-      expiresAt: DateTime.local().plus({ days: this.TOKEN_LIFESPAN }),
+  public resetToken() {
+    return Token.sign('password_reset', this.user.id, {
+      oneTimeOnly: true,
+      expiresAt: '3 days',
     })
-    return secret
   }
 }

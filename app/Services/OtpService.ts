@@ -1,7 +1,5 @@
 import Twilio from '@ioc:Adonis/Addons/Twilio'
 import Token from 'App/Models/Token'
-import { DateTime } from 'luxon'
-import { string } from '@ioc:Adonis/Core/Helpers'
 
 
 export default class OtpService {
@@ -9,24 +7,20 @@ export default class OtpService {
     return Math.floor(100000 + Math.random() * 900000).toString()
   }
 
-  public async token(phoneNumber: string, expiresIn: string, code = this.otpCode()) {
-    const secret = this.code()
-    await Token.create({
-      key: phoneNumber,
-      type: 'otp',
-      oneTime: true,
-      secret,
-      expiresAt: DateTime.local().plus(string.toMs(expiresIn))
+  public token(phoneNumber: string, expiresIn = '90 seconds', code = this.code()) {
+    return Token.sign('otp', phoneNumber, {
+      oneTimeOnly: true,
+      secret: code,
+      expiresIn
     })
-    return secret
   }
   
-  public async sendThroughSMS(phoneNumber: string, expiresIn: string) {
+  public async sendThroughSMS(phoneNumber: string, expiresIn?: string) {
     const code = await this.token(phoneNumber, expiresIn)
     await Twilio.sendMessage(phoneNumber, 'Your verification code is: ' + code)
   }
 
-  public async sendThroughCall(phoneNumber: string, expiresIn: string) {
+  public async sendThroughCall(phoneNumber: string, expiresIn?: string) {
     const code = await this.token(phoneNumber, expiresIn)
     await Twilio.sendCall(
       phoneNumber, 

@@ -7,6 +7,7 @@ export default function Expirable(Superclass: NormalizeConstructor<typeof BaseMo
     public static boot() {
       if (this.booted) return
       super.boot()
+      
       column.dateTime()(this.prototype, 'expiresAt')
     }
 

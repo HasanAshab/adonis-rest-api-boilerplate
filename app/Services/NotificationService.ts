@@ -23,21 +23,17 @@ export default class NotificationService {
     return `${notificationType}_${user.id}`
   }
   
-  public async emailUnsubscriptionToken(user: User, notificationType: string) {
-    const { secret } = await Token.create({
-      key: this.emailUnsubscriptionTokenKey(user, notificationType),
-      type: 'email_unsubscription',
-      oneTime: true
+  public emailUnsubscriptionToken(user: User, notificationType: string) {
+    const key = this.emailUnsubscriptionTokenKey(user, notificationType)
+    return Token.sign('email_unsubscription', key, {
+      oneTimeOnly: true
     })
-    return secret
   }
   
-  public async emailResubscriptionToken(user: User, notificationType: string) {
-    const { secret } = await Token.create({
-      key: this.emailResubscriptionTokenKey(user, notificationType),
-      type: 'email_resubscription',
-      oneTime: true
+  public emailResubscriptionToken(user: User, notificationType: string) {
+    const key = this.emailResubscriptionTokenKey(user, notificationType),
+    return Token.sign('email_resubscription', key, {
+      oneTimeOnly: true
     })
-    return secret
   }
 }

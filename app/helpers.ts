@@ -1,3 +1,7 @@
+import { string } from '@ioc:Adonis/Core/Helpers'
+import { DateTime } from 'luxon'
+
+
 export function sleep(seconds: number) {
   return new Promise((r) => setTimeout(r, seconds * 1000))
 }
@@ -30,4 +34,8 @@ export function extract<
 
 export function toJSON(obj: object) {
   return JSON.parse(JSON.stringify(obj))
+}
+
+export function stringToLuxonDate(timeStr: string) {
+  return DateTime.local().plus(string.toMs(timeStr)
 }
