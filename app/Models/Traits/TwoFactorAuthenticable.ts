@@ -18,9 +18,23 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
     public twoFactorSecret: string
     public recoveryCodes?: string[]
     
-    public twoFactorEnabled() {
+    public hasEnabledTwoFactorAuth() {
       return !!this.twoFactorSecret
     }
-
+    
+    public async isValidRecoveryCode(code: string) {
+      for (const [index, hashedCode] of this.recoveryCodes.entries()) {
+        if (await Hash.verify(hashedCode, code)) {
+          this.recoveryCodes.splice(index, 1)
+          await this.save()
+          return true
+        }
+      }
+      return false
+    }
+    
+    public twoFactorQrCodeUrl() {
+      
+    }
   }
 }

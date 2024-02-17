@@ -37,6 +37,7 @@ export default class TwoFactorAuthService {
   }
 
   public async disable(user: User) {
+    if(!user.hasEnabledTwoFactorAuth()) return
     user.twoFactorSecret = null
     await user.save()
   }
@@ -67,8 +68,10 @@ export default class TwoFactorAuthService {
 
   public async recover(email: string, code: string) {
     const user = await User.findByOrFail('email', email)
-    await this.verifyRecoveryCode(user, code)
-    return await user.createToken()
+    if(await user.isValidRecoveryCode(user, code)) {
+      return await user.createToken()
+    }
+    throw new InvalidRecoveryCodeException()
   }
 
   public async generateRecoveryCodes(user: User, count = 10) {
@@ -87,16 +90,6 @@ export default class TwoFactorAuthService {
     return rawCodes
   }
 
-  public async verifyRecoveryCode(user: User, code: string) {
-    for (const [index, hashedCode] of user.recoveryCodes.entries()) {
-      if (!(await Hash.verify(hashedCode, code))) continue
-
-      user.recoveryCodes.splice(index, 1)
-      await user.save()
-      return
-    }
-    throw new InvalidRecoveryCodeException()
-  }
 
   private secret(length = 20) {
     return speakeasy.generateSecret({ length }).ascii

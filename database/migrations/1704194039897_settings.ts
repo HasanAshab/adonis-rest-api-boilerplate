@@ -8,12 +8,6 @@ export default class extends BaseSchema {
       table.increments('id').primary()
 
       table.integer('user_id').unsigned().index().references('users.id').onDelete('CASCADE')
-
-      table.json('two_factor_auth').defaultTo({
-        enabled: false,
-        method: 'sms',
-        secret: null
-      })
     })
   }
 
