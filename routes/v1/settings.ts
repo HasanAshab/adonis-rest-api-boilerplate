@@ -2,8 +2,7 @@ import Route from '@ioc:Adonis/Core/Route'
 
 // User settings managenent
 Route.group(() => {
-  Route.get('/', 'SettingsController.index')
-  Route.get('/two-factor-auth', 'SettingsController.twoFactorAuth')
+  Route.get('/two-factor', 'SettingsController.twoFactor')
   
   Route.group(() => {
     Route.get('/', 'SettingsController.notificationPreference')

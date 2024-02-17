@@ -1,14 +1,14 @@
 import BaseModel from 'App/Models/BaseModel'
-import { column, hasOne, beforeSave, HasOne, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import { column, beforeSave } from '@ioc:Adonis/Lucid/Orm'
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
-import { Exception } from '@adonisjs/core/build/standalone'
 import { compose } from '@poppinss/utils/build/helpers'
 import Config from '@ioc:Adonis/Core/Config'
 import Hash from '@ioc:Adonis/Core/Hash'
-import Settings from 'App/Models/Settings'
 import HasFactory from 'App/Models/Traits/HasFactory'
 import HasTimestamps from 'App/Models/Traits/HasTimestamps'
 import HasApiTokens from 'App/Models/Traits/HasApiTokens'
+import TwoFactorAuthenticable from 'App/Models/Traits/TwoFactorAuthenticable'
+import SocialAuthenticable from 'App/Models/Traits/SocialAuthenticable'
 import OptInNotifiable from 'App/Models/Traits/OptInNotifiable'
 import InvalidPasswordException from 'App/Exceptions/InvalidPasswordException'
 
@@ -21,7 +21,9 @@ export default class User extends compose(
   HasFactory,
   HasTimestamps,
   HasApiTokens,
-  OptInNotifiable
+  OptInNotifiable,
+  TwoFactorAuthenticable,
+  SocialAuthenticable
 ) {
   @column({ isPrimary: true })
   public id: number
@@ -49,21 +51,6 @@ export default class User extends compose(
 
   @column({ serializeAs: null })
   public password: string = null
-
-  @column({ serializeAs: null })
-  public recoveryCodes?: string[]
-
-  @column({ serializeAs: null })
-  public socialProvider?: string
-
-  @column({ serializeAs: null })
-  public socialId?: string
-
-  @column()
-  public socialAvatarUrl?: string
-
-  @hasOne(() => Settings)
-  public settings: HasOne<typeof Settings>
 
   public get isAdmin() {
     return this.role === 'admin'

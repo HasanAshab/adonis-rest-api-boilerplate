@@ -1,6 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
-import Settings from 'App/Models/Settings'
 import UpdateNotificationPreferenceValidator from "App/Http/Validators/V1/Settings/UpdateNotificationPreferenceValidator";
 //import UpdateAppSettingsValidator from "App/Http/Validators/v1/settings/UpdateAppSettingsValidator";
 import EmailUnsubscriptionValidator from "App/Http/Validators/V1/Settings/EmailUnsubscriptionValidator";
@@ -8,16 +7,8 @@ import EmailResubscriptionValidator from "App/Http/Validators/V1/Settings/EmailR
 import NotificationPreferenceCollection from 'App/Http/Resources/v1/Settings/NotificationPreferenceCollection'
 
 export default class SettingsController {
-  public async index({ auth: { user } }: HttpContextContract) {
-    await user!.load('settings')
-    return user!.settings
-  }
-  
-  public async twoFactorAuth({ auth: { user } }: HttpContextContract) {
-    await user!.load('settings')
-    return {
-      data: user!.settings.twoFactorAuth
-    }
+  public async twoFactor({ auth }: HttpContextContract) {
+    return TwoFactorSettingsResource.make(auth.user!)
   }
   
   public async notificationPreference({ auth: { user } }: HttpContextContract) {

@@ -25,11 +25,10 @@ export default class TwoFactorAuthService {
       recoveryCodes: await this.generateRecoveryCodes(user),
     }
 
-    user.twoFactorEnabled = true
+    user.twoFactorSecret = this.secret()
     user.twoFactorMethod = method ?? user.twoFactorAuthMethod
 
     if (method === 'app') {
-      user.twoFactorSecret = this.secret()
       data.otpAuthUrl = this.otpAuthUrl(user)
     }
 
@@ -38,7 +37,7 @@ export default class TwoFactorAuthService {
   }
 
   public async disable(user: User) {
-    user.twoFactorEnabled = false
+    user.twoFactorSecret = null
     await user.save()
   }
 

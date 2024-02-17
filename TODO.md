@@ -6,11 +6,13 @@
 
 
 This:
+rely on 2fa pkg 
+Qrcode
 tfa -> /settings
 subs
 test ( settings, subs, unit Token.verify)
 
-
+F: Token hash secret
 F: Sql I
 F: Circ Dep Api Res
 I: cicd
