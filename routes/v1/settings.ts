@@ -2,13 +2,22 @@ import Route from '@ioc:Adonis/Core/Route'
 
 // User settings managenent
 Route.group(() => {
-  Route.get('/two-factor', 'SettingsController.twoFactor')
-  
+  Route.group(() => {
+    Route.get('/', 'SettingsController.twoFactorAuth')
+    Route.post('/', 'SettingsController.enableTwoFactorAuth')
+    Route.delete('/', 'SettingsController.disableTwoFactorAuth')
+    Route.get('/method', 'SettingsController.twoFactorAuthMethod')
+    Route.patch('/method', 'SettingsController.updateTwoFactorAuthMethod')
+    Route.get('/recovery-codes', 'SettingsController.recoveryCodes')
+    Route.post('/recovery-codes', 'SettingsController.generateRecoveryCodes')
+  })
+  .prefix('two-factor-auth')
+
   Route.group(() => {
     Route.get('/', 'SettingsController.notificationPreference')
     Route.patch('/', 'SettingsController.updateNotificationPreference')
-    Route.post('/email-unsubscribe', 'SettingsController.unsubscribeEmail')
-    Route.post('/email-resubscribe', 'SettingsController.resubscribeEmail')
+    Route.delete('/email-subscription', 'SettingsController.unsubscribeEmail')
+    Route.post('/email-subscription', 'SettingsController.resubscribeEmail')
   })
   .prefix('notification-preference')
 })

@@ -5,5 +5,5 @@ coverage
 .DS_STORE
 .env
 tmp
-TODO.md
+./TODO.md
 .curl.sh

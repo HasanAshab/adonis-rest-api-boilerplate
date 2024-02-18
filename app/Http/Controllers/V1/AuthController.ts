@@ -128,24 +128,29 @@ export default class AuthController {
   }
 
   /**
-   * @sendOtp
+   * @twoFactorChallenge
    * @responseBody 200 - { message: string }
    */
   //Todo
   @bind()
-  public async twoFactorChallenge(_, user: User, otpService = new OtpService) {
-    if (!user.phoneNumber || user.twoFactorMethod === 'app') {
-      return
-    }
+  public async twoFactorChallenge(_) {
+    const { email, token } = await request.validate()
+    const user = await User.findByOrFail('email', email)
     
-    if(user.twoFactorMethod === 'sms') {
-      await otpService.sendThroughSMS(user.phoneNumber)
-    } 
+    await Token.verify('two_factor_auth_challenge', user.id, token)
+    await this.twoFactorAuthService.challenge(user)
     
-    else if(user.twoFactorMethod === 'sms') {
-      await otpService.sendThroughCall(user.phoneNumber)
+    return 'Challenge sent!'
+  }
+  
+  public async verifyTwoFactorChallenge() {
+    const { email, otp } = await request.validate(TwoFactorChallengeVerificationValidator)
+    const token = await this.twoFactorAuthService.verify(email, otp)
+    
+    return {
+      message: 'Challenge completed!',
+      data: { token },
     }
-    return 'Verification code sent to your phone number!'
   }
 
   /**

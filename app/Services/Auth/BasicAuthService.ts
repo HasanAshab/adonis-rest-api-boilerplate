@@ -20,6 +20,7 @@ export interface LoginCredentials {
   ip?: string
 }
 
+
 export default class BasicAuthService {
   private loginThrottler?: LimiterContract
 
@@ -42,7 +43,11 @@ export default class BasicAuthService {
     return user
   }
 
-  public async attempt({ email, password, otp, ip }: LoginCredentials) {
+  //todo
+  public async attempt(
+    { email, password, ip }: LoginCredentials, 
+    twoFactorAuthService = new TwoFactorAuthService
+  ) {
     if (this.loginThrottler && !ip) {
       throw new Error('Argument[3]: "ip" must be provided when login attempt throttling is enabled')
     }
@@ -63,8 +68,19 @@ export default class BasicAuthService {
       await this.loginThrottler?.increment(throttleKey)
       throw new InvalidCredentialException()
     }
-
-    await this.checkTwoFactorAuth(user, otp)
+    
+    if (user.hasEnabledTwoFactorAuth()) {
+      await twoFactorAuthService.challenge(user)
+      const resendOtpToken = await Token.sign('two_factor_auth_challenge', user.id, {
+        oneTimeOnly: true
+      })
+      
+      return {
+        resendOtpToken,
+        twoFactor: true
+      }
+    }
+    
     await this.loginThrottler?.delete(throttleKey)
 
     return await user.createToken()
@@ -134,13 +150,4 @@ export default class BasicAuthService {
       .replace('{{ ip }}', ip)
   }
 
-  //todo
-  private async checkTwoFactorAuth(user: User, otp?: string, twoFactorAuthService = new TwoFactorAuthService) {
-    if (user.hasEnabledTwoFactorAuth()) {
-      if (!otp) {
-        throw new OtpRequiredException()
-      }
-      await this.twoFactorAuthService.verifyOtp(user, otp)
-    }
-  }
 }

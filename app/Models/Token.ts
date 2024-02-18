@@ -72,7 +72,7 @@ export default class Token extends compose(BaseModel, Expirable) {
     return false
   }
 
-  public static async verify(key: string, type: string, secret: string) {
+  public static async verify(type: string, key: string, secret: string) {
     const isValid = await this.isValid(key, type, secret)
     if (!isValid) {
       throw new InvalidTokenException()

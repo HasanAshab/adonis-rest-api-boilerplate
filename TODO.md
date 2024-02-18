@@ -15,7 +15,7 @@ test ( settings, subs)
 F: Sql I
 F: Circ Dep Api Res
 I: cicd
-F: Conf tfa
+F: Conf tfa, direct query enable
 D: Api Res
 I: trust device
 T: Complete todo marked comments

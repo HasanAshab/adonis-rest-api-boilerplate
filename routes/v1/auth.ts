@@ -23,12 +23,7 @@ Route.post('/logout', 'AuthController.logout').middleware('auth')
 Route.group(() => {
   Route.post('/recover', 'AuthController.recoverTwoFactorAccount').middleware('recaptcha')
   Route.post('/challenge', 'AuthController.twoFactorChallenge').middleware('throttle:60000,3')
-  Route.post('/challenge/verify', 'AuthController.verifyTwoFactorChallenge').middleware('throttle:60000,3')
-
-  Route.group(() => {
-    Route.post('/setup', 'AuthController.setupTwoFactorAuth')
-    Route.post('/generate-recovery-codes', 'AuthController.generateRecoveryCodes').middleware('recaptcha')
-  }).middleware('auth', 'verified')
+  Route.post('/verify', 'AuthController.verifyTwoFactorChallenge').middleware('throttle:60000,3')
 }).prefix('two-factor')
 
 // Password Reset

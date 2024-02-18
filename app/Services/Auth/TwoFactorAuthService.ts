@@ -13,9 +13,7 @@ export interface TwoFactorAuthData {
   otpAuthUrl?: string
 }
 
-//TODO configurable
 export default class TwoFactorAuthService {
-  //TODO with direct query
   public async enable(user: User, method?: User['twoFactorMethod']) {
     if (!user.phoneNumber && method !== 'app') {
       throw new PhoneNumberRequiredException()
@@ -41,29 +39,44 @@ export default class TwoFactorAuthService {
     user.twoFactorSecret = null
     await user.save()
   }
-
+  
   //todo
-  public async verifyOtp(user: User, code: string, otpService = new OtpService) {
+  public challenge(user: User, otpService = new OtpService) {
+    if (!user.phoneNumber || user.twoFactorMethod === 'app') {
+      return
+    }
+    
+    if(user.twoFactorMethod === 'sms') {
+      await otpService.sendThroughSMS(user.phoneNumber)
+    }
+    
+    else if(user.twoFactorMethod === 'call') {
+      await otpService.sendThroughCall(user.phoneNumber)
+    }
+  }
+  
+  //todo
+  public async verify(email: string, code: string, otpService = new OtpService) {
+    const user = await User.findByOrFail('email', email)
     let isValid = false
 
-    if (method === 'app') {
-      if (!user.twoFactorSecret) {
-        throw new Error("Can not verify otp through 'app' method without having secret")
-      }
-      
+    if (user.twoFactorMethod === 'app') {
       isValid = speakeasy.totp.verify({
         secret: user.twoFactorSecret,
         encoding: 'ascii',
         token: code,
         window: 2,
       })
-    } else {
+    } 
+    else {
       isValid = await otpService.isValid(user.phoneNumber, code)
     }
 
     if (!isValid) {
       throw new InvalidOtpException()
     }
+    
+    return await user.createToken()
   }
 
   public async recover(email: string, code: string) {
