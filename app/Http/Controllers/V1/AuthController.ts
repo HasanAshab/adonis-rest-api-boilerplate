@@ -133,15 +133,18 @@ export default class AuthController {
    */
   //Todo
   @bind()
-  public async sendOtp(_, user: User, otpService = new OtpService) {
-    if (!user.phoneNumber || user.twoFactorMethod === 'app') {}
-    else if(user.twoFactorMethod === 'sms') {
-      await otpService.sendThroughSMS(user.phoneNumber)
-    } 
-    else {
-      await otpService.sendThroughCall(user.phoneNumber)
+  public async twoFactorChallenge(_, user: User, otpService = new OtpService) {
+    if (!user.phoneNumber || user.twoFactorMethod === 'app') {
+      return
     }
     
+    if(user.twoFactorMethod === 'sms') {
+      await otpService.sendThroughSMS(user.phoneNumber)
+    } 
+    
+    else if(user.twoFactorMethod === 'sms') {
+      await otpService.sendThroughCall(user.phoneNumber)
+    }
     return 'Verification code sent to your phone number!'
   }
 
@@ -153,7 +156,7 @@ export default class AuthController {
     return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
   }
 
-  public async recoverAccount({ request }: HttpContextContract) {
+  public async recoverTwoFactorAccount({ request }: HttpContextContract) {
     const { email, code } = await request.validate(AccountRecoveryValidator)
     const token = await this.twoFactorAuthService.recover(email, code)
 
@@ -174,7 +177,7 @@ export default class AuthController {
       data.emailVerificationState = 'unverified'
     }
 
-    const { user, isRegisteredNow } = await this.socialAuthService.upsertUser(params.provider, data)
+    const { user, isRegisteredNow } = await this.socialAuthService.sync(params.provider, data)
     const token = await user.createToken(),
 
     if (!isRegisteredNow) {

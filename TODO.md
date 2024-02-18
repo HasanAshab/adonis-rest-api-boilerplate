@@ -4,15 +4,14 @@
   I'm Stronger Than My NaFsS 
 
 
-
 This:
 rely on 2fa pkg 
 Qrcode
 tfa -> /settings
 subs
-test ( settings, subs, unit Token.verify)
+test ( settings, subs)
 
-F: Token hash secret
+
 F: Sql I
 F: Circ Dep Api Res
 I: cicd

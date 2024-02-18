@@ -11,7 +11,7 @@ export interface SocialAuthData extends AllyUserContract {
 }
 
 export default class SocialAuthService {
-  public async upsertUser(provider: string, data: SocialAuthData) {
+  public async sync(provider: string, data: SocialAuthData) {
     let isRegisteredNow = false
 
     const user = await User.updateOrCreate(

@@ -53,7 +53,7 @@ export default class BasicAuthService {
       throw new LoginAttemptLimitExceededException()
     }
 
-    const user = await User.internals().where('email', email).preload('settings').first()
+    const user = await User.internals().where('email', email).first()
 
     if (!user) {
       throw new InvalidCredentialException()
@@ -136,17 +136,11 @@ export default class BasicAuthService {
 
   //todo
   private async checkTwoFactorAuth(user: User, otp?: string, twoFactorAuthService = new TwoFactorAuthService) {
-    if (!user.settings) {
-      await user.load('settings')
+    if (user.hasEnabledTwoFactorAuth()) {
+      if (!otp) {
+        throw new OtpRequiredException()
+      }
+      await this.twoFactorAuthService.verifyOtp(user, otp)
     }
-
-    const { enabled, method } = user.settings.twoFactorAuth
-    if (!enabled) return
-
-    if (!otp) {
-      throw new OtpRequiredException()
-    }
-
-    await this.twoFactorAuthService.verifyOtp(user, method, otp)
   }
 }

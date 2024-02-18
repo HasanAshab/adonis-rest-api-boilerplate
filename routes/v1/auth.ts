@@ -21,14 +21,15 @@ Route.post('/logout', 'AuthController.logout').middleware('auth')
 
 // Two factor authentication
 Route.group(() => {
-  Route.post('/recover', 'AuthController.recoverAccount').middleware('recaptcha')
-  Route.post('/send-otp/:id', 'AuthController.sendOtp').middleware('throttle:60000,3')
+  Route.post('/recover', 'AuthController.recoverTwoFactorAccount').middleware('recaptcha')
+  Route.post('/challenge', 'AuthController.twoFactorChallenge').middleware('throttle:60000,3')
+  Route.post('/challenge/verify', 'AuthController.verifyTwoFactorChallenge').middleware('throttle:60000,3')
 
   Route.group(() => {
     Route.post('/setup', 'AuthController.setupTwoFactorAuth')
     Route.post('/generate-recovery-codes', 'AuthController.generateRecoveryCodes').middleware('recaptcha')
   }).middleware('auth', 'verified')
-}).prefix('/two-factor')
+}).prefix('two-factor')
 
 // Password Reset
 Route.group(() => {

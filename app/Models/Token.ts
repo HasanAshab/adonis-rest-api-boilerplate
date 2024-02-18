@@ -8,11 +8,13 @@ import Hash from '@ioc:Adonis/Core/Hash'
 import Expirable from 'App/Models/Traits/Expirable'
 import InvalidTokenException from 'App/Exceptions/InvalidTokenException'
 
+
 export interface SignTokenOptions {
   secret?: string | number
   expiresIn?: string
   oneTimeOnly?: boolean
 }
+
 
 export default class Token extends compose(BaseModel, Expirable) {
   @column({ isPrimary: true })
