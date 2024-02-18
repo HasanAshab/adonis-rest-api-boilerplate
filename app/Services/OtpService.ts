@@ -33,6 +33,6 @@ export default class OtpService {
   }
   
   public verify(phoneNumber: string, code: number) {
-    return Token.verify(phoneNumber, 'otp', code)
+    return Token.verify('otp', phoneNumber, code)
   }
 }

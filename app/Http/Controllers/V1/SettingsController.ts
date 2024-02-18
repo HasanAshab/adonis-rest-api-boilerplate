@@ -31,8 +31,8 @@ export default class SettingsController {
     const notificationType = await NotificationType.findByOrFail('name', notificationTypeName)
     
     await Token.verify(
-      notificationService.emailUnsubscriptionTokenKey(user, notificationTypeName),
       'email_unsubscription',
+      notificationService.emailUnsubscriptionTokenKey(user, notificationTypeName),
       token
     )
     await user.disableNotification(notificationType.id, 'email')
@@ -51,8 +51,8 @@ export default class SettingsController {
     const notificationType = await NotificationType.findByOrFail('name', notificationTypeName)
     
     await Token.verify(
-      notificationService.emailResubscriptionTokenKey(user, notificationTypeName),
       'email_resubscription',
+      notificationService.emailResubscriptionTokenKey(user, notificationTypeName),
       token
     )
     

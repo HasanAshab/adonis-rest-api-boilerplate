@@ -111,7 +111,7 @@ export default class BasicAuthService {
   }
   
   public async verifyEmail(id: number, token: string) {
-    await Token.verify(id, 'verification', token)
+    await Token.verify('verification', id, token)
     await this.markAsVerified(id)
   }
   
@@ -130,7 +130,7 @@ export default class BasicAuthService {
   }
 
   public async resetPassword(user: User, token: string, password: string) {
-    await Token.verify(user.id, 'password_reset', token)
+    await Token.verify('password_reset', user.id, token)
     user.password = password
     await user.save()
   }
