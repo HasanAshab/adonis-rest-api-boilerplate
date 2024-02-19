@@ -6,7 +6,7 @@ Route.group(() => {
     Route.get('/', 'SettingsController.twoFactorAuth')
     Route.post('/', 'SettingsController.enableTwoFactorAuth')
     Route.delete('/', 'SettingsController.disableTwoFactorAuth')
-    Route.get('/method', 'SettingsController.twoFactorAuthMethod')
+    Route.get('/qr-code', 'SettingsController.twoFactorAuthQrCode')
     Route.patch('/method', 'SettingsController.updateTwoFactorAuthMethod')
     Route.get('/recovery-codes', 'SettingsController.recoveryCodes')
     Route.post('/recovery-codes', 'SettingsController.generateRecoveryCodes')

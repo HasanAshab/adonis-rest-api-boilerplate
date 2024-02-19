@@ -28,11 +28,11 @@ export default class OtpService {
     )
   }
   
-  public isValid(phoneNumber: string, code: number) {
+  public isValid(phoneNumber: string, code: string) {
     return Token.isValid(phoneNumber, 'otp', code)
   }
   
-  public verify(phoneNumber: string, code: number) {
+  public verify(phoneNumber: string, code: string) {
     return Token.verify('otp', phoneNumber, code)
   }
 }

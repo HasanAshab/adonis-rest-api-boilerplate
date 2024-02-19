@@ -12,6 +12,7 @@ import InvalidCredentialException from 'App/Exceptions/InvalidCredentialExceptio
 import LoginAttemptLimitExceededException from 'App/Exceptions/LoginAttemptLimitExceededException'
 import OtpRequiredException from 'App/Exceptions/Validation/OtpRequiredException'
 import PasswordChangeNotAllowedException from 'App/Exceptions/PasswordChangeNotAllowedException'
+import TwoFactorAuthRequiredException from 'App/Exceptions/TwoFactorAuthRequiredException'
 
 export interface LoginCredentials {
   email: string
@@ -69,20 +70,13 @@ export default class BasicAuthService {
       throw new InvalidCredentialException()
     }
     
-    if (user.hasEnabledTwoFactorAuth()) {
-      await twoFactorAuthService.challenge(user)
-      const resendOtpToken = await Token.sign('two_factor_auth_challenge', user.id, {
-        oneTimeOnly: true
-      })
-      
-      return {
-        resendOtpToken,
-        twoFactor: true
-      }
-    }
-    
     await this.loginThrottler?.delete(throttleKey)
 
+    if (user.hasEnabledTwoFactorAuth()) {
+      await twoFactorAuthService.challenge(user)
+      throw new TwoFactorAuthRequiredException()
+    }
+    
     return await user.createToken()
   }
 

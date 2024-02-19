@@ -14,9 +14,12 @@ import EmailVerificationValidator from 'App/Http/Validators/V1/Auth/Email/EmailV
 import ResendEmailVerificationValidator from 'App/Http/Validators/V1/Auth/Email/ResendEmailVerificationValidator'
 import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator'
 import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPasswordValidator'
-import SetupTwoFactorAuthValidator from 'App/Http/Validators/V1/Auth/SetupTwoFactorAuthValidator'
-import AccountRecoveryValidator from 'App/Http/Validators/V1/Auth/AccountRecoveryValidator'
+import TwoFactorChallengeValidator from 'App/Http/Validators/V1/Auth/TwoFactor/TwoFactorChallengeValidator'
+import TwoFactorChallengeVerificationValidator from 'App/Http/Validators/V1/Auth/TwoFactor/TwoFactorChallengeVerificationValidator'
+import TwoFactorAccountRecoveryValidator from 'App/Http/Validators/V1/Auth/TwoFactor/TwoFactorAccountRecoveryValidator'
 import SocialAuthTokenLoginValidator from 'App/Http/Validators/V1/Auth/Login/SocialAuthTokenLoginValidator'
+
+
 
 export default class AuthController {
   public static readonly VERSION = 'v1'
@@ -113,28 +116,14 @@ export default class AuthController {
     return 'Password changed successfully!'
   }
 
-  public async setupTwoFactorAuth({ request, auth }: HttpContextContract) {
-    const { enable = true, method } = await request.validate(SetupTwoFactorAuthValidator)
-
-    if (!enable) {
-      await this.twoFactorAuthService.disable(auth.user!)
-      return 'Two Factor Auth disabled!'
-    }
-
-    return {
-      message: 'Two Factor Auth enabled!',
-      data: await this.twoFactorAuthService.enable(auth.user!, method),
-    }
-  }
 
   /**
    * @twoFactorChallenge
    * @responseBody 200 - { message: string }
    */
-  //Todo
   @bind()
-  public async twoFactorChallenge(_) {
-    const { email, token } = await request.validate()
+  public async twoFactorChallenge({ request }) {
+    const { email, token } = await request.validate(TwoFactorChallengeValidator)
     const user = await User.findByOrFail('email', email)
     
     await Token.verify('two_factor_auth_challenge', user.id, token)
@@ -144,8 +133,8 @@ export default class AuthController {
   }
   
   public async verifyTwoFactorChallenge() {
-    const { email, otp } = await request.validate(TwoFactorChallengeVerificationValidator)
-    const token = await this.twoFactorAuthService.verify(email, otp)
+    const { email, token: challengeToken } = await request.validate(TwoFactorChallengeVerificationValidator)
+    const token = await this.twoFactorAuthService.verify(email, challengeToken)
     
     return {
       message: 'Challenge completed!',
@@ -162,7 +151,7 @@ export default class AuthController {
   }
 
   public async recoverTwoFactorAccount({ request }: HttpContextContract) {
-    const { email, code } = await request.validate(AccountRecoveryValidator)
+    const { email, code } = await request.validate(TwoFactorAccountRecoveryValidator)
     const token = await this.twoFactorAuthService.recover(email, code)
 
     return {

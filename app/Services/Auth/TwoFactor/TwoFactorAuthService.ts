@@ -1,12 +1,14 @@
-import { randomBytes } from 'crypto'
-import Hash from '@ioc:Adonis/Core/Hash'
+import { range } from 'lodash'
+import Encryption from '@ioc:Adonis/Core/Encryption'
 import Config from '@ioc:Adonis/Core/Config'
 import User from 'App/Models/User'
+import RecoveryCode from 'App/Services/Auth/TwoFactor/RecoveryCode'
 import OtpService from 'App/Services/OtpService'
 import speakeasy from 'speakeasy'
 import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException'
 import InvalidOtpException from 'App/Exceptions/InvalidOtpException'
 import InvalidRecoveryCodeException from 'App/Exceptions/InvalidRecoveryCodeException'
+
 
 export interface TwoFactorAuthData {
   recoveryCodes: string[]
@@ -14,7 +16,7 @@ export interface TwoFactorAuthData {
 }
 
 export default class TwoFactorAuthService {
-  public async enable(user: User, method?: User['twoFactorMethod']) {
+  public async enable(user: User, method = user.twoFactorMethod) {
     if (!user.phoneNumber && method !== 'app') {
       throw new PhoneNumberRequiredException()
     }
@@ -40,6 +42,24 @@ export default class TwoFactorAuthService {
     await user.save()
   }
   
+  public changeMethod(user: User, method: User['twoFactorMethod']) {
+    if(!user.hasEnabledTwoFactorAuth() || user.twoFactorMethod === method) {
+      return 
+    }
+    
+    if (!user.phoneNumber && method !== 'app') {
+      throw new PhoneNumberRequiredException()
+    }
+
+    user.twoFactorSecret = this.secret()
+    user.twoFactorMethod = method
+    await user.save()
+
+    if (method === 'app') {
+      return this.otpAuthUrl(user)
+    }
+  }
+  
   //todo
   public challenge(user: User, otpService = new OtpService) {
     if (!user.phoneNumber || user.twoFactorMethod === 'app') {
@@ -56,7 +76,7 @@ export default class TwoFactorAuthService {
   }
   
   //todo
-  public async verify(email: string, code: string, otpService = new OtpService) {
+  public async verify(email: string, token: string, otpService = new OtpService) {
     const user = await User.findByOrFail('email', email)
     let isValid = false
 
@@ -64,12 +84,12 @@ export default class TwoFactorAuthService {
       isValid = speakeasy.totp.verify({
         secret: user.twoFactorSecret,
         encoding: 'ascii',
-        token: code,
         window: 2,
+        token
       })
     } 
     else {
-      isValid = await otpService.isValid(user.phoneNumber, code)
+      isValid = await otpService.isValid(user.phoneNumber, token)
     }
 
     if (!isValid) {
@@ -87,20 +107,11 @@ export default class TwoFactorAuthService {
     throw new InvalidRecoveryCodeException()
   }
 
-  public async generateRecoveryCodes(user: User, count = 10) {
-    const rawCodes: string[] = []
-    const promises: Promise<void>[] = []
-    for (let i = 0; i < count; i++) {
-      const generateCode = async () => {
-        const code = randomBytes(8).toString('hex')
-        rawCodes.push(code)
-        user.recoveryCodes.push(await Hash.make(code))
-      }
-      promises.push(generateCode())
-    }
-    await Promise.all(promises)
+  public async generateRecoveryCodes(user: User, count = 8) {
+    const codes = range(count).map(RecoveryCode.generate)
+    user.twoFactorRecoveryCodes = Encryption.encrypt(JSON.stringify(codes))
     await user.save()
-    return rawCodes
+    return codes
   }
 
 

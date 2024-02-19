@@ -7,10 +7,9 @@
 This:
 rely on 2fa pkg 
 Qrcode
-tfa -> /settings
-subs
 test ( settings, subs)
 
+A: rem call 2fa
 
 F: Sql I
 F: Circ Dep Api Res

@@ -15,7 +15,7 @@ Route.group(() => {
     'provider',
     /^(google|facebook)$/
   )
-}).prefix('/login')
+}).prefix('login')
 
 Route.post('/logout', 'AuthController.logout').middleware('auth')
 
@@ -34,10 +34,10 @@ Route.group(() => {
     'throttle:10000,2',
   ])
   Route.patch('/reset', 'AuthController.resetPassword')
-}).prefix('/password')
+}).prefix('password')
 
 // Verify user
 Route.group(() => {
   Route.post('/', 'AuthController.verifyEmail')
-  Route.post('/resend', 'AuthController.resendEmailVerification').middleware('throttle:60000,1')
-}).prefix('/verify')
+  Route.post('/notification', 'AuthController.resendEmailVerification').middleware('throttle:60000,1')
+}).prefix('verification')

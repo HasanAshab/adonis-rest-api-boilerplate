@@ -11,7 +11,7 @@ export default abstract class ApiException extends Exception {
     super('')
   }
 
-  protected payload() {
+  protected async payload() {
     return {
       errors: [
         {
@@ -22,10 +22,10 @@ export default abstract class ApiException extends Exception {
     }
   }
 
-  withHeaders(): Promise<object> | object
-  withHeaders(ctx: HttpContextContract): Promise<object> | object
+  protected withHeaders(): Promise<object> | object
+  protected withHeaders(ctx: HttpContextContract): Promise<object> | object
 
-  protected async withHeaders(...args: any[]) {
+  protected async withHeaders(ctx?: HttpContextContract) {
     return this.headers
   }
 
@@ -37,6 +37,6 @@ export default abstract class ApiException extends Exception {
     ctx.response
       .status(error.status)
       .setHeaders(await error.withHeaders(ctx))
-      .send(error.payload())
+      .send(await error.payload())
   }
 }

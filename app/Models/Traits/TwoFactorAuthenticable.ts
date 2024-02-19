@@ -1,7 +1,11 @@
 import type { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import Encryption from '@ioc:Adonis/Core/Encryption'
+import RecoveryCode from 'App/Services/Auth/TwoFactor/RecoveryCode'
+
 
 export type TwoFactorMethod = 'app' | 'sms' | 'call'
+
 
 export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<typeof BaseModel>) {
   return class extends Superclass {
@@ -11,29 +15,32 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
       
       column()(this.prototype, 'twoFactorMethod')
       column({ serializeAs: null })(this.prototype, 'twoFactorSecret')
-      column({ serializeAs: null })(this.prototype, 'recoveryCodes')
+      column({ serializeAs: null })(this.prototype, 'twoFactorRecoveryCodes')
     }
 
     public twoFactorMethod: TwoFactorMethod
     public twoFactorSecret: string
-    public recoveryCodes?: string[]
+    public twoFactorRecoveryCodes: string[]
+    
+    public recoveryCodes() {
+      return JSON.parse(Encryption.decrypt(this.twoFactorRecoveryCodes))
+    }
     
     public hasEnabledTwoFactorAuth() {
       return !!this.twoFactorSecret
     }
     
-    public async isValidRecoveryCode(code: string) {
-      for (const [index, hashedCode] of this.recoveryCodes.entries()) {
-        if (await Hash.verify(hashedCode, code)) {
-          this.recoveryCodes.splice(index, 1)
-          await this.save()
-          return true
-        }
-      }
-      return false
+    public isValidRecoveryCode(code: string) {
+      return !!this.recoveryCodes().find(recoveryCode => recoveryCode === code)
     }
     
-    public twoFactorQrCodeUrl() {
+    public replaceRecoveryCode(code: string) {
+      this.twoFactorRecoveryCodes = Encryption.encrypt(
+        Encryption.decrypt(this.twoFactorRecoveryCodes).replace(code, RecoveryCode.generate())
+      )
+    }
+    
+    public twoFactorQrCodeSvg() {
       
     }
   }
