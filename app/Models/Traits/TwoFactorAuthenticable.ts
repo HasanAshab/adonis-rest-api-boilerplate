@@ -2,6 +2,8 @@ import type { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import Encryption from '@ioc:Adonis/Core/Encryption'
 import RecoveryCode from 'App/Services/Auth/TwoFactor/RecoveryCode'
+import * as otplib from 'otplib';
+import * as qrcode from 'qrcode';
 
 
 export type TwoFactorMethod = 'app' | 'sms' | 'call'
@@ -40,8 +42,13 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
       )
     }
     
-    public twoFactorQrCodeSvg() {
-      
+    public twoFactorQrCodeUrl() {
+      return otplib.authenticator.keyuri(this.email, this.twoFactorMethod, this.twoFactorSecret);
     }
+    
+    public twoFactorQrCodeSvg() {
+      return qrcode.toString(this.twoFactorQrCodeUrl(), { type: 'svg' });
+    }
+
   }
 }

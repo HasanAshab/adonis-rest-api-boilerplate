@@ -37,6 +37,13 @@ export default class SettingsController {
     return 'Two Factor Authentication disabled!'
   }
   
+  public async twoFactorAuthQrCode({ auth }: HttpContextContract) {
+    return {
+      svg: auth.user!.twoFactorQrCodeSvg()
+    }
+  }
+
+  
   public async updateTwoFactorAuthMethod({ auth }: HttpContextContract) {
     const { method } = await request.validate(TwoFactorAuthMethodValidator)
     const otpAuthUrl = await this.twoFactorAuthService.changeMethod(auth.user!, method)

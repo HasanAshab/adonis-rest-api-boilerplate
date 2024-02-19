@@ -49,7 +49,7 @@ export default class Token extends compose(BaseModel, Expirable) {
     await this.create({
       type,
       key,
-      secret
+      secret,
       oneTime: options.oneTimeOnly,
       expiresAt: stringToLuxonDate(options.expiresIn)
     })

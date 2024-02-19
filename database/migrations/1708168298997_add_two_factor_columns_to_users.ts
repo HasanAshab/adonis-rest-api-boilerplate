@@ -12,8 +12,10 @@ export default class extends BaseSchema {
   }
 
   public async down () {
-    this.schema.dropColumn('two_factor_secret')
-    this.schema.dropColumn('two_factor_method')
-    this.schema.dropColumn('two_factor_recovery_codes')
+    this.schema.alterTable(this.tableName, (table) => {
+      table.dropColumn('two_factor_secret')
+      table.dropColumn('two_factor_method')
+      table.dropColumn('two_factor_recovery_codes')
+    })
   }
 }

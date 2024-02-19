@@ -40,6 +40,17 @@
       "aliases": [],
       "flags": []
     },
+    "create:user": {
+      "settings": {
+        "loadApp": true
+      },
+      "commandPath": "./app/Commands/CreateTestUser",
+      "commandName": "create:user",
+      "description": "Creates a user for testing purpose",
+      "args": [],
+      "aliases": [],
+      "flags": []
+    },
     "dump:rcfile": {
       "settings": {},
       "commandPath": "@adonisjs/core/build/commands/DumpRc",

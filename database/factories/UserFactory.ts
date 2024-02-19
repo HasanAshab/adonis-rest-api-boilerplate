@@ -43,15 +43,11 @@ export default class UserFactory extends Factory<User> {
     })
   }
 
-  hasSettings(enableTwoFactorAuth = false, method: TwoFactorAuthMethod = 'sms') {
-    return this.external((user: User) => {
-      return user.related('settings').create({
-        twoFactorAuth: {
-          enabled: enableTwoFactorAuth,
-          method,
-          secret: null,
-        }
-      })
+  twoFactorAuthEnabled(method = User['twoFactorAuthMethod'] = 'sms') {
+    return this.state(user => {
+      user.twoFactorAuthSecret = '2fa-secret'
+      user.twoFactorAuthMethod = method
+      return user
     })
   }
 }

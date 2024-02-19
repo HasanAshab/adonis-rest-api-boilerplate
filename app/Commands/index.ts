@@ -16,7 +16,8 @@ import Application from '@ioc:Adonis/Core/Application'
 | 2. We must ignore this file to avoid getting into an infinite loop
 |
 */
-export default ['./app/Commands/Search', './app/Commands/ClearUploads']
+//Todo
+export default ['./app/Commands/Search', './app/Commands/ClearUploads', './app/Commands/CreateTestUser']
 
 /*
 export default listDirectoryFiles(__dirname, Application.appRoot, [
