@@ -26,7 +26,20 @@
     "Contracts": "contracts",
     "Tests": "tests"
   },
-  "preloads": ["./start/kernel", "./start/bouncer", "./start/limiter", "./start/client"],
+  "preloads": [
+    "./start/kernel",
+    "./start/bouncer",
+    "./start/limiter",
+    "./start/client",
+    {
+      "file": "./start/response",
+      "environment": [
+        "web",
+        "test"
+      ]
+    },
+    "./start/database"
+  ],
   "providers": [
     "./app/Providers/AppProvider",
     "@adonisjs/core",
@@ -50,22 +63,30 @@
     "@adonisjs/view",
     "./app/Providers/ClientProvider"
   ],
-  "aceProviders": ["@adonisjs/repl"],
+  "aceProviders": [
+    "@adonisjs/repl"
+  ],
   "tests": {
     "suites": [
       {
         "name": "functional",
-        "files": ["tests/functional/**/*.spec(.ts|.js)"],
+        "files": [
+          "tests/functional/**/*.spec(.ts|.js)"
+        ],
         "timeout": 60000
       },
       {
         "name": "unit",
-        "files": ["tests/unit/**/*.spec(.ts|.js)"],
+        "files": [
+          "tests/unit/**/*.spec(.ts|.js)"
+        ],
         "timeout": 60000
       }
     ]
   },
-  "testProviders": ["@japa/preset-adonis/TestsProvider"],
+  "testProviders": [
+    "@japa/preset-adonis/TestsProvider"
+  ],
   "metaFiles": [
     {
       "pattern": "resources/views/**/*.edge",

@@ -57,12 +57,9 @@ export default class Token extends compose(BaseModel, Expirable) {
     return secret
   }
   
-  public static get(key: string, type: string) {
-    return this.findByFields({ key, type })
-  }
 
-  public static async isValid(key: string, type: string, secret: string) {
-    const token = await this.get(key, type)
+  public static async isValid(type: string, key: string, secret: string) {
+    const token = await this.findByFields({ type, key })
     
     if(token && token.isNotExpired() && await token.compareSecret(secret)) {
       token.oneTime ?? await token.delete()
@@ -73,7 +70,7 @@ export default class Token extends compose(BaseModel, Expirable) {
   }
 
   public static async verify(type: string, key: string, secret: string) {
-    const isValid = await this.isValid(key, type, secret)
+    const isValid = await this.isValid(type, key, secret)
     if (!isValid) {
       throw new InvalidTokenException()
     }

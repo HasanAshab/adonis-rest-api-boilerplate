@@ -4,7 +4,7 @@ import Route from '@ioc:Adonis/Core/Route'
 import Event from '@ioc:Adonis/Core/Event'
 import User from 'App/Models/User'
 import BasicAuthService from 'App/Services/Auth/BasicAuthService'
-import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
+import TwoFactorAuthService from 'App/Services/Auth/TwoFactor/TwoFactorAuthService'
 import SocialAuthService, { SocialAuthData } from 'App/Services/Auth/SocialAuthService'
 import OtpService from 'App/Services/OtpService'
 import PasswordChangedMail from 'App/Mails/PasswordChangedMail'
@@ -161,9 +161,9 @@ export default class AuthController {
   }
 
   public async loginWithSocialAuthToken({ request, response, params, ally }: HttpContextContract) {
-    let { token, email, username } = await request.validate(SocialAuthTokenLoginValidator)
+    let { email, username, token: oauthToken } = await request.validate(SocialAuthTokenLoginValidator)
 
-    const data: SocialAuthData = await ally.use(params.provider).userFromToken(token)
+    const data: SocialAuthData = await ally.use(params.provider).userFromToken(oauthToken)
 
     data.username = username
     if (email) {
@@ -172,7 +172,7 @@ export default class AuthController {
     }
 
     const { user, isRegisteredNow } = await this.socialAuthService.sync(params.provider, data)
-    const token = await user.createToken(),
+    const token = await user.createToken()
 
     if (!isRegisteredNow) {
       return {
