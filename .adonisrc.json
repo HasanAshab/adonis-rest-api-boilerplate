@@ -38,7 +38,14 @@
         "test"
       ]
     },
-    "./start/database"
+    "./start/database",
+    {
+      "file": "./start/validator",
+      "environment": [
+        "web",
+        "test"
+      ]
+    }
   ],
   "providers": [
     "./app/Providers/AppProvider",

@@ -38,6 +38,12 @@ export default class TwoFactorAuthService {
     }
 
     user.twoFactorMethod = method
+    
+    await twoFactorMethodManager.method(method).enable(user)
+    await twoFactorMethodManager.method(method).disable(user)
+    await twoFactorMethodManager.method(method).challenge(user)
+    await twoFactorMethodManager.method(method).verify(user, token)
+    
     await user.save()
   }
   

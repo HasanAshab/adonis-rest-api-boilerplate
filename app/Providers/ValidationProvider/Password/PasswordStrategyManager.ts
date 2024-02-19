@@ -11,6 +11,7 @@ export default class PasswordStrategyManager {
     this._defaultStrategy = name;
     return this;
   }
+  
   public register(name: string, strategyFactory: string | PasswordValidationStrategyFactory) {
     if (typeof strategyFactory === 'string') {
       const path = strategyFactory
@@ -29,7 +30,7 @@ export default class PasswordStrategyManager {
     return { asDefault: markAsDefault }
   }
 
-  public get(name = this._defaultStrategy) {
+  public use(name = this._defaultStrategy) {
     if (!name) {
       throw new Error('Must provide a strategy name as no default strategy registered')
     }
