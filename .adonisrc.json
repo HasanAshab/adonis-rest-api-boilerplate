@@ -44,7 +44,6 @@
     "./app/Providers/AppProvider",
     "@adonisjs/core",
     "@adonisjs/redis",
-    "./app/Providers/CacheProvider",
     "./app/Providers/HashProvider",
     "@adonisjs/bouncer",
     "@adonisjs/ally",

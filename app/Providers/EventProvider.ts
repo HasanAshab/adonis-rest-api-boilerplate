@@ -5,7 +5,10 @@ export default class EventProvider {
   constructor(protected app: ApplicationContract) {}
 
   private listen = {
-    registered: ['SendEmailVerificationMail', 'SendNewUserJoinedNotificationToAdmins'],
+    registered: [
+      'SendEmailVerificationMail',
+      'SendNewUserJoinedNotificationToAdmins'
+    ],
   }
 
   public async boot() {
