@@ -5,18 +5,6 @@ import path from 'path'
 export default class RouteProvider {
   constructor(protected app: ApplicationContract) {}
 
-  private registerRoutes() {
-    const Route = this.app.container.use('Adonis/Core/Route')
-
-    // Routes for V1
-    Route.group(() => {
-      Route.discover('routes/v1')
-    })
-      .namespace('App/Http/Controllers/V1')
-      .prefix('/api/v1/')
-      .as('v1')
-  }
-
   private extendRoute() {
     const Application = this.app.container.use('Adonis/Core/Application')
     const Route = this.app.container.use('Adonis/Core/Route')
@@ -46,6 +34,7 @@ export default class RouteProvider {
         }
       }
     }
+    
     Route.RouteGroup.macro('invoke', function (route, method, params) {
       if (route instanceof Route.RouteGroup) {
         route.routes.forEach((child) => this.invoke(child, method, params))
@@ -70,6 +59,5 @@ export default class RouteProvider {
 
   public boot() {
     this.extendRoute()
-    this.registerRoutes()
   }
 }

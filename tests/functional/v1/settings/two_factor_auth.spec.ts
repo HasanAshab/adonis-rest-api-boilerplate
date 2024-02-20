@@ -12,6 +12,7 @@ test.group('Settings / Two Factor Auth', (group) => {
     const user = await User.factory().create()
 
     const response = await client.get('/api/v1/settings/two-factor-auth').loginAs(user)
+    
     response.assertStatus(200)
     response.assertBodyContains(TwoFactorSettingsResource.make(user))
   })

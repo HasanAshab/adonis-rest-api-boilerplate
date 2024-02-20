@@ -45,6 +45,13 @@
         "web",
         "test"
       ]
+    },
+    {
+      "file": "./start/routes",
+      "environment": [
+        "web",
+        "test"
+      ]
     }
   ],
   "providers": [
