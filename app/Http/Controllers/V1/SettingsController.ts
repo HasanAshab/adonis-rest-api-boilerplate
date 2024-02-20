@@ -36,7 +36,7 @@ export default class SettingsController {
   
   public async updateTwoFactorAuthMethod({ request, auth }: HttpContextContract) {
     const { method } = await request.validate(TwoFactorAuthMethodValidator)
-    await this.twoFactorAuthService.changeMethod(auth.user!)
+    await this.twoFactorAuthService.changeMethod(auth.user!, method)
     return 'Two-Factor Authentication method changed!'
   }
 

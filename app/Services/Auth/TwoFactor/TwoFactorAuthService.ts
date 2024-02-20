@@ -15,7 +15,7 @@ export default class TwoFactorAuthService {
   }
 
   public disable(user: User) {
-    return TwoFactorMethod.use(user.twoFactorMethod).disable(user)
+    return TwoFactorMethod.use(user.twoFactorMethod ?? 'authenticator').disable(user)
   }
   
   public changeMethod(user: User, method: string) {

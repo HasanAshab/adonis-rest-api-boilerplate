@@ -14,7 +14,7 @@ export default abstract class TwoFactorMethod {
   protected abstract cleanup(user: User): void | Promise<void>
 
   public async enable(user: User) {
-    await this.assertAssignable()
+    await this.assertAssignable(user)
     user.twoFactorEnabled = true
     user.twoFactorMethod = this.methodName
     await this.setup(user)
@@ -30,7 +30,7 @@ export default abstract class TwoFactorMethod {
   }
   
   public async assign(user: User) {
-    await this.assertAssignable()
+    await this.assertAssignable(user)
     user.twoFactorMethod = this.methodName
     await user.save()
   }

@@ -13,12 +13,10 @@ export default abstract class ApiException extends Exception {
 
   protected async payload() {
     return {
-      errors: [
-        {
-          code: this.code,
-          message: this.message,
-        },
-      ],
+      errors: [{
+        code: this.code,
+        message: this.message,
+      }],
     }
   }
 
