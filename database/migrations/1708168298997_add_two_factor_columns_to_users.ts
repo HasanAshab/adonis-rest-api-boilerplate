@@ -7,7 +7,7 @@ export default class extends BaseSchema {
 
   public async up () {
     this.schema.alterTable(this.tableName, (table) => {
-      table.boolean('two_factor_enabled').defaultTo(true)
+      table.boolean('two_factor_enabled').notNullable()
       table.enum('two_factor_method', TwoFactorMethod.names()).nullable()
       table.string('two_factor_secret').nullable()
       table.text('two_factor_recovery_codes').nullable()

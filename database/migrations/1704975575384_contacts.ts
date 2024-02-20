@@ -11,7 +11,7 @@ export default class extends BaseSchema {
       table.string('email', Config.get('app.user.email.maxLength')).notNullable()
       table.string('subject', Config.get('app.contact.subject.maxLength')).notNullable().index()
       table.string('message', Config.get('app.contact.message.maxLength')).notNullable()
-      table.enum('status', ['opened', 'closed']).defaultTo('opened')
+      table.enum('status', ['opened', 'closed']).notNullable()
       table.timestamp('created_at', { useTz: true })
     })
 

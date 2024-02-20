@@ -1,4 +1,5 @@
-import { AuthenticRequest, Response } from '~/core/express'
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+
 
 export default class EnsureEmailIsVerified {
   handle({ response, auth: { user } }: HttpContextContract, next: NextFunction) {
@@ -10,6 +11,6 @@ export default class EnsureEmailIsVerified {
       return next()
     }
 
-    res.status(403).message('Your have to verify your email to perfom this action!')
+    response.forbidden('Your have to verify your email to perfom this action!')
   }
 }

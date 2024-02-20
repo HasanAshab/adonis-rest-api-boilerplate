@@ -21,10 +21,10 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
       column({ serializeAs: null })(this.prototype, 'twoFactorRecoveryCodes')
     }
 
-    public twoFactorEnabled: boolean
-    public twoFactorMethod?: string
-    public twoFactorSecret?: string
-    public twoFactorRecoveryCodes?: string
+    public twoFactorEnabled = true
+    public twoFactorMethod: string | null = null
+    public twoFactorSecret: string | null = null
+    public twoFactorRecoveryCodes: string | null = null
     
     public hasEnabledTwoFactorAuth() {
       return this.twoFactorEnabled

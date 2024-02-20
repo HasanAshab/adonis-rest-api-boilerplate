@@ -12,8 +12,8 @@ export default class extends BaseSchema {
       table.string('username', Config.get('app.user.username.maxLength')).unique().nullable().index()
       table.string('email').unique().nullable().index()
       table.string('phone_number').nullable()
-      table.enum('role', ['user', 'admin']).defaultTo('user')
-      table.boolean('verified').notNullable().defaultTo(false)
+      table.enum('role', ['user', 'admin']).notNullable()
+      table.boolean('verified').notNullable()
       table.string('password').nullable()
       table.json('avatar').nullable()
 

@@ -27,7 +27,7 @@ export default class Token extends compose(BaseModel, Expirable) {
   public type: string
 
   @column()
-  public oneTime: boolean
+  public oneTime = true
 
   @column()
   public secret: string

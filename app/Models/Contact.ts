@@ -19,7 +19,7 @@ export default class Contact extends compose(BaseModel, HasFactory) {
   public message: string
 
   @column()
-  public status: 'opened' | 'closed'
+  public status: 'opened' | 'closed' = 'opened'
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

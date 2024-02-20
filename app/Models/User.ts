@@ -44,10 +44,10 @@ export default class User extends compose(
   public phoneNumber: string = null
 
   @column()
-  public role: Role
+  public role: Role = 'user'
 
   @column()
-  public verified: boolean
+  public verified = false
 
   @column({ serializeAs: null })
   public password: string = null

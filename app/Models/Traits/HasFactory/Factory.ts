@@ -101,7 +101,6 @@ export default abstract class Factory<
    */
   public async create(data: Partial<Attributes>) {
     const stubModels = this.make(data)
-
     const records = Array.isArray(stubModels)
       ? await this.Model.createMany(stubModels)
       : await this.Model.create(stubModels)
