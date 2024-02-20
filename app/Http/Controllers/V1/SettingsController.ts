@@ -25,31 +25,27 @@ export default class SettingsController {
   
   public async enableTwoFactorAuth({ request, auth }: HttpContextContract) {
     const { method } = await request.validate(TwoFactorAuthMethodValidator)
-    const data = await this.twoFactorAuthService.enable(auth.user!, method)
-    return {
-      message: 'Two Factor Authentication enabled!',
-      data
-    }
+    await this.twoFactorAuthService.enable(auth.user!, method)
+    return 'Two-Factor Authentication enabled!'
   }
   
   public async disableTwoFactorAuth({ auth }: HttpContextContract) {
     await this.twoFactorAuthService.disable(auth.user!)
-    return 'Two Factor Authentication disabled!'
+    return 'Two-Factor Authentication disabled!'
   }
   
+  public async updateTwoFactorAuthMethod({ request, auth }: HttpContextContract) {
+    const { method } = await request.validate(TwoFactorAuthMethodValidator)
+    await this.twoFactorAuthService.changeMethod(auth.user!)
+    return 'Two-Factor Authentication method changed!'
+  }
+
   public async twoFactorAuthQrCode({ auth }: HttpContextContract) {
     return {
-      svg: auth.user!.twoFactorQrCodeSvg()
+      data: await auth.user!.twoFactorQrCodeSvg()
     }
   }
 
-  
-  public async updateTwoFactorAuthMethod({ auth }: HttpContextContract) {
-    const { method } = await request.validate(TwoFactorAuthMethodValidator)
-    await this.twoFactorAuthService.changeMethod(auth.user!, method)
-    return 'Two Factor Authentication method changed!'
-  }
-  
   public recoveryCodes({ auth }: HttpContextContract) {
     return auth.user!.recoveryCodes()
   }
@@ -57,7 +53,6 @@ export default class SettingsController {
   public generateRecoveryCodes({ auth }: HttpContextContract) {
     return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
   }
-  
 
   public async notificationPreference({ auth: { user } }: HttpContextContract) {
     await user!.load('notificationPreferences')

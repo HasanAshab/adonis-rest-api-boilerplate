@@ -1,25 +1,21 @@
-  Q:  Why you started??
-  A: To Escape, gain InDePenDene
-  
-  I'm Stronger Than My NaFsS 
-
-
 This:
-rely on 2fa pkg 
-Qrcode
 test ( settings, subs)
 
-A: rem call 2fa
-
+F: 2fa user removed phone number
+K: URI spec
+I: rem phone
 F: Sql I
 F: Circ Dep Api Res
-I: cicd
 F: Conf tfa, direct query enable
-D: Api Res
 I: trust device
 T: Complete todo marked comments
+
+
+D: Api Res
 t: feature/socialauth
 T: Contribute adonisjs query builder
+I: cicd
+
 
 
 Fallback: solve type, doc

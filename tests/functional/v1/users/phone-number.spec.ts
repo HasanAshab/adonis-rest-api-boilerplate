@@ -1,26 +1,24 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
-import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
+import Otp from 'App/Services/Auth/Otp'
 
 /*
 Run this suits:
 node ace test functional --files="v1/users/phone-number.spec.ts"
 */
 
-test.group('Users/PhoneNumber', (group) => {
-  const twoFactorAuthService = new TwoFactorAuthService()
+test.group('Users / Phone Number', (group) => {
   let user
 
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().hasSettings().create()
+    user = await User.factory().create()
   })
 
   test('Should update phone number with valid otp', async ({ client, expect }) => {
-    const user = await User.factory().hasSettings().create()
     const phoneNumber = '+14155552671'
-    const otp = await twoFactorAuthService.createToken(user)
+    const otp = await Otp.generate(phoneNumber)
 
     const response = await client
       .patch('/api/v1/users/me/phone-number')
@@ -34,7 +32,6 @@ test.group('Users/PhoneNumber', (group) => {
   })
 
   test("Shouldn't update phone number with invalid otp", async ({ client, expect }) => {
-    const user = await User.factory().hasSettings().create()
     const phoneNumber = '+14155552671'
 
     const response = await client.patch('/api/v1/users/me/phone-number').loginAs(user).json({
@@ -53,15 +50,18 @@ test.group('Users/PhoneNumber', (group) => {
     expect,
   }) => {
     const phoneNumber = '+14155552671'
+    let otpSend = false
+    Otp.sendThroughSMS = () => otpSend = true
 
+    
     const response = await client
       .patch('/api/v1/users/me/phone-number')
       .loginAs(user)
       .json({ phoneNumber })
     await user.refresh()
 
-    // TODO swap TwoFactorAuthService
     response.assertStatus(202)
     expect(user.phoneNumber).not.toBe(phoneNumber)
+    expect(otpSend).toBe(true)
   })
 })

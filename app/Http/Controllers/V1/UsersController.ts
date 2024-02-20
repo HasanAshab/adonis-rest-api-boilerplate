@@ -3,7 +3,7 @@ import { bind } from '@adonisjs/route-model-binding'
 import { inject } from '@adonisjs/core'
 import User from 'App/Models/User'
 import BasicAuthService from 'App/Services/Auth/BasicAuthService'
-import OtpService from 'App/Services/OtpService'
+import Otp from 'App/Services/Auth/Otp'
 import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import UpdateProfileValidator from 'App/Http/Validators/V1/user/UpdateProfileValidator'
 import ChangePasswordValidator from 'App/Http/Validators/V1/user/ChangePasswordValidator'
@@ -75,7 +75,7 @@ export default class UsersController {
   }
 
   public async makeAdmin({ response, params }: HttpContextContract) {
-    return (await User.query().where('id', params.id).update({ role: 'admin' }))
+    return (await User.query().whereUid(params.id).update({ role: 'admin' }))
       ? 'Admin role granted to the user.'
       : response.notFound('User not found')
   }
@@ -84,7 +84,7 @@ export default class UsersController {
   //@inject()
   public async changePassword(
     { request, auth }: HttpContextContract,
-    authService: BasicAuthService = new BasicAuthService()
+    authService = new BasicAuthService()
   ) {
     const { oldPassword, newPassword } = await request.validate(ChangePasswordValidator)
     await authService.changePassword(auth.user!, oldPassword, newPassword)
@@ -92,27 +92,29 @@ export default class UsersController {
     return 'Password changed!'
   }
 
-  //TODO
-  //@inject()
-  async changePhoneNumber(
-    { request, response, auth }: HttpContextContract,
-    otpService: OtpService = new OtpService()
-  ) {
+  async changePhoneNumber({ request, response, auth }: HttpContextContract) {
     const { phoneNumber, otp } = await request.validate(ChangePhoneNumberValidator)
     const user = auth.user!
 
-    if (user.phoneNumber && user.phoneNumber === phoneNumber) {
+    if (user.phoneNumber === phoneNumber) {
       throw new SamePhoneNumberException()
     }
 
     if (!otp) {
-      await otpService.sendThroughSMS(phoneNumber)
+      await Otp.sendThroughSMS(phoneNumber)
       return response.accepted('Verification code sent to the phone number!')
     }
 
-    await otpService.verify(phoneNumber, otp)
+    await Otp.verify(otp, phoneNumber)
+    
     user.phoneNumber = phoneNumber
     await user.save()
     return 'Phone number updated!'
+  }
+  
+  async removePhoneNumber({ auth }: HttpContextContract) {
+    auth.user!.phoneNumber = null
+    await auth.user!.save()
+    return 'Phone number removed!'
   }
 }

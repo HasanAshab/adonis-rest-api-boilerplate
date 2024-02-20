@@ -1,18 +1,18 @@
-import { PasswordValidationStrategy } from '@ioc:Adonis/Core/Validator/Rules/Password'
+import { PasswordStrategy, PasswordValidationStrategy } from '@ioc:Adonis/Core/Validator/Rules/Password'
 
 export type PasswordValidationStrategyFactory = () => PasswordValidationStrategy
 
 export default class PasswordStrategyManager {
-  protected _defaultStrategy?: string
+  protected _defaultStrategy?: PasswordStrategy
   protected strategies = new Map<string, PasswordValidationStrategy>()
   protected factories = new Map<string, PasswordValidationStrategyFactory>()
   
-  public defaultStrategy(name: string) {
+  public defaultStrategy(name: PasswordStrategy) {
     this._defaultStrategy = name;
     return this;
   }
   
-  public register(name: string, strategyFactory: string | PasswordValidationStrategyFactory) {
+  public register(name: PasswordStrategy, strategyFactory: string | PasswordValidationStrategyFactory) {
     if (typeof strategyFactory === 'string') {
       const path = strategyFactory
       strategyFactory = () => {
@@ -39,18 +39,13 @@ export default class PasswordStrategyManager {
     return { name, strategy }
   }
 
-  protected resolveStrategy(name: string) {
+  protected resolveStrategy(name: PasswordStrategy) {
     const factory = this.factories.get(name)
     if (!factory) {
       throw new Error(`Password validation strategy "${name}" was not registered`)
     }
 
     const strategy = factory()
-    if (!strategy) {
-      throw new Error(
-        `Password strategy factory "${name}" must return a PasswordValidationStrategy class`
-      )
-    }
 
     this.factories.delete(name)
     this.strategies.set(name, strategy)

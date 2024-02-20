@@ -9,6 +9,7 @@ Route.group(() => {
     Route.patch('/', 'UsersController.updateProfile')
     Route.patch('/password', 'UsersController.changePassword')
     Route.patch('/phone-number', 'UsersController.changePhoneNumber')
+    Route.delete('/phone-number', 'UsersController.removePhoneNumber')
   }).prefix('me')
 
   Route.get('/:username', 'UsersController.show').as('show')

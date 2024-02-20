@@ -37,7 +37,7 @@ export default class ValidationProvider {
     })
   }
 
-  public register() {
+  public boot() {
     this.registerPasswordStrategyManager()
     this.registerPasswordStrategies()
   }

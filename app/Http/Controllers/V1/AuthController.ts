@@ -45,7 +45,6 @@ export default class AuthController {
       method: 'internal',
       user,
     })
-    //Event.fire(new Registered({}))
 
     const profile = Route.makeUrl(AuthController.VERSION + ".users.show", {
       username: user.username 
