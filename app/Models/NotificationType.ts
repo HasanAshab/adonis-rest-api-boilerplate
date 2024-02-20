@@ -2,10 +2,11 @@ import BaseModel from 'App/Models/BaseModel'
 import { column } from '@ioc:Adonis/Lucid/Orm'
 import { compose } from '@poppinss/utils/build/helpers'
 import HasFactory from 'App/Models/Traits/HasFactory'
+import HasTimestamps from 'App/Models/Traits/HasTimestamps'
 import NotificationService from 'App/Services/NotificationService'
 
 
-export default class NotificationType extends compose(BaseModel, HasFactory) {
+export default class NotificationType extends compose(BaseModel, HasFactory, HasTimestamps) {
   @column({ isPrimary: true })
   public id: number   
   

@@ -31,6 +31,12 @@ ModelQueryBuilder.macro('pluck', async function (column: string) {
   return records.map((record) => record[column])
 })
 
+
+ModelQueryBuilder.macro('last', function () {
+  return this.orderBy('created_at', 'desc').first()
+})
+
+
 /**
  * Macro to find a record by its primary key.
  * @param uid - The value of the primary key.

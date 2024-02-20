@@ -6,6 +6,10 @@ import Database from '@ioc:Adonis/Lucid/Database'
  * Base model class with common utility methods.
  */
 export default class BaseModel extends Model {
+  public static last() {
+    return this.query().last()
+  }
+  
   /**
    * Find a record by specified fields.
    * @param fields - The fields to search by.

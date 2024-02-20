@@ -12,6 +12,8 @@ export default class extends BaseSchema {
       table.string('display_text', Config.get('app.constraints.notificationType.displayText.maxLength')).notNullable()
       table.string('group_name', Config.get('app.constraints.notificationType.groupName.maxLength')).notNullable()
       table.string('description', Config.get('app.constraints.notificationType.description.maxLength')).notNullable()
+      table.timestamp('created_at', { useTz: true })
+      table.timestamp('updated_at', { useTz: true })
     })
   }
 

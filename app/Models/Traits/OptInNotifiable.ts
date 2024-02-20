@@ -75,7 +75,7 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
        }
         return { channels: channelPreferences }
       })
-
+      
       return this.related('notificationPreferences').sync(formatedPreferences, detach)
     }
 

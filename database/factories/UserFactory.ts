@@ -49,4 +49,10 @@ export default class UserFactory extends Factory<User> {
       return user
     })
   }
+  
+  hasNotificationPreferences() {
+    return this.external(async user => {
+      await user.initNotificationPreference()
+    })
+  }
 }

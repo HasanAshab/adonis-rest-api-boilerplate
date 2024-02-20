@@ -9,7 +9,7 @@ export default async function UpdateNotificationPreferenceValidator() {
   const notificationService = new NotificationService
   const channels = notificationService.channels()
   const notificationTypesId = await NotificationType.pluck('id')
-  
+
   const schemaDefinition = reduce(notificationTypesId, (accumulator, id) => {
     const channelPreferenceSchema = reduce(channels, (schemaAccumulator, channel) => {
       schemaAccumulator[channel] = schema.boolean()
