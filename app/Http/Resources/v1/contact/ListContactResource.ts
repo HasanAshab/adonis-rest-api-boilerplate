@@ -12,14 +12,9 @@ export default class ListContactResource extends JsonResource {
       createdAt: this.resource.createdAt.toRelative(),
       links: {
         self: this.makeUrl('v1.contact.show'),
-        close: this.when(this.resource.isOpened(), () => {
-          return this.makeUrl('v1.contact.close')
-        }),
-        reopen: this.when(this.resource.isClosed(), () => {
-          return this.makeUrl('v1.contact.reopen')
-        }),
-        delete: this.makeUrl('v1.contact.delete'),
-      },
+        updateStatus: this.makeUrl('v1.contact.update.status'),
+        delete: this.makeUrl('v1.contact.delete')
+      }
     }
   }
 }

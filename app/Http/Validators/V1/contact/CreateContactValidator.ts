@@ -11,6 +11,7 @@ export default class CreateContactValidator extends Validator {
         Config.get('app.constraints.contact.subject.minLength'),
         Config.get('app.constraints.contact.subject.maxLength')
       ),
+      //todo
       // rules.sanitize()
     ]),
     message: schema.string([

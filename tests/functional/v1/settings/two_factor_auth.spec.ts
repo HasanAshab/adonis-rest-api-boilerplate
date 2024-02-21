@@ -44,9 +44,9 @@ test.group('Settings / Two Factor Auth', (group) => {
     await user.refresh()
 
     response.assertStatus(400)
-    response.assertBodyContainProperty('errors', [{
+    response.assertBodyContainProperty('errors[0]', {
       code: new PhoneNumberRequiredException().code
-    }])
+    })
     expect(user.hasEnabledTwoFactorAuth()).toBe(false)
     expect(user.twoFactorMethod).toBeNull()
   })
@@ -85,9 +85,9 @@ test.group('Settings / Two Factor Auth', (group) => {
     await user.refresh()
 
     response.assertStatus(400)
-    response.assertBodyContainProperty('errors', [{
+    response.assertBodyContainProperty('errors[0]', {
       code: new PhoneNumberRequiredException().code
-    }])
+    })
     expect(user.twoFactorMethod).toBe('authenticator')
   })
   

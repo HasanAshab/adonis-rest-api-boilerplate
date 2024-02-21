@@ -6,7 +6,7 @@ import Twilio from '@ioc:Adonis/Addons/Twilio'
 
 /*
 Run this suits:
-node ace test functional --files="v1/auth/two-factor.spec.ts"
+node ace test functional --files="v1/auth/two_factor.spec.ts"
 */
 test.group('Auth/TwoFactor', (group) => {
   const twoFactorAuthService = new TwoFactorAuthService()
@@ -16,10 +16,6 @@ test.group('Auth/TwoFactor', (group) => {
 
   group.each.setup(async () => {
     Twilio.fake()
-  })
-
-  group.each.setup(async () => {
-    Twilio.restore()
     user = await User.factory().hasSettings().create()
   })
 

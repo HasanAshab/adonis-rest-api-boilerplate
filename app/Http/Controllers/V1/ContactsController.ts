@@ -2,6 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { bind } from '@adonisjs/route-model-binding'
 import Contact from 'App/Models/Contact'
 import CreateContactValidator from 'App/Http/Validators/V1/contact/CreateContactValidator'
+import UpdateContactStatusValidator from 'App/Http/Validators/V1/contact/UpdateContactStatusValidator'
 import SuggestContactValidator from 'App/Http/Validators/V1/contact/SuggestContactValidator'
 import SearchContactValidator from 'App/Http/Validators/V1/contact/SearchContactValidator'
 import ListContactResource from 'App/Http/Resources/v1/contact/ListContactResource'
@@ -17,14 +18,10 @@ export default class ContactsController {
     response.created(await Contact.create(data))
   }
 
-  public async close({ params }: HttpContextContract) {
-    await Contact.close(params.id)
-    return `Contact form closed!`
-  }
-
-  public async reopen({ params }: HttpContextContract) {
-    await Contact.open(params.id)
-    return `Contact form reopened!`
+  public async updateStatus({ request, params }: HttpContextContract) {
+    const { status } = await request.validate(UpdateContactStatusValidator)
+    await Contact.updateOrFail(params.id, { status })
+    return `Contact form ${status}!`
   }
 
   public async suggest({ request }: HttpContextContract) {

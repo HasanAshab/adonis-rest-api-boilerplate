@@ -3,7 +3,7 @@ import User from 'App/Models/User'
 
 /*
 Run this suits:
-node ace test functional --files="v1/users/make-admin.spec.ts"
+node ace test functional --files="v1/users/make_admin.spec.ts"
 */
 test.group('Users / MakeAdmin', (group) => {
   let user

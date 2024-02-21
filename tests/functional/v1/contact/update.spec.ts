@@ -16,12 +16,14 @@ test.group('Contact / Update', (group) => {
     const admin = await User.factory().withRole('admin').create()
 
     const response = await client
-      .patch(`/api/v1/contact/inquiries/${contact.id}/close`)
+      .patch(`/api/v1/contact/inquiries/${contact.id}/status`)
       .loginAs(admin)
+      .json({ status: 'closed' })
+      
     await contact.refresh()
 
     response.assertStatus(200)
-    expect(contact.status).toBe('closed')
+    expect(contact.isClosed()).toBe(true)
   })
 
   test('Should reopen contact', async ({ client, expect }) => {
@@ -29,12 +31,13 @@ test.group('Contact / Update', (group) => {
     const admin = await User.factory().withRole('admin').create()
 
     const response = await client
-      .patch(`/api/v1/contact/inquiries/${contact.id}/reopen`)
+      .patch(`/api/v1/contact/inquiries/${contact.id}/status`)
       .loginAs(admin)
+      .json({ status: 'opened' })
     await contact.refresh()
 
     response.assertStatus(200)
-    expect(contact.status).toBe('opened')
+    expect(contact.isOpened()).toBe(true)
   })
 
   test('Users should not close contact', async ({ client, expect }) => {
@@ -42,12 +45,13 @@ test.group('Contact / Update', (group) => {
     const user = await User.factory().create()
 
     const response = await client
-      .patch(`/api/v1/contact/inquiries/${contact.id}/close`)
+      .patch(`/api/v1/contact/inquiries/${contact.id}/status`)
       .loginAs(user)
+      .json({ status: 'closed' })
     await contact.refresh()
 
     response.assertStatus(403)
-    expect(contact.status).toBe('opened')
+    expect(contact.isClosed()).toBe(false)
   })
 
   test('Users should not reopen contact', async ({ client, expect }) => {
@@ -55,11 +59,12 @@ test.group('Contact / Update', (group) => {
     const user = await User.factory().create()
 
     const response = await client
-      .patch(`/api/v1/contact/inquiries/${contact.id}/reopen`)
+      .patch(`/api/v1/contact/inquiries/${contact.id}/status`)
       .loginAs(user)
+      .json({ status: 'opened' })
     await contact.refresh()
 
     response.assertStatus(403)
-    expect(contact.status).toBe('closed')
+    expect(contact.isOpened()).toBe(false)
   })
 })

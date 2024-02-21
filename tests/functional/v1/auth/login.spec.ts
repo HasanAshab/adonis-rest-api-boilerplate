@@ -14,7 +14,7 @@ test.group('Auth / Login', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().hasSettings().create()
+    user = await User.factory().create()
   })
 
   test('should login a user', async ({ client }) => {
@@ -69,20 +69,20 @@ test.group('Auth / Login', (group) => {
   })
 
   test('Login should flag for otp if not provided for 2FA enabled account', async ({ client }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create()
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
 
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
       password: 'password',
     })
 
-    response.assertStatus(422)
+    response.assertStatus(200)
     response.assertBodyNotHaveProperty('data.token')
-    response.assertBodyContainProperty('errors[0]', { field: 'otp' })
-  })
+    response.assertBodyHaveProperty('twoFactor', true)
+  
 
   test('should login a user with valid otp (2FA)', async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create()
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
     const otp = await twoFactorAuthService.token(user)
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
@@ -95,7 +95,7 @@ test.group('Auth / Login', (group) => {
   })
 
   test("shouldn't login a user with invalid OTP (2FA)", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create()
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
       password: 'password',

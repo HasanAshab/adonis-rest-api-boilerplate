@@ -1,10 +1,11 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
 import Otp from 'App/Services/Auth/Otp'
+import Twilio from '@ioc:Adonis/Addons/Twilio'
 
 /*
 Run this suits:
-node ace test functional --files="v1/users/phone-number.spec.ts"
+node ace test functional --files="v1/users/phone_number.spec.ts"
 */
 
 test.group('Users / Phone Number', (group) => {
@@ -13,6 +14,7 @@ test.group('Users / Phone Number', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
+    Twilio.fake()
     user = await User.factory().create()
   })
 
@@ -26,7 +28,7 @@ test.group('Users / Phone Number', (group) => {
       .json({ phoneNumber, otp })
     await user.refresh()
 
-    // TODO swap TwoFactorAuthService
+
     response.assertStatus(200)
     expect(user.phoneNumber).toBe(phoneNumber)
   })
@@ -40,7 +42,6 @@ test.group('Users / Phone Number', (group) => {
     })
     await user.refresh()
 
-    // TODO swap TwoFactorAuthService
     response.assertStatus(401)
     expect(user.phoneNumber).not.toBe(phoneNumber)
   })
@@ -50,9 +51,6 @@ test.group('Users / Phone Number', (group) => {
     expect,
   }) => {
     const phoneNumber = '+14155552671'
-    let otpSend = false
-    Otp.sendThroughSMS = () => otpSend = true
-
     
     const response = await client
       .patch('/api/v1/users/me/phone-number')
@@ -62,6 +60,6 @@ test.group('Users / Phone Number', (group) => {
 
     response.assertStatus(202)
     expect(user.phoneNumber).not.toBe(phoneNumber)
-    expect(otpSend).toBe(true)
+    Twilio.assertMessaged(phoneNumber)
   })
 })
