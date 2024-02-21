@@ -74,7 +74,7 @@ export default class BasicAuthService {
 
     if (user.hasEnabledTwoFactorAuth()) {
       await twoFactorAuthService.challenge(user)
-      throw new TwoFactorAuthRequiredException()
+      throw new TwoFactorAuthRequiredException(user)
     }
     
     return await user.createToken()

@@ -23,7 +23,7 @@ export default class TwoFactorAuthService {
   }
   
   public challenge(user: User) {
-    return TwoFactorMethod.use(method).challenge(user)
+    return TwoFactorMethod.use(user.twoFactorMethod).challenge(user)
   }
   
   public async verify(email: string, token: string) {

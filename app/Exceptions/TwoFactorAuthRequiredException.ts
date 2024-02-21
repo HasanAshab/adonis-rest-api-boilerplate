@@ -1,9 +1,14 @@
 import ApiException from 'App/Exceptions/ApiException'
+import type User from 'App/Models/User'
 import Token from 'App/Models/Token'
 
 
 export default class TwoFactorAuthRequiredException extends ApiException {
-  status = 200
+  public status = 200
+  
+  constructor(private user: User) {
+    super()
+  }
   
   protected async payload() {
     return {
@@ -15,7 +20,7 @@ export default class TwoFactorAuthRequiredException extends ApiException {
   }
   
   public challengeToken() {
-    return Token.sign('two_factor_auth_challenge', user.id, {
+    return Token.sign('two_factor_auth_challenge', this.user.id, {
       oneTimeOnly: true
     })
   }

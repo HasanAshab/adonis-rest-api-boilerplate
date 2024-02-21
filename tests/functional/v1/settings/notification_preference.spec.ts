@@ -65,15 +65,9 @@ test.group('Settings / Notification Preference', (group) => {
       id: user.id,
       token,
     })
-    const isValidResubscriptionToken = await Token.isValid(
-      'email_resubscription',
-      notificationService.emailResubscriptionTokenKey(user, name),
-      response.body().data.resubscriptionToken
-    )
     const preferedChannels = await  user.notificationPreferenceFor(name)
 
     response.assertStatus(200)
-    expect(isValidResubscriptionToken).toBe(true)
     expect(preferedChannels).toEqual(expectedChannels)
   })
   

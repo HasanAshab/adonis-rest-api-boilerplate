@@ -1,5 +1,4 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { bind } from '@adonisjs/route-model-binding'
 import Route from '@ioc:Adonis/Core/Route'
 import Event from '@ioc:Adonis/Core/Event'
 import User from 'App/Models/User'
@@ -120,8 +119,7 @@ export default class AuthController {
    * @twoFactorChallenge
    * @responseBody 200 - { message: string }
    */
-  @bind()
-  public async twoFactorChallenge({ request }) {
+  public async sendTwoFactorChallenge({ request }) {
     const { email, token } = await request.validate(TwoFactorChallengeValidator)
     const user = await User.findByOrFail('email', email)
     

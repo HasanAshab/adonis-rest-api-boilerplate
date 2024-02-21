@@ -51,7 +51,7 @@ export default class Token extends compose(BaseModel, Expirable) {
       key,
       secret,
       oneTime: options.oneTimeOnly,
-      expiresAt: stringToLuxonDate(options.expiresIn)
+      expiresAt: options.expiresIn && stringToLuxonDate(options.expiresIn)
     })
     
     return secret

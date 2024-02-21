@@ -1,14 +1,12 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
 import Config from '@ioc:Adonis/Core/Config'
-import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
 
 /*
 Run this suits:
 node ace test functional --files="v1/auth/login.spec.ts"
 */
 test.group('Auth / Login', (group) => {
-  const twoFactorAuthService = new TwoFactorAuthService()
   let user
 
   refreshDatabase(group)
@@ -68,7 +66,7 @@ test.group('Auth / Login', (group) => {
     expect(lockedResponse.status()).toBe(429)
   })
 
-  test('Login should flag for otp if not provided for 2FA enabled account', async ({ client }) => {
+  test('Login should flag for two factor auth', async ({ client }) => {
     const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
 
     const response = await client.post('/api/v1/auth/login').json({
@@ -79,30 +77,5 @@ test.group('Auth / Login', (group) => {
     response.assertStatus(200)
     response.assertBodyNotHaveProperty('data.token')
     response.assertBodyHaveProperty('twoFactor', true)
-  
-
-  test('should login a user with valid otp (2FA)', async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
-    const otp = await twoFactorAuthService.token(user)
-    const response = await client.post('/api/v1/auth/login').json({
-      email: user.email,
-      password: 'password',
-      otp,
-    })
-
-    response.assertStatus(200)
-    expect(response.body()).toHaveProperty('data.token')
-  })
-
-  test("shouldn't login a user with invalid OTP (2FA)", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
-    const response = await client.post('/api/v1/auth/login').json({
-      email: user.email,
-      password: 'password',
-      otp: twoFactorAuthService.generateOTPCode(),
-    })
-
-    expect(response.body()).not.toHaveProperty('data.token')
-    response.assertStatus(401)
   })
 })

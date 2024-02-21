@@ -44,6 +44,7 @@ export default class UserFactory extends Factory<User> {
 
   twoFactorAuthEnabled(method = 'authenticator') {
     return this.state(user => {
+      user.twoFactorEnabled = true
       user.twoFactorSecret = '2fa-secret'
       user.twoFactorMethod = method
       return user
