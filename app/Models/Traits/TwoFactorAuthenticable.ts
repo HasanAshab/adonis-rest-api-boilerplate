@@ -21,7 +21,7 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
       column({ serializeAs: null })(this.prototype, 'twoFactorRecoveryCodes')
     }
 
-    public twoFactorEnabled = true
+    public twoFactorEnabled = false
     public twoFactorMethod: string | null = null
     public twoFactorSecret: string | null = null
     public twoFactorRecoveryCodes: string | null = null
@@ -53,9 +53,9 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
         : null
     }
     
-    public twoFactorQrCodeSvg() {
+    public async twoFactorQrCodeSvg() {
       return this.twoFactorSecret
-        ? qrcode.toString(this.twoFactorQrCodeUrl(), { type: 'svg' })
+        ? await qrcode.toString(this.twoFactorQrCodeUrl(), { type: 'svg' })
         : null
     }
   }

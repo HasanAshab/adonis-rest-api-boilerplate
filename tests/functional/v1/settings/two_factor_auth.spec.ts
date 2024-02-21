@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
+import TwoFactorAuthService from 'App/Services/Auth/TwoFactor/TwoFactorAuthService'
 import TwoFactorSettingsResource from 'App/Http/Resources/v1/Settings/TwoFactorSettingsResource'
 import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException'
 
@@ -9,6 +10,10 @@ Run this suit:
 node ace test functional --files="v1/settings/two_factor_auth.spec.ts"
 */
 test.group('Settings / Two Factor Auth', (group) => {
+  const twoFactorAuthService = new TwoFactorAuthService
+  
+  refreshDatabase(group)
+
   test('Should get two factor auth settings', async ({ client }) => {
     const user = await User.factory().create()
 
@@ -17,7 +22,6 @@ test.group('Settings / Two Factor Auth', (group) => {
     response.assertStatus(200)
     response.assertBodyContains(TwoFactorSettingsResource.make(user))
   })
-  
   
   test('Should enable two factor auth', async ({ client, expect }) => {
     const user = await User.factory().create()
@@ -40,9 +44,9 @@ test.group('Settings / Two Factor Auth', (group) => {
     await user.refresh()
 
     response.assertStatus(400)
-    response.assertBodyContainProperty('errors', {
+    response.assertBodyContainProperty('errors', [{
       code: new PhoneNumberRequiredException().code
-    })
+    }])
     expect(user.hasEnabledTwoFactorAuth()).toBe(false)
     expect(user.twoFactorMethod).toBeNull()
   })
@@ -81,9 +85,9 @@ test.group('Settings / Two Factor Auth', (group) => {
     await user.refresh()
 
     response.assertStatus(400)
-    response.assertBodyContainProperty('errors', {
+    response.assertBodyContainProperty('errors', [{
       code: new PhoneNumberRequiredException().code
-    })
+    }])
     expect(user.twoFactorMethod).toBe('authenticator')
   })
   
@@ -91,7 +95,7 @@ test.group('Settings / Two Factor Auth', (group) => {
   test('Should update two factor auth method to {$self} if user has phone-number')
   .with(['sms', 'call'])
   .run(async ({ client, expect }, method) => {
-    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled('authenticator').create()
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
 
     const response = await client.patch('/api/v1/settings/two-factor-auth/method').loginAs(user).json({ method })
     await user.refresh()
@@ -122,6 +126,7 @@ test.group('Settings / Two Factor Auth', (group) => {
   
   test('Should get two factor auth recovery codes', async ({ client }) => {
     const user = await User.factory().twoFactorAuthEnabled().create()
+    await twoFactorAuthService.generateRecoveryCodes(user)
 
     const response = await client.get('/api/v1/settings/two-factor-auth/recovery-codes').loginAs(user)
     
@@ -129,12 +134,17 @@ test.group('Settings / Two Factor Auth', (group) => {
     response.assertBodyHaveProperty('data', user.recoveryCodes())
   })
   
-  test('Should generate new two factor auth recovery codes', async ({ client }) => {
-    const user = await User.factory().twoFactorAuthEnabled().create()
-
+  test('Should generate new two factor auth recovery codes', async ({ client, expect }) => {
+    const user = await User.factory().create()
+    await twoFactorAuthService.generateRecoveryCodes(user)
+    const oldCodes = user.recoveryCodes()
+    
     const response = await client.post('/api/v1/settings/two-factor-auth/recovery-codes').loginAs(user)
     await user.refresh()
+    const newCodes = user.recoveryCodes()
 
     response.assertStatus(200)
+    response.assertBodyHaveProperty('data', newCodes)
+    expect(oldCodes).not.toEqual(newCodes)
   })
 })
