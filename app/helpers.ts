@@ -1,5 +1,6 @@
 import { string } from '@ioc:Adonis/Core/Helpers'
 import { DateTime } from 'luxon'
+import { clone } from 'lodash'
 
 
 export function sleep(seconds: number) {
@@ -30,6 +31,10 @@ export function extract<
   }
 
   return extractFromObject(obj, props)
+}
+
+export function except<T extends any[]>(arr: T, ...values: (T[number])[]) {
+  return clone(arr).filter(value => !values.includes(value))
 }
 
 export function toJSON(obj: object) {

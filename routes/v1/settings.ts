@@ -16,8 +16,8 @@ Route.group(() => {
   Route.group(() => {
     Route.get('/', 'SettingsController.notificationPreference')
     Route.patch('/', 'SettingsController.updateNotificationPreference')
-    Route.delete('/email-subscription', 'SettingsController.unsubscribeEmail')
-    Route.post('/email-subscription', 'SettingsController.resubscribeEmail')
+    Route.delete('/email-subscription', 'SettingsController.unsubscribeEmailNotification')
+    Route.post('/email-subscription', 'SettingsController.resubscribeEmailNotification')
   })
   .prefix('notification-preference')
 })

@@ -66,7 +66,7 @@ export default class SettingsController {
     return 'Settings saved!'
   }
 
-  public async unsubscribeEmail({ request }: HttpContextContract) {
+  public async unsubscribeEmailNotification({ request }: HttpContextContract) {
     const { id, token, notificationType: notificationTypeName } = await request.validate(EmailUnsubscriptionValidator)
     const user = await User.findOrFail(id)
     const notificationType = await NotificationType.findByOrFail('name', notificationTypeName)
@@ -81,12 +81,12 @@ export default class SettingsController {
     
     return { 
       message: 'Email unsubscribed!',
-      data: { resubscribtionToken }
+      data: { resubscriptionToken }
     }
   }
   
 
-  public async resubscribeEmail({ request }: HttpContextContract) {
+  public async resubscribeEmailNotification({ request }: HttpContextContract) {
     const { id, token, notificationType: notificationTypeName } = await request.validate(EmailResubscriptionValidator)
     const user = await User.findOrFail(id)
     const notificationType = await NotificationType.findByOrFail('name', notificationTypeName)
