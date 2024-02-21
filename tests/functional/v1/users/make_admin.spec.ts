@@ -6,7 +6,7 @@ Run this suits:
 node ace test functional --files="v1/users/make_admin.spec.ts"
 */
 test.group('Users / MakeAdmin', (group) => {
-  let user
+  let user: User
 
   refreshDatabase(group)
 
@@ -16,7 +16,7 @@ test.group('Users / MakeAdmin', (group) => {
 
   test('Should make admin', async ({ client, expect }) => {
     const admin = await User.factory().withRole('admin').create()
-    const response = await client.patch(`/api/v1/users/${user.id}/make-admin`).loginAs(admin)
+    const response = await client.patch(`/api/v1/users/${user.id}/admin`).loginAs(admin)
     await user.refresh()
 
     response.assertStatus(200)
@@ -26,7 +26,7 @@ test.group('Users / MakeAdmin', (group) => {
   test("User Should't make others admin", async ({ client, expect }) => {
     const anotherUser = await User.factory().create()
 
-    const response = await client.patch(`/api/v1/users/${anotherUser.id}/make-admin`).loginAs(user)
+    const response = await client.patch(`/api/v1/users/${anotherUser.id}/admin`).loginAs(user)
     await anotherUser.refresh()
 
     response.assertStatus(403)

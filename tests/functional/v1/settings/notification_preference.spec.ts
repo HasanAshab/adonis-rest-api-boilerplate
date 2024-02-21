@@ -24,7 +24,7 @@ test.group('Settings / Notification Preference', (group) => {
   test('Should get notification preference settings', async ({ client }) => {
     await user.load('notificationPreferences')
     
-    const response = await client.get('/api/v1/settings/notification-preference').loginAs(user)
+    const response = await client.get('/api/v1/settings/notification-preferences').loginAs(user)
     
     response.assertStatus(200)
     response.assertBodyContains(
@@ -36,7 +36,7 @@ test.group('Settings / Notification Preference', (group) => {
     const availableChannels = notificationService.channels()
     const { id: updatedId } = await NotificationType.first()
 
-    const response = await client.patch('/api/v1/settings/notification-preference').loginAs(user).json({
+    const response = await client.patch('/api/v1/settings/notification-preferences').loginAs(user).json({
       [updatedId]: {
         email: false,
         app: true
@@ -60,7 +60,7 @@ test.group('Settings / Notification Preference', (group) => {
     const token = await notificationService.emailUnsubscriptionToken(user)
    
    
-    const response = await client.delete('/api/v1/settings/notification-preference/email-subscription').json({
+    const response = await client.delete('/api/v1/settings/notification-preferences/email-subscription').json({
       notificationType: name,
       id: user.id,
       token,
@@ -82,7 +82,7 @@ test.group('Settings / Notification Preference', (group) => {
     const token = await notificationService.emailResubscriptionToken(user)
     await user.disableNotification(id, 'email')
 
-    const response = await client.post('/api/v1/settings/notification-preference/email-subscription').json({
+    const response = await client.post('/api/v1/settings/notification-preferences/email-subscription').json({
       notificationType: name,
       id: user.id,
       token,

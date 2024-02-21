@@ -16,7 +16,7 @@ Route.group(() => {
 
   Route.group(() => {
     Route.get('/', 'UsersController.index')
-    Route.patch('/:id/make-admin', 'UsersController.makeAdmin').as('makeAdmin')
+    Route.patch('/:id/admin', 'UsersController.makeAdmin').as('makeAdmin')
     Route.delete('/:id', 'UsersController.deleteById').as('delete')
   }).middleware('roles:admin')
 })

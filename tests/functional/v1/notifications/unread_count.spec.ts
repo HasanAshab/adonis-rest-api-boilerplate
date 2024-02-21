@@ -4,7 +4,7 @@ import NotificationFactory from 'Database/factories/NotificationFactory'
 
 /*
 Run this suits:
-node ace test functional --files="v1/notifications/unread-count.spec.ts"
+node ace test functional --files="v1/notifications/unread_count.spec.ts"
 */
 test.group('Notifications / Unread count', (group) => {
   test('Should get unread notifications count', async ({ client, expect }) => {

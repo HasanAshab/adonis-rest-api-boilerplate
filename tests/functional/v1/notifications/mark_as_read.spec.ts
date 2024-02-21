@@ -5,7 +5,7 @@ import ListNotificationResource from '~/app/http/resources/v1/notification/ListN
 
 /*
 Run this suits:
-node ace test functional --files="v1/notifications/mark-as-read.spec.ts"
+node ace test functional --files="v1/notifications/mark_as_read.spec.ts"
 */
 test.group('Notifications / Mark As Read', (group) => {
   let user: User
@@ -36,7 +36,7 @@ test.group('Notifications / Mark As Read', (group) => {
       .belongsTo(user)
       .create()
 
-    const response = await client.patch('/api/v1/notifications/read/all').loginAs(user)
+    const response = await client.patch('/api/v1/notifications/read').loginAs(user)
 
     response.assertStatus(200)
     for (const notification of notifications) {

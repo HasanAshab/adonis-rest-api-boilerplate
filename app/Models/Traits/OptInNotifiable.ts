@@ -31,6 +31,10 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
    
     public notificationPreference: ManyToMany<NotificationType>
     
+    public unreadNotifications() {
+      return this.related('notifications').query().whereNull('readAt')
+    }
+    
     public markNotificationAsRead(id: number) {
       return this.unreadNotifications()
         .whereUid(id)

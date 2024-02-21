@@ -19,7 +19,7 @@ Route.group(() => {
     Route.delete('/email-subscription', 'SettingsController.unsubscribeEmailNotification')
     Route.post('/email-subscription', 'SettingsController.resubscribeEmailNotification')
   })
-  .prefix('notification-preference')
+  .prefix('notification-preferences')
 })
 .middleware(['auth', 'verified'])
 
