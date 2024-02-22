@@ -1,34 +1,12 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
-import TwoFactorAuthService from 'App/Services/Auth/TwoFactorAuthService'
+import TwoFactorAuthService from 'App/Services/Auth/TwoFactor/TwoFactorAuthService'
 import Token from 'App/Models/Token'
 import Twilio from '@ioc:Adonis/Addons/Twilio'
+import TwoFactorAuthRequiredException from 'App/Exceptions/TwoFactorAuthRequiredException'
+import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException'
+import Otp from 'App/Services/Auth/Otp'
 
-
-test('should login a user with valid otp (2FA)', async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
-    const otp = await twoFactorAuthService.token(user)
-    const response = await client.post('/api/v1/auth/login').json({
-      email: user.email,
-      password: 'password',
-      otp,
-    })
-
-    response.assertStatus(200)
-    expect(response.body()).toHaveProperty('data.token')
-  })
-
-  test("shouldn't login a user with invalid OTP (2FA)", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
-    const response = await client.post('/api/v1/auth/login').json({
-      email: user.email,
-      password: 'password',
-      otp: twoFactorAuthService.generateOTPCode(),
-    })
-
-    expect(response.body()).not.toHaveProperty('data.token')
-    response.assertStatus(401)
-  })
 
 /*
 Run this suits:
@@ -36,88 +14,31 @@ node ace test functional --files="v1/auth/two_factor.spec.ts"
 */
 test.group('Auth/TwoFactor', (group) => {
   const twoFactorAuthService = new TwoFactorAuthService()
-  let user
-  let token
+  let user: User
+  let token: string
 
   refreshDatabase(group)
+  
 
-  group.each.setup(async () => {
+  group.each.setup(() => {
     Twilio.fake()
-    user = await User.factory().hasSettings().create()
   })
-
-  test('Should send otp through sms', async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create()
-
-    const response = await client.post(`/api/v1/auth/two-factor/challenges`)
-      .json()
-
-    const tokenCreated = await Token.exists({
-      key: user.id,
-      type: '2fa',
-    })
-
-    Twilio.assertMessaged(user.phoneNumber)
-    expect(response.status()).toBe(200)
-    expect(tokenCreated).toBe(true)
-  })
-
-  test('Should send otp through call', async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true, 'call').create()
-    const response = await client.post(`/api/v1/auth/two-factor/send-otp/${user.id}`)
-
-    const tokenCreated = await Token.exists({
-      key: user.id,
-      type: '2fa',
-    })
-
-    expect(response.status()).toBe(200)
-    expect(tokenCreated).toBe(true)
-    Twilio.assertCalled(user.phoneNumber)
-  })
-
-  test("Shouldn't send otp when the method is authenticator", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true, 'app').create()
-
-    const response = await client.post(`/api/v1/auth/two-factor/send-otp/${user.id}`)
-    const tokenCreated = await Token.exists({
-      key: user.id,
-      type: '2fa',
-    })
-
-    expect(response.status()).toBe(200)
-    expect(tokenCreated).toBe(false)
-  })
-
-  test("Shouldn't send otp to phone numberless user", async ({ client, expect }) => {
-    const user = await User.factory().hasSettings(true).create()
-    const response = await client.post(`/api/v1/auth/two-factor/send-otp/${user.id}`)
-    const tokenCreated = await Token.exists({
-      key: user.id,
-      type: '2fa',
-    })
-
-    expect(response.status()).toBe(200)
-    expect(tokenCreated).toBe(false)
-  })
-
-  test('should recover account with valid recovery code', async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create()
+  
+  test('should recover account with valid recovery code', async ({ client }) => {
+    const user = await User.factory().twoFactorAuthEnabled().create()
     const [code] = await twoFactorAuthService.generateRecoveryCodes(user, 1)
+    
     const response = await client.post('/api/v1/auth/two-factor/recover').json({
       email: user.email,
-      code,
+      code
     })
 
-    expect(response.status()).toBe(200)
-    expect(response.body().data).toHaveProperty('token')
+    response.assertStatus(200)
+    response.assertBodyHaveProperty('data.token')
   })
 
-  test("shouldn't recover account with same recovery code multiple times", async ({
-    client,
-    expect,
-  }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create()
+  test("shouldn't recover account with same recovery code", async ({ client }) => {
+    const user = await User.factory().twoFactorAuthEnabled().create()
     const data = {
       email: user.email,
       code: (await twoFactorAuthService.generateRecoveryCodes(user, 1))[0],
@@ -126,21 +47,88 @@ test.group('Auth/TwoFactor', (group) => {
     const response1 = await client.post('/api/v1/auth/two-factor/recover').json(data)
     const response2 = await client.post('/api/v1/auth/two-factor/recover').json(data)
 
-    expect(response1.status()).toBe(200)
-    expect(response2.status()).toBe(401)
-    expect(response1.body().data).toHaveProperty('token')
-    expect(response2.body()).not.toHaveProperty('data')
+    response1.assertStatus(200)
+    response2.assertStatus(401)
+    response1.assertBodyHaveProperty('data.token')
+    response2.assertBodyNotHaveProperty('data.token')
   })
 
-  test("shouldn't recover account with invalid recovery code", async ({ client, expect }) => {
-    const user = await User.factory().withPhoneNumber().hasSettings(true).create()
+  test("shouldn't recover account with invalid recovery code", async ({ client }) => {
+    const user = await User.factory().twoFactorAuthEnabled().create()
     await twoFactorAuthService.generateRecoveryCodes(user, 1)
 
     const response = await client.post('/api/v1/auth/two-factor/recover').json({
       email: user.email,
       code: 'foo-bar',
     })
-    expect(response.status()).toBe(401)
-    expect(response.body()).not.toHaveProperty('data')
+    
+    response.assertStatus(401)
+    response.assertBodyNotHaveProperty('data.token')
+  })
+
+
+  test('Should send otp through {$self}') 
+  .with(['sms', 'call'])
+  .run(async ({ client }, method) => {
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
+    const token = await new TwoFactorAuthRequiredException(user).challengeToken()
+
+    const response = await client.post(`/api/v1/auth/two-factor/challenges`)
+      .json({
+        email: user.email,
+        token
+      })
+
+    response.assertStatus(200)
+    if(method === 'sms') {
+      Twilio.assertMessaged(user.phoneNumber)
+    }
+    else {
+      Twilio.assertCalled(user.phoneNumber)
+    }
+  })
+
+  test('Should not send otp through {$self} to phone numberless user') 
+  .with(['sms', 'call'])
+  .run(async ({ client }, method) => {
+    const user = await User.factory().twoFactorAuthEnabled(method).create()
+    const token = await new TwoFactorAuthRequiredException(user).challengeToken()
+
+    const response = await client.post(`/api/v1/auth/two-factor/challenges`)
+      .json({
+        email: user.email,
+        token
+      })
+
+    response.assertStatus(400)
+    response.assertBodyContainProperty('errors[0]', {
+      code: new PhoneNumberRequiredException().code
+    })
+  })
+
+  
+  test('should login a user with valid otp', async ({ client }) => {
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled('sms').create()
+    const token = await Otp.generate(user.twoFactorSecret)
+
+    const response = await client.post('/api/v1/auth/two-factor/verification').json({
+      email: user.email,
+      token,
+    })
+
+    response.assertStatus(200)
+    response.assertBodyHaveProperty('data.token')
+  })
+
+  test("shouldn't login a user with invalid OTP", async ({ client }) => {
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+    
+    const response = await client.post('/api/v1/auth/two-factor/verification').json({
+      email: user.email,
+      token: '123456'
+    })
+
+    response.assertStatus(401)
+    response.assertBodyNotHaveProperty('data.token')
   })
 })

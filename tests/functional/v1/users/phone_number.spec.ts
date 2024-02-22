@@ -62,4 +62,15 @@ test.group('Users / Phone Number', (group) => {
     expect(user.phoneNumber).not.toBe(phoneNumber)
     Twilio.assertMessaged(phoneNumber)
   })
+  
+  test('Should remove phone number', async ({ client, expect }) => {
+    const user = await User.factory().withPhoneNumber().create()
+
+    const response = await client.delete('/api/v1/users/me/phone-number').loginAs(user)
+    await user.refresh()
+
+    response.assertStatus(200)
+    expect(user.phoneNumber).toBeNull()
+  })
+
 })

@@ -1,9 +1,12 @@
+challenge verif token
+token data
+otp -> db Token
+
 This:
-test ( settings, unit Token)
+test (unit Token)
 
 F: 2fa user removed phone number
 K: URI spec
-I: rem phone
 F: Sql I
 F: Circ Dep Api Res
 F: Conf tfa, direct query enable

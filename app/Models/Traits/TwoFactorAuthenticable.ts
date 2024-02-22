@@ -45,6 +45,7 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
       this.twoFactorRecoveryCodes = Encryption.encrypt(
         Encryption.decrypt(this.twoFactorRecoveryCodes).replace(code, RecoveryCode.generate())
       )
+      return this.save()
     }
     
     public twoFactorQrCodeUrl() {

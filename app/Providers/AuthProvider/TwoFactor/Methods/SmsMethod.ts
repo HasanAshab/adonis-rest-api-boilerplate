@@ -6,8 +6,8 @@ import Otp from 'App/Services/Auth/Otp'
 export default class SmsMethod extends OtpMethod {
   public methodName = 'sms'
   
-  public async challenge(user: User) {
+  public challenge(user: User) {
     this.ensureHasPhoneNumber(user)
-    await Otp.sendThroughSMS(user.phoneNumber, user.twoFactorSecret)
+    return Otp.sendThroughSMS(user.phoneNumber, user.twoFactorSecret)
   }
 }

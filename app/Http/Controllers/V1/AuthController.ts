@@ -2,6 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Route from '@ioc:Adonis/Core/Route'
 import Event from '@ioc:Adonis/Core/Event'
 import User from 'App/Models/User'
+import Token from 'App/Models/Token'
 import BasicAuthService from 'App/Services/Auth/BasicAuthService'
 import TwoFactorAuthService from 'App/Services/Auth/TwoFactor/TwoFactorAuthService'
 import SocialAuthService, { SocialAuthData } from 'App/Services/Auth/SocialAuthService'
@@ -129,7 +130,7 @@ export default class AuthController {
     return 'Challenge sent!'
   }
   
-  public async verifyTwoFactorChallenge() {
+  public async verifyTwoFactorChallenge({ request }: HttpContextContract) {
     const { email, token: challengeToken } = await request.validate(TwoFactorChallengeVerificationValidator)
     const token = await this.twoFactorAuthService.verify(email, challengeToken)
     

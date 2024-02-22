@@ -41,9 +41,9 @@ export default abstract class TwoFactorMethod {
   
   public abstract isValid(user: User, token: string): boolean | Promise<boolean>
   
-  public verify(user: User, token: string) {
-    if (!this.isValid(user, token)) {
-      throw new this.verificationFailureException(user)
+  public async verify(user: User, token: string) {
+    if (!await this.isValid(user, token)) {
+      throw this.verificationFailureException(user)
     }
   }
 }

@@ -1,8 +1,9 @@
 import { Twilio as TwilioClient } from 'twilio'
 import { TwilioFakedData, TwilioConfig } from '@ioc:Adonis/Addons/Twilio'
-import expect from 'expect'
+import Assertor from 'Tests/Assertors/Assertor'
 
-export default class Twilio {
+
+export default class Twilio extends Assertor {
   private client: TwilioClient
   private isFaked = false
   private faked: TwilioFakedData = {
@@ -11,6 +12,7 @@ export default class Twilio {
   }
 
   constructor(private config: TwilioConfig) {
+    super()
     this.config = config
     this.client = new TwilioClient(config.sid, config.authToken)
   }
@@ -52,14 +54,10 @@ export default class Twilio {
   }
   
   public assertMessaged(phoneNumber: string) {
-    assertWithContext(() => {
-      expect(this.faked.messages.includes(phoneNumber)).toBe(true)
-    })
+    this.assertTrue(this.faked.messages.includes(phoneNumber))
   }
 
   public assertCalled(phoneNumber: string) {
-    assertWithContext(() => {
-      expect(this.faked.calls.includes(phoneNumber)).toBe(true)
-    })
+    this.assertTrue(this.faked.calls.includes(phoneNumber))
   }
 }

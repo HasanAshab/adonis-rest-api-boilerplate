@@ -6,8 +6,8 @@ import Otp from 'App/Services/Auth/Otp'
 export default class CallMethod extends OtpMethod {
   public methodName = 'call'
   
-  public async challenge(user: User) {
+  public challenge(user: User) {
     this.ensureHasPhoneNumber(user)
-    await Otp.sendThroughCall(user.phoneNumber, user.twoFactorSecret)
+    return Otp.sendThroughCall(user.phoneNumber, user.twoFactorSecret)
   }
 }

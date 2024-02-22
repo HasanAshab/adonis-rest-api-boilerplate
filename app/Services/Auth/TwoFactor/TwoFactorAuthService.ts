@@ -28,7 +28,7 @@ export default class TwoFactorAuthService {
   
   public async verify(email: string, token: string) {
     const user = await User.findByOrFail('email', email)
-    await TwoFactorMethod.use(method).verify(user, token)
+    await TwoFactorMethod.use(user.twoFactorMethod).verify(user, token)
     return await user.createToken()
   }
 
@@ -37,6 +37,7 @@ export default class TwoFactorAuthService {
     if(!user.isValidRecoveryCode(code)) {
       throw new InvalidRecoveryCodeException()
     }
+    await user.replaceRecoveryCode(code)
     return await user.createToken()
   }
 

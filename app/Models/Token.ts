@@ -44,7 +44,7 @@ export default class Token extends compose(BaseModel, Expirable) {
   }
   
   public static async sign(type: string, key: string, options: SignTokenOptions): string {
-    const secret = options.secret ?? string.generateRandom(32)
+    const secret = options.secret ?? string.generateRandom(64)
     
     await this.create({
       type,

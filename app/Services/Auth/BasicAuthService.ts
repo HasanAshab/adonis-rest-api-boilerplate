@@ -115,12 +115,13 @@ export default class BasicAuthService {
 
   public async forgotPassword(user: User | string) {
     if (typeof user === 'string') {
-      user = await User.internals().where('email', user).first()
-      if (!user) return false
+      user = await User.internals().where('email', user).where('verified', true).first()
     }
-
-    await new ResetPasswordMail(user).sendLater()
-    return true
+    if(user && user.verified) {
+      await new ResetPasswordMail(user).sendLater()
+      return true
+    }
+    return false
   }
 
   public async resetPassword(user: User, token: string, password: string) {
