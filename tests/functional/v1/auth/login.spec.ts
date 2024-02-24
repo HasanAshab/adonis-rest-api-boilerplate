@@ -62,7 +62,7 @@ test.group('Auth / Login', (group) => {
 
     const lockedResponse = await client.post('/api/v1/auth/login').json(payload)
 
-    expect(responses.every((res) => res.status() === 401)).toBe(true)
+    expect(responses.every((res) => res.status() === 401)).toBeTrue()
     expect(lockedResponse.status()).toBe(429)
   })
 

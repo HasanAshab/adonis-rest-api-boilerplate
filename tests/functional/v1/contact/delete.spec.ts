@@ -21,7 +21,7 @@ test.group('Contact / Delete', (group) => {
     const response = await client.delete('/api/v1/contact/inquiries/' + contact.id).loginAs(admin)
 
     response.assertStatus(204)
-    await expect(contact.exists()).resolves.toBe(false)
+    await expect(contact.exists()).resolves.toBeFalse()
   })
 
   test('Users should not delete contact', async ({ client, expect }) => {
@@ -30,6 +30,6 @@ test.group('Contact / Delete', (group) => {
     const response = await client.delete('/api/v1/contact/inquiries/' + contact.id).loginAs(user)
 
     response.assertStatus(403)
-    await expect(contact.exists()).resolves.toBe(true)
+    await expect(contact.exists()).resolves.toBeTrue()
   })
 })

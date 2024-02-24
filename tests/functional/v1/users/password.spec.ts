@@ -21,7 +21,7 @@ test.group('Users/Password', (group) => {
     await user.refresh()
 
     response.assertStatus(200)
-    await expect(user.comparePassword(newPassword)).resolves.toBe(true)
+    await expect(user.comparePassword(newPassword)).resolves.toBeTrue()
   })
 
   test("shouldn't change password of social account", async ({ client, expect }) => {

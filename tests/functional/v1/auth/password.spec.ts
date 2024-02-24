@@ -26,7 +26,7 @@ test.group('Auth / Password', (group) => {
     })
 
     response.assertStatus(202)
-    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBe(true)
+    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBeTrue()
   })
 
   test("Shouldn't send reset email when no user found", async ({ client, expect }) => {
@@ -36,7 +36,7 @@ test.group('Auth / Password', (group) => {
     const response = await client.post('/api/v1/auth/password/forgot').json({ email })
 
     response.assertStatus(202)
-    expect(mailer.exists((mail) => mail.to[0].address === email)).toBe(false)
+    expect(mailer.exists((mail) => mail.to[0].address === email)).toBeFalse()
   })
 
   test("Shouldn't send reset email to unverified account", async ({ client, expect }) => {
@@ -46,7 +46,7 @@ test.group('Auth / Password', (group) => {
     const response = await client.post('/api/v1/auth/password/forgot').json({ email })
 
     response.assertStatus(202)
-    expect(mailer.exists((mail) => mail.to[0].address === email)).toBe(false)
+    expect(mailer.exists((mail) => mail.to[0].address === email)).toBeFalse()
   })
   
   test("Shouldn't send reset email to social account", async ({ client, expect }) => {
@@ -56,7 +56,7 @@ test.group('Auth / Password', (group) => {
     const response = await client.post('/api/v1/auth/password/forgot').json({ email })
 
     response.assertStatus(202)
-    expect(mailer.exists((mail) => mail.to[0].address === email)).toBe(false)
+    expect(mailer.exists((mail) => mail.to[0].address === email)).toBeFalse()
   })
 
   test('should reset password', async ({ client, expect }) => {
@@ -72,8 +72,8 @@ test.group('Auth / Password', (group) => {
     await user.refresh()
 
     response.assertStatus(200)
-    expect(await user.comparePassword(password)).toBe(true)
-    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBe(true)
+    expect(await user.comparePassword(password)).toBeTrue()
+    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBeTrue()
   })
 
   test("shouldn't reset password without token", async ({ client, expect }) => {
@@ -87,8 +87,8 @@ test.group('Auth / Password', (group) => {
     await user.refresh()
 
     response.assertStatus(422)
-    expect(await user.comparePassword(password)).toBe(false)
-    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBe(false)
+    expect(await user.comparePassword(password)).toBeFalse()
+    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBeFalse()
   })
 
   test('shouldn"t reset password with expired token', async ({ client, expect }) => {
@@ -113,8 +113,8 @@ test.group('Auth / Password', (group) => {
     await user.refresh()
 
     response.assertStatus(401)
-    expect(await user.comparePassword(password)).toBe(false)
-    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBe(false)
+    expect(await user.comparePassword(password)).toBeFalse()
+    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBeFalse()
   })
 
   test("shouldn't reset password with invalid token", async ({ client, expect }) => {
@@ -129,8 +129,8 @@ test.group('Auth / Password', (group) => {
     await user.refresh()
 
     response.assertStatus(401)
-    expect(await user.comparePassword(password)).toBe(false)
-    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBe(false)
+    expect(await user.comparePassword(password)).toBeFalse()
+    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBeFalse()
   })
 
   test("shouldn't reset password using same token multiple time", async ({ client, expect }) => {
@@ -152,7 +152,7 @@ test.group('Auth / Password', (group) => {
     await user.refresh()
 
     response.assertStatus(401)
-    expect(await user.comparePassword(password)).toBe(false)
-    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBe(false)
+    expect(await user.comparePassword(password)).toBeFalse()
+    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBeFalse()
   })
 })

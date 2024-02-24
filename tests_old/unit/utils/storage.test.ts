@@ -11,7 +11,7 @@ describe('storage', () => {
     }
     const path = await Storage.putFile('public/uploads', file)
     const data = fs.readFileSync(path)
-    expect(fs.existsSync(path)).toBe(true)
+    expect(fs.existsSync(path)).toBeTrue()
     expect(data).toStrictEqual(file.data)
     fs.unlinkSync(path)
   })

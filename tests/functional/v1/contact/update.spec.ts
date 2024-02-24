@@ -23,7 +23,7 @@ test.group('Contact / Update', (group) => {
     await contact.refresh()
 
     response.assertStatus(200)
-    expect(contact.isClosed()).toBe(true)
+    expect(contact.isClosed()).toBeTrue()
   })
 
   test('Should reopen contact', async ({ client, expect }) => {
@@ -37,7 +37,7 @@ test.group('Contact / Update', (group) => {
     await contact.refresh()
 
     response.assertStatus(200)
-    expect(contact.isOpened()).toBe(true)
+    expect(contact.isOpened()).toBeTrue()
   })
 
   test('Users should not close contact', async ({ client, expect }) => {
@@ -51,7 +51,7 @@ test.group('Contact / Update', (group) => {
     await contact.refresh()
 
     response.assertStatus(403)
-    expect(contact.isClosed()).toBe(false)
+    expect(contact.isClosed()).toBeFalse()
   })
 
   test('Users should not reopen contact', async ({ client, expect }) => {
@@ -65,6 +65,6 @@ test.group('Contact / Update', (group) => {
     await contact.refresh()
 
     response.assertStatus(403)
-    expect(contact.isOpened()).toBe(false)
+    expect(contact.isOpened()).toBeFalse()
   })
 })

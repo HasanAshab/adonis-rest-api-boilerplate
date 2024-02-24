@@ -21,7 +21,7 @@ test.group('Notification Types / Delete', (group) => {
     const response = await client.delete('/api/v1/notification-types/' + notificationType.id).loginAs(admin)
     
     response.assertStatus(204)
-    await expect(notificationType.exists()).resolves.toBe(false)
+    await expect(notificationType.exists()).resolves.toBeFalse()
   })
   
   test('Users should not delete notification type', async ({ client, expect }) => {
@@ -30,6 +30,6 @@ test.group('Notification Types / Delete', (group) => {
     const response = await client.delete('/api/v1/notification-types/' + notificationType.id).loginAs(user)
     
     response.assertStatus(403)
-    await expect(notificationType.exists()).resolves.toBe(true)
+    await expect(notificationType.exists()).resolves.toBeTrue()
   })
 })

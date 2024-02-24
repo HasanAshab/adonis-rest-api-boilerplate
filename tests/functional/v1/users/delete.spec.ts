@@ -20,7 +20,7 @@ test.group('Users/Delete', (group) => {
     const response = await client.delete(`/api/v1/users/me`).loginAs(user)
 
     response.assertStatus(204)
-    await expect(user.exists()).resolves.toBe(false)
+    await expect(user.exists()).resolves.toBeFalse()
   })
 
   test("User shouldn't delete others", async ({ client, expect }) => {
@@ -29,7 +29,7 @@ test.group('Users/Delete', (group) => {
     const response = await client.delete(`/api/v1/users/${anotherUser.id}`).loginAs(user)
 
     response.assertStatus(403)
-    await expect(anotherUser.exists()).resolves.toBe(true)
+    await expect(anotherUser.exists()).resolves.toBeTrue()
   })
 
   test('Admin should delete user', async ({ client, expect }) => {
@@ -38,7 +38,7 @@ test.group('Users/Delete', (group) => {
     const response = await client.delete(`/api/v1/users/${user.id}`).loginAs(admin)
 
     response.assertStatus(204)
-    await expect(user.exists()).resolves.toBe(false)
+    await expect(user.exists()).resolves.toBeFalse()
   })
 
   test("Admins shouldn't delete each other", async ({ client, expect }) => {
@@ -47,6 +47,6 @@ test.group('Users/Delete', (group) => {
     const response = await client.delete(`/api/v1/users/${anotherAdmin.id}`).loginAs(admin)
 
     response.assertStatus(403)
-    await expect(anotherAdmin.exists()).resolves.toBe(true)
+    await expect(anotherAdmin.exists()).resolves.toBeTrue()
   })
 })

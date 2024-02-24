@@ -5,14 +5,14 @@ export default abstract class Assertor {
 
   protected assertTrue(result: boolean, steps?: number) {
     try {
-      expect(result).toBe(true)
+      expect(result).toBeTrue()
     } catch (err) {
       throw this.resolveTestContext(err, steps)
     }
   }
   protected assertFalse(result: boolean, steps?: number) {
     try {
-      expect(result).toBe(false)
+      expect(result).toBeFalse()
     } catch (err) {
       throw this.resolveTestContext(err, steps)
     }

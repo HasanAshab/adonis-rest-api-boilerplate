@@ -31,7 +31,7 @@ test.group('Settings / Two Factor Auth', (group) => {
     await user.refresh()
 
     response.assertStatus(200)
-    expect(user.hasEnabledTwoFactorAuth()).toBe(true)
+    expect(user.hasEnabledTwoFactorAuth()).toBeTrue()
     expect(user.twoFactorMethod).toBe(method)
   })
   
@@ -47,7 +47,7 @@ test.group('Settings / Two Factor Auth', (group) => {
     response.assertBodyContainProperty('errors[0]', {
       code: new PhoneNumberRequiredException().code
     })
-    expect(user.hasEnabledTwoFactorAuth()).toBe(false)
+    expect(user.hasEnabledTwoFactorAuth()).toBeFalse()
     expect(user.twoFactorMethod).toBeNull()
   })
   
@@ -61,7 +61,7 @@ test.group('Settings / Two Factor Auth', (group) => {
     await user.refresh()
 
     response.assertStatus(200)
-    expect(user.hasEnabledTwoFactorAuth()).toBe(true)
+    expect(user.hasEnabledTwoFactorAuth()).toBeTrue()
     expect(user.twoFactorMethod).toBe(method)
   })
   
@@ -112,7 +112,7 @@ test.group('Settings / Two Factor Auth', (group) => {
     await user.refresh()
 
     response.assertStatus(200)
-    expect(user.hasEnabledTwoFactorAuth()).toBe(false)
+    expect(user.hasEnabledTwoFactorAuth()).toBeFalse()
   })
   
   test('Should get two factor auth QR Code SVG', async ({ client }) => {

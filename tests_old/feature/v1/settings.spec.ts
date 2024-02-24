@@ -30,7 +30,7 @@ describe('Settings', () => {
       const requests = [request.get('/settings/app'), request.patch('/settings/app')]
       const responses = await Promise.all(requests.map((request) => request.loginAs(user)))
       const isNotAccessable = responses.every((response) => response.statusCode === 403)
-      expect(isNotAccessable).toBe(true)
+      expect(isNotAccessable).toBeTrue()
     }
   )
 
@@ -73,7 +73,7 @@ describe('Settings', () => {
     const settings = await user.settings
     response.assertStatus(200)
     expect(response.body.data.recoveryCodes).toHaveLength(10)
-    expect(settings.twoFactorAuth.enabled).toBe(true)
+    expect(settings.twoFactorAuth.enabled).toBeTrue()
     expect(settings.twoFactorAuth.method).toBe('sms')
   })
 
@@ -87,7 +87,7 @@ describe('Settings', () => {
         .json({ enable: false })
       const settings = await user.settings
       response.assertStatus(200)
-      expect(settings.twoFactorAuth.enabled).toBe(false)
+      expect(settings.twoFactorAuth.enabled).toBeFalse()
     }
   )
 
@@ -101,8 +101,8 @@ describe('Settings', () => {
       .json({ enable: true })
     const settings = await user.settings
     response.assertStatus(400)
-    expect(response.body.data.phoneNumberRequired).toBe(true)
-    expect(settings.twoFactorAuth.enabled).toBe(false)
+    expect(response.body.data.phoneNumberRequired).toBeTrue()
+    expect(settings.twoFactorAuth.enabled).toBeFalse()
   })
 
   test('Two Factor Authorization app method sends OTP Auth URL', async ({ client, expect }) => {
@@ -114,7 +114,7 @@ describe('Settings', () => {
     response.assertStatus(200)
     expect(response.body.data).toHaveProperty('otpauthURL')
     expect(response.body.data.recoveryCodes).toHaveLength(10)
-    expect(settings.twoFactorAuth.enabled).toBe(true)
+    expect(settings.twoFactorAuth.enabled).toBeTrue()
   })
 
   test(

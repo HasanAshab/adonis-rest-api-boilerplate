@@ -21,7 +21,7 @@ test.group('Notifications / Delete', (group) => {
     const response = await client.delete(`/api/v1/notifications/${notification.id}`).loginAs(user)
 
     response.assertStatus(204)
-    await expect(notification.exists()).resolves.toBe(false)
+    await expect(notification.exists()).resolves.toBeFalse()
   })
 
   test("Shouldn't delete others notification", async ({ client, expect }) => {
@@ -32,6 +32,6 @@ test.group('Notifications / Delete', (group) => {
       .loginAs(anotherUser)
 
     response.assertStatus(404)
-    await expect(notification.exists()).resolves.toBe(true)
+    await expect(notification.exists()).resolves.toBeTrue()
   })
 })

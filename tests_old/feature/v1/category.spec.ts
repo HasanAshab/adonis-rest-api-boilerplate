@@ -32,7 +32,7 @@ describe('Category', () => {
     ]
     const responses = await Promise.all(requests.map((request) => request.actingAs(userToken)))
     const isNotAccessable = responses.every((response) => response.statusCode === 403)
-    expect(isNotAccessable).toBe(true)
+    expect(isNotAccessable).toBeTrue()
   })
 
   test('Should get all categories', async ({ client, expect }) => {

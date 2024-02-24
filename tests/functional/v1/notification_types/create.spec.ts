@@ -27,7 +27,7 @@ test.group('Notification Types / Create', (group) => {
     const response = await client.post('/api/v1/notification-types/').loginAs(admin).json(data)
 
     response.assertStatus(201)
-    await expect(NotificationType.exists(data)).resolves.toBe(true)
+    await expect(NotificationType.exists(data)).resolves.toBeTrue()
   })
   
 
@@ -43,7 +43,7 @@ test.group('Notification Types / Create', (group) => {
     const response = await client.post('/api/v1/notification-types/').loginAs(user).json(data)
 
     response.assertStatus(403)
-    await expect(NotificationType.exists(data)).resolves.toBe(false)
+    await expect(NotificationType.exists(data)).resolves.toBeFalse()
   })
 
   test('Should create notification type with existing name', async ({ client, expect }) => {
@@ -58,6 +58,6 @@ test.group('Notification Types / Create', (group) => {
     const response = await client.post('/api/v1/notification-types').loginAs(admin).json(data)
 
     response.assertStatus(422)
-    await expect(NotificationType.exists(data)).resolves.toBe(false)
+    await expect(NotificationType.exists(data)).resolves.toBeFalse()
   })
 })

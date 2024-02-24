@@ -26,7 +26,7 @@ test.group('Auth/Verify', (group) => {
     await user.refresh()
 
     response.assertStatus(200)
-    expect(user.verified).toBe(true)
+    expect(user.verified).toBeTrue()
   })
 
   test("shouldn't verify email with invalid token", async ({ client, expect }) => {
@@ -37,7 +37,7 @@ test.group('Auth/Verify', (group) => {
     await user.refresh()
 
     response.assertStatus(401)
-    expect(user.verified).toBe(false)
+    expect(user.verified).toBeFalse()
   })
   
   
@@ -49,7 +49,7 @@ test.group('Auth/Verify', (group) => {
     })
 
     response.assertStatus(202)
-    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBe(true)
+    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBeTrue()
   })
 
   test("shouldn't resend verification email when no user found", async ({ client, expect }) => {
@@ -59,6 +59,6 @@ test.group('Auth/Verify', (group) => {
     const response = await client.post('/api/v1/auth/verify/resend').json({ email })
 
     response.assertStatus(202)
-    expect(mailer.exists((mail) => mail.to[0].address === email)).toBe(false)
+    expect(mailer.exists((mail) => mail.to[0].address === email)).toBeFalse()
   })
 })

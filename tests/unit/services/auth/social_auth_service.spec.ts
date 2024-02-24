@@ -30,9 +30,9 @@ test.group('Services/Auth/SocialAuthService', (group) => {
 
     expect(result.user.email).toBe(data.email)
     expect(result.user.username).toBe('test')
-    expect(result.user.verified).toBe(true)
+    expect(result.user.verified).toBeTrue()
     expect(result.user.socialAvatarUrl).toBe(data.avatarUrl)
-    expect(result.isRegisteredNow).toBe(true)
+    expect(result.isRegisteredNow).toBeTrue()
   })
 
   test(
@@ -247,7 +247,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
 
     const result = await service.upsertUser('google', data)
 
-    expect(result.isRegisteredNow).toBe(true)
+    expect(result.isRegisteredNow).toBeTrue()
   })
 
   test('should flag registered for first time only', async ({ expect }) => {
@@ -262,8 +262,8 @@ test.group('Services/Auth/SocialAuthService', (group) => {
     const result1 = await service.upsertUser('google', data)
     const result2 = await service.upsertUser('google', data)
 
-    expect(result1.isRegisteredNow).toBe(true)
-    expect(result2.isRegisteredNow).toBe(false)
+    expect(result1.isRegisteredNow).toBeTrue()
+    expect(result2.isRegisteredNow).toBeFalse()
   })
 
   //Validation Exception
