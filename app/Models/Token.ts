@@ -12,7 +12,8 @@ import InvalidTokenException from 'App/Exceptions/InvalidTokenException'
 export interface SignTokenOptions {
   secret?: string | number
   expiresIn?: string
-  reusable?: boolean
+  oneTimeOnly?: boolean
+  secretLength?: number
 }
 
 
@@ -43,14 +44,14 @@ export default class Token extends compose(BaseModel, Expirable) {
     }
   }
   
-  public static async sign(type: string, key: string, options: SignTokenOptions): string {
-    const secret = options.secret ?? string.generateRandom(64)
-    
+  public static async sign(type: string, key: string, options: SignTokenOptions = {}): string {
+    const secret = options.secret ?? string.generateRandom(options.secretLength ?? 64)
+
     await this.create({
       type,
       key,
       secret,
-      oneTime: options.reusable ?? true,
+      oneTime: options.oneTimeOnly ?? false,
       expiresAt: options.expiresIn && stringToLuxonDate(options.expiresIn)
     })
     
@@ -59,9 +60,9 @@ export default class Token extends compose(BaseModel, Expirable) {
   
   public static async isValid(type: string, key: string, secret: string) {
     const token = await this.findByFields({ type, key })
-    
+
     if(token && token.isNotExpired() && await token.compareSecret(secret)) {
-      token.oneTime ?? await token.delete()
+      token.oneTime && await token.delete()
       return true
     }
     
