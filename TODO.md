@@ -1,7 +1,6 @@
+This:
 challenge verif token
 
-This:
-test (unit Token)
 
 F: 2fa user removed phone number
 K: URI spec

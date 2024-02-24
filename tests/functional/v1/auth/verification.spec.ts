@@ -1,13 +1,13 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
 import EmailVerificationMail from 'App/Mails/EmailVerificationMail'
-import Mail from '@ioc:Adonis/Addons/Mail'
+import Mail from 'Tests/Assertors/MailAssertor'
 
 /*
 Run this suits:
-node ace test functional --files="v1/auth/verify.spec.ts"
+node ace test functional --files="v1/auth/verification.spec.ts"
 */
-test.group('Auth/Verify', (group) => {
+test.group('Auth / Verification', (group) => {
   let user
 
   refreshDatabase(group)
@@ -19,7 +19,7 @@ test.group('Auth/Verify', (group) => {
   test('should verify email', async ({ client, expect }) => {
     const token = await new EmailVerificationMail(user, 'v1').verificationToken()
     
-    const response = await client.post('api/v1/auth/verify').json({
+    const response = await client.post('api/v1/auth/verification').json({
       id: user.id,
       token
     })
@@ -30,7 +30,7 @@ test.group('Auth/Verify', (group) => {
   })
 
   test("shouldn't verify email with invalid token", async ({ client, expect }) => {
-    const response = await client.post('api/v1/auth/verify').json({
+    const response = await client.post('api/v1/auth/verification').json({
       id: user.id,
       token: 'invalid-token'
     })
@@ -41,24 +41,24 @@ test.group('Auth/Verify', (group) => {
   })
   
   
-  test('should resend verification email', async ({ client, expect }) => {
-    const mailer = Mail.fake()
+  test('should resend verification email', async ({ client }) => {
+    Mail.fake()
 
-    const response = await client.post('/api/v1/auth/verify/resend').json({
+    const response = await client.post('/api/v1/auth/verification/notification').json({
       email: user.email,
     })
 
     response.assertStatus(202)
-    expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBeTrue()
+    Mail.assertSentTo(user.email)
   })
 
-  test("shouldn't resend verification email when no user found", async ({ client, expect }) => {
-    const mailer = Mail.fake()
+  test("shouldn't resend verification email when no user found", async ({ client }) => {
+    Mail.fake()
     const email = 'test@gmail.com'
 
-    const response = await client.post('/api/v1/auth/verify/resend').json({ email })
+    const response = await client.post('/api/v1/auth/verification/notification').json({ email })
 
     response.assertStatus(202)
-    expect(mailer.exists((mail) => mail.to[0].address === email)).toBeFalse()
+    Mail.assertNotSentTo(user.email)
   })
 })
