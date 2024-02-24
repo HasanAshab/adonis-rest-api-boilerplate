@@ -12,22 +12,22 @@ import InvalidTokenException from 'App/Exceptions/InvalidTokenException'
 export interface SignTokenOptions {
   secret?: string | number
   expiresIn?: string
-  oneTimeOnly?: boolean
+  reusable?: boolean
 }
 
 
 export default class Token extends compose(BaseModel, Expirable) {
   @column({ isPrimary: true })
   public id: number
-
-  @column()
-  public key: string
-
+  
   @column()
   public type: string
 
   @column()
-  public oneTime = true
+  public oneTime: boolean
+  
+  @column()
+  public key: string
 
   @column()
   public secret: string
@@ -50,14 +50,13 @@ export default class Token extends compose(BaseModel, Expirable) {
       type,
       key,
       secret,
-      oneTime: options.oneTimeOnly,
+      oneTime: options.reusable ?? true,
       expiresAt: options.expiresIn && stringToLuxonDate(options.expiresIn)
     })
     
     return secret
   }
   
-
   public static async isValid(type: string, key: string, secret: string) {
     const token = await this.findByFields({ type, key })
     

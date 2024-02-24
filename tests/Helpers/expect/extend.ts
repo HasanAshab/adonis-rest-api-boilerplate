@@ -1,6 +1,7 @@
 import expect from 'expect'
-//import toThrowEqual from './matchers/to_throw_equal'
+import { toBeTrue, toBeFalse } from './matchers/to_be_matchers'
 
 expect.extend({
-  // toThrowEqual,
+  toBeTrue,
+  toBeFalse
 })

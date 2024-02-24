@@ -4,6 +4,7 @@ import User from 'App/Models/User'
 import ResetPasswordMail from 'App/Mails/ResetPasswordMail'
 import { Settings } from 'luxon'
 
+
 /*
 Run this suits:
 node ace test functional --files="v1/auth/password.spec.ts"
@@ -14,7 +15,7 @@ test.group('Auth / Password', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().hasSettings().create()
+    user = await User.factory().create()
   })
 
   test('Should send reset email', async ({ client, expect }) => {
@@ -28,7 +29,7 @@ test.group('Auth / Password', (group) => {
     expect(mailer.exists((mail) => mail.to[0].address === user.email)).toBe(true)
   })
 
-  test("Shouldn't send reset email if no user found", async ({ client, expect }) => {
+  test("Shouldn't send reset email when no user found", async ({ client, expect }) => {
     const mailer = Mail.fake()
     const email = 'test@gmail.com'
 
@@ -38,7 +39,17 @@ test.group('Auth / Password', (group) => {
     expect(mailer.exists((mail) => mail.to[0].address === email)).toBe(false)
   })
 
-  test("Shouldn't send reset email of social account", async ({ client, expect }) => {
+  test("Shouldn't send reset email to unverified account", async ({ client, expect }) => {
+    const mailer = Mail.fake()
+    const { email } = await User.factory().unverified().create()
+
+    const response = await client.post('/api/v1/auth/password/forgot').json({ email })
+
+    response.assertStatus(202)
+    expect(mailer.exists((mail) => mail.to[0].address === email)).toBe(false)
+  })
+  
+  test("Shouldn't send reset email to social account", async ({ client, expect }) => {
     const mailer = Mail.fake()
     const { email } = await User.factory().social().create()
 

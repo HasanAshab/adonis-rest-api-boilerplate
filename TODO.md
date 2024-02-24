@@ -1,6 +1,4 @@
 challenge verif token
-token data
-otp -> db Token
 
 This:
 test (unit Token)

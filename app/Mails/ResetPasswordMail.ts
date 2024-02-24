@@ -1,8 +1,12 @@
 import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
 import Client from '@ioc:Adonis/Addons/Client'
-import Token from 'App/Models/Token'
+import Token, { SignTokenOptions } from 'App/Models/Token'
 
 export default class ResetPasswordMail extends BaseMailer {
+  private tokenOptions: SignTokenOptions = {
+    expiresIn: '3 days'
+  }
+
   constructor(private user: User) {
     super()
   }
@@ -25,9 +29,6 @@ export default class ResetPasswordMail extends BaseMailer {
   }
 
   public resetToken() {
-    return Token.sign('password_reset', this.user.id, {
-      oneTimeOnly: true,
-      expiresAt: '3 days',
-    })
+    return Token.sign('password_reset', this.user.id, this.tokenOptions)
   }
 }

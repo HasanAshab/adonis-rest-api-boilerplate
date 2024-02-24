@@ -15,6 +15,7 @@ globalThis.log = console.log
 
 
 import User from 'App/Models/User'
+import Contact from 'App/Models/Contact'
 import DB from '@ioc:Adonis/Lucid/Database'
 import NotificationService from 'App/Services/NotificationService'
 import OptInNotification from 'App/Notifications/OptInNotification'
@@ -56,3 +57,5 @@ return log((await user.createToken()).token)
   //const c =  await Contact.query().where('search_vector', '@@', DB.raw("to_tsquery('project')")).select('subject', 'message').pojo()
   //log(c)
 })
+
+

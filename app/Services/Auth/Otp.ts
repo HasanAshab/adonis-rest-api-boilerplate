@@ -11,7 +11,6 @@ export default class Otp {
   
   public static generate(key: string, expiresIn = '90 seconds') {
     return Token.sign('otp', key, {
-      oneTimeOnly: true,
       secret: this.code(),
       expiresIn
     })

@@ -1,9 +1,13 @@
 import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
 import Client from '@ioc:Adonis/Addons/Client'
-import Token from 'App/Models/Token'
+import Token, { SignTokenOptions } from 'App/Models/Token'
 
 
 export default class EmailVerificationMail extends BaseMailer {
+  private tokenOptions: SignTokenOptions = {
+    expiresIn: '3 days'
+  }
+  
   constructor(private user: User) {
     super()
   }
@@ -24,9 +28,6 @@ export default class EmailVerificationMail extends BaseMailer {
   }
   
   public verificationToken() {
-    return Token.sign('verification', this.user.id, {
-      expiresIn: '3 days',
-      oneTimeOnly: true
-    })
+    return Token.sign('verification', this.user.id, this.tokenOptions)
   }
 }

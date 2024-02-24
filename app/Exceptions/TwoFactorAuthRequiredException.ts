@@ -20,8 +20,6 @@ export default class TwoFactorAuthRequiredException extends ApiException {
   }
   
   public challengeToken() {
-    return Token.sign('two_factor_auth_challenge', this.user.id, {
-      oneTimeOnly: true
-    })
+    return Token.sign('two_factor_auth_challenge', this.user.id)
   }
 }

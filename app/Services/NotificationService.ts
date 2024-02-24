@@ -25,15 +25,11 @@ export default class NotificationService {
   
   public emailUnsubscriptionToken(user: User, notificationType: string) {
     const key = this.emailUnsubscriptionTokenKey(user, notificationType)
-    return Token.sign('email_unsubscription', key, {
-      oneTimeOnly: true
-    })
+    return Token.sign('email_unsubscription', key)
   }
   
   public emailResubscriptionToken(user: User, notificationType: string) {
     const key = this.emailResubscriptionTokenKey(user, notificationType),
-    return Token.sign('email_resubscription', key, {
-      oneTimeOnly: true
-    })
+    return Token.sign('email_resubscription', key)
   }
 }
