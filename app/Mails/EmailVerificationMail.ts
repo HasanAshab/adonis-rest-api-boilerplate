@@ -5,6 +5,7 @@ import Token, { SignTokenOptions } from 'App/Models/Token'
 
 export default class EmailVerificationMail extends BaseMailer {
   private tokenOptions: SignTokenOptions = {
+    oneTimeOnly: true,
     expiresIn: '3 days'
   }
   
