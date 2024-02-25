@@ -22,8 +22,8 @@ Route.post('/logout', 'AuthController.logout').middleware('auth')
 // Two factor authentication
 Route.group(() => {
   Route.post('/recover', 'AuthController.recoverTwoFactorAccount').middleware('recaptcha')
-  Route.post('/challenges', 'AuthController.sendTwoFactorChallenge').middleware('throttle:60000,3')
-  Route.post('/verification', 'AuthController.verifyTwoFactorChallenge').middleware('throttle:60000,3')
+  Route.post('/challenges', 'AuthController.sendTwoFactorChallenge').middleware('recaptcha')
+  Route.post('/challenges/verification', 'AuthController.verifyTwoFactorChallenge').middleware('throttle:60000,3')
 }).prefix('two-factor')
 
 

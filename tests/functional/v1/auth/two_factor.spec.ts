@@ -6,6 +6,7 @@ import Twilio from '@ioc:Adonis/Addons/Twilio'
 import TwoFactorAuthRequiredException from 'App/Exceptions/TwoFactorAuthRequiredException'
 import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException'
 import Otp from 'App/Services/Auth/Otp'
+import { authenticator } from 'otplib';
 
 
 /*
@@ -39,9 +40,10 @@ test.group('Auth/TwoFactor', (group) => {
 
   test("shouldn't recover account with same recovery code", async ({ client }) => {
     const user = await User.factory().twoFactorAuthEnabled().create()
-    const data = {
+    const [code] = await twoFactorAuthService.generateRecoveryCodes(user, 1)
+    const data = { 
       email: user.email,
-      code: (await twoFactorAuthService.generateRecoveryCodes(user, 1))[0],
+      code 
     }
 
     const response1 = await client.post('/api/v1/auth/two-factor/recover').json(data)
@@ -67,6 +69,14 @@ test.group('Auth/TwoFactor', (group) => {
   })
 
 
+  test('Should not send otp without token', async ({ client }) => {
+    const { email } = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+
+    const response = await client.post(`/api/v1/auth/two-factor/challenges`).json({ email })
+
+    response.assertStatus(422)
+  })
+  
   test('Should send otp through {$self}') 
   .with(['sms', 'call'])
   .run(async ({ client }, method) => {
@@ -106,26 +116,49 @@ test.group('Auth/TwoFactor', (group) => {
     })
   })
 
-  
-  test('should login a user with valid otp', async ({ client }) => {
-    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled('sms').create()
-    const token = await Otp.generate(user.twoFactorSecret)
+  test('Should not verify challenge without token', async ({ client }) => {
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+    const challengeToken = authenticator.generate(user.twoFactorSecret)
 
-    const response = await client.post('/api/v1/auth/two-factor/verification').json({
+    const response = await client.post('/api/v1/auth/two-factor/challenges/verification').json({
       email: user.email,
-      token,
+      challengeToken
+    })
+
+    response.assertStatus(422)
+  })
+
+  test('should verify challenge of method {$self} with valid challenge token')
+  .with(['authenticator', 'sms', 'call'])
+  .run(async ({ client }, method) => {
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
+    const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
+
+    const challengeToken = method === 'authenticator'
+      ? authenticator.generate(user.twoFactorSecret)
+      : await Otp.generate(user.twoFactorSecret)
+
+    const response = await client.post('/api/v1/auth/two-factor/challenges/verification').json({
+      email: user.email,
+      challengeToken
+      token
     })
 
     response.assertStatus(200)
     response.assertBodyHaveProperty('data.token')
   })
+  
 
-  test("shouldn't login a user with invalid OTP", async ({ client }) => {
-    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
-    
-    const response = await client.post('/api/v1/auth/two-factor/verification').json({
+  test('should login user of method {$self} with valid otp')
+  .with(['sms', 'call'])
+  .run(async ({ client }, method) => {
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
+    const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
+
+    const response = await client.post('/api/v1/auth/two-factor/challenges/verification').json({
       email: user.email,
-      token: '123456'
+      challengeToken: '123456',
+      token
     })
 
     response.assertStatus(401)

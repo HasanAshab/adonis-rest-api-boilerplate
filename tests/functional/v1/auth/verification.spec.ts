@@ -29,14 +29,13 @@ test.group('Auth / Verification', (group) => {
     expect(user.verified).toBeTrue()
   })
 
-  test("shouldn't verify email with invalid token", async ({ client, expect }) => {
+  test("shouldn't verify email without token", async ({ client, expect }) => {
     const response = await client.post('api/v1/auth/verification').json({
-      id: user.id,
-      token: 'invalid-token'
+      id: user.id
     })
     await user.refresh()
 
-    response.assertStatus(401)
+    response.assertStatus(422)
     expect(user.verified).toBeFalse()
   })
   

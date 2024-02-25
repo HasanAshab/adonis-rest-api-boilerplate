@@ -11,12 +11,26 @@ export default class TwoFactorAuthRequiredException extends ApiException {
   }
   
   protected async payload() {
+    const [challengeVerification, resendChallenge] = await Promise.all([
+      this.challengeVerificationToken(),
+      this.challengeToken()
+    ])
+    
     return {
       twoFactor: true,
       data: {
-        resendChallengeToken: await this.challengeToken()
+        tokens: { 
+          challengeVerification,
+          resendChallenge
+        }
       }
     }
+  }
+  
+  public challengeVerificationToken() {
+    return Token.sign('two_factor_auth_challenge_verification', this.user.id, {
+      oneTimeOnly: true
+    })
   }
   
   public challengeToken() {

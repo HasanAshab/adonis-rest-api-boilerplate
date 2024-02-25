@@ -131,12 +131,15 @@ export default class AuthController {
   }
   
   public async verifyTwoFactorChallenge({ request }: HttpContextContract) {
-    const { email, token: challengeToken } = await request.validate(TwoFactorChallengeVerificationValidator)
-    const token = await this.twoFactorAuthService.verify(email, challengeToken)
-    
+    const { email, token, challengeToken } = await request.validate(TwoFactorChallengeVerificationValidator)
+    const user = await User.findByOrFail('email', email)
+
+    const authToken = await this.twoFactorAuthService.verify(user, challengeToken)
+    await Token.verify('two_factor_auth_challenge_verification', user.id, token)
+
     return {
       message: 'Challenge completed!',
-      data: { token },
+      data: { token: authToken },
     }
   }
 

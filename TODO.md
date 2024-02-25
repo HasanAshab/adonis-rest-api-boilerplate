@@ -1,6 +1,8 @@
 This:
 challenge verif token
 
+I: adv login limit
+I: login alerts, settings disable for new
 
 F: 2fa user removed phone number
 K: URI spec

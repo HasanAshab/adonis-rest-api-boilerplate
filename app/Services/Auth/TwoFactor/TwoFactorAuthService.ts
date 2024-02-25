@@ -26,8 +26,7 @@ export default class TwoFactorAuthService {
     return TwoFactorMethod.use(user.twoFactorMethod).challenge(user)
   }
   
-  public async verify(email: string, token: string) {
-    const user = await User.findByOrFail('email', email)
+  public async verify(user: User, token: string) {
     await TwoFactorMethod.use(user.twoFactorMethod).verify(user, token)
     return await user.createToken()
   }
