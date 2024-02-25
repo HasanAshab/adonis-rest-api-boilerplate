@@ -17,7 +17,6 @@ import TwoFactorAuthRequiredException from 'App/Exceptions/TwoFactorAuthRequired
 export interface LoginCredentials {
   email: string
   password: string
-  otp?: string
   ip?: string
 }
 
@@ -53,7 +52,7 @@ export default class BasicAuthService {
       throw new Error('Argument[3]: "ip" must be provided when login attempt throttling is enabled')
     }
 
-    const throttleKey = this.getThrottleKeyFor(email, ip)
+    const throttleKey = this.throttleKeyFor(user, ip)
 
     if (await this.loginThrottler?.isBlocked(throttleKey)) {
       throw new LoginAttemptLimitExceededException()
@@ -139,9 +138,9 @@ export default class BasicAuthService {
     })
   }
 
-  private getThrottleKeyFor(email: string, ip: string) {
+  private throttleKeyFor(user: User, ip: string) {
     return this.loginAttemptThrottlerConfig.key
-      .replace('{{ email }}', email)
+      .replace('{{ email }}', user.email)
       .replace('{{ ip }}', ip)
   }
 

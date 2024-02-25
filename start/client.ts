@@ -22,6 +22,14 @@ import OptInNotification from 'App/Notifications/OptInNotification'
 
 
 (async () => {
+  const user = await User.firstOrFail()
+  
+  log(
+    await user.createToken('foo', { device_id: 32 })
+    )
+})
+
+async () => {
  //MQ.evW90TaKoojN4E-bunByOW8D6rTIuRh68qaJ7rlG3uJVDUIDTCQBYKAAPkN4
   const user = await User.factory().create()
     //const user = await User.firstOrFail()
@@ -56,6 +64,6 @@ return log((await user.createToken()).token)
 
   //const c =  await Contact.query().where('search_vector', '@@', DB.raw("to_tsquery('project')")).select('subject', 'message').pojo()
   //log(c)
-})
+}
 
 

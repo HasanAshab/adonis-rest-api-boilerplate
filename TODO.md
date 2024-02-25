@@ -1,18 +1,15 @@
 This:
-challenge verif token
 
+Th: maintain 2fa logic
 I: adv login limit
 I: login alerts, settings disable for new
-
-F: 2fa user removed phone number
-K: URI spec
-F: Sql I
-F: Circ Dep Api Res
-F: Conf tfa, direct query enable
 I: trust device
+F: 2fa user removed phone number
+F: Sql I
 T: Complete todo marked comments
 
 
+F: Circ Dep Api Res
 D: Api Res
 t: feature/socialauth
 T: Contribute adonisjs query builder

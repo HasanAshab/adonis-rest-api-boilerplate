@@ -7,6 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.integer('device_id').unsigned()//.references('id').inTable('devices').onDelete('CASCADE')
       table.string('name').notNullable()
       table.string('type').notNullable()
       table.string('token', 64).notNullable().unique()
