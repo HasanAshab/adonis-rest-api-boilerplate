@@ -1,0 +1,110 @@
+{
+  "typescript": true,
+  "commands": [
+    "./app/Commands",
+    "@adonisjs/core/build/commands/index.js",
+    "@adonisjs/repl/build/commands",
+    "@adonisjs/bouncer/build/commands",
+    "@adonisjs/lucid/build/commands",
+    "@adonisjs/mail/build/commands",
+    "@verful/notifications/build/commands"
+  ],
+  "directories": {
+    "providers": "app/Providers"
+  },
+  "namespaces": {
+    "httpControllers": "App/Http/Controllers",
+    "validators": "App/Http/Validators",
+    "middleware": "App/Http/Middleware",
+    "mailers": "App/Mails"
+  },
+  "exceptionHandlerNamespace": "App/Exceptions/Handler",
+  "aliases": {
+    "App": "app",
+    "Config": "config",
+    "Database": "database",
+    "Contracts": "contracts",
+    "Tests": "tests"
+  },
+  "preloads": [
+    "./start/kernel",
+    "./start/bouncer",
+    "./start/limiter",
+    "./start/client",
+    {
+      "file": "./start/response",
+      "environment": [
+        "web",
+        "test"
+      ]
+    },
+    "./start/database",
+    {
+      "file": "./start/validator",
+      "environment": [
+        "web",
+        "test"
+      ]
+    },
+    {
+      "file": "./start/routes",
+      "environment": [
+        "web",
+        "test"
+      ]
+    }
+  ],
+  "providers": [
+    "./app/Providers/AppProvider",
+    "@adonisjs/core",
+    "@adonisjs/redis",
+    "./app/Providers/HashProvider",
+    "@adonisjs/bouncer",
+    "@adonisjs/ally",
+    "./app/Providers/TwilioProvider",
+    "./app/Providers/ValidationProvider",
+    "adonis-recaptcha2",
+    "@adonisjs/limiter",
+    "./app/Providers/RouteProvider",
+    "@adonisjs/lucid",
+    "@adonisjs/auth",
+    "./app/Providers/AuthProvider",
+    "@adonisjs/attachment-lite",
+    "./app/Providers/EventProvider",
+    "@adonisjs/route-model-binding/build/providers/RmbProvider",
+    "@adonisjs/mail",
+    "@verful/notifications",
+    "@adonisjs/view",
+    "./app/Providers/ClientProvider"
+  ],
+  "aceProviders": [
+    "@adonisjs/repl"
+  ],
+  "tests": {
+    "suites": [
+      {
+        "name": "functional",
+        "files": [
+          "tests/functional/**/*.spec(.ts|.js)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "name": "unit",
+        "files": [
+          "tests/unit/**/*.spec(.ts|.js)"
+        ],
+        "timeout": 60000
+      }
+    ]
+  },
+  "testProviders": [
+    "@japa/preset-adonis/TestsProvider"
+  ],
+  "metaFiles": [
+    {
+      "pattern": "resources/views/**/*.edge",
+      "reloadServer": false
+    }
+  ]
+}
