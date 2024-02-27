@@ -1,4 +1,4 @@
-import type ClientContract from './Client.js'
+import type ClientContract from './client.js'
 
 declare module '@ioc:Adonis/Addons/Client' {
   const Client: ClientContract

@@ -1,6 +1,6 @@
-import Notification from '@ioc:Verful/Notification'
-import NewUserJoinedNotification from '#app/Notifications/NewUserJoinedNotification'
-import User from '#app/Models/User'
+import Notification from '@ioc:verful/notification'
+import NewUserJoinedNotification from '#app/notifications/new_user_joined_notification'
+import User from '#app/models/user'
 import { Listener } from "@adonisjs/core/events";
 import { EventsList } from "@adonisjs/core/events";
 

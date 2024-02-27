@@ -1,4 +1,4 @@
-import ValidationException from '#app/Exceptions/Validation/ValidationException'
+import ValidationException from '#app/exceptions/validation/validation_exception'
 
 export default class SamePhoneNumberException extends ValidationException {
   public fieldsWithRule = {

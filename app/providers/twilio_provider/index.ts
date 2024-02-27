@@ -1,4 +1,4 @@
-import Config from '@ioc:Adonis/Core/Config'
+import Config from '@ioc:adonis/core/config'
 import { ApplicationService } from "@adonisjs/core/types";
 
 export default class TwilioProvider {

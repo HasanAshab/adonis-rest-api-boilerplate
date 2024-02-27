@@ -1,9 +1,9 @@
-import User from '#app/Models/User'
-import EmailRequiredException from '#app/Exceptions/Validation/EmailRequiredException'
-import UsernameRequiredException from '#app/Exceptions/Validation/UsernameRequiredException'
-import DuplicateEmailAndUsernameException from '#app/Exceptions/Validation/DuplicateEmailAndUsernameException'
-import DuplicateUsernameException from '#app/Exceptions/Validation/DuplicateUsernameException'
-import DuplicateEmailException from '#app/Exceptions/Validation/DuplicateEmailException'
+import User from '#app/models/user'
+import EmailRequiredException from '#app/exceptions/validation/email_required_exception'
+import UsernameRequiredException from '#app/exceptions/validation/username_required_exception'
+import DuplicateEmailAndUsernameException from '#app/exceptions/validation/duplicate_email_and_username_exception'
+import DuplicateUsernameException from '#app/exceptions/validation/duplicate_username_exception'
+import DuplicateEmailException from '#app/exceptions/validation/duplicate_email_exception'
 import { AllyUserContract } from "@adonisjs/ally";
 
 export interface SocialAuthData extends AllyUserContract {

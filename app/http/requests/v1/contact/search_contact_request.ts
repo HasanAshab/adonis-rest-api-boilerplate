@@ -1,5 +1,5 @@
 import { AuthenticRequest } from '~/core/express'
-import Validator from 'Validator'
+import Validator from 'validator'
 
 interface SearchContactRequest {
   query: {

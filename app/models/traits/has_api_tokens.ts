@@ -1,7 +1,7 @@
 import type { NormalizeConstructor } from '@adonisjs/core/helpers'
 import { BaseModel } from '@adonisjs/lucid/orm'
 import HttpContext from '@adonisjs/core/http'
-import AuthManager from '@ioc:Adonis/Addons/Auth'
+import AuthManager from '@ioc:adonis/addons/auth'
 
 export default function HasApiTokens(Superclass: NormalizeConstructor<typeof BaseModel>) {
   return class extends Superclass {

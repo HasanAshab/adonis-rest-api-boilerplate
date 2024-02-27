@@ -1,5 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import Config from '@ioc:Adonis/Core/Config'
+import Config from '@ioc:adonis/core/config'
 import { CustomMessages } from "@adonisjs/validator/types";
 
 export default class Validator {

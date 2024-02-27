@@ -1,4 +1,4 @@
-import User from '#app/Models/User'
+import User from '#app/models/user'
 import { Exception } from "@adonisjs/core/exceptions";
 
 export default abstract class TwoFactorMethod {

@@ -1,8 +1,8 @@
-import Validator from '#app/Http/Validators/Validator'
+import Validator from '#app/http/validators/validator'
 import { schema } from '@adonisjs/validator'
 import { reduce } from 'lodash'
-import NotificationType from '#app/Models/NotificationType'
-import NotificationService from '#app/Services/NotificationService'
+import NotificationType from '#app/models/notification_type'
+import NotificationService from '#app/services/notification_service'
 
 
 export default async function UpdateNotificationPreferenceValidator() {

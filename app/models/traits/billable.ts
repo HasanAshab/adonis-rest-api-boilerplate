@@ -1,7 +1,7 @@
 import { Schema, Document } from 'mongoose'
 import Config from '#config'
 import Stripe from 'stripe'
-import URL from 'URL'
+import URL from 'url'
 
 export interface BillableDocument extends Document {
   stripeId: string

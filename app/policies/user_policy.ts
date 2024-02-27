@@ -1,5 +1,5 @@
-import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
-import User from '#app/Models/User'
+import { BasePolicy } from '@ioc:adonis/addons/bouncer'
+import User from '#app/models/user'
 
 export default class UserPolicy extends BasePolicy {
   delete(user: User, targetUser: User) {

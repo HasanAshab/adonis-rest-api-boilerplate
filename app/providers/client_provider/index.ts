@@ -1,5 +1,5 @@
-import Config from '@ioc:Adonis/Core/Config'
-import Client from './Client.js'
+import Config from '@ioc:adonis/core/config'
+import Client from './client.js'
 import { ApplicationService } from "@adonisjs/core/types";
 
 export default class ClientProvider {

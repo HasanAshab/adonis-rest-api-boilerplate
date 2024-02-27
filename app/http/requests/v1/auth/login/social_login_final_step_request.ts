@@ -1,5 +1,5 @@
 import { Request } from '~/core/express'
-import Validator, { unique } from 'Validator'
+import Validator, { unique } from 'validator'
 
 interface SocialLoginFinalStepRequest {
   body: {

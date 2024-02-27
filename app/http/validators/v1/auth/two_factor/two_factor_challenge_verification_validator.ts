@@ -1,4 +1,4 @@
-import Validator from '#app/Http/Validators/Validator'
+import Validator from '#app/http/validators/validator'
 import { schema, rules } from '@adonisjs/validator'
 
 export default class TwoFactorChallengeVerificationValidator extends Validator {

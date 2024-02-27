@@ -1,5 +1,5 @@
 declare module '@ioc:Adonis/Addons/Twilio' {
-  import type TwilioContract from 'App/Providers/TwilioProvider/Twilio'
+  import type TwilioContract from 'app/providers/twilio_provider/twilio'
 
   const Twilio: TwilioContract
   export default Twilio

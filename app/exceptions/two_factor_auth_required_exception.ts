@@ -1,6 +1,6 @@
-import ApiException from '#app/Exceptions/ApiException'
-import type User from '#app/Models/User'
-import Token from '#app/Models/Token'
+import ApiException from '#app/exceptions/api_exception'
+import type User from '#app/models/user'
+import Token from '#app/models/token'
 
 
 export default class TwoFactorAuthRequiredException extends ApiException {

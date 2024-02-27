@@ -1,5 +1,5 @@
 import { AuthenticRequest } from '~/core/express'
-import Validator, { unique } from 'Validator'
+import Validator, { unique } from 'validator'
 import { UploadedFile } from 'express-fileupload'
 
 interface UpdateCategoryRequest {

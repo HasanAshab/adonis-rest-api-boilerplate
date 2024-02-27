@@ -1,5 +1,5 @@
 import { HttpContext } from '@adonisjs/core/http'
-import recaptcha2 from '@ioc:Adonis/Addons/Recaptcha2'
+import recaptcha2 from '@ioc:adonis/addons/recaptcha2'
 import { Exception } from "@adonisjs/core/exceptions";
 
 /**

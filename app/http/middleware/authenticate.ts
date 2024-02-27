@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import Config from '@ioc:Adonis/Core/Config'
+import Config from '@ioc:adonis/core/config'
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import User from '#app/Models/User'
+import User from '#app/models/user'
 
 export default class Authenticate {
   async handle(ctx: HttpContext, next: NextFunction) {

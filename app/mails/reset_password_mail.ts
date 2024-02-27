@@ -1,5 +1,5 @@
-import Client from '@ioc:Adonis/Addons/Client'
-import Token, { SignTokenOptions } from '#app/Models/Token'
+import Client from '@ioc:adonis/addons/client'
+import Token, { SignTokenOptions } from '#app/models/token'
 import { BaseMailer } from "@adonisjs/mail";
 import { Message } from "@adonisjs/mail";
 

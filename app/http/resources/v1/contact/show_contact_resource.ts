@@ -1,6 +1,6 @@
 //import JsonResource from '@samer/api-resource/resources/json_resource'
 import type { Request } from '~/core/express'
-import type { ContactDocument } from '~/app/models/Contact'
+import type { ContactDocument } from '~/app/models/contact'
 
 export default class ShowContactResource extends JsonResource<ContactDocument> {
   public serialize() {

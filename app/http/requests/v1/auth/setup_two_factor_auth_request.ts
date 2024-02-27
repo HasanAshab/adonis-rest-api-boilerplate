@@ -1,7 +1,7 @@
 import { AuthenticRequest } from '~/core/express'
-import Validator from 'Validator'
+import Validator from 'validator'
 import Config from '#config'
-import { ISettings, twoFactorAuthMethods } from '~/app/models/Settings'
+import { ISettings, twoFactorAuthMethods } from '~/app/models/settings'
 
 interface SetupTwoFactorAuthRequest {
   body: {

@@ -1,6 +1,6 @@
-import ApiException from '#app/Exceptions/ApiException'
+import ApiException from '#app/exceptions/api_exception'
 import { reduce } from 'lodash'
-import Config from '@ioc:Adonis/Core/Config'
+import Config from '@ioc:adonis/core/config'
 import { CustomMessages } from "@adonisjs/validator/types";
 
 type RuleName = keyof CustomMessages

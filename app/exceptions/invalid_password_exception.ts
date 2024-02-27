@@ -1,4 +1,4 @@
-import ApiException from '#app/Exceptions/ApiException'
+import ApiException from '#app/exceptions/api_exception'
 
 export default class InvalidPasswordException extends ApiException {
   status = 401

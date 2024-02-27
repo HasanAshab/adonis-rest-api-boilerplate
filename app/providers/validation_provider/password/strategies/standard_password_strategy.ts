@@ -1,4 +1,4 @@
-import { PasswordValidationStrategy } from '@ioc:Adonis/Core/Validator/Rules/Password'
+import { PasswordValidationStrategy } from '@ioc:adonis/core/validator/rules/password'
 
 export default class StandardPasswordStrategy implements PasswordValidationStrategy {
   message = '{{ field }} must be at least 6 characters long and include both letters and numbers'

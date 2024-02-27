@@ -1,5 +1,5 @@
-import type { NotificationContract } from '@ioc:Verful/Notification'
-import type User from '#app/Models/User'
+import type { NotificationContract } from '@ioc:verful/notification'
+import type User from '#app/models/user'
 
 export default abstract class OptInNotification implements NotificationContract {
   public abstract notificationType: string;

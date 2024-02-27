@@ -1,6 +1,6 @@
-import OptInNotification from '#app/Notifications/OptInNotification'
-import type User from '#app/Models/User'
-import NewUserJoinedMail from '#app/Mails/NewUserJoinedMail'
+import OptInNotification from '#app/notifications/opt_in_notification'
+import type User from '#app/models/user'
+import NewUserJoinedMail from '#app/mails/new_user_joined_mail'
 
 export default class NewUserJoinedNotification extends OptInNotification {
   public notificationType = 'App Updates'

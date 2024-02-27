@@ -1,5 +1,5 @@
 import { Command } from 'samer-artisan'
-import Cache from 'Cache'
+import Cache from 'cache'
 
 export default class ClearCache extends Command<{}, { driver: string | null }> {
   signature = 'clear:cache {--driver=}'

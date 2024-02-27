@@ -1,12 +1,12 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { bind } from '@adonisjs/route-model-binding'
-import Contact from '#app/Models/Contact'
-import CreateContactValidator from '#app/Http/Validators/V1/contact/CreateContactValidator'
-import UpdateContactStatusValidator from '#app/Http/Validators/V1/contact/UpdateContactStatusValidator'
-import SuggestContactValidator from '#app/Http/Validators/V1/contact/SuggestContactValidator'
-import SearchContactValidator from '#app/Http/Validators/V1/contact/SearchContactValidator'
-import ListContactResource from '#app/Http/Resources/v1/contact/ListContactResource'
-import ShowContactResource from '#app/Http/Resources/v1/contact/ShowContactResource'
+import Contact from '#app/models/contact'
+import CreateContactValidator from '#app/http/validators/v1/contact/create_contact_validator'
+import UpdateContactStatusValidator from '#app/http/validators/v1/contact/update_contact_status_validator'
+import SuggestContactValidator from '#app/http/validators/v1/contact/suggest_contact_validator'
+import SearchContactValidator from '#app/http/validators/v1/contact/search_contact_validator'
+import ListContactResource from '#app/http/resources/v1/contact/list_contact_resource'
+import ShowContactResource from '#app/http/resources/v1/contact/show_contact_resource'
 
 export default class ContactsController {
   public async index({ request }: HttpContext) {

@@ -1,4 +1,4 @@
-import { PasswordStrategy, PasswordValidationStrategy } from '@ioc:Adonis/Core/Validator/Rules/Password'
+import { PasswordStrategy, PasswordValidationStrategy } from '@ioc:adonis/core/validator/rules/password'
 
 export type PasswordValidationStrategyFactory = () => PasswordValidationStrategy
 

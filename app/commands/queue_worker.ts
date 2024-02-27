@@ -1,8 +1,8 @@
 import { Command } from 'samer-artisan'
-import Job from '~/core/abstract/Job'
-import Queue from 'Queue'
+import Job from '~/core/abstract/job'
+import Queue from 'queue'
 import { readdir } from 'fs/promises'
-import DB from 'DB'
+import DB from 'db'
 
 export default class QueueWorker extends Command {
   signature = 'queue:work'

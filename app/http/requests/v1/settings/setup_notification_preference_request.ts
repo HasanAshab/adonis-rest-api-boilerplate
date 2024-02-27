@@ -1,7 +1,7 @@
 import { AuthenticRequest } from '~/core/express'
-import Validator from 'Validator'
+import Validator from 'validator'
 import Config from '#config'
-import { ISettings } from '~/app/models/Settings'
+import { ISettings } from '~/app/models/settings'
 import { DeepPartial } from 'utility-types'
 
 interface SetupNotificationPreferenceRequest {

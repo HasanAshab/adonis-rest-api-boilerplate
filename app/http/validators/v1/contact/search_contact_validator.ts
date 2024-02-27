@@ -1,4 +1,4 @@
-import Validator from '#app/Http/Validators/Validator'
+import Validator from '#app/http/validators/validator'
 import { schema } from '@adonisjs/validator'
 
 export default class SearchContactValidator extends Validator {

@@ -1,15 +1,15 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import User from '#app/Models/User'
-import Token from '#app/Models/Token'
-import TwoFactorAuthService from '#app/Services/Auth/TwoFactor/TwoFactorAuthService'
-import NotificationService from '#app/Services/NotificationService'
-import TwoFactorAuthMethodValidator from "#app/Http/Validators/V1/Settings/TwoFactorAuthMethodValidator";
-import UpdateNotificationPreferenceValidator from "#app/Http/Validators/V1/Settings/UpdateNotificationPreferenceValidator";
-//import UpdateAppSettingsValidator from "App/Http/Validators/v1/settings/UpdateAppSettingsValidator";
-import EmailUnsubscriptionValidator from "#app/Http/Validators/V1/Settings/EmailUnsubscriptionValidator";
-import EmailResubscriptionValidator from "#app/Http/Validators/V1/Settings/EmailResubscriptionValidator";
-import NotificationPreferenceCollection from '#app/Http/Resources/v1/Settings/NotificationPreferenceCollection'
-import TwoFactorSettingsResource from '#app/Http/Resources/v1/Settings/TwoFactorSettingsResource'
+import User from '#app/models/user'
+import Token from '#app/models/token'
+import TwoFactorAuthService from '#app/services/auth/two_factor/two_factor_auth_service'
+import NotificationService from '#app/services/notification_service'
+import TwoFactorAuthMethodValidator from "#app/http/validators/v1/settings/two_factor_auth_method_validator";
+import UpdateNotificationPreferenceValidator from "#app/http/validators/v1/settings/update_notification_preference_validator";
+//import UpdateAppSettingsValidator from "app/http/validators/v1/settings/update_app_settings_validator";
+import EmailUnsubscriptionValidator from "#app/http/validators/v1/settings/email_unsubscription_validator";
+import EmailResubscriptionValidator from "#app/http/validators/v1/settings/email_resubscription_validator";
+import NotificationPreferenceCollection from '#app/http/resources/v1/settings/notification_preference_collection'
+import TwoFactorSettingsResource from '#app/http/resources/v1/settings/two_factor_settings_resource'
 
 
 export default class SettingsController {

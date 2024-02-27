@@ -1,4 +1,4 @@
-import BasicAuthService from '#app/Services/Auth/BasicAuthService'
+import BasicAuthService from '#app/services/auth/basic_auth_service'
 import { Listener } from "@adonisjs/core/events";
 import { EventsList } from "@adonisjs/core/events";
 

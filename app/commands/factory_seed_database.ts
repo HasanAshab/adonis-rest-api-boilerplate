@@ -1,8 +1,8 @@
 import { Command } from 'samer-artisan'
 import { model } from 'mongoose'
-import DB from 'DB'
-import DatabaseSeeder from '~/database/seeders/DatabaseSeeder'
-import { HasFactoryModel } from '~/app/plugins/HasFactory'
+import DB from 'db'
+import DatabaseSeeder from '~/database/seeders/database_seeder'
+import { HasFactoryModel } from '~/app/plugins/has_factory'
 
 interface Arguments {
   modelName: string

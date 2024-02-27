@@ -1,7 +1,7 @@
 import { Command } from 'samer-artisan'
 import mongoose from 'mongoose'
-import DB from 'DB'
-import DatabaseSeeder from '~/database/seeders/DatabaseSeeder'
+import DB from 'db'
+import DatabaseSeeder from '~/database/seeders/database_seeder'
 
 export default class CountDatabase extends Command {
   signature = 'db:count'

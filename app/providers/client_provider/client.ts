@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { ClientConfig } from '@ioc:Adonis/Addons/Client'
+import { ClientConfig } from '@ioc:adonis/addons/client'
 
 export default class Client {
   private urlPaths = new Map<string, string>()
