@@ -1,5 +1,5 @@
-import Factory from '#app/Models/Traits/HasFactory/Factory'
-import Contact from '#app/Models/Contact'
+import Factory from '#app/models/traits/has_factory/factory'
+import Contact from '#app/models/contact'
 
 export default class ContactFactory extends Factory<Contact> {
   definition() {

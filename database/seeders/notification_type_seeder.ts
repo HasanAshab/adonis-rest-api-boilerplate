@@ -1,5 +1,5 @@
 import BaseSeeder from '@adonisjs/lucid/seeders'
-import NotificationType from '#app/Models/NotificationType'
+import NotificationType from '#app/models/notification_type'
 
 export default class extends BaseSeeder {
   public async run () {

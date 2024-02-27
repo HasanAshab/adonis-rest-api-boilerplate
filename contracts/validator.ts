@@ -8,7 +8,7 @@ declare module '@ioc:Adonis/Core/Validator' {
 }
 
 declare module '@ioc:Adonis/Core/Validator/Rules/Password' {
-  import type PasswordStrategyManager from 'App/Providers/ValidationProvider/Password/PasswordStrategyManager'
+  import type PasswordStrategyManager from 'app/providers/validation_provider/password/password_strategy_manager'
 
   interface PasswordValidationStrategy {
     message: string

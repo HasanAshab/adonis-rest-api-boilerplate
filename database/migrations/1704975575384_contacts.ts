@@ -1,4 +1,4 @@
-import Config from '@ioc:Adonis/Core/Config'
+import Config from '@ioc:adonis/core/config'
 import { BaseSchema } from "@adonisjs/lucid/schema";
 
 export default class extends BaseSchema {

@@ -1,5 +1,5 @@
-import Factory from '#app/Models/Traits/HasFactory/Factory'
-import User from '#app/Models/User'
+import Factory from '#app/models/traits/has_factory/factory'
+import User from '#app/models/user'
 
 export default class UserFactory extends Factory<User> {
   definition() {

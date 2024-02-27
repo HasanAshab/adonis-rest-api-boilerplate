@@ -34,4 +34,4 @@ const updateImportPathsInFile = (filePath) => {
 };
 
 // Start updating import paths in the current directory
-updateImportPaths('./app');
+updateImportPaths(process.argv[2]);

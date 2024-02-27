@@ -1,7 +1,7 @@
-import Factory from '#app/Models/Traits/HasFactory/Factory'
-import User from '#app/Models/User'
-import BaseModel from '#app/Models/BaseModel'
-import createNotificationModel from '@verful/notifications/build/src/Models/DatabaseNotification'
+import Factory from '#app/models/traits/has_factory/factory'
+import User from '#app/models/user'
+import BaseModel from '#app/models/base_model'
+import createNotificationModel from '@verful/notifications/build/src/models/database_notification'
 import { DateTime } from 'luxon'
 
 //TODO

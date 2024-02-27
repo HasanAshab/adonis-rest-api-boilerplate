@@ -5,7 +5,7 @@
  * file.
  */
 declare module '@ioc:Adonis/Core/Event' {
-  import type User from 'App/Models/User'
+  import type User from 'app/models/user'
 
   interface EventsList {
     registered: {

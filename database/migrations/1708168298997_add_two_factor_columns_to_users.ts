@@ -1,4 +1,4 @@
-import { TwoFactorMethod } from '@ioc:Adonis/Addons/Auth/TwoFactor'
+import { TwoFactorMethod } from '@ioc:adonis/addons/auth/two_factor'
 import { BaseSchema } from "@adonisjs/lucid/schema";
 
 export default class extends BaseSchema {
