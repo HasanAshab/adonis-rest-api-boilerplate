@@ -1,6 +1,7 @@
-import { BaseModel as Model, ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
-import { types } from '@ioc:Adonis/Core/Helpers'
-import Database from '@ioc:Adonis/Lucid/Database'
+import { BaseModel as Model } from '@adonisjs/lucid/orm'
+import { types } from '@adonisjs/core/helpers'
+import db from '@adonisjs/lucid/services/db'
+import { ModelQueryBuilderContract } from " @adonisjs/lucid/types/model";
 
 /**
  * Base model class with common utility methods.

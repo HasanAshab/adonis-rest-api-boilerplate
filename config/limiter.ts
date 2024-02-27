@@ -1,13 +1,6 @@
-/**
- * Config source: https://bit.ly/3yXw6Tw
- *
- * Feel free to let us know via PR, if you find something broken in this contract
- * file.
- */
+import { defineConfig } from "@adonisjs/limiter";
 
-import { limiterConfig } from '@adonisjs/limiter/build/config'
-
-export default limiterConfig({
+export default defineConfig({
   /*
   |--------------------------------------------------------------------------
   | Default store

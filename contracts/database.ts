@@ -1,8 +1,8 @@
-import type { BaseModel } from '@ioc:Adonis/Lucid/Orm'
-import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm';
+import type { BaseModel } from '@adonisjs/lucid/orm'
 import { BigNumber } from 'bignumber.js';
 import { Exception } from '@poppinss/utils';
 import { Dictionary } from 'lodash';
+import { ModelQueryBuilderContract } from " @adonisjs/lucid/types/model";
 
 declare module '@ioc:Adonis/Lucid/Orm' {
   type QueryBuilderCallback<Query> = (query: Query) => Query

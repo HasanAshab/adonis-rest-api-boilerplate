@@ -1,5 +1,5 @@
-import AnonymousResourceCollection from './anonymous_resource_collection'
-import Route from '@ioc:Adonis/Core/Route'
+import AnonymousResourceCollection from './anonymous_resource_collection.js'
+import router from '@adonisjs/core/services/router'
 
 export default class JsonResource {
   public static wrap = 'data'
@@ -38,6 +38,6 @@ export default class JsonResource {
   }
 
   protected makeUrl(name: string) {
-    return Route.makeUrl(name, this.resource)
+    return router.makeUrl(name, this.resource)
   }
 }

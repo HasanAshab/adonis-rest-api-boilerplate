@@ -1,4 +1,4 @@
-import ApiException from 'App/Exceptions/ApiException'
+import ApiException from '#app/Exceptions/ApiException'
 
 export default class PasswordChangeNotAllowedException extends ApiException {
   status = 403

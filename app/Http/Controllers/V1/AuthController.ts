@@ -1,23 +1,23 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Route from '@ioc:Adonis/Core/Route'
-import Event from '@ioc:Adonis/Core/Event'
-import User from 'App/Models/User'
-import Token from 'App/Models/Token'
-import BasicAuthService from 'App/Services/Auth/BasicAuthService'
-import TwoFactorAuthService from 'App/Services/Auth/TwoFactor/TwoFactorAuthService'
-import SocialAuthService, { SocialAuthData } from 'App/Services/Auth/SocialAuthService'
-import OtpService from 'App/Services/OtpService'
-import PasswordChangedMail from 'App/Mails/PasswordChangedMail'
-import RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator'
-import LoginValidator from 'App/Http/Validators/V1/Auth/Login/LoginValidator'
-import EmailVerificationValidator from 'App/Http/Validators/V1/Auth/Email/EmailVerificationValidator'
-import ResendEmailVerificationValidator from 'App/Http/Validators/V1/Auth/Email/ResendEmailVerificationValidator'
-import ForgotPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ForgotPasswordValidator'
-import ResetPasswordValidator from 'App/Http/Validators/V1/Auth/Password/ResetPasswordValidator'
-import TwoFactorChallengeValidator from 'App/Http/Validators/V1/Auth/TwoFactor/TwoFactorChallengeValidator'
-import TwoFactorChallengeVerificationValidator from 'App/Http/Validators/V1/Auth/TwoFactor/TwoFactorChallengeVerificationValidator'
-import TwoFactorAccountRecoveryValidator from 'App/Http/Validators/V1/Auth/TwoFactor/TwoFactorAccountRecoveryValidator'
-import SocialAuthTokenLoginValidator from 'App/Http/Validators/V1/Auth/Login/SocialAuthTokenLoginValidator'
+import type { HttpContext } from '@adonisjs/core/http'
+import router from '@adonisjs/core/services/router'
+import emitter from '@adonisjs/core/services/emitter'
+import User from '#app/Models/User'
+import Token from '#app/Models/Token'
+import BasicAuthService from '#app/Services/Auth/BasicAuthService'
+import TwoFactorAuthService from '#app/Services/Auth/TwoFactor/TwoFactorAuthService'
+import SocialAuthService, { SocialAuthData } from '#app/Services/Auth/SocialAuthService'
+import OtpService from '#app/Services/OtpService'
+import PasswordChangedMail from '#app/Mails/PasswordChangedMail'
+import RegisterValidator from '#app/Http/Validators/V1/Auth/RegisterValidator'
+import LoginValidator from '#app/Http/Validators/V1/Auth/Login/LoginValidator'
+import EmailVerificationValidator from '#app/Http/Validators/V1/Auth/Email/EmailVerificationValidator'
+import ResendEmailVerificationValidator from '#app/Http/Validators/V1/Auth/Email/ResendEmailVerificationValidator'
+import ForgotPasswordValidator from '#app/Http/Validators/V1/Auth/Password/ForgotPasswordValidator'
+import ResetPasswordValidator from '#app/Http/Validators/V1/Auth/Password/ResetPasswordValidator'
+import TwoFactorChallengeValidator from '#app/Http/Validators/V1/Auth/TwoFactor/TwoFactorChallengeValidator'
+import TwoFactorChallengeVerificationValidator from '#app/Http/Validators/V1/Auth/TwoFactor/TwoFactorChallengeVerificationValidator'
+import TwoFactorAccountRecoveryValidator from '#app/Http/Validators/V1/Auth/TwoFactor/TwoFactorAccountRecoveryValidator'
+import SocialAuthTokenLoginValidator from '#app/Http/Validators/V1/Auth/Login/SocialAuthTokenLoginValidator'
 
 
 
@@ -35,18 +35,18 @@ export default class AuthController {
    * @register
    * @responseBody 201 - { "message": "Verification email sent", "data": { "user": <User>, "token": } }
    */
-  public async register({ request, response }: HttpContextContract) {
+  public async register({ request, response }: HttpContext) {
     const registrationData = await request.validate(RegisterValidator)
 
     const user = await this.authService.register(registrationData)
 
-    Event.emit('registered', {
+    emitter.emit('registered', {
       version: AuthController.VERSION,
       method: 'internal',
       user,
     })
 
-    const profile = Route.makeUrl(AuthController.VERSION + ".users.show", {
+    const profile = router.makeUrl(AuthController.VERSION + ".users.show", {
       username: user.username 
     });
 
@@ -63,7 +63,7 @@ export default class AuthController {
    * @login
    * @responseBody 200 - { message: <string>, data: { token: } }
    */
-  public async login({ request }: HttpContextContract) {
+  public async login({ request }: HttpContext) {
     const token = await this.authService.attempt({
       ...(await request.validate(LoginValidator)),
       ip: request.ip(),
@@ -79,7 +79,7 @@ export default class AuthController {
    * @logout
    * @responseBody 200 - { message: <string> }
    */
-  public async logout({ auth }: HttpContextContract) {
+  public async logout({ auth }: HttpContext) {
     await auth.logout()
     return 'Logged out successfully!'
   }
@@ -95,19 +95,19 @@ export default class AuthController {
   }
 
 
-  public async resendEmailVerification({ request, response }: HttpContextContract) {
+  public async resendEmailVerification({ request, response }: HttpContext) {
     const { email } = await request.validate(ResendEmailVerificationValidator)
     await this.authService.sendVerificationMail(email)
     response.accepted('Verification link sent to email!')
   }
 
-  public async forgotPassword({ request, response }: HttpContextContract) {
+  public async forgotPassword({ request, response }: HttpContext) {
     const { email } = await request.validate(ForgotPasswordValidator)
     await this.authService.forgotPassword(email)
     response.accepted('Password reset link sent to your email!')
   }
 
-  public async resetPassword({ request }: HttpContextContract) {
+  public async resetPassword({ request }: HttpContext) {
     const { id, token, password } = await request.validate(ResetPasswordValidator)
     const user = await User.findOrFail(id)
     await this.authService.resetPassword(user, token, password)
@@ -130,7 +130,7 @@ export default class AuthController {
     return 'Challenge sent!'
   }
   
-  public async verifyTwoFactorChallenge({ request }: HttpContextContract) {
+  public async verifyTwoFactorChallenge({ request }: HttpContext) {
     const { email, token, challengeToken } = await request.validate(TwoFactorChallengeVerificationValidator)
     const user = await User.findByOrFail('email', email)
 
@@ -151,7 +151,7 @@ export default class AuthController {
     return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
   }
 
-  public async recoverTwoFactorAccount({ request }: HttpContextContract) {
+  public async recoverTwoFactorAccount({ request }: HttpContext) {
     const { email, code } = await request.validate(TwoFactorAccountRecoveryValidator)
     const token = await this.twoFactorAuthService.recover(email, code)
 
@@ -161,7 +161,7 @@ export default class AuthController {
     }
   }
 
-  public async loginWithSocialAuthToken({ request, response, params, ally }: HttpContextContract) {
+  public async loginWithSocialAuthToken({ request, response, params, ally }: HttpContext) {
     let { email, username, token: oauthToken } = await request.validate(SocialAuthTokenLoginValidator)
 
     const data: SocialAuthData = await ally.use(params.provider).userFromToken(oauthToken)
@@ -182,13 +182,13 @@ export default class AuthController {
       }
     }
     
-    Event.emit('registered', {
+    emitter.emit('registered', {
       version: AuthController.VERSION,
       method: 'social',
       user,
     })
       
-    const profile = Route.makeUrl(AuthController.VERSION + ".users.show", {
+    const profile = router.makeUrl(AuthController.VERSION + ".users.show", {
       username: user.username 
     });
     

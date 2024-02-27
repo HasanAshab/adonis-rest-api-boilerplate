@@ -1,9 +1,9 @@
-import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import fs from 'fs'
 import path from 'path'
+import { ApplicationService } from "@adonisjs/core/types";
 
 export default class RouteProvider {
-  constructor(protected app: ApplicationContract) {}
+  constructor(protected app: ApplicationService) {}
 
   private extendRoute() {
     const Application = this.app.container.use('Adonis/Core/Application')

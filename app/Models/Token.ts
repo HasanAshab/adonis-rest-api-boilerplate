@@ -1,13 +1,12 @@
-import { column, beforeSave } from '@ioc:Adonis/Lucid/Orm'
-import BaseModel from 'App/Models/BaseModel'
+import { column, beforeSave } from '@adonisjs/lucid/orm'
+import BaseModel from '#app/Models/BaseModel'
 import { DateTime } from 'luxon'
 import { compose } from '@poppinss/utils/build/helpers'
-import { string } from '@ioc:Adonis/Core/Helpers'
-import { stringToLuxonDate } from 'App/helpers'
-import Hash from '@ioc:Adonis/Core/Hash'
-import Expirable from 'App/Models/Traits/Expirable'
-import InvalidTokenException from 'App/Exceptions/InvalidTokenException'
-
+import { stringToLuxonDate } from '#app/helpers'
+import hash from '@adonisjs/core/services/hash'
+import Expirable from '#app/Models/Traits/Expirable'
+import InvalidTokenException from '#app/Exceptions/InvalidTokenException'
+import { string } from "@adonisjs/core/helpers/string";
 
 export interface SignTokenOptions {
   secret?: string | number
@@ -34,13 +33,13 @@ export default class Token extends compose(BaseModel, Expirable) {
   public secret: string
 
   public compareSecret(secret: string) {
-    return Hash.verify(this.secret, secret)
+    return hash.verify(this.secret, secret)
   }
 
   @beforeSave()
   public static async hashSecretIfModified(token: Token) {
     if (token.$dirty.secret) {
-      token.secret = await Hash.make(token.secret)
+      token.secret = await hash.make(token.secret)
     }
   }
   

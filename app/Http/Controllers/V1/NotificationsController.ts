@@ -1,10 +1,10 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import NotificationCollection from 'App/Http/Resources/v1/notification/NotificationCollection'
-import ShowNotificationResource from 'App/Http/Resources/v1/notification/ShowNotificationResource'
+import type { HttpContext } from '@adonisjs/core/http'
+import NotificationCollection from '#app/Http/Resources/v1/notification/NotificationCollection'
+import ShowNotificationResource from '#app/Http/Resources/v1/notification/ShowNotificationResource'
 
 
 export default class NotificationsController {
-  public async index({ auth, request }: HttpContextContract) {
+  public async index({ auth, request }: HttpContext) {
     const notifications = await auth
       .user!.related('notifications')
       .query()
@@ -14,27 +14,27 @@ export default class NotificationsController {
     return NotificationCollection.make(notifications)
   }
 
-  public async show({ params, auth }: HttpContextContract) {
+  public async show({ params, auth }: HttpContext) {
     const notification = await auth.user!.related('notifications').query().findOrFail(params.id)
     return ShowNotificationResource.make(notification)
   }
 
-  public async markAllAsRead({ auth }: HttpContextContract) {
+  public async markAllAsRead({ auth }: HttpContext) {
     await auth.user!.markNotificationsAsRead()
     return 'All notifications marked as read'
   }
 
-  public async markAsRead({ params, auth }: HttpContextContract) {
+  public async markAsRead({ params, auth }: HttpContext) {
     await auth.user!.markNotificationAsRead(params.id)
     return 'Notification marked as read'
   }
 
-  public async unreadCount({ auth }: HttpContextContract) {
+  public async unreadCount({ auth }: HttpContext) {
     const count = await auth.user!.unreadNotifications().getCount()
     return { data: { count } }
   }
 
-  public async delete({ response, params, auth }: HttpContextContract) {
+  public async delete({ response, params, auth }: HttpContext) {
     await auth.user!.related('notifications').query().whereUid(params.id).deleteOrFail()
     response.noContent()
   }

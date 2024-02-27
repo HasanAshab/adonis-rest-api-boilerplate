@@ -1,6 +1,7 @@
-import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
 import Client from '@ioc:Adonis/Addons/Client'
-import Token, { SignTokenOptions } from 'App/Models/Token'
+import Token, { SignTokenOptions } from '#app/Models/Token'
+import { BaseMailer } from "@adonisjs/mail";
+import { Message } from "@adonisjs/mail";
 
 export default class ResetPasswordMail extends BaseMailer {
   private tokenOptions: SignTokenOptions = {
@@ -12,7 +13,7 @@ export default class ResetPasswordMail extends BaseMailer {
     super()
   }
 
-  public async prepare(message: MessageContract) {
+  public async prepare(message: Message) {
     const url = this.resetUrl(await this.resetToken())
 
     message

@@ -1,4 +1,4 @@
-import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel } from '@adonisjs/lucid/orm'
 import { merge } from 'lodash'
 import { faker } from '@faker-js/faker'
 

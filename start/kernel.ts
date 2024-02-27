@@ -9,7 +9,7 @@
 |
 */
 
-import Server from '@ioc:Adonis/Core/Server'
+import server from '@adonisjs/core/services/server'
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +20,7 @@ import Server from '@ioc:Adonis/Core/Server'
 | are defined for every HTTP requests.
 |
 */
-Server.middleware.register([
+server.middleware.register([
   () => import('@ioc:Adonis/Core/BodyParser'),
   () => import('@ioc:Adonis/Addons/RmbMiddleware'),
 ])
@@ -41,7 +41,7 @@ Server.middleware.register([
 | Route.get('dashboard', 'UsersController.dashboard').middleware('auth')
 |
 */
-Server.middleware.registerNamed({
+server.middleware.registerNamed({
   'throttle': () => import('App/Http/Middleware/LimitRequestRate'),
   'auth': () => import('App/Http/Middleware/Auth'),
   'verified': () => import('App/Http/Middleware/EnsureEmailIsVerified'),

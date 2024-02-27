@@ -8,9 +8,8 @@
 | based upon the user of the request.
 |
 */
+import { limiter } from "@adonisjs/limiter/services/main";
 
-import { Limiter } from '@adonisjs/limiter/build/services'
-
-export const { httpLimiters } = Limiter.define('global', () =>
-  Limiter.allowRequests(100).every('1 min')
+export const { httpLimiters } = limiter.define('global', () =>
+  limiter.allowRequests(100).every('1 min')
 )

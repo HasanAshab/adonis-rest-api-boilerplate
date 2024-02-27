@@ -1,9 +1,9 @@
-import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import Config from '@ioc:Adonis/Core/Config'
-import Client from './Client'
+import Client from './Client.js'
+import { ApplicationService } from "@adonisjs/core/types";
 
 export default class ClientProvider {
-  constructor(protected app: ApplicationContract) {}
+  constructor(protected app: ApplicationService) {}
 
   private registerClientAddon() {
     this.app.container.singleton('Adonis/Addons/Client', () => {

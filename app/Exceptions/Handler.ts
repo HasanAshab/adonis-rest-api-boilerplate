@@ -1,6 +1,6 @@
-import Logger from '@ioc:Adonis/Core/Logger'
-import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
+import logger from '@adonisjs/core/services/logger'
 import { range } from 'lodash'
+import { ExceptionHandler } from "@adonisjs/core/http";
 
 /*
 |--------------------------------------------------------------------------
@@ -10,11 +10,11 @@ import { range } from 'lodash'
 | AdonisJs will forward all exceptions occurred during an HTTP request to
 | the following class.
 */
-export default class ExceptionHandler extends HttpExceptionHandler {
+export default class ExceptionHandler extends ExceptionHandler {
   ignoreStatuses = range(1, 499)
 
   constructor() {
-    super(Logger)
+    super(logger)
   }
 
   /*

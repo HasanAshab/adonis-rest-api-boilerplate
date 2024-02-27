@@ -1,7 +1,8 @@
-import DB, { ModelQueryBuilder } from '@ioc:Adonis/Lucid/Database'
-import type { BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import db from '@adonisjs/lucid/services/db'
+import type { BaseModel } from '@adonisjs/lucid/orm'
 import { Exception } from '@poppinss/utils'
 import { forIn } from 'lodash'
+import { ModelQueryBuilder } from "@adonisjs/lucid/database";
 
 /**
  * Macro to add WHERE clauses for multiple fields with their respective values.
@@ -111,10 +112,10 @@ ModelQueryBuilder.macro('getCount', async function (column = '*') {
   const parse = (rawCount: string) => parseInt(BigInt(rawCount))
 
   if (isString) {
-    this.select(DB.raw(`COUNT(${column}) as total`))
+    this.select(db.raw(`COUNT(${column}) as total`))
   } else {
     forIn(column, (columnName, alias) => {
-      this.select(DB.raw(`COUNT(${columnName}) as ${alias}`))
+      this.select(db.raw(`COUNT(${columnName}) as ${alias}`))
     })
   }
 
@@ -138,7 +139,7 @@ ModelQueryBuilder.macro('getCount', async function (column = '*') {
  */
 ModelQueryBuilder.macro('search', function (query: string, vectorColumn = 'search_vector') {
   this._tsQuery = `plainto_tsquery('${query}')`
-  return this.where(vectorColumn, '@@', DB.raw(this._tsQuery))
+  return this.where(vectorColumn, '@@', db.raw(this._tsQuery))
 })
 
 /**
@@ -150,7 +151,7 @@ ModelQueryBuilder.macro('rank', function (vectorColumn = 'search_vector') {
     throw new Error('Must use search() before using rank()')
   }
 
-  return this.select(DB.raw(`ts_rank_cd(${vectorColumn}, ${this._tsQuery}) AS rank`)).orderBy(
+  return this.select(db.raw(`ts_rank_cd(${vectorColumn}, ${this._tsQuery}) AS rank`)).orderBy(
     'rank',
     'DESC'
   )

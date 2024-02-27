@@ -1,9 +1,9 @@
-import type { CustomMessages } from '@ioc:Adonis/Core/Validator'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import type { HttpContext } from '@adonisjs/core/http'
 import Config from '@ioc:Adonis/Core/Config'
+import { CustomMessages } from "@adonisjs/validator/types";
 
 export default class Validator {
-  constructor(protected ctx: HttpContextContract) {
+  constructor(protected ctx: HttpContext) {
     this.ctx = ctx
   }
 

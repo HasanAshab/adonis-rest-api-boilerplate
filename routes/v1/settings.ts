@@ -1,23 +1,23 @@
-import Route from '@ioc:Adonis/Core/Route'
+import router from '@adonisjs/core/services/router'
 
 // User settings managenent
-Route.group(() => {
-  Route.group(() => {
-    Route.get('/', 'SettingsController.twoFactorAuth')
-    Route.post('/', 'SettingsController.enableTwoFactorAuth')
-    Route.delete('/', 'SettingsController.disableTwoFactorAuth')
-    Route.patch('/method', 'SettingsController.updateTwoFactorAuthMethod')
-    Route.get('/qr-code', 'SettingsController.twoFactorAuthQrCode')
-    Route.get('/recovery-codes', 'SettingsController.recoveryCodes')
-    Route.post('/recovery-codes', 'SettingsController.generateRecoveryCodes')
+router.group(() => {
+  router.group(() => {
+    router.get('/', 'SettingsController.twoFactorAuth')
+    router.post('/', 'SettingsController.enableTwoFactorAuth')
+    router.delete('/', 'SettingsController.disableTwoFactorAuth')
+    router.patch('/method', 'SettingsController.updateTwoFactorAuthMethod')
+    router.get('/qr-code', 'SettingsController.twoFactorAuthQrCode')
+    router.get('/recovery-codes', 'SettingsController.recoveryCodes')
+    router.post('/recovery-codes', 'SettingsController.generateRecoveryCodes')
   })
   .prefix('two-factor-auth')
 
-  Route.group(() => {
-    Route.get('/', 'SettingsController.notificationPreference')
-    Route.patch('/', 'SettingsController.updateNotificationPreference')
-    Route.delete('/email-subscription', 'SettingsController.unsubscribeEmailNotification')
-    Route.post('/email-subscription', 'SettingsController.resubscribeEmailNotification')
+  router.group(() => {
+    router.get('/', 'SettingsController.notificationPreference')
+    router.patch('/', 'SettingsController.updateNotificationPreference')
+    router.delete('/email-subscription', 'SettingsController.unsubscribeEmailNotification')
+    router.post('/email-subscription', 'SettingsController.resubscribeEmailNotification')
   })
   .prefix('notification-preferences')
 })

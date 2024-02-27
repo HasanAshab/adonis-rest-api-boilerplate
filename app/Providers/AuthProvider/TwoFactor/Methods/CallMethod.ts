@@ -1,6 +1,6 @@
-import OtpMethod from './Abstract/OtpMethod'
-import User from 'App/Models/User'
-import Otp from 'App/Services/Auth/Otp'
+import OtpMethod from './Abstract/OtpMethod.js'
+import User from '#app/Models/User'
+import Otp from '#app/Services/Auth/Otp'
 
 
 export default class CallMethod extends OtpMethod {

@@ -1,11 +1,11 @@
-import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
-import type { HashContract } from '@ioc:Adonis/Core/Hash'
 import Config from '@ioc:Adonis/Core/Config'
+import { ApplicationService } from "@adonisjs/core/types";
+import { HashContract } from "@adonisjs/core/hash";
 
 export default class HashProvider {
   private Hash!: HashContract
 
-  constructor(protected app: ApplicationContract) {}
+  constructor(protected app: ApplicationService) {}
 
   private registerBcryptNodeDriver() {
     this.Hash.extend('bcrypt-node', () => {

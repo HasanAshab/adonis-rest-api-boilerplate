@@ -1,8 +1,8 @@
-import TwoFactorMethod from './TwoFactorMethod'
-import User from 'App/Models/User'
-import Otp from 'App/Services/Auth/Otp'
-import InvalidOtpException from 'App/Exceptions/InvalidOtpException'
-import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException'
+import TwoFactorMethod from './TwoFactorMethod.js'
+import User from '#app/Models/User'
+import Otp from '#app/Services/Auth/Otp'
+import InvalidOtpException from '#app/Exceptions/InvalidOtpException'
+import PhoneNumberRequiredException from '#app/Exceptions/PhoneNumberRequiredException'
 import { authenticator } from 'otplib';
 
 

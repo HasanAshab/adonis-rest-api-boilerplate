@@ -1,6 +1,6 @@
-import { Exception } from '@adonisjs/core/build/standalone'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { string } from '@ioc:Adonis/Core/Helpers'
+import type { HttpContext } from '@adonisjs/core/http'
+import { Exception } from "@adonisjs/core/exceptions";
+import { string } from "@adonisjs/core/helpers/string";
 
 export default abstract class ApiException extends Exception {
   public abstract status: number
@@ -21,9 +21,9 @@ export default abstract class ApiException extends Exception {
   }
 
   protected withHeaders(): Promise<object> | object
-  protected withHeaders(ctx: HttpContextContract): Promise<object> | object
+  protected withHeaders(ctx: HttpContext): Promise<object> | object
 
-  protected async withHeaders(ctx?: HttpContextContract) {
+  protected async withHeaders(ctx?: HttpContext) {
     return this.headers
   }
 
@@ -31,7 +31,7 @@ export default abstract class ApiException extends Exception {
     return 'E_' + string.snakeCase(this.name).toUpperCase()
   }
 
-  public async handle(error: this, ctx: HttpContextContract) {
+  public async handle(error: this, ctx: HttpContext) {
     ctx.response
       .status(error.status)
       .setHeaders(await error.withHeaders(ctx))

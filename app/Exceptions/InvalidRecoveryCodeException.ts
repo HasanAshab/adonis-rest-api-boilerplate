@@ -1,4 +1,4 @@
-import ApiException from 'App/Exceptions/ApiException'
+import ApiException from '#app/Exceptions/ApiException'
 
 export default class InvalidRecoveryCodeException extends ApiException {
   status = 401

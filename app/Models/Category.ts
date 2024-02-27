@@ -1,9 +1,9 @@
-import BaseModel from 'App/Models/BaseModel'
+import BaseModel from '#app/Models/BaseModel'
 import { DateTime } from 'luxon'
 import { compose } from '@poppinss/utils/build/helpers'
-import { column } from '@ioc:Adonis/Lucid/Orm'
+import { column } from '@adonisjs/lucid/orm'
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
-import HasFactory from 'App/Models/Traits/HasFactory'
+import HasFactory from '#app/Models/Traits/HasFactory'
 
 export default class Category extends compose(BaseModel, HasFactory) {
   @column({ isPrimary: true })

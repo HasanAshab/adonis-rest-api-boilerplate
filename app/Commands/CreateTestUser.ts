@@ -1,4 +1,4 @@
-import { BaseCommand } from '@adonisjs/core/build/standalone'
+import { BaseCommand } from "@adonisjs/core/ace";
 
 export default class CreateTestUser extends BaseCommand {
   public static commandName = 'create:user'

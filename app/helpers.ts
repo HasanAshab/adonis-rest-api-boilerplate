@@ -1,7 +1,6 @@
-import { string } from '@ioc:Adonis/Core/Helpers'
 import { DateTime } from 'luxon'
 import { clone } from 'lodash'
-
+import { string } from "@adonisjs/core/helpers/string";
 
 export function sleep(seconds: number) {
   return new Promise((r) => setTimeout(r, seconds * 1000))

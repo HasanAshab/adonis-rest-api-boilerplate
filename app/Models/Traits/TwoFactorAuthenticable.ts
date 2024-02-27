@@ -1,7 +1,7 @@
-import type { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import type { NormalizeConstructor } from '@adonisjs/core/helpers'
+import { BaseModel, column } from '@adonisjs/lucid/orm'
 import Encryption from '@ioc:Adonis/Core/Encryption'
-import RecoveryCode from 'App/Services/Auth/TwoFactor/RecoveryCode'
+import RecoveryCode from '#app/Services/Auth/TwoFactor/RecoveryCode'
 import { authenticator } from 'otplib';
 import qrcode from 'qrcode';
 

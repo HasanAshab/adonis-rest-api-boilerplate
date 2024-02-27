@@ -1,5 +1,5 @@
-import { BaseCommand } from '@adonisjs/core/build/standalone'
 import { execSync } from 'child_process'
+import { BaseCommand } from "@adonisjs/core/ace";
 
 export default class ClearUploads extends BaseCommand {
   public static commandName = 'clear:uploads'

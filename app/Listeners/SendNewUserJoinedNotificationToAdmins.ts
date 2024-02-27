@@ -1,7 +1,8 @@
-import type { Listener, EventsList } from '@ioc:Adonis/Core/Event'
 import Notification from '@ioc:Verful/Notification'
-import NewUserJoinedNotification from 'App/Notifications/NewUserJoinedNotification'
-import User from 'App/Models/User'
+import NewUserJoinedNotification from '#app/Notifications/NewUserJoinedNotification'
+import User from '#app/Models/User'
+import { Listener } from "@adonisjs/core/events";
+import { EventsList } from "@adonisjs/core/events";
 
 export default class SendNewUserJoinedNotificationToAdmins implements Listener<'registered'> {
   async dispatch({ user }: EventsList['registered']) {

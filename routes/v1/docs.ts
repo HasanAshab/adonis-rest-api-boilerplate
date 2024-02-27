@@ -1,12 +1,12 @@
-import Route from '@ioc:Adonis/Core/Route'
+import router from '@adonisjs/core/services/router'
 import AutoSwagger from 'adonis-autoswagger'
-import swagger from 'Config/swagger'
+import swagger from '#config/swagger'
 
 
-Route.get('/', async ({ response }) =>
+router.get('/', async ({ response }) =>
   response.sendOriginal(AutoSwagger.ui('/api/v1/docs/swagger', swagger))
 )
 
-Route.get('/swagger', async ({ response }) =>
-  response.sendOriginal(await AutoSwagger.docs(Route.toJSON(), swagger))
+router.get('/swagger', async ({ response }) =>
+  response.sendOriginal(await AutoSwagger.docs(router.toJSON(), swagger))
 )

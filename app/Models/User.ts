@@ -1,16 +1,16 @@
-import BaseModel from 'App/Models/BaseModel'
-import { column, beforeSave } from '@ioc:Adonis/Lucid/Orm'
+import BaseModel from '#app/Models/BaseModel'
+import { column, beforeSave } from '@adonisjs/lucid/orm'
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
 import { compose } from '@poppinss/utils/build/helpers'
 import Config from '@ioc:Adonis/Core/Config'
-import Hash from '@ioc:Adonis/Core/Hash'
-import HasFactory from 'App/Models/Traits/HasFactory'
-import HasTimestamps from 'App/Models/Traits/HasTimestamps'
-import HasApiTokens from 'App/Models/Traits/HasApiTokens'
-import TwoFactorAuthenticable from 'App/Models/Traits/TwoFactorAuthenticable'
-import SocialAuthenticable from 'App/Models/Traits/SocialAuthenticable'
-import OptInNotifiable from 'App/Models/Traits/OptInNotifiable'
-import InvalidPasswordException from 'App/Exceptions/InvalidPasswordException'
+import hash from '@adonisjs/core/services/hash'
+import HasFactory from '#app/Models/Traits/HasFactory'
+import HasTimestamps from '#app/Models/Traits/HasTimestamps'
+import HasApiTokens from '#app/Models/Traits/HasApiTokens'
+import TwoFactorAuthenticable from '#app/Models/Traits/TwoFactorAuthenticable'
+import SocialAuthenticable from '#app/Models/Traits/SocialAuthenticable'
+import OptInNotifiable from '#app/Models/Traits/OptInNotifiable'
+import InvalidPasswordException from '#app/Exceptions/InvalidPasswordException'
 
 
 export type Role = 'user' | 'admin'
@@ -96,7 +96,7 @@ export default class User extends compose(
   @beforeSave()
   public static async hashPasswordIfModified(user: User) {
     if (user.$dirty.password) {
-      user.password = await Hash.make(user.password)
+      user.password = await hash.make(user.password)
     }
   }
 
@@ -112,7 +112,7 @@ export default class User extends compose(
     if (!this.password) {
       throw new Error('The user must have a password to compare with')
     }
-    return Hash.verify(this.password, password)
+    return hash.verify(this.password, password)
   }
 
   public async verifyPassword(password: string) {

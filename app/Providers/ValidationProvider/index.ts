@@ -1,9 +1,8 @@
-import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import Config from '@ioc:Adonis/Core/Config'
-
+import { ApplicationService } from "@adonisjs/core/types";
 
 export default class ValidationProvider {
-  constructor(protected app: ApplicationContract) {}
+  constructor(protected app: ApplicationService) {}
 
   private registerPasswordStrategyManager() {
     this.app.container.singleton('Adonis/Core/Validator/Rules/Password', () => {

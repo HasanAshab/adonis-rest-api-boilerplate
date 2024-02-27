@@ -1,5 +1,5 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import User from 'App/Models/User'
+import type { HttpContext } from '@adonisjs/core/http'
+import User from '#app/Models/User'
 
 export default class DashboardController {
   public async admin() {

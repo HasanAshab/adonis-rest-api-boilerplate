@@ -1,8 +1,8 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Env from '@ioc:Adonis/Core/Env'
+import type { HttpContext } from '@adonisjs/core/http'
+import env from '#start/env/index'
 import ThrottleMiddleware from '@adonisjs/limiter/build/throttle'
-import { Limiter } from '@adonisjs/limiter/build/services'
-import { inject } from '@adonisjs/core/build/standalone'
+import { inject } from '@adonisjs/core'
+import { limiter } from "@adonisjs/limiter/services/main";
 
 @inject(['Adonis/Addons/Limiter'])
 export default class LimitRequestRate extends ThrottleMiddleware {
@@ -11,11 +11,11 @@ export default class LimitRequestRate extends ThrottleMiddleware {
   }
 
   public async handle(
-    ctx: HttpContextContract,
+    ctx: HttpContext,
     next: () => Promise<void>,
     [duration, count]: string[]
   ) {
-    if (Env.get('NODE_ENV') === 'test') {
+    if (env.get('NODE_ENV') === 'test') {
       return await next()
     }
 
@@ -23,7 +23,7 @@ export default class LimitRequestRate extends ThrottleMiddleware {
       return await super.handle(ctx, next, duration)
     }
 
-    const configBuilder = Limiter.allowRequests(parseInt(count)).every(duration)
+    const configBuilder = limiter.allowRequests(parseInt(count)).every(duration)
 
     await this.rateLimitRequest('dynamic', ctx, configBuilder)
 

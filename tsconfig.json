@@ -1,34 +1,42 @@
 {
-  "extends": "adonis-preset-ts/tsconfig.json",
-  "include": ["**/*"],
-  "exclude": ["node_modules", "build", "tests", "tests_old"],
+  "extends": "@adonisjs/tsconfig/tsconfig.app.json",
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "tests",
+    "tests_old"
+  ],
   "compilerOptions": {
     "outDir": "build",
     "rootDir": "./",
     "sourceMap": true,
     "paths": {
-      "App/*": ["./app/*"],
-      "Config/*": ["./config/*"],
-      "Contracts/*": ["./contracts/*"],
-      "Database/*": ["./database/*"],
-      "Tests/*": ["./tests/*"],
+      "#start/*": [
+        "./start/*.js"
+      ],
+      "#config/*": [
+        "./config/*.js"
+      ],
+      "#app/*": [
+        "./app/*.js"
+      ],
+      "#database/*": [
+        "./database/*.js"
+      ],
+      "#contracts/*": [
+        "./contracts/*.js"
+      ],
+      "#tests/*": [
+        "./tests/*.js"
+      ]
     },
     "types": [
-      "@adonisjs/core",
-      "@adonisjs/repl",
-      "@japa/preset-adonis/build/adonis-typings",
-      "@adonisjs/bouncer",
-      "@adonisjs/ally",
-      "@adonisjs/auth",
-      "@adonisjs/lucid",
-      "@adonisjs/redis",
       "adonis-recaptcha2",
-      "@adonisjs/limiter",
-      "@adonisjs/attachment-lite",
-      "@adonisjs/route-model-binding/build/adonis-typings",
-      "@adonisjs/mail",
-      "@verful/notifications",
-      "@adonisjs/view",
+      "@verful/notifications"
     ],
-  },
+    "strictPropertyInitialization": false
+  }
 }

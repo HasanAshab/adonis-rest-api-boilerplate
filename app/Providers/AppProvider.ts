@@ -1,7 +1,7 @@
-import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
+import { ApplicationService } from "@adonisjs/core/types";
 
 export default class AppProvider {
-  constructor(protected app: ApplicationContract) {}
+  constructor(protected app: ApplicationService) {}
 
   public boot() {
     //

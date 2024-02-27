@@ -1,5 +1,5 @@
-import Validator from 'App/Http/Validators/Validator'
-import { schema } from '@ioc:Adonis/Core/Validator'
+import Validator from '#app/Http/Validators/Validator'
+import { schema } from '@adonisjs/validator'
 
 
 export default class EmailResubscriptionValidator extends Validator {

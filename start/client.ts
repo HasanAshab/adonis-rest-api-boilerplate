@@ -6,19 +6,19 @@ Client.addPaths({
 })
 
 //TODO
-import JsonResource from '../res_dev/json_resource'
-import ResourceCollection from '../res_dev/resource_collection'
+import JsonResource from '../res_dev/json_resource.js'
+import ResourceCollection from '../res_dev/resource_collection.js'
 globalThis.JsonResource = JsonResource
 globalThis.ResourceCollection = ResourceCollection
 globalThis.log = console.log
 
 
 
-import User from 'App/Models/User'
-import Contact from 'App/Models/Contact'
-import DB from '@ioc:Adonis/Lucid/Database'
-import NotificationService from 'App/Services/NotificationService'
-import OptInNotification from 'App/Notifications/OptInNotification'
+import User from '#app/Models/User'
+import Contact from '#app/Models/Contact'
+import db from '@adonisjs/lucid/services/db'
+import NotificationService from '#app/Services/NotificationService'
+import OptInNotification from '#app/Notifications/OptInNotification'
 
 
 (async () => {

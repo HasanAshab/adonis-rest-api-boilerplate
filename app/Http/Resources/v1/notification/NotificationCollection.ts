@@ -1,5 +1,5 @@
 //import ResourceCollection from '@samer/api-resource/resources/resource_collection'
-import ListNotificationResource from 'App/Http/Resources/v1/notification/ListNotificationResource'
+import ListNotificationResource from '#app/Http/Resources/v1/notification/ListNotificationResource'
 import { groupBy } from 'lodash'
 
 export default class NotificationCollection extends ResourceCollection {

@@ -1,16 +1,16 @@
-import Route from '@ioc:Adonis/Core/Route'
+import router from '@adonisjs/core/services/router'
 
 // Endpoints for contact
-Route.group(() => {
-  Route.post('/', 'ContactsController.store')
+router.group(() => {
+  router.post('/', 'ContactsController.store')
 
-  Route.group(() => {
-    Route.get('/', 'ContactsController.index')
-    Route.get('/suggest', 'ContactsController.suggest')
-    Route.get('/search', 'ContactsController.search')
-    Route.get('/:id', 'ContactsController.show').as('show')
-    Route.patch('/:id/status', 'ContactsController.updateStatus').as('update.status')
-    Route.delete('/:id', 'ContactsController.delete').as('delete')
+  router.group(() => {
+    router.get('/', 'ContactsController.index')
+    router.get('/suggest', 'ContactsController.suggest')
+    router.get('/search', 'ContactsController.search')
+    router.get('/:id', 'ContactsController.show').as('show')
+    router.patch('/:id/status', 'ContactsController.updateStatus').as('update.status')
+    router.delete('/:id', 'ContactsController.delete').as('delete')
   })
     .prefix('/inquiries')
     .middleware(['auth', 'roles:admin'])

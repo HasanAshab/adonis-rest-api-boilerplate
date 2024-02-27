@@ -1,6 +1,6 @@
-import Database from '@ioc:Adonis/Lucid/Database'
+import db from '@adonisjs/lucid/services/db'
 import { join } from 'path'
-import { trace } from 'App/helpers'
+import { trace } from '#app/helpers'
 
 globalThis.trace = trace
 
@@ -10,7 +10,7 @@ globalThis.fakeFilePath = function fakeFilePathPath(name: string) {
 
 globalThis.refreshDatabase = function (group) {
   group.each.setup(async () => {
-    await Database.beginGlobalTransaction()
-    return () => Database.rollbackGlobalTransaction()
+    await db.beginGlobalTransaction()
+    return () => db.rollbackGlobalTransaction()
   })
 }

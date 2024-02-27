@@ -1,5 +1,6 @@
-import type { HashDriverContract, BcryptNodeConfig } from '@ioc:Adonis/Core/Hash'
 import bcrypt from 'bcryptjs'
+import { HashDriverContract } from "@adonisjs/core/hash";
+import { BcryptNodeConfig } from "@adonisjs/core/hash";
 
 export default class BcryptNodeDriver implements HashDriverContract {
   constructor(private config: BcryptNodeConfig) {

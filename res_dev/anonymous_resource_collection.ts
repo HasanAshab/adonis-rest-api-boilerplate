@@ -1,5 +1,5 @@
-import ResourceCollection from './resource_collection'
-import type { JsonResource } from './json_resource'
+import ResourceCollection from './resource_collection.js'
+import type { JsonResource } from './json_resource.js'
 
 export default class AnonymousResourceCollection extends ResourceCollection {
   constructor(

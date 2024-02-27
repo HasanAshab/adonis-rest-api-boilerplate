@@ -1,8 +1,8 @@
-import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import { forIn } from 'lodash'
+import { ApplicationService } from "@adonisjs/core/types";
 
 export default class EventProvider {
-  constructor(protected app: ApplicationContract) {}
+  constructor(protected app: ApplicationService) {}
 
   private listen = {
     registered: [

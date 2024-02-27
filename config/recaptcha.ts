@@ -4,7 +4,7 @@
  * Source: https://git.io/JnNoc
  */
 
-import Env from '@ioc:Adonis/Core/Env'
+import env from '#start/env/index'
 import { RecaptchaConfig } from '@ioc:Adonis/Addons/Recaptcha2'
 
 const recaptchaConfig: RecaptchaConfig = {
@@ -16,7 +16,7 @@ const recaptchaConfig: RecaptchaConfig = {
   | The key for form
   |
   */
-  siteKey: Env.get('RECAPTCHA_SITE_KEY'),
+  siteKey: env.get('RECAPTCHA_SITE_KEY'),
 
   /*
   |--------------------------------------------------------------------------
@@ -27,7 +27,7 @@ const recaptchaConfig: RecaptchaConfig = {
   | * Don`t tell it to anyone
   |
   */
-  secretKey: Env.get('RECAPTCHA_SECRET_KEY'),
+  secretKey: env.get('RECAPTCHA_SECRET_KEY'),
 
   /*
   |--------------------------------------------------------------------------

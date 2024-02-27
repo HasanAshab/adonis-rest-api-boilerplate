@@ -1,6 +1,6 @@
 import Config from '@ioc:Adonis/Core/Config'
-import type User from 'App/Models/User'
-import Token from 'App/Models/Token'
+import type User from '#app/Models/User'
+import Token from '#app/Models/Token'
 
 
 export default class NotificationService {

@@ -1,12 +1,12 @@
 import { range } from 'lodash'
 import Encryption from '@ioc:Adonis/Core/Encryption'
 import Config from '@ioc:Adonis/Core/Config'
-import User from 'App/Models/User'
+import User from '#app/Models/User'
 import { TwoFactorMethod } from '@ioc:Adonis/Addons/Auth/TwoFactor'
-import RecoveryCode from 'App/Services/Auth/TwoFactor/RecoveryCode'
-import Otp from 'App/Services/Auth/TwoFactor/Otp'
-import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException'
-import InvalidRecoveryCodeException from 'App/Exceptions/InvalidRecoveryCodeException'
+import RecoveryCode from '#app/Services/Auth/TwoFactor/RecoveryCode'
+import Otp from '#app/Services/Auth/TwoFactor/Otp'
+import PhoneNumberRequiredException from '#app/Exceptions/PhoneNumberRequiredException'
+import InvalidRecoveryCodeException from '#app/Exceptions/InvalidRecoveryCodeException'
 
 
 export default class TwoFactorAuthService {

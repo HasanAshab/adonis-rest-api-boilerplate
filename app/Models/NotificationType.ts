@@ -1,9 +1,9 @@
-import BaseModel from 'App/Models/BaseModel'
-import { column } from '@ioc:Adonis/Lucid/Orm'
+import BaseModel from '#app/Models/BaseModel'
+import { column } from '@adonisjs/lucid/orm'
 import { compose } from '@poppinss/utils/build/helpers'
-import HasFactory from 'App/Models/Traits/HasFactory'
-import HasTimestamps from 'App/Models/Traits/HasTimestamps'
-import NotificationService from 'App/Services/NotificationService'
+import HasFactory from '#app/Models/Traits/HasFactory'
+import HasTimestamps from '#app/Models/Traits/HasTimestamps'
+import NotificationService from '#app/Services/NotificationService'
 
 
 export default class NotificationType extends compose(BaseModel, HasFactory, HasTimestamps) {

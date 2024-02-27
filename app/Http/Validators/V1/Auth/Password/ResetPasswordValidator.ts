@@ -1,5 +1,5 @@
-import Validator from 'App/Http/Validators/Validator'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import Validator from '#app/Http/Validators/Validator'
+import { schema, rules } from '@adonisjs/validator'
 import Config from '@ioc:Adonis/Core/Config'
 
 export default class ResetPasswordValidator extends Validator {

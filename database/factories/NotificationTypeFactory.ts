@@ -1,5 +1,5 @@
-import Factory from 'App/Models/Traits/HasFactory/Factory'
-import NotificationType from 'App/Models/NotificationType'
+import Factory from '#app/Models/Traits/HasFactory/Factory'
+import NotificationType from '#app/Models/NotificationType'
 
 export default class NotificationTypeFactory extends Factory<NotificationType> {
   definition() {

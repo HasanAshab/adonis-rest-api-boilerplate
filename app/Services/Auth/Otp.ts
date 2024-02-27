@@ -1,7 +1,7 @@
 import Twilio from '@ioc:Adonis/Addons/Twilio'
-import User from 'App/Models/User'
-import Token from 'App/Models/Token'
-import InvalidOtpException from 'App/Exceptions/InvalidOtpException'
+import User from '#app/Models/User'
+import Token from '#app/Models/Token'
+import InvalidOtpException from '#app/Exceptions/InvalidOtpException'
 
 
 export default class Otp {

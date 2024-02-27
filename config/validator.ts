@@ -1,4 +1,4 @@
-import { CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { CustomMessages } from "@adonisjs/validator/types";
 
 export const customMessages: CustomMessages = {
   required: '{{ field }} field is required',

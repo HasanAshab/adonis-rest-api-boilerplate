@@ -1,4 +1,4 @@
-import { validator } from '@ioc:Adonis/Core/Validator'
+import { validator } from '@adonisjs/validator'
 import { PasswordStrategy } from '@ioc:Adonis/Core/Validator/Rules/Password'
 
 

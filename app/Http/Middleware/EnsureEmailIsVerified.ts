@@ -1,8 +1,8 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import type { HttpContext } from '@adonisjs/core/http'
 
 
 export default class EnsureEmailIsVerified {
-  handle({ response, auth: { user } }: HttpContextContract, next: NextFunction) {
+  handle({ response, auth: { user } }: HttpContext, next: NextFunction) {
     if (!user) {
       throw new Error('You have to use "auth" middleware before using "verified" middleware.')
     }

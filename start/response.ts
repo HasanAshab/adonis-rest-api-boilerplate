@@ -1,7 +1,7 @@
 import Response from '@ioc:Adonis/Core/Response'
-import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel } from '@adonisjs/lucid/orm'
 import { SimplePaginator } from '@adonisjs/lucid/build/src/Database/Paginator/SimplePaginator'
-import { types } from '@ioc:Adonis/Core/Helpers'
+import { types } from '@adonisjs/core/helpers'
 import { getStatusText } from 'http-status-codes'
 
 /**

@@ -1,6 +1,5 @@
-import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 import Config from '@ioc:Adonis/Core/Config'
-
+import { BaseSchema } from "@adonisjs/lucid/schema";
 
 export default class extends BaseSchema {
   protected tableName = 'notification_types'

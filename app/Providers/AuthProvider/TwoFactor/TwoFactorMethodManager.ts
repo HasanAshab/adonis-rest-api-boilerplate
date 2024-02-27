@@ -1,4 +1,4 @@
-import TwoFactorMethod from './Methods/Abstract/TwoFactorMethod'
+import TwoFactorMethod from './Methods/Abstract/TwoFactorMethod.js'
 
 
 export default class TwoFactorMethodManager {

@@ -1,15 +1,15 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import User from 'App/Models/User'
-import Token from 'App/Models/Token'
-import TwoFactorAuthService from 'App/Services/Auth/TwoFactor/TwoFactorAuthService'
-import NotificationService from 'App/Services/NotificationService'
-import TwoFactorAuthMethodValidator from "App/Http/Validators/V1/Settings/TwoFactorAuthMethodValidator";
-import UpdateNotificationPreferenceValidator from "App/Http/Validators/V1/Settings/UpdateNotificationPreferenceValidator";
+import type { HttpContext } from '@adonisjs/core/http'
+import User from '#app/Models/User'
+import Token from '#app/Models/Token'
+import TwoFactorAuthService from '#app/Services/Auth/TwoFactor/TwoFactorAuthService'
+import NotificationService from '#app/Services/NotificationService'
+import TwoFactorAuthMethodValidator from "#app/Http/Validators/V1/Settings/TwoFactorAuthMethodValidator";
+import UpdateNotificationPreferenceValidator from "#app/Http/Validators/V1/Settings/UpdateNotificationPreferenceValidator";
 //import UpdateAppSettingsValidator from "App/Http/Validators/v1/settings/UpdateAppSettingsValidator";
-import EmailUnsubscriptionValidator from "App/Http/Validators/V1/Settings/EmailUnsubscriptionValidator";
-import EmailResubscriptionValidator from "App/Http/Validators/V1/Settings/EmailResubscriptionValidator";
-import NotificationPreferenceCollection from 'App/Http/Resources/v1/Settings/NotificationPreferenceCollection'
-import TwoFactorSettingsResource from 'App/Http/Resources/v1/Settings/TwoFactorSettingsResource'
+import EmailUnsubscriptionValidator from "#app/Http/Validators/V1/Settings/EmailUnsubscriptionValidator";
+import EmailResubscriptionValidator from "#app/Http/Validators/V1/Settings/EmailResubscriptionValidator";
+import NotificationPreferenceCollection from '#app/Http/Resources/v1/Settings/NotificationPreferenceCollection'
+import TwoFactorSettingsResource from '#app/Http/Resources/v1/Settings/TwoFactorSettingsResource'
 
 
 export default class SettingsController {
@@ -19,54 +19,54 @@ export default class SettingsController {
     private readonly notificationService = new NotificationService
   ) {}
   
-  public async twoFactorAuth({ auth }: HttpContextContract) {
+  public async twoFactorAuth({ auth }: HttpContext) {
     return TwoFactorSettingsResource.make(auth.user!)
   }
   
-  public async enableTwoFactorAuth({ request, auth }: HttpContextContract) {
+  public async enableTwoFactorAuth({ request, auth }: HttpContext) {
     const { method } = await request.validate(TwoFactorAuthMethodValidator)
     await this.twoFactorAuthService.enable(auth.user!, method)
     return 'Two-Factor Authentication enabled!'
   }
   
-  public async disableTwoFactorAuth({ auth }: HttpContextContract) {
+  public async disableTwoFactorAuth({ auth }: HttpContext) {
     await this.twoFactorAuthService.disable(auth.user!)
     return 'Two-Factor Authentication disabled!'
   }
   
-  public async updateTwoFactorAuthMethod({ request, auth }: HttpContextContract) {
+  public async updateTwoFactorAuthMethod({ request, auth }: HttpContext) {
     const { method } = await request.validate(TwoFactorAuthMethodValidator)
     await this.twoFactorAuthService.changeMethod(auth.user!, method)
     return 'Two-Factor Authentication method changed!'
   }
 
-  public async twoFactorAuthQrCode({ auth }: HttpContextContract) {
+  public async twoFactorAuthQrCode({ auth }: HttpContext) {
     return {
       data: await auth.user!.twoFactorQrCodeSvg()
     }
   }
 
-  public recoveryCodes({ auth }: HttpContextContract) {
+  public recoveryCodes({ auth }: HttpContext) {
     return auth.user!.recoveryCodes()
   }
   
-  public generateRecoveryCodes({ auth }: HttpContextContract) {
+  public generateRecoveryCodes({ auth }: HttpContext) {
     return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
   }
 
-  public async notificationPreference({ auth: { user } }: HttpContextContract) {
+  public async notificationPreference({ auth: { user } }: HttpContext) {
     await user!.load('notificationPreferences')
     return NotificationPreferenceCollection.make(user!.notificationPreferences)
   }
 
-  public async updateNotificationPreference({ request, auth }: HttpContextContract) {
+  public async updateNotificationPreference({ request, auth }: HttpContext) {
     const validator = await UpdateNotificationPreferenceValidator()
     const preferences = await request.validate(validator)
     await auth.user!.syncNotificationPreference(preferences)
     return 'Settings saved!'
   }
 
-  public async unsubscribeEmailNotification({ request }: HttpContextContract) {
+  public async unsubscribeEmailNotification({ request }: HttpContext) {
     const { id, token, notificationType: notificationTypeName } = await request.validate(EmailUnsubscriptionValidator)
     const user = await User.findOrFail(id)
     const notificationType = await NotificationType.findByOrFail('name', notificationTypeName)
@@ -86,7 +86,7 @@ export default class SettingsController {
   }
   
 
-  public async resubscribeEmailNotification({ request }: HttpContextContract) {
+  public async resubscribeEmailNotification({ request }: HttpContext) {
     const { id, token, notificationType: notificationTypeName } = await request.validate(EmailResubscriptionValidator)
     const user = await User.findOrFail(id)
     const notificationType = await NotificationType.findByOrFail('name', notificationTypeName)

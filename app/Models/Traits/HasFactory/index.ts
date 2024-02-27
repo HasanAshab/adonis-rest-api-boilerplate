@@ -1,5 +1,5 @@
-import type { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
-import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import type { NormalizeConstructor } from '@adonisjs/core/helpers'
+import { BaseModel } from '@adonisjs/lucid/orm'
 
 export default function HasFactory(Superclass: NormalizeConstructor<typeof BaseModel>) {
   return class extends Superclass {

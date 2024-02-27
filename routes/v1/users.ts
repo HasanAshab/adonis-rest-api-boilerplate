@@ -1,23 +1,23 @@
-import Route from '@ioc:Adonis/Core/Route'
+import router from '@adonisjs/core/services/router'
 
 // Endpoints for user management
 
-Route.group(() => {
-  Route.group(() => {
-    Route.get('/', 'UsersController.profile')
-    Route.delete('/', 'UsersController.delete')
-    Route.patch('/', 'UsersController.updateProfile')
-    Route.patch('/password', 'UsersController.changePassword')
-    Route.patch('/phone-number', 'UsersController.changePhoneNumber')
-    Route.delete('/phone-number', 'UsersController.removePhoneNumber')
+router.group(() => {
+  router.group(() => {
+    router.get('/', 'UsersController.profile')
+    router.delete('/', 'UsersController.delete')
+    router.patch('/', 'UsersController.updateProfile')
+    router.patch('/password', 'UsersController.changePassword')
+    router.patch('/phone-number', 'UsersController.changePhoneNumber')
+    router.delete('/phone-number', 'UsersController.removePhoneNumber')
   }).prefix('me')
 
-  Route.get('/:username', 'UsersController.show').as('show')
+  router.get('/:username', 'UsersController.show').as('show')
 
-  Route.group(() => {
-    Route.get('/', 'UsersController.index')
-    Route.patch('/:id/admin', 'UsersController.makeAdmin').as('makeAdmin')
-    Route.delete('/:id', 'UsersController.deleteById').as('delete')
+  router.group(() => {
+    router.get('/', 'UsersController.index')
+    router.patch('/:id/admin', 'UsersController.makeAdmin').as('makeAdmin')
+    router.delete('/:id', 'UsersController.deleteById').as('delete')
   }).middleware('roles:admin')
 })
   .as('users')

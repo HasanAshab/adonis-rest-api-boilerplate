@@ -1,10 +1,10 @@
-import type { AllyUserContract } from '@ioc:Adonis/Addons/Ally'
-import User from 'App/Models/User'
-import EmailRequiredException from 'App/Exceptions/Validation/EmailRequiredException'
-import UsernameRequiredException from 'App/Exceptions/Validation/UsernameRequiredException'
-import DuplicateEmailAndUsernameException from 'App/Exceptions/Validation/DuplicateEmailAndUsernameException'
-import DuplicateUsernameException from 'App/Exceptions/Validation/DuplicateUsernameException'
-import DuplicateEmailException from 'App/Exceptions/Validation/DuplicateEmailException'
+import User from '#app/Models/User'
+import EmailRequiredException from '#app/Exceptions/Validation/EmailRequiredException'
+import UsernameRequiredException from '#app/Exceptions/Validation/UsernameRequiredException'
+import DuplicateEmailAndUsernameException from '#app/Exceptions/Validation/DuplicateEmailAndUsernameException'
+import DuplicateUsernameException from '#app/Exceptions/Validation/DuplicateUsernameException'
+import DuplicateEmailException from '#app/Exceptions/Validation/DuplicateEmailException'
+import { AllyUserContract } from "@adonisjs/ally";
 
 export interface SocialAuthData extends AllyUserContract {
   username?: string

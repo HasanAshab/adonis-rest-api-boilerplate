@@ -1,13 +1,13 @@
-import type { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
+import type { NormalizeConstructor } from '@adonisjs/core/helpers'
 import { compose } from '@poppinss/utils/build/helpers'
 import { mapValues, reduce } from 'lodash'
 import { DateTime } from 'luxon'
-import DB from '@ioc:Adonis/Lucid/Database'
-import { BaseModel, ManyToMany } from '@ioc:Adonis/Lucid/Orm'
+import db from '@adonisjs/lucid/services/db'
+import { BaseModel } from '@adonisjs/lucid/orm'
 import { Notifiable } from '@ioc:Verful/Notification/Mixins'
-import NotificationType from 'App/Models/NotificationType'
-import NotificationService from 'App/Services/NotificationService'
-
+import NotificationType from '#app/Models/NotificationType'
+import NotificationService from '#app/Services/NotificationService'
+import { ManyToMany } from "@adonisjs/lucid/types/relations";
 
 export type NotificationPreferences = Record<string, string[] | Record<string, boolean>> 
 
@@ -88,7 +88,7 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
         .pivotQuery()
         .whereUid(id)
         .updateOrFail({ 
-          channels: DB.raw(`ARRAY_APPEND(channels, '${channel}')`)
+          channels: db.raw(`ARRAY_APPEND(channels, '${channel}')`)
         })
     }
     
@@ -97,7 +97,7 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
         .pivotQuery()
         .whereUid(id)
         .updateOrFail({ 
-          channels: DB.raw(`ARRAY_REMOVE(channels, '${channel}')`)
+          channels: db.raw(`ARRAY_REMOVE(channels, '${channel}')`)
         })
     }
   }

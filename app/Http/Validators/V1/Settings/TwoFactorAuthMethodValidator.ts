@@ -1,5 +1,5 @@
-import Validator from 'App/Http/Validators/Validator'
-import { schema } from '@ioc:Adonis/Core/Validator'
+import Validator from '#app/Http/Validators/Validator'
+import { schema } from '@adonisjs/validator'
 import { TwoFactorMethod } from '@ioc:Adonis/Addons/Auth/TwoFactor'
 
 export default class TwoFactorAuthMethodValidator extends Validator {

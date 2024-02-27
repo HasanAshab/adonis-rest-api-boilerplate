@@ -1,5 +1,6 @@
-import type { Listener, EventsList } from '@ioc:Adonis/Core/Event'
-import BasicAuthService from 'App/Services/Auth/BasicAuthService'
+import BasicAuthService from '#app/Services/Auth/BasicAuthService'
+import { Listener } from "@adonisjs/core/events";
+import { EventsList } from "@adonisjs/core/events";
 
 export default class SendEmailVerificationMail implements Listener<'registered'> {
   constructor(private readonly authService = new BasicAuthService()) {}

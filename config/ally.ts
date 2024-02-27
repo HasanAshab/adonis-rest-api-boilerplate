@@ -5,8 +5,10 @@
  * file.
  */
 
-import Env from '@ioc:Adonis/Core/Env'
-import { AllyConfig } from '@ioc:Adonis/Addons/Ally'
+import env from '#start/env/index'
+import { AllyConfig } from "@adonisjs/ally";
+import { defineConfig } from "@adonisjs/ally";
+import { services } from "@adonisjs/ally";
 
 /*
 |--------------------------------------------------------------------------
@@ -17,30 +19,33 @@ import { AllyConfig } from '@ioc:Adonis/Addons/Ally'
 | defined inside `contracts/ally.ts` file.
 |
 */
-const allyConfig: AllyConfig = {
+const allyConfig = defineConfig({
   /*
-	|--------------------------------------------------------------------------
-	| Google driver
-	|--------------------------------------------------------------------------
-	*/
-  google: {
-    driver: 'google',
-    clientId: Env.get('GOOGLE_CLIENT_ID'),
-    clientSecret: Env.get('GOOGLE_CLIENT_SECRET'),
+    |--------------------------------------------------------------------------
+    | Google driver
+    |--------------------------------------------------------------------------
+    */
+  google: drivers.google({
+    clientId: env.get('GOOGLE_CLIENT_ID'),
+    clientSecret: env.get('GOOGLE_CLIENT_SECRET'),
     callbackUrl: 'http://localhost:8000/api/v1/auth/social/callback/google',
-  },
+  }),
 
   /*
   |--------------------------------------------------------------------------
   | Facebook driver
   |--------------------------------------------------------------------------
   */
-  facebook: {
-    driver: 'facebook',
-    clientId: Env.get('FACEBOOK_CLIENT_ID'),
-    clientSecret: Env.get('FACEBOOK_CLIENT_SECRET'),
+  facebook: drivers.facebook({
+    clientId: env.get('FACEBOOK_CLIENT_ID'),
+    clientSecret: env.get('FACEBOOK_CLIENT_SECRET'),
     callbackUrl: 'http://localhost:8000/api/v1/auth/social/callback/facebook',
-  },
-}
+  }),
+})
 
 export default allyConfig
+
+
+declare module '@adonisjs/ally/types' {
+  interface SocialProviders extends InferSocialProviders<typeof allyConfig> { }
+}

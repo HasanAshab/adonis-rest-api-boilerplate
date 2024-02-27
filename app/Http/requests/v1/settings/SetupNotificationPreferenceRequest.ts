@@ -1,6 +1,6 @@
 import { AuthenticRequest } from '~/core/express'
 import Validator from 'Validator'
-import Config from 'Config'
+import Config from '#config'
 import { ISettings } from '~/app/models/Settings'
 import { DeepPartial } from 'utility-types'
 

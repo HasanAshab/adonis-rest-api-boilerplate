@@ -1,4 +1,4 @@
-import JsonResource from './json_resource'
+import JsonResource from './json_resource.js'
 import { SimplePaginator } from '@adonisjs/lucid/build/src/Database/Paginator/SimplePaginator'
 
 export default class ResourceCollection {

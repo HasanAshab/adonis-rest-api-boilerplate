@@ -3,7 +3,7 @@
  "plugins": ["prettier", "html"],
  "settings": {
     "html/html-extensions": ["edge"],
-    "html/report-bad-indent": "warn",
+    "html/report-bad-indent": "warn"
  },
  "parserOptions": {
     "ecmaVersion": 2020,

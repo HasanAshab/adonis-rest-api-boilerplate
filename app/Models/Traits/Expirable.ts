@@ -1,6 +1,6 @@
-import type { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
+import type { NormalizeConstructor } from '@adonisjs/core/helpers'
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column } from '@adonisjs/lucid/orm'
 
 export default function Expirable(Superclass: NormalizeConstructor<typeof BaseModel>) {
   return class extends Superclass {

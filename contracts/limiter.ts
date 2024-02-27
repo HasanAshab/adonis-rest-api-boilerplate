@@ -5,10 +5,10 @@
  * file.
  */
 
-import type limiterConfig from '../config/limiter'
+import type defineConfig from '../config/limiter.js'
 
 declare module '@adonisjs/limiter/build/services/index' {
-  type Config = (typeof limiterConfig)['stores']
+  type Config = (typeof defineConfig)['stores']
 
   /**
    * Compute limiter stores from the config file

@@ -1,6 +1,6 @@
 import { Twilio as TwilioClient } from 'twilio'
 import { TwilioFakedData, TwilioConfig } from '@ioc:Adonis/Addons/Twilio'
-import Assertor from 'Tests/Assertors/Assertor'
+import Assertor from '#tests/Assertors/Assertor'
 
 
 export default class Twilio extends Assertor {

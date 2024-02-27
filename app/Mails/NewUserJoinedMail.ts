@@ -1,4 +1,5 @@
-import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
+import { BaseMailer } from "@adonisjs/mail";
+import { Message } from "@adonisjs/mail";
 
 export default class NewUserJoinedMail extends BaseMailer {
   constructor(
@@ -8,7 +9,7 @@ export default class NewUserJoinedMail extends BaseMailer {
     super()
   }
 
-  public prepare(message: MessageContract) {
+  public prepare(message: Message) {
     message
       .subject('Verify Email Address!')
       .to(this.user.email)

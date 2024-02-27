@@ -1,6 +1,8 @@
-import { BaseCommand, args, flags } from '@adonisjs/core/build/standalone'
 import fs from 'fs'
 import path from 'path'
+import { BaseCommand } from "@adonisjs/core/ace";
+import { args } from "@adonisjs/core/ace";
+import { flags } from "@adonisjs/core/ace";
 
 class Wildcard {
   static match(str: string, query: string): boolean {

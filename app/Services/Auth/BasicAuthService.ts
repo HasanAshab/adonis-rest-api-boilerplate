@@ -1,18 +1,18 @@
-import type RegisterValidator from 'App/Http/Validators/V1/Auth/RegisterValidator'
+import type RegisterValidator from '#app/Http/Validators/V1/Auth/RegisterValidator'
 import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter'
 import Config from '@ioc:Adonis/Core/Config'
-import { Limiter } from '@adonisjs/limiter/build/services'
 import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
-import User from 'App/Models/User'
-import Token from 'App/Models/Token'
-import TwoFactorAuthService from 'App/Services/Auth/TwoFactor/TwoFactorAuthService'
-import EmailVerificationMail from 'App/Mails/EmailVerificationMail'
-import ResetPasswordMail from 'App/Mails/ResetPasswordMail'
-import InvalidCredentialException from 'App/Exceptions/InvalidCredentialException'
-import LoginAttemptLimitExceededException from 'App/Exceptions/LoginAttemptLimitExceededException'
-import OtpRequiredException from 'App/Exceptions/Validation/OtpRequiredException'
-import PasswordChangeNotAllowedException from 'App/Exceptions/PasswordChangeNotAllowedException'
-import TwoFactorAuthRequiredException from 'App/Exceptions/TwoFactorAuthRequiredException'
+import User from '#app/Models/User'
+import Token from '#app/Models/Token'
+import TwoFactorAuthService from '#app/Services/Auth/TwoFactor/TwoFactorAuthService'
+import EmailVerificationMail from '#app/Mails/EmailVerificationMail'
+import ResetPasswordMail from '#app/Mails/ResetPasswordMail'
+import InvalidCredentialException from '#app/Exceptions/InvalidCredentialException'
+import LoginAttemptLimitExceededException from '#app/Exceptions/LoginAttemptLimitExceededException'
+import OtpRequiredException from '#app/Exceptions/Validation/OtpRequiredException'
+import PasswordChangeNotAllowedException from '#app/Exceptions/PasswordChangeNotAllowedException'
+import TwoFactorAuthRequiredException from '#app/Exceptions/TwoFactorAuthRequiredException'
+import { limiter } from "@adonisjs/limiter/services/main";
 
 export interface LoginCredentials {
   email: string
@@ -131,7 +131,7 @@ export default class BasicAuthService {
 
   private setupLoginThrottler() {
     const { maxFailedAttempts, duration, blockDuration } = this.loginAttemptThrottlerConfig
-    this.loginThrottler = Limiter.use({
+    this.loginThrottler = limiter.use({
       requests: maxFailedAttempts,
       blockDuration,
       duration,

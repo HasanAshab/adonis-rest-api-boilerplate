@@ -1,4 +1,4 @@
-import ValidationException from 'App/Exceptions/Validation/ValidationException'
+import ValidationException from '#app/Exceptions/Validation/ValidationException'
 
 export default class DuplicateEmailException extends ValidationException {
   public fieldsWithRule = {

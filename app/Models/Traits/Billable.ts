@@ -1,5 +1,5 @@
 import { Schema, Document } from 'mongoose'
-import Config from 'Config'
+import Config from '#config'
 import Stripe from 'stripe'
 import URL from 'URL'
 

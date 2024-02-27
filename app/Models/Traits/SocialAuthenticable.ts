@@ -1,5 +1,5 @@
-import type { NormalizeConstructor } from '@ioc:Adonis/Core/Helpers'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import type { NormalizeConstructor } from '@adonisjs/core/helpers'
+import { BaseModel, column } from '@adonisjs/lucid/orm'
 
 export type TwoFactorMethod = 'app' | 'sms' | 'call'
 

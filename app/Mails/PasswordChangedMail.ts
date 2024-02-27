@@ -1,11 +1,12 @@
-import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
+import { BaseMailer } from "@adonisjs/mail";
+import { Message } from "@adonisjs/mail";
 
 export default class PasswordChangedMail extends BaseMailer {
   constructor(private user: User) {
     super()
   }
 
-  public prepare(message: MessageContract) {
+  public prepare(message: Message) {
     message
       .subject('Your Password Was Changed!')
       .to(this.user.email)
