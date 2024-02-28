@@ -261,7 +261,7 @@ export const constraints = {
     },
     avatar: {
       size: '1mb',
-      extnames: ['jpg', 'png'],
+      extentions: ['jpg', 'png'],
     }
   },
   contact: {

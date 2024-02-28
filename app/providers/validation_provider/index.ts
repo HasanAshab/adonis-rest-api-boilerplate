@@ -1,9 +1,15 @@
 import Config from '@ioc:adonis/core/config'
 import { ApplicationService } from "@adonisjs/core/types";
+import vine, { SimpleMessagesProvider } from '@vinejs/vine'
+
 
 export default class ValidationProvider {
   constructor(protected app: ApplicationService) {}
 
+  private registerMessagesProvider() {
+    vine.messagesProvider = new SimpleMessagesProvider(Config.get('validator.customMessages'))
+  }
+  
   private registerPasswordStrategyManager() {
     this.app.container.singleton('Adonis/Core/Validator/Rules/Password', () => {
       const PasswordStrategyManager = require('./Password/PasswordStrategyManager').default
@@ -14,7 +20,7 @@ export default class ValidationProvider {
   }
   
   private registerPasswordStrategies() {
-   const { PasswordStrategy } = this.app.container.use('Adonis/Core/Validator/Rules/Password')
+    const { PasswordStrategy } = this.app.container.use('Adonis/Core/Validator/Rules/Password')
     
     PasswordStrategy.defaultStrategy(Config.get('app.constraints.user.password.strategy'))
     
@@ -37,6 +43,7 @@ export default class ValidationProvider {
   }
 
   public boot() {
+    this.registerMessagesProvider()
     this.registerPasswordStrategyManager()
     this.registerPasswordStrategies()
   }
