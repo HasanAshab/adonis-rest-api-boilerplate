@@ -46,6 +46,7 @@ class Search {
   }
 
   async run() {
+    console.log(this)
     console.log((this.replace ? 'Replacing' : 'Searching') + ' started...\n');
     await this.searchFiles(this.dir ?? '.', this.query, this.replace);
   }
@@ -84,3 +85,6 @@ class Search {
   }
 }
 
+
+new Search('config.', 'config.').run()
+//new Search(...process.argv.splice(2)).run()

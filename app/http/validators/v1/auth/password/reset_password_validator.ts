@@ -1,14 +1,14 @@
 import Validator from '#app/http/validators/validator'
 import { schema, rules } from '@adonisjs/validator'
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 
 export default class ResetPasswordValidator extends Validator {
-  public schema = schema.create({
-    id: schema.number(),
-    token: schema.string(),
-    password: schema.string([ 
+  public schema = vine.create({
+    id: vine.number(),
+    token: vine.string(),
+    password: vine.string([ 
       rules.password(),
-      rules.maxLength(Config.get('app.constraints.user.password.maxLength'))
+      rules.maxLength(config.get('app.constraints.user.password.maxLength'))
     ]),
   })
 }

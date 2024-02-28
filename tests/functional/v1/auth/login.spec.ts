@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 import User from 'App/Models/User'
-import Config from '@ioc:Adonis/Core/Config'
+import config from '@ioc:Adonis/Core/Config'
 
 /*
 Run this suits:
@@ -47,7 +47,7 @@ test.group('Auth / Login', (group) => {
   })
 
   test('should prevent Brute Force login', async ({ client, expect }) => {
-    const limit = Config.get('auth.loginAttemptThrottler.maxFailedAttempts')
+    const limit = config.get('auth.loginAttemptThrottler.maxFailedAttempts')
 
     const payload = {
       email: user.email,

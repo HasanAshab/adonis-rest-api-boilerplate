@@ -104,10 +104,10 @@ export default class SettingsController {
 
   /*
   async getAppSettings() {
-    return Config.get();
+    return config.get();
   }
   async updateAppSettings({ body }: UpdateAppSettingsRequest) {
-    Config.set(body);
+    config.set(body);
     return "App Settings updated!";
   }
   */

@@ -1,10 +1,10 @@
 import Validator from '#app/http/validators/validator'
 import { schema } from '@adonisjs/validator'
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 
 export default class EmailVerificationValidator extends Validator {
-  public schema = schema.create({
-    id: schema.number(),
-    token: schema.string()
+  public schema = vine.create({
+    id: vine.number(),
+    token: vine.string()
   })
 }

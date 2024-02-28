@@ -1,5 +1,5 @@
 import Cache from 'Cache'
-import Config from 'Config'
+import config from 'Config'
 
 describe('Cache', () => {
   const drivers = ['redis', 'memory']

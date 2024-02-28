@@ -1,20 +1,20 @@
 import vine from '@vinejs/vine'
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 
 
 export const updateProfileValidator = vine.compile(
   vine.object({
     name: vine.string()
       .optional()
-      .minLength(Config.get('app.constraints.user.name.minLength'))
-      .maxLength(Config.get('app.constraints.user.name.maxLength')) 
+      .minLength(config.get('app.constraints.user.name.minLength'))
+      .maxLength(config.get('app.constraints.user.name.maxLength')) 
       .escape(),
 
     username: vine.string()
       .optional()
-      .minLength(Config.get('app.constraints.user.username.minLength'))
-      .maxLength(Config.get('app.constraints.user.username.maxLength'))
-      .alphaNum(),
+      .minLength(config.get('app.constraints.user.username.minLength'))
+      .maxLength(config.get('app.constraints.user.username.maxLength'))
+      .alphaNum()
       .unique('users.username'),
       
     email: vine.string()
@@ -24,8 +24,8 @@ export const updateProfileValidator = vine.compile(
 
     avatar: vine.file()
       .optional()
-      .size(Config.get('app.constraints.user.avatar.size'))
-      .extnames(Config.get('app.constraints.user.avatar.extnames'))
+      .size(config.get('app.constraints.user.avatar.size'))
+      .extnames(config.get('app.constraints.user.avatar.extnames'))
   })
 )
 
@@ -35,7 +35,7 @@ export const changePasswordValidator = vine.compile(
     oldPassword: vine.string(),
     password: vine.string()
       .password()
-      .maxLength(Config.get('app.constraints.user.password.maxLength'))
+      .maxLength(config.get('app.constraints.user.password.maxLength'))
   )
 )
 

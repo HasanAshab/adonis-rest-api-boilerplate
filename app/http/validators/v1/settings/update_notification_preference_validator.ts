@@ -12,15 +12,15 @@ export default async function UpdateNotificationPreferenceValidator() {
 
   const schemaDefinition = reduce(notificationTypesId, (accumulator, id) => {
     const channelPreferenceSchema = reduce(channels, (schemaAccumulator, channel) => {
-      schemaAccumulator[channel] = schema.boolean()
+      schemaAccumulator[channel] = vine.boolean()
       return schemaAccumulator
     }, {})
   
-    accumulator[id] = schema.object.optional().members(channelPreferenceSchema)
+    accumulator[id] = vine.object.optional().members(channelPreferenceSchema)
     return accumulator
   }, {})
 
   return class extends Validator {
-    public schema = schema.create(schemaDefinition)
+    public schema = vine.create(schemaDefinition)
   }
 }

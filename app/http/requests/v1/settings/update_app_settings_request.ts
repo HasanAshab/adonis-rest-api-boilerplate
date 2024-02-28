@@ -1,6 +1,6 @@
 import { AuthenticRequest } from '~/core/express'
 import Validator from 'validator'
-import Config from '#config'
+import config from '#config'
 import { DeepPartial } from 'utility-types'
 
 interface UpdateAppSettingsRequest {
@@ -8,7 +8,7 @@ interface UpdateAppSettingsRequest {
 }
 
 class UpdateAppSettingsRequest extends AuthenticRequest {
-  static rules(obj = Config.get()) {
+  static rules(obj = config.get()) {
     if (obj === null || typeof obj === 'undefined') return null
 
     const fields: Record<string, any> = {}

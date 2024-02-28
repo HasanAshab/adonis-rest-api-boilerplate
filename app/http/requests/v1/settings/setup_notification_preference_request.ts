@@ -1,6 +1,6 @@
 import { AuthenticRequest } from '~/core/express'
 import Validator from 'validator'
-import Config from '#config'
+import config from '#config'
 import { ISettings } from '~/app/models/settings'
 import { DeepPartial } from 'utility-types'
 
@@ -10,7 +10,7 @@ interface SetupNotificationPreferenceRequest {
 
 class SetupNotificationPreferenceRequest extends AuthenticRequest {
   static rules() {
-    const { channels, types } = Config.get('notification')
+    const { channels, types } = config.get('notification')
     const channelsSchema: Record<string, any> = {}
     const fields: Record<string, any> = {}
     for (const channel of channels) {

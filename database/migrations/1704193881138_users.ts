@@ -1,4 +1,4 @@
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 import { BaseSchema } from "@adonisjs/lucid/schema";
 
 export default class extends BaseSchema {
@@ -7,8 +7,8 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.string('name', Config.get('app.user.name.maxLength')).nullable()
-      table.string('username', Config.get('app.user.username.maxLength')).unique().nullable().index()
+      table.string('name', config.get('app.user.name.maxLength')).nullable()
+      table.string('username', config.get('app.user.username.maxLength')).unique().nullable().index()
       table.string('email').unique().nullable().index()
       table.string('phone_number').nullable()
       table.enum('role', ['user', 'admin']).notNullable()

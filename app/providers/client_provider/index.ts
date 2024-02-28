@@ -1,4 +1,4 @@
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 import Client from './client.js'
 import { ApplicationService } from "@adonisjs/core/types";
 
@@ -8,7 +8,7 @@ export default class ClientProvider {
   private registerClientAddon() {
     this.app.container.singleton('Adonis/Addons/Client', () => {
       const Client = require('./Client').default
-      return new Client(Config.get('client'))
+      return new Client(config.get('client'))
     })
   }
 

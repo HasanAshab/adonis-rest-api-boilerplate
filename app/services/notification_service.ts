@@ -1,11 +1,11 @@
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 import type User from '#app/models/user'
 import Token from '#app/models/token'
 
 
 export default class NotificationService {
   public channels() {
-    return Object.keys(Config.get('notification.channels'))
+    return Object.keys(config.get('notification.channels'))
   }
   
   public defaultChannelPreferences(enabled = true) {

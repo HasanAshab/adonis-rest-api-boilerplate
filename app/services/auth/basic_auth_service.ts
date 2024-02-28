@@ -1,6 +1,6 @@
 import type RegisterValidator from '#app/http/validators/v1/auth/register_validator'
 import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter'
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 import { Attachment } from '@ioc:adonis/addons/attachment_lite'
 import User from '#app/models/user'
 import Token from '#app/models/token'
@@ -25,9 +25,9 @@ export default class BasicAuthService {
   private loginThrottler?: LimiterContract
 
   constructor(
-    private loginAttemptThrottlerConfig = Config.get('auth.loginAttemptThrottler')
+    private loginAttemptThrottlerConfig = config.get('auth.loginAttemptThrottler')
   ) {
-    if (this.loginAttemptThrottlerConfig.enabled) {
+    if (this.loginAttemptThrottlerconfig.enabled) {
       this.setupLoginThrottler()
     }
   }
@@ -139,7 +139,7 @@ export default class BasicAuthService {
   }
 
   private throttleKeyFor(user: User, ip: string) {
-    return this.loginAttemptThrottlerConfig.key
+    return this.loginAttemptThrottlerconfig.key
       .replace('{{ email }}', user.email)
       .replace('{{ ip }}', ip)
   }

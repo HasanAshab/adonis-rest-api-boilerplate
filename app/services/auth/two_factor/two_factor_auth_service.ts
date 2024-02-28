@@ -1,6 +1,6 @@
 import { range } from 'lodash'
 import Encryption from '@ioc:adonis/core/encryption'
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 import User from '#app/models/user'
 import { TwoFactorMethod } from '@ioc:adonis/addons/auth/two_factor'
 import RecoveryCode from '#app/services/auth/two_factor/recovery_code'

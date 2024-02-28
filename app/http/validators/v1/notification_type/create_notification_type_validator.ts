@@ -1,36 +1,36 @@
 import Validator from '#app/http/validators/validator'
 import { schema, rules } from '@adonisjs/validator'
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 
 
 export default class CreateNotificationTypeValidator extends Validator {
-  public schema = schema.create({
-    name: schema.string([ 
-      rules.regex(Config.get('app.constraints.notificationType.pattern')),
+  public schema = vine.create({
+    name: vine.string([ 
+      rules.regex(config.get('app.constraints.notificationType.pattern')),
       rules.unique({
         table: 'notification_types',
         column: 'name',
       }),
       rules.maxLength(
-        Config.get('app.constraints.notificationType.name.maxLength')
+        config.get('app.constraints.notificationType.name.maxLength')
       )
     ]),
-    displayText: schema.string([
+    displayText: vine.string([
       rules.lengthRange(
-        Config.get('app.constraints.notificationType.displayText.minLength'),
-        Config.get('app.constraints.notificationType.displayText.maxLength')
+        config.get('app.constraints.notificationType.displayText.minLength'),
+        config.get('app.constraints.notificationType.displayText.maxLength')
       )
     ]),
-    groupName: schema.string([
+    groupName: vine.string([
       rules.lengthRange(
-        Config.get('app.constraints.notificationType.groupName.minLength'),
-        Config.get('app.constraints.notificationType.groupName.maxLength')
+        config.get('app.constraints.notificationType.groupName.minLength'),
+        config.get('app.constraints.notificationType.groupName.maxLength')
       )
     ]),
-    description: schema.string([
+    description: vine.string([
       rules.lengthRange(
-        Config.get('app.constraints.notificationType.description.minLength'),
-        Config.get('app.constraints.notificationType.description.maxLength')
+        config.get('app.constraints.notificationType.description.minLength'),
+        config.get('app.constraints.notificationType.description.maxLength')
       )
     ])
   })

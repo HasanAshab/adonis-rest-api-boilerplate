@@ -1,23 +1,23 @@
 import Validator from '#app/http/validators/validator'
 import { schema, rules } from '@adonisjs/validator'
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 
 
 export default class CreateContactValidator extends Validator {
-  public schema = schema.create({
-    email: schema.string([ rules.email() ]),
-    subject: schema.string([
+  public schema = vine.create({
+    email: vine.string([ rules.email() ]),
+    subject: vine.string([
       rules.lengthRange(
-        Config.get('app.constraints.contact.subject.minLength'),
-        Config.get('app.constraints.contact.subject.maxLength')
+        config.get('app.constraints.contact.subject.minLength'),
+        config.get('app.constraints.contact.subject.maxLength')
       ),
       //todo
       // rules.sanitize()
     ]),
-    message: schema.string([
+    message: vine.string([
       rules.lengthRange(
-        Config.get('app.constraints.contact.message.minLength'),
-        Config.get('app.constraints.contact.message.maxLength')
+        config.get('app.constraints.contact.message.minLength'),
+        config.get('app.constraints.contact.message.maxLength')
       ),
       // rules.sanitize()
     ]),

@@ -1,27 +1,57 @@
 import vine from '@vinejs/vine'
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
+import NotificationType from '#app/models/notification_type'
+import NotificationService from '#app/services/notification_service'
+import { TwoFactorMethod } from '@ioc:adonis/addons/auth/two_factor'
 
 
 export const emailResubscriptionValidator = vine.compile(
   vine.object({
-    
+    id: vine.number(),
+    token: vine.string(),
+    notificationType: vine.string()
   })
 )
 
 
-export const emailResubscriptionValidator = vine.compile(
+export const emailUnsubscriptionValidator = vine.compile(
   vine.object({
-    
+    id: vine.number(),
+    token: vine.string(),
+    notificationType: vine.string()
   })
 )
 
 
-export const emailResubscriptionValidator = vine.compile(
+export const twoFactorAuthMethodValidator = vine.compile(
   vine.object({
-    
+    method: vine.enum(TwoFactorMethod.names())
   })
 )
 
+
+
+
+
+export default async function UpdateNotificationPreferenceValidator() {
+  const notificationService = new NotificationService
+  const channels = notificationService.channels()
+  const notificationTypesId = await NotificationType.pluck('id')
+
+  const schemaDefinition = reduce(notificationTypesId, (accumulator, id) => {
+    const channelPreferenceSchema = reduce(channels, (schemaAccumulator, channel) => {
+      schemaAccumulator[channel] = vine.boolean()
+      return schemaAccumulator
+    }, {})
+  
+    accumulator[id] = vine.object.optional().members(channelPreferenceSchema)
+    return accumulator
+  }, {})
+
+  return class extends Validator {
+    public schema = vine.create(schemaDefinition)
+  }
+}
 
 export const emailResubscriptionValidator = vine.compile(
   vine.object({

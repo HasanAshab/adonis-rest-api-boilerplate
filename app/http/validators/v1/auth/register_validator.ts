@@ -1,11 +1,11 @@
 import Validator from '#app/http/validators/validator'
 import { schema, rules } from '@adonisjs/validator'
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 
 
 export default class RegisterValidator extends Validator {
-  public schema = schema.create({
-    email: schema.string([
+  public schema = vine.create({
+    email: vine.string([
       rules.email(),
       rules.unique({
         table: 'users',
@@ -13,11 +13,11 @@ export default class RegisterValidator extends Validator {
       }),
     ]),
 
-    username: schema.string([
+    username: vine.string([
       rules.alphaNum(),
       rules.lengthRange(
-        Config.get('app.constraints.user.username.minLength'),
-        Config.get('app.constraints.user.username.maxLength')
+        config.get('app.constraints.user.username.minLength'),
+        config.get('app.constraints.user.username.maxLength')
       ),
       rules.unique({
         table: 'users',
@@ -25,13 +25,13 @@ export default class RegisterValidator extends Validator {
       }),
     ]),
 
-    password: schema.string([ 
+    password: vine.string([ 
       rules.password(),
-      rules.maxLength(Config.get('app.constraints.user.password.maxLength'))
+      rules.maxLength(config.get('app.constraints.user.password.maxLength'))
     ]),
 
-    avatar: schema.file.optional(
-      Config.get('app.constraints.user.avatar')
+    avatar: vine.file.optional(
+      config.get('app.constraints.user.avatar')
     )
   })
 }

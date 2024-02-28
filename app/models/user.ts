@@ -2,7 +2,7 @@ import BaseModel from '#app/models/base_model'
 import { column, beforeSave } from '@adonisjs/lucid/orm'
 import { attachment, AttachmentContract } from '@ioc:adonis/addons/attachment_lite'
 import { compose } from '@poppinss/utils/build/helpers'
-import Config from '@ioc:adonis/core/config'
+import config from '@adonisjs/core/services/config'
 import hash from '@adonisjs/core/services/hash'
 import HasFactory from '#app/models/traits/has_factory'
 import HasTimestamps from '#app/models/traits/has_timestamps'
@@ -74,7 +74,7 @@ export default class User extends compose(
   }
 
   public static async generateUsername(email: string, maxAttempts = 10) {
-    const USERNAME_MAX_LENGTH = Config.get('app.constraints.user.username.maxLength')
+    const USERNAME_MAX_LENGTH = config.get('app.constraints.user.username.maxLength')
     const name = email.split('@')[0].replace(/[&/\\#,+()$~%._@'":*?<>{}]/g, '')
     let username = name
 
