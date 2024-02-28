@@ -34,3 +34,6 @@ Sat -> co
 Fri -> co
 Tue -> sc
 
+name, location
+
+npm i @adonisjs/bouncer @adonisjs/view @japa/expect @japa/preset-adonis
