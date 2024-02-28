@@ -30,10 +30,7 @@ export const twoFactorAuthMethodValidator = vine.compile(
 )
 
 
-
-
-
-export default async function UpdateNotificationPreferenceValidator() {
+export async function updateNotificationPreferenceValidator() {
   const notificationService = new NotificationService
   const channels = notificationService.channels()
   const notificationTypesId = await NotificationType.pluck('id')
@@ -44,17 +41,10 @@ export default async function UpdateNotificationPreferenceValidator() {
       return schemaAccumulator
     }, {})
   
-    accumulator[id] = vine.object.optional().members(channelPreferenceSchema)
+    accumulator[id] = vine.object(channelPreferenceSchema).optional()
     return accumulator
   }, {})
 
-  return class extends Validator {
-    public schema = vine.create(schemaDefinition)
-  }
+  return vine.compile(vine.object(schemaDefinition))
 }
 
-export const emailResubscriptionValidator = vine.compile(
-  vine.object({
-    
-  })
-)

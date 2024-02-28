@@ -8,16 +8,15 @@ import TwoFactorAuthService from '#app/services/auth/two_factor/two_factor_auth_
 import SocialAuthService, { SocialAuthData } from '#app/services/auth/social_auth_service'
 import OtpService from '#app/services/otp_service'
 import PasswordChangedMail from '#app/mails/password_changed_mail'
-import RegisterValidator from '#app/http/validators/v1/auth/register_validator'
-import LoginValidator from '#app/http/validators/v1/auth/login/login_validator'
-import EmailVerificationValidator from '#app/http/validators/v1/auth/email/email_verification_validator'
-import ResendEmailVerificationValidator from '#app/http/validators/v1/auth/email/resend_email_verification_validator'
-import ForgotPasswordValidator from '#app/http/validators/v1/auth/password/forgot_password_validator'
-import ResetPasswordValidator from '#app/http/validators/v1/auth/password/reset_password_validator'
-import TwoFactorChallengeValidator from '#app/http/validators/v1/auth/two_factor/two_factor_challenge_validator'
-import TwoFactorChallengeVerificationValidator from '#app/http/validators/v1/auth/two_factor/two_factor_challenge_verification_validator'
-import TwoFactorAccountRecoveryValidator from '#app/http/validators/v1/auth/two_factor/two_factor_account_recovery_validator'
-import SocialAuthTokenLoginValidator from '#app/http/validators/v1/auth/login/social_auth_token_login_validator'
+import { registerValidator } from '#app/http/validators/v1/auth/register_validator'
+import { LoginValidator, socialAuthTokenLoginValidator } from '#app/http/validators/v1/auth/login_validator'
+import { emailVerificationValidator, resendEmailVerificationValidator } from '#app/http/validators/v1/auth/email_validator'
+import { forgotPasswordValidator, resetPasswordValidator } from '#app/http/validators/v1/auth/password_validator'
+import { 
+  twoFactorChallengeValidator,
+  twoFactorChallengeVerificationValidator,
+  twoFactorAccountRecoveryValidator
+} from '#app/http/validators/v1/auth/two_factor_validator'
 
 
 
@@ -36,7 +35,7 @@ export default class AuthController {
    * @responseBody 201 - { "message": "Verification email sent", "data": { "user": <User>, "token": } }
    */
   public async register({ request, response }: HttpContext) {
-    const registrationData = await request.validate(RegisterValidator)
+    const registrationData = await request.validateUsing(registerValidator)
 
     const user = await this.authService.register(registrationData)
 
@@ -65,7 +64,7 @@ export default class AuthController {
    */
   public async login({ request }: HttpContext) {
     const token = await this.authService.attempt({
-      ...(await request.validate(LoginValidator)),
+      ...(await request.validateUsing(loginValidator)),
       ip: request.ip(),
     })
 
@@ -89,26 +88,26 @@ export default class AuthController {
    * @responseBody 200
    */
   public async verifyEmail({ request }) {
-    const { id, token } = await request.validate(EmailVerificationValidator)
+    const { id, token } = await request.validateUsing(emailVerificationValidator)
     await this.authService.verifyEmail(id, token)
     return 'Email verified successfully!'  
   }
 
 
   public async resendEmailVerification({ request, response }: HttpContext) {
-    const { email } = await request.validate(ResendEmailVerificationValidator)
+    const { email } = await request.validateUsing(resendEmailVerificationValidator)
     await this.authService.sendVerificationMail(email)
     response.accepted('Verification link sent to email!')
   }
 
   public async forgotPassword({ request, response }: HttpContext) {
-    const { email } = await request.validate(ForgotPasswordValidator)
+    const { email } = await request.validateUsing(forgotPasswordValidator)
     await this.authService.forgotPassword(email)
     response.accepted('Password reset link sent to your email!')
   }
 
   public async resetPassword({ request }: HttpContext) {
-    const { id, token, password } = await request.validate(ResetPasswordValidator)
+    const { id, token, password } = await request.validateUsing(resetPasswordValidator)
     const user = await User.findOrFail(id)
     await this.authService.resetPassword(user, token, password)
     await new PasswordChangedMail(user).sendLater()
@@ -121,7 +120,7 @@ export default class AuthController {
    * @responseBody 200 - { message: string }
    */
   public async sendTwoFactorChallenge({ request }) {
-    const { email, token } = await request.validate(TwoFactorChallengeValidator)
+    const { email, token } = await request.validateUsing(twoFactorChallengeValidator)
     const user = await User.findByOrFail('email', email)
     
     await Token.verify('two_factor_auth_challenge', user.id, token)
@@ -131,7 +130,7 @@ export default class AuthController {
   }
   
   public async verifyTwoFactorChallenge({ request }: HttpContext) {
-    const { email, token, challengeToken } = await request.validate(TwoFactorChallengeVerificationValidator)
+    const { email, token, challengeToken } = await request.validateUsing(twoFactorChallengeVerificationValidator)
     const user = await User.findByOrFail('email', email)
 
     const authToken = await this.twoFactorAuthService.verify(user, challengeToken)
@@ -152,7 +151,7 @@ export default class AuthController {
   }
 
   public async recoverTwoFactorAccount({ request }: HttpContext) {
-    const { email, code } = await request.validate(TwoFactorAccountRecoveryValidator)
+    const { email, code } = await request.validateUsing(twoFactorAccountRecoveryValidator)
     const token = await this.twoFactorAuthService.recover(email, code)
 
     return {
@@ -162,7 +161,7 @@ export default class AuthController {
   }
 
   public async loginWithSocialAuthToken({ request, response, params, ally }: HttpContext) {
-    let { email, username, token: oauthToken } = await request.validate(SocialAuthTokenLoginValidator)
+    let { email, username, token: oauthToken } = await request.validateUsing(socialAuthTokenLoginValidator)
 
     const data: SocialAuthData = await ally.use(params.provider).userFromToken(oauthToken)
 

@@ -1,5 +1,6 @@
 This:
 
+I: email verif state
 Th: maintain 2fa logic
 I: adv login limit
 I: login alerts, settings disable for new
