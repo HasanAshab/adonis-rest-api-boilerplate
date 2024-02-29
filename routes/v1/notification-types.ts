@@ -1,15 +1,16 @@
 import router from '@adonisjs/core/services/router'
 
-//Endpoints for notification type management
+const NotificationTypesController = () => import("#app/http/controllers/v1/notification_types_controller")
 
+// Endpoints for notification type management
 router.group(() => {
-  router.get('/', 'NotificationTypesController.index')
-  router.get('/:id', 'NotificationTypesController.show').as('show')
+  router.get('/', [NotificationTypesController, 'index'])
+  router.get('/:id', [NotificationTypesController, 'show']).as('show')
 
   router.group(() => {
-    router.post('/', 'NotificationTypesController.store')
-    router.patch('/:id', 'NotificationTypesController.update')
-    router.delete('/:id', 'NotificationTypesController.delete')
+    router.post('/', [NotificationTypesController, 'store'])
+    router.patch('/:id', [NotificationTypesController, 'update'])
+    router.delete('/:id', [NotificationTypesController, 'delete'])
   })
   .middleware('roles:admin')
 })

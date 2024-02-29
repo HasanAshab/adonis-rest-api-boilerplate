@@ -1,8 +1,9 @@
 import router from '@adonisjs/core/services/router'
-// import DashboardController from "~/app/http/controllers/v1/DashboardController";
-// import CategoryController from "~/app/http/controllers/v1/CategoryController";
+const DashboardController = () => import("#app/http/controllers/v1/dashboard_controller")
 
+/**
+ * Endpoints for admin
+ */
 router.group(() => {
-  router.get('/dashboard', 'DashboardController.admin')
-  // Route.apiResource("categories", CategoryController);
+  router.get('/dashboard', [DashboardController, 'admin'])
 }).middleware(['auth', 'roles:admin'])
