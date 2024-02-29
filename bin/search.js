@@ -86,5 +86,6 @@ class Search {
 }
 
 
+new Search(`@ioc:Adonis/Core/Event`).run()
 //new Search(`from 'App`).run()
 //new Search(...process.argv.splice(2)).run()
