@@ -5,7 +5,11 @@ import User from '#app/models/user'
 import BasicAuthService from '#app/services/auth/basic_auth_service'
 import Otp from '#app/services/auth/otp'
 import { Attachment } from '@ioc:adonis/addons/attachment_lite'
-import { updateProfileValidator, changePasswordValidator, changePhoneNumberValidator } from '#app/http/validators/v1/user_validator'
+import { 
+  updateProfileValidator,
+  changePasswordValidator, 
+  changePhoneNumberValidator
+} from '#app/http/validators/v1/user_validator'
 import SamePhoneNumberException from '#app/exceptions/validation/same_phone_number_exception'
 import PasswordChangedMail from '#app/mails/password_changed_mail'
 import ListUserResource from '#app/http/resources/v1/user/list_user_resource'
@@ -28,7 +32,7 @@ export default class UsersController {
     { request, auth: { user } }: HttpContext,
     authService: BasicAuthService = new BasicAuthService()
   ) {
-    const { avatar, ...data } = await request.validate(UpdateProfileValidator)
+    const { avatar, ...data } = await request.validateUsing(updateProfileValidator)
     user.merge(data)
 
     if (data.email) {
@@ -84,14 +88,14 @@ export default class UsersController {
     { request, auth }: HttpContext,
     authService = new BasicAuthService()
   ) {
-    const { oldPassword, newPassword } = await request.validate(ChangePasswordValidator)
+    const { oldPassword, newPassword } = await request.validateUsing(changePasswordValidator)
     await authService.changePassword(auth.user!, oldPassword, newPassword)
     await new PasswordChangedMail(auth.user!).sendLater()
     return 'Password changed!'
   }
 
   async changePhoneNumber({ request, response, auth }: HttpContext) {
-    const { phoneNumber, otp } = await request.validate(ChangePhoneNumberValidator)
+    const { phoneNumber, otp } = await request.validateUsing(changePhoneNumberValidator)
     const user = auth.user!
 
     if (user.phoneNumber === phoneNumber) {

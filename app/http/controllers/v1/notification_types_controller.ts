@@ -11,7 +11,7 @@ export default class NotificationTypesController {
   }
   
   public async store({ request, response }: HttpContext) {
-    const data = await request.validate(CreateNotificationTypeValidator)
+    const data = await request.validateUsing(createNotificationTypeValidator)
     return response.created(await NotificationType.create(data))
   }
 
@@ -21,7 +21,7 @@ export default class NotificationTypesController {
   }
   
   public async update({ request, params }: HttpContext) {
-    const data = await request.validate(UpdateNotificationTypeValidator)
+    const data = await request.validateUsing(updateNotificationTypeValidator)
     await NotificationType.updateOrFail(params.id, data)
     
     return 'Notification type updated!'

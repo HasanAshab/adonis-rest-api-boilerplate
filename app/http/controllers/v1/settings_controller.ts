@@ -25,7 +25,7 @@ export default class SettingsController {
   }
   
   public async enableTwoFactorAuth({ request, auth }: HttpContext) {
-    const { method } = await request.validate(TwoFactorAuthMethodValidator)
+    const { method } = await request.validateUsing(twoFactorAuthMethodValidator)
     await this.twoFactorAuthService.enable(auth.user!, method)
     return 'Two-Factor Authentication enabled!'
   }
@@ -36,7 +36,7 @@ export default class SettingsController {
   }
   
   public async updateTwoFactorAuthMethod({ request, auth }: HttpContext) {
-    const { method } = await request.validate(TwoFactorAuthMethodValidator)
+    const { method } = await request.validateUsing(twoFactorAuthMethodValidator)
     await this.twoFactorAuthService.changeMethod(auth.user!, method)
     return 'Two-Factor Authentication method changed!'
   }
@@ -61,14 +61,14 @@ export default class SettingsController {
   }
 
   public async updateNotificationPreference({ request, auth }: HttpContext) {
-    const validator = await UpdateNotificationPreferenceValidator()
-    const preferences = await request.validate(validator)
+    const validator = await updateNotificationPreferenceValidator()
+    const preferences = await request.validateUsing(validator)
     await auth.user!.syncNotificationPreference(preferences)
     return 'Settings saved!'
   }
 
   public async unsubscribeEmailNotification({ request }: HttpContext) {
-    const { id, token, notificationType: notificationTypeName } = await request.validate(EmailUnsubscriptionValidator)
+    const { id, token, notificationType: notificationTypeName } = await request.validateUsing(emailUnsubscriptionValidator)
     const user = await User.findOrFail(id)
     const notificationType = await NotificationType.findByOrFail('name', notificationTypeName)
     
@@ -88,7 +88,7 @@ export default class SettingsController {
   
 
   public async resubscribeEmailNotification({ request }: HttpContext) {
-    const { id, token, notificationType: notificationTypeName } = await request.validate(EmailResubscriptionValidator)
+    const { id, token, notificationType: notificationTypeName } = await request.validateUsing(emailResubscriptionValidator)
     const user = await User.findOrFail(id)
     const notificationType = await NotificationType.findByOrFail('name', notificationTypeName)
     

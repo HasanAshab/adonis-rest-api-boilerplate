@@ -17,18 +17,18 @@ export default class ContactsController {
   }
 
   public async store({ request, response }: HttpContext) {
-    const data = await request.validate(CreateContactValidator)
+    const data = await request.validateUsing(createContactValidator)
     response.created(await Contact.create(data))
   }
 
   public async updateStatus({ request, params }: HttpContext) {
-    const { status } = await request.validate(UpdateContactStatusValidator)
+    const { status } = await request.validateUsing(updateContactStatusValidator)
     await Contact.updateOrFail(params.id, { status })
     return `Contact form ${status}!`
   }
 
   public async suggest({ request }: HttpContext) {
-    const { q, status, limit = 10 } = await request.validate(SuggestContactValidator)
+    const { q, status, limit = 10 } = await request.validateUsing(suggestContactValidator)
 
     return await Contact.search(q)
       .rank()
@@ -41,7 +41,7 @@ export default class ContactsController {
   }
 
   public async search({ request }: HttpContext) {
-    const { q, status } = await request.validate(SearchContactValidator)
+    const { q, status } = await request.validateUsing(searchContactValidator)
 
     const contacts = await Contact.search(q)
       .rank()
