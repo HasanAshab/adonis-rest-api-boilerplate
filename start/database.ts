@@ -2,7 +2,15 @@ import db from '@adonisjs/lucid/services/db'
 import type { BaseModel } from '@adonisjs/lucid/orm'
 import { Exception } from '@poppinss/utils'
 import { forIn } from 'lodash'
-import { ModelQueryBuilder } from "@adonisjs/lucid/database";
+import { DatabaseQueryBuilder } from "@adonisjs/lucid/database";
+
+/**
+ * Macro to check if any records match the query.
+ */
+DatabaseQueryBuilder.macro('exists', async function () {
+  return !!(await this.select(1).first())
+})
+
 
 /**
  * Macro to add WHERE clauses for multiple fields with their respective values.
@@ -74,6 +82,7 @@ ModelQueryBuilder.macro('deleteOrFail', async function () {
     throw new Exception('Row not found', 404, 'E_ROW_NOT_FOUND')
   }
 })
+
 
 /**
  * Macro to check if any records match the query.

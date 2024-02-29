@@ -51,6 +51,7 @@
     "@adonisjs/mail": "^9.2.0",
     "@adonisjs/redis": "^8.0.1",
     "@adonisjs/validator": "^13.0.2",
+    "@vinejs/vine": "^1.7.1",
     "bcryptjs": "^2.4.3",
     "http-status-codes": "^2.3.0",
     "luxon": "^3.4.4",
