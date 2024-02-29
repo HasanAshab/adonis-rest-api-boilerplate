@@ -11,6 +11,7 @@ Notification.prototype.exists = function () {
 }
 Notification.prototype.refresh = BaseModel.prototype.refresh
 
+
 export default class NotificationFactory extends Factory {
   static Model = Notification
 

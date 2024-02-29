@@ -86,5 +86,6 @@ class Search {
 }
 
 
-new Search('config.', 'config.').run()
+new Search(`request.validate`, 'request.validateUsing').run()
+//new Search(`from 'App`).run()
 //new Search(...process.argv.splice(2)).run()

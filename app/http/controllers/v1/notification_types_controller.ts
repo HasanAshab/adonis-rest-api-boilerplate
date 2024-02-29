@@ -1,8 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { bind } from '@adonisjs/route-model-binding'
 import NotificationType from '#app/models/notification_type'
-import CreateNotificationTypeValidator from '#app/http/validators/v1/notification_type/create_notification_type_validator'
-import UpdateNotificationTypeValidator from '#app/http/validators/v1/notification_type/update_notification_type_validator'
+import { createNotificationTypeValidator, updateNotificationTypeValidator } from '#app/http/validators/v1/notification_type_validator'
 import NotificationTypeCollection from '#app/http/resources/v1/notification_type/notification_type_collection'
 
 

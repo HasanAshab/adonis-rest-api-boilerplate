@@ -3,13 +3,14 @@ import User from '#app/models/user'
 import Token from '#app/models/token'
 import TwoFactorAuthService from '#app/services/auth/two_factor/two_factor_auth_service'
 import NotificationService from '#app/services/notification_service'
-import TwoFactorAuthMethodValidator from "#app/http/validators/v1/settings/two_factor_auth_method_validator";
-import UpdateNotificationPreferenceValidator from "#app/http/validators/v1/settings/update_notification_preference_validator";
-//import UpdateAppSettingsValidator from "app/http/validators/v1/settings/update_app_settings_validator";
-import EmailUnsubscriptionValidator from "#app/http/validators/v1/settings/email_unsubscription_validator";
-import EmailResubscriptionValidator from "#app/http/validators/v1/settings/email_resubscription_validator";
 import NotificationPreferenceCollection from '#app/http/resources/v1/settings/notification_preference_collection'
 import TwoFactorSettingsResource from '#app/http/resources/v1/settings/two_factor_settings_resource'
+import { 
+  twoFactorAuthMethodValidator,
+  updateNotificationPreferenceValidator,
+  emailUnsubscriptionValidator,
+  emailResubscriptionValidator
+} from "#app/http/validators/v1/settings_validator";
 
 
 export default class SettingsController {

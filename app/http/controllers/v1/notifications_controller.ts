@@ -35,7 +35,12 @@ export default class NotificationsController {
   }
 
   public async delete({ response, params, auth }: HttpContext) {
-    await auth.user!.related('notifications').query().whereUid(params.id).deleteOrFail()
+    await auth.user!
+      .related('notifications')
+      .query()
+      .whereUid(params.id)
+      .deleteOrFail()
+      
     response.noContent()
   }
 }

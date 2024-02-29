@@ -1,12 +1,16 @@
 import { BaseModel as Model } from '@adonisjs/lucid/orm'
-import { types } from '@adonisjs/core/helpers'
+import is from '@adonisjs/core/helpers/is'
 import db from '@adonisjs/lucid/services/db'
-import { ModelQueryBuilderContract } from " @adonisjs/lucid/types/model";
+import type { ModelQueryBuilderContract } from "@adonisjs/lucid/types/model";
 
 /**
  * Base model class with common utility methods.
  */
 export default class BaseModel extends Model {
+  public static where(...args: Parameters<ModelQueryBuilderContract['where']>) {
+    return this.query().where(...args)
+  }
+  
   public static last() {
     return this.query().last()
   }
@@ -103,13 +107,13 @@ export default class BaseModel extends Model {
    */
   public static async exists(uidOrColumnOrData: string | number | object, value?: unknown) {
     return await this.query()
-      .when(types.isObject(uidOrColumnOrData), (query) => {
+      .when(is.object(uidOrColumnOrData), (query) => {
         query.whereEqual(uidOrColumnOrData)
       })
-      .when(!types.isObject(uidOrColumnOrData) && types.isUndefined(value), (query) => {
+      .when(!is.object(uidOrColumnOrData) && is.undefined(value), (query) => {
         query.whereUid(uidOrColumnOrData)
       })
-      .when(!types.isObject(uidOrColumnOrData) && !types.isUndefined(value), (query) => {
+      .when(!is.object(uidOrColumnOrData) && !is.undefined(value), (query) => {
         query.where(uidOrColumnOrData, value)
       })
       .exists()

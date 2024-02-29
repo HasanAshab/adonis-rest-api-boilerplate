@@ -1,7 +1,7 @@
 import Factory from '@ioc:adonis/mongoose/factory'
-import { ICategory, CategoryDocument } from '#app/models/category'
+import Category from '#app/models/category'
 
-export default class CategoryFactory extends Factory<ICategory, CategoryDocument> {
+export default class CategoryFactory extends Factory<Category> {
   definition() {
     return {
       name: this.faker.commerce.productName(),
