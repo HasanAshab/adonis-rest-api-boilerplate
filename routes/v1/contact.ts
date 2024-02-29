@@ -1,4 +1,5 @@
 import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
 
 const ContactsController = () => import("#app/http/controllers/v1/contacts_controller")
 
@@ -15,5 +16,8 @@ router.group(() => {
     router.delete('/:id', [ContactsController, 'delete']).as('delete')
   })
     .prefix('/inquiries')
-    .middleware(['auth', 'roles:admin'])
+    .use([
+      middleware.auth(),
+      middleware.roles('admin')
+    ])
 }).as('contact')

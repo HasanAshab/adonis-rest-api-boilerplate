@@ -1,12 +1,3 @@
-declare module '@ioc:Adonis/Core/Validator' {
-  type PasswordStrategy = 'complex' | 'standard' | 'weak'
-
-  interface Rules {
-    slug(): Rule
-    password(strategy?: PasswordStrategy): Rule
-  }
-}
-
 declare module '@ioc:Adonis/Core/Validator/Rules/Password' {
   import type PasswordStrategyManager from 'app/providers/validation_provider/password/password_strategy_manager'
 
@@ -16,4 +7,15 @@ declare module '@ioc:Adonis/Core/Validator/Rules/Password' {
   }
 
   const PasswordStrategy: PasswordStrategyManager
+}
+
+
+declare module '@vinejs/vine' {
+  type PasswordStrategy = 'complex' | 'standard' | 'weak'
+
+  interface VineString {
+    unique(column: string): this
+    slug(): this
+    password(strategy?: PasswordStrategy): Rule
+  }
 }
