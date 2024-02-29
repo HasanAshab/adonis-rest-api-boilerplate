@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import config from '@ioc:Adonis/Core/Config'
+import User from '#app/models/user'
+import config from '@ioc:adonis/core/config'
 
 /*
 Run this suits:

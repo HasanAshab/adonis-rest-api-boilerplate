@@ -1,11 +1,11 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import TwoFactorAuthService from 'App/Services/Auth/TwoFactor/TwoFactorAuthService'
-import Token from 'App/Models/Token'
-import Twilio from '@ioc:Adonis/Addons/Twilio'
-import TwoFactorAuthRequiredException from 'App/Exceptions/TwoFactorAuthRequiredException'
-import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException'
-import Otp from 'App/Services/Auth/Otp'
+import User from '#app/models/user'
+import TwoFactorAuthService from '#app/services/auth/two_factor/two_factor_auth_service'
+import Token from '#app/models/token'
+import Twilio from '@ioc:adonis/addons/twilio'
+import TwoFactorAuthRequiredException from '#app/exceptions/two_factor_auth_required_exception'
+import PhoneNumberRequiredException from '#app/exceptions/phone_number_required_exception'
+import Otp from '#app/services/auth/otp'
 import { authenticator } from 'otplib';
 
 

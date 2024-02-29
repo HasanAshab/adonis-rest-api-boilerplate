@@ -1,5 +1,5 @@
-import Assertor from './Assertor'
-import Mail from '@ioc:Adonis/Addons/Mail'
+import Assertor from './assertor'
+import Mail from '@ioc:adonis/addons/mail'
 
 type FakeMailer = ReturnType<Mail['fake']>
 

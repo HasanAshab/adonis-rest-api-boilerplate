@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import NotificationFactory from 'Database/factories/NotificationFactory'
+import User from '#app/models/user'
+import NotificationFactory from 'database/factories/notification_factory'
 
 /*
 Run this suits:

@@ -6,7 +6,7 @@
  */
 
 import type { Config } from '@japa/runner'
-import TestUtils from '@ioc:Adonis/Core/TestUtils'
+import TestUtils from '@ioc:adonis/core/test_utils'
 import { specReporter, assert, apiClient } from '@japa/preset-adonis'
 import { expect } from '@japa/expect'
 

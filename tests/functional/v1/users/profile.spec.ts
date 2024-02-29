@@ -1,10 +1,10 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import { extract } from 'App/helpers'
-import ListUserResource from 'App/Http/Resources/v1/user/ListUserResource'
-import UserProfileResource from 'App/Http/Resources/v1/user/UserProfileResource'
-import ShowUserResource from 'App/Http/Resources/v1/user/ShowUserResource'
-import Mail from 'Tests/Assertors/MailAssertor'
+import User from '#app/models/user'
+import { extract } from '#app/helpers'
+import ListUserResource from '#app/http/resources/v1/user/list_user_resource'
+import UserProfileResource from '#app/http/resources/v1/user/user_profile_resource'
+import ShowUserResource from '#app/http/resources/v1/user/show_user_resource'
+import Mail from '#tests/assertors/mail_assertor'
 
 /*
 Run this suits:

@@ -29,6 +29,7 @@ class Search {
     this.replace = replace;
     this.dir = dir;
     this.exclude = [
+      'bin/search.js',
       'package.json',
       'package-lock.json',
       'node_modules',
@@ -86,6 +87,44 @@ class Search {
 }
 
 
-new Search(`@ioc:Adonis/Core/Event`).run()
-//new Search(`from 'App`).run()
+//new Search(`@ioc`).run()
+//new Search(`from 'Tests`, `from '#tests`).run()
 //new Search(...process.argv.splice(2)).run()
+
+
+
+
+
+// Function to convert PascalCase to snake_case
+const pascalToSnake = (str) => {
+  return str.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
+};
+
+// Function to recursively update import paths in a directory
+const updateImportPaths = (dirPath) => {
+  const files = fs.readdirSync(dirPath);
+  files.forEach((file) => {
+    const filePath = path.join(dirPath, file);
+    const stats = fs.statSync(filePath);
+    if (stats.isDirectory()) {
+      // Recursively update import paths in subdirectories
+      updateImportPaths(filePath);
+    } else if (stats.isFile() && file.endsWith('.ts')) {
+      // Update import paths in JavaScript files
+      updateImportPathsInFile(filePath);
+    }
+  });
+};
+
+// Function to update import paths in a JavaScript file
+const updateImportPathsInFile = (filePath) => {
+  let fileContent = fs.readFileSync(filePath, 'utf8');
+  const updatedContent = fileContent.replace(/(import\s+.+?\s+from\s+['"])(.+?)(['"])/g, (match, start, importPath, end) => {
+    const updatedPath = importPath.split('/').map(pascalToSnake).join('/');
+    return `${start}${updatedPath}${end}`;
+  });
+  fs.writeFileSync(filePath, updatedContent, 'utf8');
+  console.log(`Updated import paths in ${filePath}`);
+};
+
+//updateImportPaths('tests');

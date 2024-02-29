@@ -1,9 +1,9 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import Mail from 'Tests/Assertors/MailAssertor'
-import Notification from 'Tests/Assertors/NotificationAssertor'
-import SendEmailVerificationMail from 'App/Listeners/SendEmailVerificationMail'
-import SendNewUserJoinedNotificationToAdmins from 'App/Listeners/SendNewUserJoinedNotificationToAdmins'
+import User from '#app/models/user'
+import Mail from '#tests/assertors/mail_assertor'
+import Notification from '#tests/assertors/notification_assertor'
+import SendEmailVerificationMail from '#app/listeners/send_email_verification_mail'
+import SendNewUserJoinedNotificationToAdmins from '#app/listeners/send_new_user_joined_notification_to_admins'
 
 /*
 Run this suits:

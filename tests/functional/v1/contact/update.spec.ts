@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import Contact from 'App/Models/Contact'
+import User from '#app/models/user'
+import Contact from '#app/models/contact'
 
 /*
 Run this suits:

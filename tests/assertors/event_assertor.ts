@@ -1,6 +1,6 @@
-import Assertor from './Assertor'
-import Event from '@ioc:Adonis/Core/Event'
-import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import Assertor from './assertor'
+import Event from '@ioc:adonis/core/event'
+import { BaseModel } from '@ioc:adonis/lucid/orm'
 import expect from 'expect'
 import { isEqual } from 'lodash'
 

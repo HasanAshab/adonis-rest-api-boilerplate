@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import NotificationFactory from 'Database/factories/NotificationFactory'
-import NotificationCollection from 'App/Http/Resources/v1/notification/NotificationCollection'
-import ShowNotificationResource from 'App/Http/Resources/v1/notification/ShowNotificationResource'
+import User from '#app/models/user'
+import NotificationFactory from 'database/factories/notification_factory'
+import NotificationCollection from '#app/http/resources/v1/notification/notification_collection'
+import ShowNotificationResource from '#app/http/resources/v1/notification/show_notification_resource'
 
 /*
 Run this suits:

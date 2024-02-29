@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
-import Mail from 'Tests/Assertors/MailAssertor'
-import User from 'App/Models/User'
-import ResetPasswordMail from 'App/Mails/ResetPasswordMail'
+import Mail from '#tests/assertors/mail_assertor'
+import User from '#app/models/user'
+import ResetPasswordMail from '#app/mails/reset_password_mail'
 import { Settings } from 'luxon'
 
 

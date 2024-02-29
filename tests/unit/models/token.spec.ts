@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import Token from 'App/Models/Token'
+import Token from '#app/models/token'
 
 /*
 Run this suits:

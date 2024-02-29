@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import Contact from 'App/Models/Contact'
-import ListContactResource from 'App/Http/Resources/v1/contact/ListContactResource'
+import User from '#app/models/user'
+import Contact from '#app/models/contact'
+import ListContactResource from '#app/http/resources/v1/contact/list_contact_resource'
 
 /*
 Run this suits:

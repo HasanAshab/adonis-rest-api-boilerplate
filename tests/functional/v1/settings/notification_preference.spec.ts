@@ -1,10 +1,10 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import NotificationType from 'App/Models/NotificationType'
-import NotificationPreferenceCollection from 'App/Http/Resources/v1/Settings/NotificationPreferenceCollection'
-import NotificationTypeSeeder from 'Database/seeders/NotificationTypeSeeder'
-import NotificationService from 'App/Services/NotificationService'
-import { except } from 'App/helpers'
+import User from '#app/models/user'
+import NotificationType from '#app/models/notification_type'
+import NotificationPreferenceCollection from '#app/http/resources/v1/settings/notification_preference_collection'
+import NotificationTypeSeeder from 'database/seeders/notification_type_seeder'
+import NotificationService from '#app/services/notification_service'
+import { except } from '#app/helpers'
 
 /*
 Run this suit:

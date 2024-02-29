@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import TwoFactorAuthService from 'App/Services/Auth/TwoFactor/TwoFactorAuthService'
-import TwoFactorSettingsResource from 'App/Http/Resources/v1/Settings/TwoFactorSettingsResource'
-import PhoneNumberRequiredException from 'App/Exceptions/PhoneNumberRequiredException'
+import User from '#app/models/user'
+import TwoFactorAuthService from '#app/services/auth/two_factor/two_factor_auth_service'
+import TwoFactorSettingsResource from '#app/http/resources/v1/settings/two_factor_settings_resource'
+import PhoneNumberRequiredException from '#app/exceptions/phone_number_required_exception'
 
 
 /*

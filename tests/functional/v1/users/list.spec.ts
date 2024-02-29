@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import { extract } from 'App/helpers'
-import ListUserResource from 'App/Http/Resources/v1/user/ListUserResource'
+import User from '#app/models/user'
+import { extract } from '#app/helpers'
+import ListUserResource from '#app/http/resources/v1/user/list_user_resource'
 
 /*
 Run this suits:

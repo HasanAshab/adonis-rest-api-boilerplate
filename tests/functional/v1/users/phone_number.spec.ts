@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
-import User from 'App/Models/User'
-import Otp from 'App/Services/Auth/Otp'
-import Twilio from '@ioc:Adonis/Addons/Twilio'
+import User from '#app/models/user'
+import Otp from '#app/services/auth/otp'
+import Twilio from '@ioc:adonis/addons/twilio'
 
 /*
 Run this suits:
