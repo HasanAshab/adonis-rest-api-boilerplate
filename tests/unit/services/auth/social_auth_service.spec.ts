@@ -328,7 +328,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       email: 'test@example.com',
       emailVerificationState: 'verified',
     }
-    //todo
+
     User.prototype.generateUsername = () => null
     const result = service.upsertUser('google', data)
 

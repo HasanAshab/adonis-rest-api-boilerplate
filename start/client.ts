@@ -10,7 +10,6 @@ import JsonResource from '../res_dev/json_resource.js'
 import ResourceCollection from '../res_dev/resource_collection.js'
 globalThis.JsonResource = JsonResource
 globalThis.ResourceCollection = ResourceCollection
-globalThis.log = console.log
 
 
 

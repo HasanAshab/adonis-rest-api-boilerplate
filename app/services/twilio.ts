@@ -1,5 +1,5 @@
 import { Twilio as TwilioClient } from 'twilio'
-import { TwilioFakedData, TwilioConfig } from '@ioc:adonis/addons/twilio'
+import { TwilioFakedData, TwilioConfig } from '#app/interfaces/twilio'
 import Assertor from '#tests/assertors/assertor'
 
 

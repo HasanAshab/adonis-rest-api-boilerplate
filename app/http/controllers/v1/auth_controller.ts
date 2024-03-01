@@ -1,4 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { inject } from '@adonisjs/core'
 import router from '@adonisjs/core/services/router'
 import emitter from '@adonisjs/core/services/emitter'
 import User from '#app/models/user'
@@ -19,15 +20,14 @@ import {
 } from '#app/http/validators/v1/auth/two_factor_validator'
 
 
-
+@inject()
 export default class AuthController {
   public static readonly VERSION = 'v1'
   
-  // TODO
   constructor(
-    private readonly authService = new BasicAuthService(),
-    private readonly twoFactorAuthService = new TwoFactorAuthService(),
-    private readonly socialAuthService = new SocialAuthService()
+    private readonly authService: BasicAuthService,
+    private readonly twoFactorAuthService: TwoFactorAuthService,
+    private readonly socialAuthService: SocialAuthService
   ) {}
 
   /**

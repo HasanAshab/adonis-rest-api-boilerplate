@@ -26,11 +26,10 @@ export default class UsersController {
     return UserProfileResource.make(auth.user!)
   }
 
-  //TODO
-  //@inject()
+  @inject()
   public async updateProfile(
     { request, auth: { user } }: HttpContext,
-    authService: BasicAuthService = new BasicAuthService()
+    authService: BasicAuthService
   ) {
     const { avatar, ...data } = await request.validateUsing(updateProfileValidator)
     user.merge(data)
@@ -82,11 +81,10 @@ export default class UsersController {
       : response.notFound('User not found')
   }
 
-  //TODO
-  //@inject()
+  @inject()
   public async changePassword(
     { request, auth }: HttpContext,
-    authService = new BasicAuthService()
+    authService: BasicAuthService
   ) {
     const { oldPassword, newPassword } = await request.validateUsing(changePasswordValidator)
     await authService.changePassword(auth.user!, oldPassword, newPassword)

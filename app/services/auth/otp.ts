@@ -1,10 +1,14 @@
-import Twilio from '@ioc:adonis/addons/twilio'
+import Twilio from '#app/services/twilio'
 import User from '#app/models/user'
 import Token from '#app/models/token'
 import InvalidOtpException from '#app/exceptions/invalid_otp_exception'
+import { inject } from '@adonisjs/core'
 
 
+@inject()
 export default class Otp {
+  constructor(private readonly twilio: Twilio) {}
+  
   public static code() {
     return Math.floor(100000 + Math.random() * 900000).toString()
   }
@@ -19,13 +23,13 @@ export default class Otp {
 
   public static async sendThroughSMS(phoneNumber: string, key = phoneNumber) {
     const code = await this.generate(key)
-    await Twilio.sendMessage(phoneNumber, 'Your verification code is: ' + code)
+    await this.twilio.sendMessage(phoneNumber, 'Your verification code is: ' + code)
     return code
   }
 
   public static async sendThroughCall(phoneNumber: string, key = phoneNumber) {
     const code = await this.generate(key)
-    await Twilio.makeCall(
+    await this.twilio.makeCall(
       phoneNumber, 
       `<Response><Say>Your verification code is ${code}</Say></Response>`
     )

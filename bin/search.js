@@ -2,7 +2,14 @@ import fs from 'fs';
 import path from 'path';
 
 class Wildcard {
+  static caseInsensitive = true
+  
   static match(str, query) {
+    if(this.caseInsensitive) {
+      query = query.toLowerCase()
+      str = str.toLowerCase()
+    }
+
     const regexQuery = query
       .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
       .replace('*', `([^${query.split('*')[1]}]+)`)
@@ -12,6 +19,9 @@ class Wildcard {
   }
 
   static replace(str, query, replacement, replacedStr = str) {
+    if(this.caseInsensitive) {
+      query = query.toLowerCase()
+    }
     const regexQuery = query
       .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
       .replace('*', `([^${query.split('*')[1]}]+)`)
@@ -87,14 +97,6 @@ class Search {
 }
 
 
-//new Search(`@ioc`).run()
-//new Search(`from 'Tests`, `from '#tests`).run()
-//new Search(...process.argv.splice(2)).run()
-
-
-
-
-
 // Function to convert PascalCase to snake_case
 const pascalToSnake = (str) => {
   return str.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
@@ -128,3 +130,9 @@ const updateImportPathsInFile = (filePath) => {
 };
 
 //updateImportPaths('tests');
+
+new Search(`TODO`, undefined, 'tests').run()
+//new Search(`Client`).run()
+//new Search(`from 'Tests`, `from '#tests`).run()
+//new Search(...process.argv.splice(2)).run()
+
