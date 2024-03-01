@@ -1,4 +1,6 @@
 import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+
 
 const NotificationTypesController = () => import("#app/http/controllers/v1/notification_types_controller")
 
@@ -12,7 +14,10 @@ router.group(() => {
     router.patch('/:id', [NotificationTypesController, 'update'])
     router.delete('/:id', [NotificationTypesController, 'delete'])
   })
-  .middleware('roles:admin')
+  .use(middleware.roles('admin'))
 })
 .as('notificationTypes')
-.middleware(['auth', 'verified'])
+}).use([
+  middleware.auth(),
+  middleware.verified()
+])

@@ -1,5 +1,6 @@
 This:
 
+F: dynamic limiter
 I: email verif state
 Th: maintain 2fa logic
 I: adv login limit

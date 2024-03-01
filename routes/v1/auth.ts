@@ -1,4 +1,6 @@
 import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+
 
 // Import the AuthController dynamically
 const AuthController = () => import("#app/http/controllers/v1/auth_controller")
@@ -8,11 +10,14 @@ const AuthController = () => import("#app/http/controllers/v1/auth_controller")
  * Endpoints to authenticate users
  */
 
-router.post('/register', [AuthController, 'register']).middleware('recaptcha')
+router.post('/register', [AuthController, 'register']).use(middleware.recaptcha())
 
 // Login through various methods
 router.group(() => {
-  router.post('/', [AuthController, 'login']).middleware(['throttle:global', 'recaptcha'])
+  router.post('/', [AuthController, 'login']).use([
+    middleware.throttle('high'),
+    middleware.recaptcha()
+  ])
 
   // login with external providers
   router.post('/social/:provider', [AuthController, 'loginWithSocialAuthToken']).where(
@@ -21,21 +26,24 @@ router.group(() => {
   )
 }).prefix('login')
 
-router.post('/logout', [AuthController, 'logout']).middleware('auth')
+router.post('/logout', [AuthController, 'logout']).use(middleware.auth())
 
 // Two factor authentication
 router.group(() => {
-  router.post('/recover', [AuthController, 'recoverTwoFactorAccount']).middleware('recaptcha')
-  router.post('/challenges', [AuthController, 'sendTwoFactorChallenge']).middleware('recaptcha')
-  router.post('/challenges/verification', [AuthController, 'verifyTwoFactorChallenge']).middleware('throttle:60000,3')
+  router.post('/recover', [AuthController, 'recoverTwoFactorAccount']).use(middleware.recaptcha())
+  router.post('/challenges', [AuthController, 'sendTwoFactorChallenge']).use([
+    middleware.throttle('critical')
+    middleware.recaptcha()
+  ])
+  router.post('/challenges/verification', [AuthController, 'verifyTwoFactorChallenge']).use(middleware.throttle('high'))
 }).prefix('two-factor')
 
 // Password Reset
 router.group(() => {
   router.post('/forgot', [AuthController, 'forgotPassword'])
-  .middleware([
-    'recaptcha',
-    'throttle:10000,2',
+  .use([
+    middleware.recaptcha(),
+    middleware.throttle('critical')
   ])
   router.patch('/reset', [AuthController, 'resetPassword'])
 }).prefix('password')
@@ -43,5 +51,5 @@ router.group(() => {
 // Verify user
 router.group(() => {
   router.post('/', [AuthController, 'verifyEmail'])
-  router.post('/notification', [AuthController, 'resendEmailVerification']).middleware('throttle:60000,1')
+  router.post('/notification', [AuthController, 'resendEmailVerification']).use(middleware.throttle('critical'))
 }).prefix('verification')

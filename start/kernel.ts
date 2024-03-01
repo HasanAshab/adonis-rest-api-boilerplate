@@ -44,6 +44,5 @@ export const middleware = router.named({
   'verified': () => import('#app/http/middleware/ensure_email_is_verified'),
   'signed': () => import('#app/http/middleware/validate_signature'),
   'roles': () => import('#app/http/middleware/check_role'),
-  'recaptcha': () => import('#app/http/middleware/verify_recaptcha'),
-  'response.cache': () => import('#app/http/middleware/cache_response'),
+  'recaptcha': () => import('#app/http/middleware/verify_recaptcha')
 })

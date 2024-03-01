@@ -1,4 +1,6 @@
 import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+
 
 const SettingsController = () => import("#app/http/controllers/v1/settings_controller")
 
@@ -25,4 +27,7 @@ router.group(() => {
   })
     .prefix('notification-preferences')
 })
-.middleware(['auth', 'verified'])
+.use([
+  middleware.auth(),
+  middleware.verified()
+])

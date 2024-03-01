@@ -1,4 +1,6 @@
 import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+
 
 const NotificationsController = () => import("#app/http/controllers/v1/notifications_controller")
 
@@ -11,5 +13,8 @@ router.group(() => {
   router.get('/:id', [NotificationsController, 'show']).as('show')
   router.delete('/:id', [NotificationsController, 'delete']).as('delete')
 })
-  .as('notifications')
-  .middleware(['auth', 'verified'])
+.as('notifications')
+.use([
+  middleware.auth(),
+  middleware.verified()
+])

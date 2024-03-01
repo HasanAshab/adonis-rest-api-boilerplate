@@ -1,4 +1,6 @@
 import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+
 
 const UsersController = () => import("#app/http/controllers/v1/users_controller")
 
@@ -22,7 +24,11 @@ router.group(() => {
     router.get('/', [UsersController, 'index'])
     router.patch('/:id/admin', [UsersController, 'makeAdmin']).as('makeAdmin')
     router.delete('/:id', [UsersController, 'deleteById']).as('delete')
-  }).middleware('roles:admin')
+  })
+  .use(middleware.roles('admin'))
 })
   .as('users')
-  .middleware(['auth', 'verified'])
+  .use([
+    middleware.auth(),
+    middleware.verified()
+  ])
