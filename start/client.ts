@@ -1,6 +1,6 @@
-import Client from '@ioc:Adonis/Addons/Client'
+import client from '#ioc/client'
 
-Client.addPaths({
+client.addPaths({
   'verify': '/email/verify/:id/:token',
   'password.reset': '/password/reset/:id/:token',
 })

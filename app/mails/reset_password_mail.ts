@@ -1,4 +1,4 @@
-import Client from '@ioc:adonis/addons/client'
+import client from '#ioc/client'
 import Token, { SignTokenOptions } from '#app/models/token'
 import { BaseMailer } from "@adonisjs/mail";
 import { Message } from "@adonisjs/mail";
@@ -24,7 +24,7 @@ export default class ResetPasswordMail extends BaseMailer {
   }
 
   public resetUrl(token: string) {
-    return Client.makeUrl('password.reset', {
+    return client.makeUrl('password.reset', {
       id: this.user.id,
       token,
     })

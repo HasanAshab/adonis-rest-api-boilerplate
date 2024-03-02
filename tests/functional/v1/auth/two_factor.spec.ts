@@ -2,7 +2,7 @@ import { test } from '@japa/runner'
 import User from '#app/models/user'
 import TwoFactorAuthService from '#app/services/auth/two_factor/two_factor_auth_service'
 import Token from '#app/models/token'
-import Twilio from '#app/services/twilio'
+import twilio from '#ioc/twilio'
 import TwoFactorAuthRequiredException from '#app/exceptions/two_factor_auth_required_exception'
 import PhoneNumberRequiredException from '#app/exceptions/phone_number_required_exception'
 import Otp from '#app/services/auth/otp'
@@ -22,7 +22,7 @@ test.group('Auth/TwoFactor', (group) => {
   
 
   group.each.setup(() => {
-    Twilio.fake()
+    twilio.fake()
   })
   
   test('should recover account with valid recovery code', async ({ client }) => {
@@ -91,10 +91,10 @@ test.group('Auth/TwoFactor', (group) => {
 
     response.assertStatus(200)
     if(method === 'sms') {
-      Twilio.assertMessaged(user.phoneNumber)
+      twilio.assertMessaged(user.phoneNumber)
     }
     else {
-      Twilio.assertCalled(user.phoneNumber)
+      twilio.assertCalled(user.phoneNumber)
     }
   })
 

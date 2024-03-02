@@ -1,7 +1,6 @@
-import { ClientConfig } from '@ioc:Adonis/Addons/Client'
+import { ClientConfig } from '#interfaces/client'
 
 const clientConfig: ClientConfig = {
-  // baseUrl: 'https://localhost:5000'
   domain: 'www.google.com',
 }
 

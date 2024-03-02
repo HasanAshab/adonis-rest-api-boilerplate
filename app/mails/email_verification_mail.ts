@@ -1,4 +1,4 @@
-import Client from '@ioc:adonis/addons/client'
+import client from '#ioc/client'
 import Token, { SignTokenOptions } from '#app/models/token'
 import { BaseMailer } from "@adonisjs/mail";
 import { Message } from "@adonisjs/mail";
@@ -22,7 +22,7 @@ export default class EmailVerificationMail extends BaseMailer {
   }
 
   public verificationUrl(token: string) {
-    return Client.makeUrl('verify', {
+    return client.makeUrl('verify', {
       id: this.user.id,
       token
     })

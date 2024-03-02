@@ -1,4 +1,4 @@
-import { TwilioConfig } from '@ioc:Adonis/Addons/Twilio'
+import { TwilioConfig } from '#interfaces/twilio'
 import env from '#start/env/index'
 
 const twilioConfig: TwilioConfig = {

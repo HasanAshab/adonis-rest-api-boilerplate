@@ -1,7 +1,8 @@
 import { test } from '@japa/runner'
 import User from '#app/models/user'
 import Otp from '#app/services/auth/otp'
-import Twilio from '@ioc:adonis/addons/twilio'
+import twilio from '#ioc/twilio'
+
 
 /*
 Run this suits:
@@ -14,7 +15,7 @@ test.group('Users / Phone Number', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    Twilio.fake()
+    twilio.fake()
     user = await User.factory().create()
   })
 
@@ -60,7 +61,7 @@ test.group('Users / Phone Number', (group) => {
 
     response.assertStatus(202)
     expect(user.phoneNumber).not.toBe(phoneNumber)
-    Twilio.assertMessaged(phoneNumber)
+    twilio.assertMessaged(phoneNumber)
   })
   
   test('Should remove phone number', async ({ client, expect }) => {
