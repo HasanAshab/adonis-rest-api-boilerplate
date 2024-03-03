@@ -1,7 +1,7 @@
-import TwoFactorMethod from './methods/abstract/two_factor_method.js'
+import TwoFactorMethod from '#services/auth/two_factor/methods/abstract/two_factor_method'
 
 
-export default class TwoFactorMethodManager {
+export class TwoFactorMethodManager {
   private methods = new Map<string, TwoFactorMethod>()
   
   public names() {
@@ -25,3 +25,5 @@ export default class TwoFactorMethodManager {
     return method
   }
 }
+
+export default new TwoFactorMethodManager

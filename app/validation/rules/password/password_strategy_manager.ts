@@ -2,7 +2,7 @@ import { PasswordStrategy, PasswordValidationStrategy } from '@ioc:adonis/core/v
 
 export type PasswordValidationStrategyFactory = () => PasswordValidationStrategy
 
-export default class PasswordStrategyManager {
+export class PasswordStrategyManager {
   protected _defaultStrategy?: PasswordStrategy
   protected strategies = new Map<string, PasswordValidationStrategy>()
   protected factories = new Map<string, PasswordValidationStrategyFactory>()
@@ -53,3 +53,5 @@ export default class PasswordStrategyManager {
     return strategy
   }
 }
+
+export default new PasswordStrategyManager

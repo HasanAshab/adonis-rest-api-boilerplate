@@ -1,12 +1,12 @@
 import vine from '@vinejs/vine'
 import { FieldContext } from '@vinejs/vine/types'
-import { PasswordStrategy } from '@ioc:Adonis/Core/Validator/Rules/Password'
+import passwordStrategy from '#app/validation/rules/password/password_strategy_manager'
 
 
 export function password(value: unknown, _, field: FieldContext) {
   if(typeof value !== 'string') return 
   
-  const { strategy, name } = PasswordStrategy.use(strategyName)
+  const { strategy, name } = passwordStrategy.use(strategyName)
   if (await strategy.validate(value)) return
 
   return field.report(

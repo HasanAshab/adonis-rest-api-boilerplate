@@ -1,6 +1,7 @@
 import config from '@adonisjs/core/services/config'
 import { ApplicationService } from "@adonisjs/core/types";
 import vine, { SimpleMessagesProvider } from '@vinejs/vine'
+import passwordStrategy from '#app/validation/rules/password/password_strategy_manager'
 
 
 export default class ValidationProvider {
@@ -10,41 +11,27 @@ export default class ValidationProvider {
     vine.messagesProvider = new SimpleMessagesProvider(config.get('validator.customMessages'))
   }
   
-  private registerPasswordStrategyManager() {
-    this.app.container.singleton('Adonis/Core/Validator/Rules/Password', () => {
-      const PasswordStrategyManager = require('./Password/PasswordStrategyManager').default
-      return {
-        PasswordStrategy: new PasswordStrategyManager()
-      }
-    })
-  }
-  
   private registerPasswordStrategies() {
-    const { PasswordStrategy } = this.app.container.use('Adonis/Core/Validator/Rules/Password')
-    
-    PasswordStrategy.defaultStrategy(config.get('app.constraints.user.password.strategy'))
-    
-    PasswordStrategy.register('standard', () => {
-      const StandardPasswordStrategy =
-        require('./Password/Strategies/StandardPasswordStrategy').default
+    passwordStrategy.register('standard', async () => {
+      const { default: StandardPasswordStrategy } = await import('#app/validation/rules/password/strategies/standard_password_strategy')
       return new StandardPasswordStrategy()
     })
-
-    PasswordStrategy.register('complex', () => {
-      const ComplexPasswordStrategy =
-        require('./Password/Strategies/ComplexPasswordStrategy').default
+    
+    passwordStrategy.register('complex', async () => {
+      const { default: ComplexPasswordStrategy } = await import('#app/validation/rules/password/strategies/complex_password_strategy')
       return new ComplexPasswordStrategy()
     })
-
-    PasswordStrategy.register('weak', () => {
-      const WeakPasswordStrategy = require('./Password/Strategies/WeakPasswordStrategy').default
+    
+    passwordStrategy.register('weak', async () => {
+      const { default: WeakPasswordStrategy } = await import('#app/validation/rules/password/strategies/weak_password_strategy')
       return new WeakPasswordStrategy()
     })
+    
+    passwordStrategy.defaultStrategy(config.get('app.constraints.user.password.strategy'))
   }
 
-  public boot() {
+  public register() {
     this.registerMessagesProvider()
-    this.registerPasswordStrategyManager()
     this.registerPasswordStrategies()
   }
 }
