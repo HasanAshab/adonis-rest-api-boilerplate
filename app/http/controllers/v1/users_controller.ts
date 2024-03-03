@@ -9,7 +9,7 @@ import {
   updateProfileValidator,
   changePasswordValidator, 
   changePhoneNumberValidator
-} from '#app/http/validators/v1/user_validator'
+} from '#validators/v1/user_validator'
 import SamePhoneNumberException from '#exceptions/validation/same_phone_number_exception'
 import PasswordChangedMail from '#mails/password_changed_mail'
 import ListUserResource from '#app/http/resources/v1/user/list_user_resource'

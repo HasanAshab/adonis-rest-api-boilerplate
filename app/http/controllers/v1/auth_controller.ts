@@ -9,15 +9,15 @@ import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_serv
 import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
 import OtpService from '#services/otp_service'
 import PasswordChangedMail from '#mails/password_changed_mail'
-import { registerValidator } from '#app/http/validators/v1/auth/register_validator'
-import { LoginValidator, socialAuthTokenLoginValidator } from '#app/http/validators/v1/auth/login_validator'
-import { emailVerificationValidator, resendEmailVerificationValidator } from '#app/http/validators/v1/auth/email_validator'
-import { forgotPasswordValidator, resetPasswordValidator } from '#app/http/validators/v1/auth/password_validator'
+import { registerValidator } from '#validators/v1/auth/register_validator'
+import { LoginValidator, socialAuthTokenLoginValidator } from '#validators/v1/auth/login_validator'
+import { emailVerificationValidator, resendEmailVerificationValidator } from '#validators/v1/auth/email_validator'
+import { forgotPasswordValidator, resetPasswordValidator } from '#validators/v1/auth/password_validator'
 import { 
   twoFactorChallengeValidator,
   twoFactorChallengeVerificationValidator,
   twoFactorAccountRecoveryValidator
-} from '#app/http/validators/v1/auth/two_factor_validator'
+} from '#validators/v1/auth/two_factor_validator'
 
 
 @inject()

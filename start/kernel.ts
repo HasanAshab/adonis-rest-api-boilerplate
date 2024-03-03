@@ -39,10 +39,10 @@ router.use([() => import('@adonisjs/core/bodyparser_middleware')])
  * the routes or the routes group.
  */
 export const middleware = router.named({
-  'throttle': () => import('#app/http/middleware/limit_request_rate'),
-  'auth': () => import('#app/http/middleware/auth'),
-  'verified': () => import('#app/http/middleware/ensure_email_is_verified'),
-  'signed': () => import('#app/http/middleware/validate_signature'),
-  'roles': () => import('#app/http/middleware/check_role'),
-  'recaptcha': () => import('#app/http/middleware/verify_recaptcha')
+  'throttle': () => import('#middleware/limit_request_rate'),
+  'auth': () => import('#middleware/auth'),
+  'verified': () => import('#middleware/ensure_email_is_verified'),
+  'signed': () => import('#middleware/validate_signature'),
+  'roles': () => import('#middleware/check_role'),
+  'recaptcha': () => import('#middleware/verify_recaptcha')
 })

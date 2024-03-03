@@ -2,8 +2,8 @@ import { test } from '@japa/runner'
 import User from '#models/user'
 import Mail from '#tests/assertors/mail_assertor'
 import Notification from '#tests/assertors/notification_assertor'
-import SendEmailVerificationMail from '#app/listeners/send_email_verification_mail'
-import SendNewUserJoinedNotificationToAdmins from '#app/listeners/send_new_user_joined_notification_to_admins'
+import SendEmailVerificationMail from '#listeners/send_email_verification_mail'
+import SendNewUserJoinedNotificationToAdmins from '#listeners/send_new_user_joined_notification_to_admins'
 
 /*
 Run this suits:

@@ -8,7 +8,7 @@ import {
   updateContactStatusValidator, 
   suggestContactValidator, 
   searchContactValidator
-} from '#app/http/validators/v1/contact_validator'
+} from '#validators/v1/contact_validator'
 
 
 export default class ContactsController {

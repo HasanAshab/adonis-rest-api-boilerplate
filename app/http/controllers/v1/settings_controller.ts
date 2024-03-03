@@ -10,7 +10,7 @@ import {
   updateNotificationPreferenceValidator,
   emailUnsubscriptionValidator,
   emailResubscriptionValidator
-} from "#app/http/validators/v1/settings_validator";
+} from "#validators/v1/settings_validator";
 
 
 export default class SettingsController {

@@ -25,12 +25,12 @@ export default class EventProvider {
   }
 
   private subscribe(event: string, listener: string) {
-    const Event = this.app.container.use('Adonis/Core/Event')
+    const event = this.app.container.use('event')
 
     if (!listener.includes('.')) {
       listener += '.dispatch'
     }
 
-    Event.on(event, listener)
+    event.on(event, listener)
   }
 }

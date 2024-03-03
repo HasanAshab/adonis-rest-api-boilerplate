@@ -1,4 +1,4 @@
-import type RegisterValidator from '#app/http/validators/v1/auth/register_validator'
+import type RegisterValidator from '#validators/v1/auth/register_validator'
 import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter'
 import config from '@adonisjs/core/services/config'
 import { Attachment } from '@ioc:adonis/addons/attachment_lite'

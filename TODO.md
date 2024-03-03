@@ -1,7 +1,11 @@
-T: No conf auth throt
 
 This:
 T: #comp/*
+T: Serve project
+F: event
+T: No conf auth throt
+
+
 F: time travel test
 F: Middlewares
 Th: maintain 2fa logic
