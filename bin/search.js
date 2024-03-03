@@ -135,4 +135,4 @@ const updateImportPathsInFile = (filePath) => {
 //new Search(`from 'Tests`, `from '#tests`).run()
 //new Search(...process.argv.splice(2)).run()
 
-await new Search(`#app/models/`, `#models/`).run()
+await new Search(`#app/mails/`, `#mails/`).run()
