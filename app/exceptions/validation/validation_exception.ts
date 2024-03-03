@@ -1,4 +1,4 @@
-import ApiException from '#app/exceptions/api_exception'
+import ApiException from '#exceptions/api_exception'
 import { reduce } from 'lodash'
 import config from '@adonisjs/core/services/config'
 import { CustomMessages } from "@adonisjs/validator/types";

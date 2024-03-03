@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
-import User from '#app/models/user'
-import NotificationType from '#app/models/notification_type'
+import User from '#models/user'
+import NotificationType from '#models/notification_type'
 import NotificationTypeCollection from '#app/http/resources/v1/notification_type/notification_type_collection'
 
 /*

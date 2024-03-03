@@ -1,7 +1,7 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
-const ContactsController = () => import("#app/http/controllers/v1/contacts_controller")
+const ContactsController = () => import("#controllers/v1/contacts_controller")
 
 // Endpoints for contact
 router.group(() => {

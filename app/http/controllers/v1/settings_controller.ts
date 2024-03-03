@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import User from '#app/models/user'
-import Token from '#app/models/token'
+import User from '#models/user'
+import Token from '#models/token'
 import TwoFactorAuthService from '#app/services/auth/two_factor/two_factor_auth_service'
 import NotificationService from '#app/services/notification_service'
 import NotificationPreferenceCollection from '#app/http/resources/v1/settings/notification_preference_collection'

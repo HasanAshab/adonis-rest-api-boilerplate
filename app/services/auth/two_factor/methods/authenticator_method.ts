@@ -1,7 +1,7 @@
 import TwoFactorMethod from './abstract/two_factor_method.js'
-import User from '#app/models/user'
+import User from '#models/user'
 import { authenticator } from 'otplib';
-import InvalidOtpException from '#app/exceptions/invalid_otp_exception'
+import InvalidOtpException from '#exceptions/invalid_otp_exception'
 
 
 export default class AuthenticatorMethod extends TwoFactorMethod {

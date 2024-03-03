@@ -1,4 +1,4 @@
-import ApiException from '#app/exceptions/api_exception'
+import ApiException from '#exceptions/api_exception'
 
 export default class LoginAttemptLimitExceededException extends ApiException {
   status = 429

@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import User from '#app/models/user'
+import User from '#models/user'
 import NotificationFactory from 'database/factories/notification_factory'
 import NotificationCollection from '#app/http/resources/v1/notification/notification_collection'
 import ShowNotificationResource from '#app/http/resources/v1/notification/show_notification_resource'

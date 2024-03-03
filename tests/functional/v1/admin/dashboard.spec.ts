@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import User from '#app/models/user'
+import User from '#models/user'
 import { refreshDatabase } from '#test/helpers'
 import { DateTime } from 'luxon'
 

@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { bind } from '@adonisjs/route-model-binding'
-import Contact from '#app/models/contact'
+import Contact from '#models/contact'
 import ListContactResource from '#app/http/resources/v1/contact/list_contact_resource'
 import ShowContactResource from '#app/http/resources/v1/contact/show_contact_resource'
 import { 

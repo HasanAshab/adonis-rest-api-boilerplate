@@ -1,5 +1,5 @@
 import OptInNotification from '#app/notifications/opt_in_notification'
-import type User from '#app/models/user'
+import type User from '#models/user'
 import NewUserJoinedMail from '#app/mails/new_user_joined_mail'
 
 export default class NewUserJoinedNotification extends OptInNotification {

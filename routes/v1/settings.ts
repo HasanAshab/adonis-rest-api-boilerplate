@@ -2,7 +2,7 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
 
-const SettingsController = () => import("#app/http/controllers/v1/settings_controller")
+const SettingsController = () => import("#controllers/v1/settings_controller")
 
 // User settings management
 router.group(() => {

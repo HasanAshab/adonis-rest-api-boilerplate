@@ -1,5 +1,5 @@
 import OtpMethod from './abstract/otp_method.js'
-import User from '#app/models/user'
+import User from '#models/user'
 import Otp from '#app/services/auth/otp'
 
 

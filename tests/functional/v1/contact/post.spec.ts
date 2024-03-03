@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import Contact from '#app/models/contact'
+import Contact from '#models/contact'
 
 /*
 Run this suits:

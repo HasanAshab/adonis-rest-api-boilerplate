@@ -2,7 +2,7 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
 
-const NotificationsController = () => import("#app/http/controllers/v1/notifications_controller")
+const NotificationsController = () => import("#controllers/v1/notifications_controller")
 
 // Endpoints for notification management
 router.group(() => {

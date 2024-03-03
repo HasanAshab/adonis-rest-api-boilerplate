@@ -2,7 +2,7 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
 
-const UsersController = () => import("#app/http/controllers/v1/users_controller")
+const UsersController = () => import("#controllers/v1/users_controller")
 
 // Endpoints for user management
 router.group(() => {

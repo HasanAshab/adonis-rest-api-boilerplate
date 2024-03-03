@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 import { omit, pick } from 'lodash'
-import User from '#app/models/user'
+import User from '#models/user'
 import Event from '#tests/assertors/event_assertor'
 
 /*

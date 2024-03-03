@@ -1,7 +1,7 @@
 import twilio from '#ioc/twilio'
-import User from '#app/models/user'
-import Token from '#app/models/token'
-import InvalidOtpException from '#app/exceptions/invalid_otp_exception'
+import User from '#models/user'
+import Token from '#models/token'
+import InvalidOtpException from '#exceptions/invalid_otp_exception'
 
 
 export default class Otp {

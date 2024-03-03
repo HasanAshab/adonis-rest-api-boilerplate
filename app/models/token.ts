@@ -1,11 +1,11 @@
 import { column, beforeSave } from '@adonisjs/lucid/orm'
-import BaseModel from '#app/models/base_model'
+import BaseModel from '#models/base_model'
 import { DateTime } from 'luxon'
 import { compose } from '@poppinss/utils/build/helpers'
 import { stringToLuxonDate } from '#app/helpers'
 import hash from '@adonisjs/core/services/hash'
-import Expirable from '#app/models/traits/expirable'
-import InvalidTokenException from '#app/exceptions/invalid_token_exception'
+import Expirable from '#models/traits/expirable'
+import InvalidTokenException from '#exceptions/invalid_token_exception'
 import { string } from "@adonisjs/core/helpers/string";
 
 export interface SignTokenOptions {

@@ -1,6 +1,6 @@
 import config from '@adonisjs/core/services/config'
-import type User from '#app/models/user'
-import Token from '#app/models/token'
+import type User from '#models/user'
+import Token from '#models/token'
 
 
 export default class NotificationService {

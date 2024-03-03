@@ -3,7 +3,7 @@ import { middleware } from '#start/kernel'
 
 
 // Import the AuthController dynamically
-const AuthController = () => import("#app/http/controllers/v1/auth_controller")
+const AuthController = () => import("#controllers/v1/auth_controller")
 
 
 /**

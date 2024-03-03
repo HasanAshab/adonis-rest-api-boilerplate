@@ -1,5 +1,5 @@
 import Factory from '@ioc:adonis/mongoose/factory'
-import Category from '#app/models/category'
+import Category from '#models/category'
 
 export default class CategoryFactory extends Factory<Category> {
   definition() {

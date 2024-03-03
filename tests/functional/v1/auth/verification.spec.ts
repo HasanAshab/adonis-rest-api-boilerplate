@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import User from '#app/models/user'
+import User from '#models/user'
 import EmailVerificationMail from '#app/mails/email_verification_mail'
 import Mail from '#tests/assertors/mail_assertor'
 

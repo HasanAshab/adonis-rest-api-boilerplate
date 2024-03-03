@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
-import User from '#app/models/user'
-import NotificationType from '#app/models/notification_type'
+import User from '#models/user'
+import NotificationType from '#models/notification_type'
 import NotificationPreferenceCollection from '#app/http/resources/v1/settings/notification_preference_collection'
 import NotificationTypeSeeder from 'database/seeders/notification_type_seeder'
 import NotificationService from '#app/services/notification_service'

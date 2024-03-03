@@ -2,16 +2,16 @@ import type RegisterValidator from '#app/http/validators/v1/auth/register_valida
 import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter'
 import config from '@adonisjs/core/services/config'
 import { Attachment } from '@ioc:adonis/addons/attachment_lite'
-import User from '#app/models/user'
-import Token from '#app/models/token'
+import User from '#models/user'
+import Token from '#models/token'
 import TwoFactorAuthService from '#app/services/auth/two_factor/two_factor_auth_service'
 import EmailVerificationMail from '#app/mails/email_verification_mail'
 import ResetPasswordMail from '#app/mails/reset_password_mail'
-import InvalidCredentialException from '#app/exceptions/invalid_credential_exception'
-import LoginAttemptLimitExceededException from '#app/exceptions/login_attempt_limit_exceeded_exception'
-import OtpRequiredException from '#app/exceptions/validation/otp_required_exception'
-import PasswordChangeNotAllowedException from '#app/exceptions/password_change_not_allowed_exception'
-import TwoFactorAuthRequiredException from '#app/exceptions/two_factor_auth_required_exception'
+import InvalidCredentialException from '#exceptions/invalid_credential_exception'
+import LoginAttemptLimitExceededException from '#exceptions/login_attempt_limit_exceeded_exception'
+import OtpRequiredException from '#exceptions/validation/otp_required_exception'
+import PasswordChangeNotAllowedException from '#exceptions/password_change_not_allowed_exception'
+import TwoFactorAuthRequiredException from '#exceptions/two_factor_auth_required_exception'
 import { limiter } from "@adonisjs/limiter/services/main";
 
 export interface LoginCredentials {
