@@ -1,9 +1,9 @@
-import { PasswordValidationStrategy } from '@ioc:adonis/core/validator/rules/password'
+import { PasswordValidationStrategy } from '#interfaces/validation/rules/password'
 
 export default class WeakPasswordStrategy implements PasswordValidationStrategy {
-  message = 'must be at least 6 characters long'
+  message = '{{ field }} must be at least 6 characters long'
 
-  validate(value: unknown) {
+  validate(value: string) {
     return value.length >= 6
   }
 }

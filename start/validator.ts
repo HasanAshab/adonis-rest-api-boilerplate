@@ -14,8 +14,8 @@ VineString.macro('exists', function(column: string) {
 })
 
 
-VineString.macro('password', function(strategy?: PasswordStrategy) {
-  return this.use(passwordRule(strategy))
+VineString.macro('password', function(strategyName: string) {
+  return this.use(passwordRule(strategyName))
 })
 
 VineString.macro('slug', function() {

@@ -1,4 +1,3 @@
-import config from '@adonisjs/core/services/config'
 import { ApplicationService } from "@adonisjs/core/types";
 import vine, { SimpleMessagesProvider } from '@vinejs/vine'
 import passwordStrategy from '#app/validation/rules/password/password_strategy_manager'
@@ -8,7 +7,7 @@ export default class ValidationProvider {
   constructor(protected app: ApplicationService) {}
 
   private registerMessagesProvider() {
-    vine.messagesProvider = new SimpleMessagesProvider(config.get('validator.customMessages'))
+    vine.messagesProvider = new SimpleMessagesProvider(this.app.config.get('validator.customMessages'))
   }
   
   private registerPasswordStrategies() {
@@ -26,8 +25,6 @@ export default class ValidationProvider {
       const { default: WeakPasswordStrategy } = await import('#app/validation/rules/password/strategies/weak_password_strategy')
       return new WeakPasswordStrategy()
     })
-    
-    passwordStrategy.defaultStrategy(config.get('app.constraints.user.password.strategy'))
   }
 
   public register() {

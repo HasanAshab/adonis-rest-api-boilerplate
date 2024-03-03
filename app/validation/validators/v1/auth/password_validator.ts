@@ -14,7 +14,7 @@ export const resetPasswordValidator = vine.compile(
     id: vine.number(),
     token: vine.string(),
     password: vine.string()
-      .password()
+      .password(config.get('app.constraints.user.password.strategy'))
       .maxLength(config.get('app.constraints.user.password.maxLength'))
   })
 )

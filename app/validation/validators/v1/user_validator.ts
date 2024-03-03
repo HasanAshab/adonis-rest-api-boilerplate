@@ -34,7 +34,7 @@ export const changePasswordValidator = vine.compile(
   vine.object(
     oldPassword: vine.string(),
     password: vine.string()
-      .password()
+      .password(config.get('app.constraints.user.password.strategy'))
       .maxLength(config.get('app.constraints.user.password.maxLength'))
   )
 )

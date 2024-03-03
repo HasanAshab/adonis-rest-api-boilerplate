@@ -1,3 +1,5 @@
+T: No conf auth throt
+
 This:
 T: #comp/*
 F: time travel test

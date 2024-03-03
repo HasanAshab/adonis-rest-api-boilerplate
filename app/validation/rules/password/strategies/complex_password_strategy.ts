@@ -1,11 +1,11 @@
-import { PasswordValidationStrategy } from '@ioc:adonis/core/validator/rules/password'
+import { PasswordValidationStrategy } from '#interfaces/validation/rules/password'
 
 export default class ComplexPasswordStrategy implements PasswordValidationStrategy {
   message =
-    'must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one digit, and one special character (@ $ ! % * ? &)'
+    '{{ field }} must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one digit, and one special character (@ $ ! % * ? &)'
   protected pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/
 
-  validate(value: unknown) {
-    return typeof value === 'string' && this.pattern.test(value)
+  validate(value: string) {
+    return this.pattern.test(value)
   }
 }

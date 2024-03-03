@@ -1,51 +1,27 @@
-import { PasswordStrategy, PasswordValidationStrategy } from '@ioc:adonis/core/validator/rules/password'
+import { PasswordStrategyName, PasswordValidationStrategy, PasswordValidationStrategyFactory } from '#interfaces/validation/rules/password'
 
-export type PasswordValidationStrategyFactory = () => PasswordValidationStrategy
 
 export class PasswordStrategyManager {
-  protected _defaultStrategy?: PasswordStrategy
   protected strategies = new Map<string, PasswordValidationStrategy>()
   protected factories = new Map<string, PasswordValidationStrategyFactory>()
   
-  public defaultStrategy(name: PasswordStrategy) {
-    this._defaultStrategy = name;
-    return this;
-  }
-  
-  public register(name: PasswordStrategy, strategyFactory: string | PasswordValidationStrategyFactory) {
-    if (typeof strategyFactory === 'string') {
-      const path = strategyFactory
-      strategyFactory = () => {
-        const Strategy = require(path).default
-        return new Strategy()
-      }
-    }
 
-    this.factories.set(name, strategyFactory)
-
-    const markAsDefault = () => {
-      this._defaultStrategy = name
-    }
-
-    return { asDefault: markAsDefault }
+  public register(name: PasswordStrategyName, factory: PasswordValidationStrategyFactory) {
+    this.factories.set(name, factory)
+    return this
   }
 
-  public use(name = this._defaultStrategy) {
-    if (!name) {
-      throw new Error('Must provide a strategy name as no default strategy registered')
-    }
-
-    const strategy = this.strategies.get(name) ?? this.resolveStrategy(name)
-    return { name, strategy }
+  public async use(name: PasswordStrategyName) {
+    return this.strategies.get(name) ?? await this.resolve(name)
   }
 
-  protected resolveStrategy(name: PasswordStrategy) {
+  protected async resolve(name: PasswordStrategy) {
     const factory = this.factories.get(name)
     if (!factory) {
       throw new Error(`Password validation strategy "${name}" was not registered`)
     }
 
-    const strategy = factory()
+    const strategy = await factory()
 
     this.factories.delete(name)
     this.strategies.set(name, strategy)

@@ -132,7 +132,7 @@ const updateImportPathsInFile = (filePath) => {
 //updateImportPaths('tests');
 
 //new Search(`TODO`, undefined, 'tests').run()
-//new Search(`Addons/Client`).run()
+new Search(`password()`).run()
 //new Search(`from 'Tests`, `from '#tests`).run()
 //new Search(...process.argv.splice(2)).run()
 
