@@ -1,6 +1,5 @@
 
 This:
-T: #comp/*
 T: Serve project
 F: event
 T: No conf auth throt
