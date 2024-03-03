@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 import User from '#models/user'
-import Otp from '#app/services/auth/otp'
+import Otp from '#services/auth/otp'
 import twilio from '#ioc/twilio'
 
 

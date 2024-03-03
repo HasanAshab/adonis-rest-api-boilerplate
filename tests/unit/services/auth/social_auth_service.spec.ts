@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 import User from '#models/user'
-import SocialAuthService, { SocialAuthData } from '#app/services/auth/social_auth_service'
+import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
 import EmailRequiredException from '#exceptions/validation/email_required_exception'
 import UsernameRequiredException from '#exceptions/validation/username_required_exception'
 import DuplicateEmailAndUsernameException from '#exceptions/validation/duplicate_email_and_username_exception'

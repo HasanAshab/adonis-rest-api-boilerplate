@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 import User from '#models/user'
-import TwoFactorAuthService from '#app/services/auth/two_factor_auth_service'
+import TwoFactorAuthService from '#services/auth/two_factor_auth_service'
 
 /*
 Run this suits:

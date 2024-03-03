@@ -1,6 +1,6 @@
 import TwoFactorMethod from './two_factor_method.js'
 import User from '#models/user'
-import Otp from '#app/services/auth/otp'
+import Otp from '#services/auth/otp'
 import InvalidOtpException from '#exceptions/invalid_otp_exception'
 import PhoneNumberRequiredException from '#exceptions/phone_number_required_exception'
 import { authenticator } from 'otplib';

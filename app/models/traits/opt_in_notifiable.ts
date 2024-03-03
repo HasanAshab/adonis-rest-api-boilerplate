@@ -6,7 +6,7 @@ import db from '@adonisjs/lucid/services/db'
 import { BaseModel } from '@adonisjs/lucid/orm'
 import { Notifiable } from '@ioc:verful/notification/mixins'
 import NotificationType from '#models/notification_type'
-import NotificationService from '#app/services/notification_service'
+import NotificationService from '#services/notification_service'
 import { ManyToMany } from "@adonisjs/lucid/types/relations";
 
 export type NotificationPreferences = Record<string, string[] | Record<string, boolean>> 

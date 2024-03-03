@@ -3,7 +3,7 @@ import User from '#models/user'
 import NotificationType from '#models/notification_type'
 import NotificationPreferenceCollection from '#app/http/resources/v1/settings/notification_preference_collection'
 import NotificationTypeSeeder from 'database/seeders/notification_type_seeder'
-import NotificationService from '#app/services/notification_service'
+import NotificationService from '#services/notification_service'
 import { except } from '#app/helpers'
 
 /*

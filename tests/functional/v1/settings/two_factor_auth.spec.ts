@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 import User from '#models/user'
-import TwoFactorAuthService from '#app/services/auth/two_factor/two_factor_auth_service'
+import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import TwoFactorSettingsResource from '#app/http/resources/v1/settings/two_factor_settings_resource'
 import PhoneNumberRequiredException from '#exceptions/phone_number_required_exception'
 

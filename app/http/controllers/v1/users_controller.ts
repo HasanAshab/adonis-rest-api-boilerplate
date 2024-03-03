@@ -2,8 +2,8 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { bind } from '@adonisjs/route-model-binding'
 import { inject } from '@adonisjs/core'
 import User from '#models/user'
-import BasicAuthService from '#app/services/auth/basic_auth_service'
-import Otp from '#app/services/auth/otp'
+import BasicAuthService from '#services/auth/basic_auth_service'
+import Otp from '#services/auth/otp'
 import { Attachment } from '@ioc:adonis/addons/attachment_lite'
 import { 
   updateProfileValidator,
@@ -11,7 +11,7 @@ import {
   changePhoneNumberValidator
 } from '#app/http/validators/v1/user_validator'
 import SamePhoneNumberException from '#exceptions/validation/same_phone_number_exception'
-import PasswordChangedMail from '#app/mails/password_changed_mail'
+import PasswordChangedMail from '#mails/password_changed_mail'
 import ListUserResource from '#app/http/resources/v1/user/list_user_resource'
 import UserProfileResource from '#app/http/resources/v1/user/user_profile_resource'
 import ShowUserResource from '#app/http/resources/v1/user/show_user_resource'

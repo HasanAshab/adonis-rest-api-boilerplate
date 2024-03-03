@@ -1,7 +1,7 @@
 import vine from '@vinejs/vine'
 import config from '@adonisjs/core/services/config'
 import NotificationType from '#models/notification_type'
-import NotificationService from '#app/services/notification_service'
+import NotificationService from '#services/notification_service'
 import { TwoFactorMethod } from '@ioc:adonis/addons/auth/two_factor'
 
 
