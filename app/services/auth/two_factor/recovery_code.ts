@@ -1,4 +1,4 @@
-import { string } from "@adonisjs/core/helpers/string";
+import string from "@adonisjs/core/helpers/string";
 
 export default class RecoveryCode {
   public static generate() {

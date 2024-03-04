@@ -6,10 +6,10 @@ import config from '@adonisjs/core/services/config'
 import hash from '@adonisjs/core/services/hash'
 import HasFactory from '#models/traits/has_factory/mixin'
 import HasTimestamps from '#models/traits/has_timestamps'
-import HasApiTokens from '#models/traits/has_api_tokens'
+//import HasApiTokens from '#models/traits/has_api_tokens'
 import TwoFactorAuthenticable from '#models/traits/two_factor_authenticable'
 import SocialAuthenticable from '#models/traits/social_authenticable'
-import OptInNotifiable from '#models/traits/opt_in_notifiable'
+//import OptInNotifiable from '#models/traits/opt_in_notifiable'
 import InvalidPasswordException from '#exceptions/invalid_password_exception'
 
 

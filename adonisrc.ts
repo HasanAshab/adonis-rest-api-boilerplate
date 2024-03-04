@@ -10,7 +10,12 @@ export default defineConfig({
   | will be scanned automatically from the "./commands" directory.
   |
   */
-  commands: [() => import('@adonisjs/core/commands'), () => import('@adonisjs/lucid/commands'), () => import('@adonisjs/mail/commands')],
+  commands: [
+ //   () => import('#app/commands'),
+    () => import('@adonisjs/core/commands'), 
+    () => import('@adonisjs/lucid/commands'),
+    () => import('@adonisjs/mail/commands')
+  ],
 
   /*
   |--------------------------------------------------------------------------
@@ -36,7 +41,10 @@ export default defineConfig({
     () => import('@adonisjs/mail/mail_provider'),
     () => import('@adonisjs/redis/redis_provider'),
     () => import('#providers/app_provider'),
-    () => import('#providers/route_provider')
+    () => import('#providers/route_provider'),
+    () => import('#providers/twilio_provider'),
+    () => import('#providers/validation_provider'),
+    () => import('#providers/client_provider')
   ],
 
   /*
@@ -50,7 +58,20 @@ export default defineConfig({
   preloads: [
     () => import('#start/routes'),
     () => import('#start/kernel'),
-    () => import('#start/client')
+    () => import('#start/client'),
+    {
+      file: () => import('#start/response'),
+      environment: ["web", "test"],
+    },
+    () => import('#start/database'),
+    {
+      file: () => import('#start/validator'),
+      environment: ["web", "test"],
+    },
+    {
+      file: () => import('#start/routes'),
+      environment: ["web", "test"],
+    }
   ],
 
   /*

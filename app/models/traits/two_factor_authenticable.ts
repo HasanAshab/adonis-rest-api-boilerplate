@@ -1,6 +1,6 @@
 import type { NormalizeConstructor } from '@adonisjs/core/helpers'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
-import Encryption from '@ioc:adonis/core/encryption'
+import encryption from '@adonisjs/core/services/encryption'
 import RecoveryCode from '#services/auth/two_factor/recovery_code'
 import { authenticator } from 'otplib';
 import qrcode from 'qrcode';
@@ -32,7 +32,7 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
     
     public recoveryCodes() {
       return this.twoFactorRecoveryCodes 
-        ? JSON.parse(Encryption.decrypt(this.twoFactorRecoveryCodes))
+        ? JSON.parse(encryption.decrypt(this.twoFactorRecoveryCodes))
         : []
     }
     
@@ -42,8 +42,8 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
     }
     
     public replaceRecoveryCode(code: string) {
-      this.twoFactorRecoveryCodes = Encryption.encrypt(
-        Encryption.decrypt(this.twoFactorRecoveryCodes).replace(code, RecoveryCode.generate())
+      this.twoFactorRecoveryCodes = encryption.encrypt(
+        encryption.decrypt(this.twoFactorRecoveryCodes).replace(code, RecoveryCode.generate())
       )
       return this.save()
     }

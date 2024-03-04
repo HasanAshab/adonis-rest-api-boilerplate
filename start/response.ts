@@ -1,7 +1,7 @@
-import Response from '@ioc:Adonis/Core/Response'
+import is from '@adonisjs/core/helpers/is'
+import { Response } from '@adonisjs/core/http'
 import { BaseModel } from '@adonisjs/lucid/orm'
-import { SimplePaginator } from '@adonisjs/lucid/build/src/Database/Paginator/SimplePaginator'
-import { types } from '@adonisjs/core/helpers'
+import { SimplePaginator } from '@adonisjs/lucid/database'
 import { getStatusText } from 'http-status-codes'
 
 /**
@@ -40,13 +40,13 @@ Response.macro(
         body = body.toJSON()
       }
 
-      else if (types.isNull(body)) {
+      else if (is.null(body)) {
         body = {}
       } 
-      else if (types.isString(body)) {
+      else if (is.string(body)) {
         body = { message: body }
       }
-      else if (types.isNumber(body) || types.isArray(body) || body instanceof BaseModel) {
+      else if (is.number(body) || is.array(body) || body instanceof BaseModel) {
         body = { data: body }
       }
 

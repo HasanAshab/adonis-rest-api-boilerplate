@@ -1,6 +1,6 @@
 import db from '@adonisjs/lucid/services/db'
 import type { BaseModel } from '@adonisjs/lucid/orm'
-import { Exception } from '@poppinss/utils'
+import { Exception } from "@adonisjs/core/exceptions";
 import { forIn } from 'lodash-es'
 import { DatabaseQueryBuilder } from "@adonisjs/lucid/database";
 
