@@ -17,7 +17,7 @@ router.group(() => {
   .use(middleware.roles('admin'))
 })
 .as('notificationTypes')
-}).use([
+.use([
   middleware.auth(),
   middleware.verified()
 ])

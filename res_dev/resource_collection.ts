@@ -1,5 +1,5 @@
 import JsonResource from './json_resource.js'
-import { SimplePaginator } from '@adonisjs/lucid/build/src/Database/Paginator/SimplePaginator'
+import { SimplePaginator } from '@adonisjs/lucid/database'
 
 export default class ResourceCollection {
   protected shouldWrap = true

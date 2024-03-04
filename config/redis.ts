@@ -1,28 +1,9 @@
-/**
- * Config source: https://git.io/JemcF
- *
- * Feel free to let us know via PR, if you find something broken in this config
- * file.
- */
+import env from '#start/env'
+import { defineConfig } from '@adonisjs/redis'
+import { InferConnections } from '@adonisjs/redis/types'
 
-import env from '#start/env/index'
-import { redisConfig } from '@adonisjs/redis/build/config'
-
-/*
-|--------------------------------------------------------------------------
-| Redis configuration
-|--------------------------------------------------------------------------
-|
-| Following is the configuration used by the Redis provider to connect to
-| the redis server and execute redis commands.
-|
-| Do make sure to pre-define the connections type inside `contracts/redis.ts`
-| file for AdonisJs to recognize connections.
-|
-| Make sure to check `contracts/redis.ts` file for defining extra connections
-*/
-export default redisConfig({
-  connection: env.get('REDIS_CONNECTION'),
+const redisConfig = defineConfig({
+  connection: 'main',
 
   connections: {
     /*
@@ -35,12 +16,21 @@ export default redisConfig({
     | redis driver.
     |
     */
-    local: {
+    main: {
       host: env.get('REDIS_HOST'),
       port: env.get('REDIS_PORT'),
       password: env.get('REDIS_PASSWORD', ''),
       db: 0,
       keyPrefix: '',
+      retryStrategy(times: number) {
+        return times > 10 ? null : times * 50
+      },
     },
   },
 })
+
+export default redisConfig
+
+declare module '@adonisjs/redis/types' {
+  export interface RedisConnections extends InferConnections<typeof redisConfig> {}
+}

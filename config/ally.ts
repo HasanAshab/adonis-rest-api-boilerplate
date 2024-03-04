@@ -2,12 +2,12 @@ import env from '#start/env'
 import { defineConfig, services } from '@adonisjs/ally'
 
 const allyConfig = defineConfig({
-  google: drivers.google({
+  google: services.google({
     clientId: env.get('GOOGLE_CLIENT_ID'),
     clientSecret: env.get('GOOGLE_CLIENT_SECRET'),
     callbackUrl: '',
   }),
-  facebook: drivers.facebook({
+  facebook: services.facebook({
     clientId: env.get('FACEBOOK_CLIENT_ID'),
     clientSecret: env.get('FACEBOOK_CLIENT_SECRET'),
     callbackUrl: '',

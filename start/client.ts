@@ -13,11 +13,11 @@ globalThis.ResourceCollection = ResourceCollection
 
 
 
-import User from '#app/Models/User'
-import Contact from '#app/Models/Contact'
+import User from '#models/user'
+import Contact from '#models/contact'
 import db from '@adonisjs/lucid/services/db'
-import NotificationService from '#app/Services/NotificationService'
-import OptInNotification from '#app/Notifications/OptInNotification'
+import NotificationService from '#services/notification_service'
+import OptInNotification from '#notifications/opt_in_notification'
 
 
 (async () => {

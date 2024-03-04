@@ -32,7 +32,7 @@ router.post('/logout', [AuthController, 'logout']).use(middleware.auth())
 router.group(() => {
   router.post('/recover', [AuthController, 'recoverTwoFactorAccount']).use(middleware.recaptcha())
   router.post('/challenges', [AuthController, 'sendTwoFactorChallenge']).use([
-    middleware.throttle('critical')
+    middleware.throttle('critical'),
     middleware.recaptcha()
   ])
   router.post('/challenges/verification', [AuthController, 'verifyTwoFactorChallenge']).use(middleware.throttle('high'))
