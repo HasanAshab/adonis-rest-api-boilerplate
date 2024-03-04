@@ -135,4 +135,4 @@ const updateImportPathsInFile = (filePath) => {
 //new Search(`from 'Tests`, `from '#tests`).run()
 //new Search(...process.argv.splice(2)).run()
 
-//await new Search(`#app/policies/`, `#policies/`).run()
+//await new Search(`@poppinss/utils/build/helpers`, `@adonisjs/core/helpers`).run()

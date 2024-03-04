@@ -1,4 +1,4 @@
-import { forIn } from 'lodash'
+import { forIn } from 'lodash-es'
 import { ApplicationService } from "@adonisjs/core/types";
 
 export default class EventProvider {
