@@ -9,7 +9,7 @@ export default class RouteProvider {
     const { Router, Route } = await import('@adonisjs/core/http')
     const app = this.app
 
-    Router.macro('discover', async function (base: string) {
+    Router.macro('discover', async function(base: string, cb) {
       const stack = [base]
       while (stack.length > 0) {
         const currentPath = stack.pop()
@@ -20,13 +20,22 @@ export default class RouteProvider {
           const status = fs.statSync(itemPath)
 
           if (status.isFile()) {
-            const itemPathEndpoint = itemPath.replace(base, '').split('.')[0].toLowerCase()
+            const itemPathEndpoint = itemPath
+              .replace(base, '')
+              .split('.')[0]
+              .replace('index', '')
+              .toLowerCase()
+
             const routerPath = '#' + itemPath.split('.')[0]
-            
-            const group = await this.group(() => import(routerPath))
-            if (!itemPath.endsWith('index.ts')) {
-              group.prefix(itemPathEndpoint)
-            }
+
+            const { default: createRoutes } = await import(routerPath)
+            if(typeof createRoutes !== 'function') continue
+
+            const group = this.group(() => {
+              this.group(() => createRoutes(this))
+              .prefix(itemPathEndpoint)
+            })
+            cb(group)
           } else if (status.isDirectory()) {
             stack.push(itemPath)
           }

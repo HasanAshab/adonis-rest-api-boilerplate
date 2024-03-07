@@ -11,7 +11,7 @@ export async function unique(value: unknown, column: string, field: FieldContext
 
   field.report(
     `${field.name} already exists`,
-    'unique'
+    'unique',
     field
   )
 }

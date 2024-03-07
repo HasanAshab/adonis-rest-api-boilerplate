@@ -1,10 +1,11 @@
-import router from '@adonisjs/core/services/router'
+import type Router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
 
 const SettingsController = () => import("#controllers/v1/settings_controller")
 
-// User settings management
+// Settings management
+export default function settingsRoutes(router: Router) {
 router.group(() => {
   // Two-factor authentication settings
   router.group(() => {
@@ -31,3 +32,4 @@ router.group(() => {
   middleware.auth(),
   middleware.verified()
 ])
+}

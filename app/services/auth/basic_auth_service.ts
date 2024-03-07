@@ -1,6 +1,6 @@
 import type RegisterValidator from '#validators/v1/auth/register_validator'
-import type { Limiter as LimiterContract } from '@adonisjs/limiter/build/src/limiter'
 import config from '@adonisjs/core/services/config'
+import { inject } from '@adonisjs/core'
 import { Attachment } from '@ioc:adonis/addons/attachment_lite'
 import User from '#models/user'
 import Token from '#models/token'
@@ -17,22 +17,18 @@ import { limiter } from "@adonisjs/limiter/services/main";
 export interface LoginCredentials {
   email: string
   password: string
-  ip?: string
+  ip: string
 }
 
 
 
 export default class BasicAuthService {
-  private loginThrottler?: LimiterContract
+  private loginThrottler = limiter.use({
+    requests: 5,
+    duration: '15 minutes',
+    blockDuration: '1 hour'
+  })
 
-//todo
-  constructor(
-    private loginAttemptThrottlerConfig = config.get('auth.loginAttemptThrottler')
-  ) {
-    if (this.loginAttemptThrottlerconfig.enabled) {
-      this.setupLoginThrottler()
-    }
-  }
 
   public async register(data: RegisterValidator['__type']) {
     if (data.avatar) {
@@ -45,18 +41,14 @@ export default class BasicAuthService {
     return user
   }
 
-  //todo
+  @inject()
   public async attempt(
     { email, password, ip }: LoginCredentials, 
-    twoFactorAuthService = new TwoFactorAuthService
+    twoFactorAuthService: TwoFactorAuthService
   ) {
-    if (this.loginThrottler && !ip) {
-      throw new Error('Argument[3]: "ip" must be provided when login attempt throttling is enabled')
-    }
-
     const throttleKey = this.throttleKeyFor(user, ip)
 
-    if (await this.loginThrottler?.isBlocked(throttleKey)) {
+    if (await this.loginThrottler.isBlocked(throttleKey)) {
       throw new LoginAttemptLimitExceededException()
     }
 
@@ -67,11 +59,11 @@ export default class BasicAuthService {
     }
 
     if (!(await user.comparePassword(password))) {
-      await this.loginThrottler?.increment(throttleKey)
+      await this.loginThrottler.increment(throttleKey)
       throw new InvalidCredentialException()
     }
     
-    await this.loginThrottler?.delete(throttleKey)
+    await this.loginThrottler.delete(throttleKey)
 
     if (user.hasEnabledTwoFactorAuth()) {
       await twoFactorAuthService.challenge(user)
@@ -131,19 +123,9 @@ export default class BasicAuthService {
     await user.save()
   }
 
-  private setupLoginThrottler() {
-    const { maxFailedAttempts, duration, blockDuration } = this.loginAttemptThrottlerConfig
-    this.loginThrottler = limiter.use({
-      requests: maxFailedAttempts,
-      blockDuration,
-      duration,
-    })
-  }
 
   private throttleKeyFor(user: User, ip: string) {
-    return this.loginAttemptThrottlerconfig.key
-      .replace('{{ email }}', user.email)
-      .replace('{{ ip }}', ip)
+    return `login__${user.email}_${ip}`
   }
 
 }

@@ -10,6 +10,7 @@ import HasTimestamps from '#models/traits/has_timestamps'
 import TwoFactorAuthenticable from '#models/traits/two_factor_authenticable'
 import SocialAuthenticable from '#models/traits/social_authenticable'
 //import OptInNotifiable from '#models/traits/opt_in_notifiable'
+import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import InvalidPasswordException from '#exceptions/invalid_password_exception'
 
 
@@ -20,8 +21,8 @@ export default class User extends compose(
   BaseModel,
   HasFactory,
   HasTimestamps,
-  HasApiTokens,
-  OptInNotifiable,
+  //HasApiTokens,
+  //OptInNotifiable,
   TwoFactorAuthenticable,
   SocialAuthenticable
 ) {
@@ -37,7 +38,7 @@ export default class User extends compose(
   @column()
   public email: string
 
-  @attachment()
+ // @attachment()
   public avatar: AttachmentContract = null
 
   @column()

@@ -3,6 +3,7 @@ import type { BaseModel } from '@adonisjs/lucid/orm'
 import { Exception } from "@adonisjs/core/exceptions";
 import { forIn } from 'lodash-es'
 import { DatabaseQueryBuilder } from "@adonisjs/lucid/database";
+import { ModelQueryBuilder } from "@adonisjs/lucid/orm";
 
 /**
  * Macro to check if any records match the query.

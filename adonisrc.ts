@@ -11,8 +11,8 @@ export default defineConfig({
   |
   */
   commands: [
- //   () => import('#app/commands'),
-    () => import('@adonisjs/core/commands'), 
+    //   () => import('#app/commands'),
+    () => import('@adonisjs/core/commands'),
     () => import('@adonisjs/lucid/commands'),
     () => import('@adonisjs/mail/commands')
   ],
@@ -44,7 +44,8 @@ export default defineConfig({
     () => import('#providers/route_provider'),
     () => import('#providers/twilio_provider'),
     () => import('#providers/validation_provider'),
-    () => import('#providers/client_provider')
+    () => import('#providers/client_provider'),
+    () => import('@adonisjs/auth/auth_provider')
   ],
 
   /*
