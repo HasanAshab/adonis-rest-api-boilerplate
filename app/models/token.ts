@@ -18,19 +18,19 @@ export interface SignTokenOptions {
 
 export default class Token extends compose(BaseModel, Expirable) {
   @column({ isPrimary: true })
-  public id: number
+  declare id: number
   
   @column()
-  public type: string
+  declare type: string
 
   @column()
-  public oneTime: boolean
+  declare oneTime: boolean
   
   @column()
-  public key: string
+  declare key: string
 
   @column()
-  public secret: string
+  declare secret: string
 
   public compareSecret(secret: string) {
     return hash.verify(this.secret, secret)

@@ -4,7 +4,7 @@
  * Source: https://git.io/JnNoc
  */
 
-import env from '#start/env/index'
+import env from '#start/env'
 import { RecaptchaConfig } from '@ioc:Adonis/Addons/Recaptcha2'
 
 const recaptchaConfig: RecaptchaConfig = {

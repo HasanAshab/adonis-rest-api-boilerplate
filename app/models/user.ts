@@ -26,31 +26,31 @@ export default class User extends compose(
   SocialAuthenticable
 ) {
   @column({ isPrimary: true })
-  public id: number
+  declare id: number
 
   @column()
-  public name: string = null
+  declare name: string | null = null
 
   @column()
-  public username: string = null
+  declare username: string | null = null
 
   @column()
-  public email: string
+  declare email: string
 
   @attachment()
-  public avatar: AttachmentContract = null
+  declare avatar: AttachmentContract = null
 
   @column()
-  public phoneNumber: string = null
+  declare phoneNumber: string | null = null
 
   @column()
-  public role: Role = 'user'
+  declare role: Role = 'user'
 
   @column()
-  public verified = false
+  declare verified = false
 
   @column({ serializeAs: null })
-  public password: string = null
+  declare password: string | null = null
 
   public get isAdmin() {
     return this.role === 'admin'

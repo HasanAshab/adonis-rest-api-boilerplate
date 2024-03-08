@@ -48,23 +48,23 @@ export default defineConfig({
   |
   */
   providers: [
-    () => import('#providers/app_provider.js'),
+    () => import('#providers/app_provider'),
     () => import('@adonisjs/core'),
     () => import('@adonisjs/redis'),
-    () => import('#providers/hash_provider.js'),
+    () => import('#providers/hash_provider'),
     () => import('@adonisjs/bouncer'),
     () => import('@adonisjs/ally'),
-    () => import('#providers/twilio_provider.js'),
-    () => import('#providers/validation_provider.js'),
+    () => import('#providers/twilio_provider'),
+    () => import('#providers/validation_provider'),
     () => import('@adonisjs/limiter'),
-    () => import('#providers/route_provider.js'),
+    () => import('#providers/route_provider'),
     () => import('@adonisjs/lucid'),
     () => import('@adonisjs/auth'),
-    () => import('#providers/auth_provider.js'),
-    () => import('#providers/event_provider.js'),
+    () => import('#providers/auth_provider'),
+    () => import('#providers/event_provider'),
     () => import('@adonisjs/mail'),
     () => import('@adonisjs/view'),
-    () => import('#providers/client_provider.js')
+    () => import('#providers/client_provider')
   ],
   metaFiles: [
     {

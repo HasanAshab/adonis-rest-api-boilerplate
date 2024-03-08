@@ -7,14 +7,14 @@ import HasFactory from '#models/traits/has_factory'
 
 export default class Category extends compose(BaseModel, HasFactory) {
   @column({ isPrimary: true })
-  public id: number
+  declare id: number
 
   @column()
-  public name: string
+  declare name: string
 
   @column()
-  public slug: string
+  declare slug: string
 
   @attachment()
-  public icon: AttachmentContract
+  declare icon: AttachmentContract
 }

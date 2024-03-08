@@ -96,8 +96,7 @@ const corsConfig = defineConfig({
     'CONTENT-TYPE',
     'EXPIRES',
     'LAST-MODIFIED',
-    'PRAGMA',
-    'X-2FA-CODE',
+    'PRAGMA'
   ],
 
   /*

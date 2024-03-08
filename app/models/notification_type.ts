@@ -8,19 +8,19 @@ import NotificationService from '#services/notification_service'
 
 export default class NotificationType extends compose(BaseModel, HasFactory, HasTimestamps) {
   @column({ isPrimary: true })
-  public id: number   
+  declare id: number   
   
   @column()
-  public name: string 
+  declare name: string 
   
   @column()
-  public displayText: string
+  declare displayText: string
   
   @column()
-  public groupName: string 
+  declare groupName: string 
   
   @column()
-  public description: string
+  declare description: string
   
   //todo
   public serializeExtras(notificationService = new NotificationService) {

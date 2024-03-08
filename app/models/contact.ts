@@ -7,22 +7,22 @@ import HasFactory from '#models/traits/has_factory'
 
 export default class Contact extends compose(BaseModel, HasFactory) {
   @column({ isPrimary: true })
-  public id: number
+  declare id: number
 
   @column()
-  public email: string
+  declare email: string
 
   @column()
-  public subject: string
+  declare subject: string
 
   @column()
-  public message: string
+  declare message: string
 
   @column()
-  public status: 'opened' | 'closed' = 'opened'
+  declare status: 'opened' | 'closed' = 'opened'
 
   @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  declare createdAt: DateTime
 
   public isOpened() {
     return this.status === 'opened'
