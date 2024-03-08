@@ -11,7 +11,7 @@ export default function Expirable(Superclass: NormalizeConstructor<typeof BaseMo
       column.dateTime()(this.prototype, 'expiresAt')
     }
 
-    declare expiresAt: DateTime | null = null
+    public expiresAt: DateTime | null = null
 
     public isExpired() {
       return this.expiresAt && this.expiresAt < DateTime.local()

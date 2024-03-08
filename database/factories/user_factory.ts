@@ -1,5 +1,7 @@
-import Factory from '#models/traits/has_factory/mixin/factory'
+import Factory from '#models/traits/has_factory/factory'
 import User from '#models/user'
+import { stringToLuxonDate } from '#app/helpers'
+
 
 export default class UserFactory extends Factory<User> {
   definition() {
@@ -54,6 +56,13 @@ export default class UserFactory extends Factory<User> {
   hasNotificationPreferences() {
     return this.external(async user => {
       await user.initNotificationPreference()
+    })
+  }
+  
+  registeredBefore(time: string) {
+    return this.state(user => {
+      user.createdAt = stringToLuxonDate('-' + time)
+      return user
     })
   }
 }

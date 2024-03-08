@@ -1,4 +1,4 @@
-import Factory from '#models/traits/has_factory/mixin/factory'
+import Factory from '#models/traits/has_factory/factory'
 import NotificationType from '#models/notification_type'
 
 export default class NotificationTypeFactory extends Factory<NotificationType> {

@@ -5,11 +5,12 @@ import { compose } from '@adonisjs/core/helpers'
 import config from '@adonisjs/core/services/config'
 import hash from '@adonisjs/core/services/hash'
 import HasFactory from '#models/traits/has_factory/mixin'
+import UserFactory from '#database/factories/user_factory'
 import HasTimestamps from '#models/traits/has_timestamps'
 import HasApiTokens from '#models/traits/has_api_tokens'
 import TwoFactorAuthenticable from '#models/traits/two_factor_authenticable'
 import SocialAuthenticable from '#models/traits/social_authenticable'
-import OptInNotifiable from '#models/traits/opt_in_notifiable'
+//import OptInNotifiable from '#models/traits/opt_in_notifiable'
 import InvalidPasswordException from '#exceptions/invalid_password_exception'
 
 
@@ -21,18 +22,21 @@ export default class User extends compose(
   HasFactory,
   HasTimestamps,
   HasApiTokens,
-  OptInNotifiable,
+  //OptInNotifiable,
   TwoFactorAuthenticable,
   SocialAuthenticable
 ) {
+  static factoryClass = UserFactory 
+  
+  
   @column({ isPrimary: true })
   declare id: number
 
   @column()
-  declare name: string | null = null
+  public name: string | null = null
 
   @column()
-  declare username: string | null = null
+  public username: string | null = null
 
   @column()
   declare email: string
@@ -41,16 +45,16 @@ export default class User extends compose(
 //  declare avatar: AttachmentContract = null
 
   @column()
-  declare phoneNumber: string | null = null
+  public phoneNumber: string | null = null
 
   @column()
-  declare role: Role = 'user'
+  public role: Role = 'user'
 
   @column()
-  declare verified = false
+  public verified = false
 
   @column({ serializeAs: null })
-  declare password: string | null = null
+  public password: string | null = null
 
   public get isAdmin() {
     return this.role === 'admin'

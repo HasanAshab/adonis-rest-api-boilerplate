@@ -1,5 +1,5 @@
 import { BaseModel } from '@adonisjs/lucid/orm'
-import { merge } from 'lodash'
+import { merge } from 'lodash-es'
 import { faker } from '@faker-js/faker'
 
 export type StateCustomizer<Attributes> = (state: Attributes) => Attributes

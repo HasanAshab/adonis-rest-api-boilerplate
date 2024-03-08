@@ -132,6 +132,6 @@ const updateImportPathsInFile = (filePath) => {
 //updateImportPaths('tests');
 
 //await new Search(`#models/traits/has_factory`, '#models/traits/has_factory/mixin').run()
-//new Search(`from 'Tests`, `from '#tests`).run()
+new Search(`Invalid user object`, undefined, 'node_modules/@adonisjs/auth').run()
 //new Search(...process.argv.splice(2)).run()
 

@@ -40,6 +40,7 @@
     "@adonisjs/eslint-config": "^1.2.1",
     "@adonisjs/prettier-config": "^1.2.1",
     "@adonisjs/tsconfig": "^1.2.1",
+    "@faker-js/faker": "^8.4.1",
     "@japa/api-client": "^2.0.2",
     "@japa/assert": "^2.1.0",
     "@japa/plugin-adonisjs": "^3.0.0",

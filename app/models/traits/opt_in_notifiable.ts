@@ -1,6 +1,6 @@
 import type { NormalizeConstructor } from '@adonisjs/core/helpers'
 import { compose } from '@adonisjs/core/helpers'
-import { mapValues, reduce } from 'lodash'
+import { mapValues, reduce } from 'lodash-es'
 import { DateTime } from 'luxon'
 import db from '@adonisjs/lucid/services/db'
 import { BaseModel } from '@adonisjs/lucid/orm'

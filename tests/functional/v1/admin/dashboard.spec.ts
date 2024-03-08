@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 import User from '#models/user'
-import { refreshDatabase } from '#test/helpers'
+import { refreshDatabase } from '#tests/helpers'
 import { DateTime } from 'luxon'
 
 /*
@@ -12,7 +12,7 @@ test.group('Admin / Dashboard', (group) => {
 
   test("Users shouldn't get admin dashboard", async ({ client, expect }) => {
     const user = await User.factory().create()
-
+log(user)
     const response = await client.get('/api/v1/admin/dashboard').loginAs(user)
 
     response.assertStatus(403)
@@ -20,15 +20,9 @@ test.group('Admin / Dashboard', (group) => {
   })
 
   test('Admin should get dashboard', async ({ client, expect }) => {
-    const [admin, todayUser, oldUser] = await Promise.all([
-      User.factory().withRole('admin').create(),
-      User.factory().count(2).create(),
-      User.factory()
-        .count(3)
-        .create({
-          createdAt: DateTime.local().minus({ days: 1 }),
-        }),
-    ])
+    const admin = await User.factory().withRole('admin').create()
+    const todayUser = await User.factory().count(2).create()
+    const oldUser = await User.factory().count(3).registeredBefore('1 day')
 
     const response = await client.get('/api/v1/admin/dashboard').loginAs(admin)
 
