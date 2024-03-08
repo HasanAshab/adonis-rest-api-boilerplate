@@ -1,2 +1,2 @@
-import './expect/extend'
-import './api_response_macros'
+import './expect/extend.js'
+import './api_response_macros.js'

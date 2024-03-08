@@ -1,8 +1,8 @@
 import vine, { VineString } from '@vinejs/vine'
-import passwordRule from '#validators/rules/password_rule'
-import slugRule from '#validators/rules/slug_rule'
-import uniqueRule from '#validators/rules/unique_rule'
-import existsRule from '#validators/rules/exists_rule'
+import passwordRule from '#app/validation/rules/password/password_rule'
+import slugRule from '#app/validation/rules/slug_rule'
+import uniqueRule from '#app/validation/rules/unique_rule'
+import existsRule from '#app/validation/rules/exists_rule'
 
 
 VineString.macro('unique', function(column: string) {

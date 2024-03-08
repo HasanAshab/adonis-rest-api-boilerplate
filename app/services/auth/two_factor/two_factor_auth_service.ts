@@ -1,4 +1,4 @@
-import { range } from 'lodash'
+import { range } from 'lodash-es'
 import Encryption from '@ioc:adonis/core/encryption'
 import config from '@adonisjs/core/services/config'
 import User from '#models/user'

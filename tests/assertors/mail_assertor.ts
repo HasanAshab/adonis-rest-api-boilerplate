@@ -1,5 +1,5 @@
-import Assertor from './assertor'
-import Mail from '@ioc:adonis/addons/mail'
+import Assertor from './assertor.js'
+import mail from '@adonisjs/mail/services/main'
 
 type FakeMailer = ReturnType<Mail['fake']>
 
@@ -13,7 +13,7 @@ export class MailAssertor extends Assertor {
   }
 
   public fake(...args: Parameters<Mail['fake']>) {
-    return (this.fakeMailer = Mail.fake(...args))
+    return (this.fakeMailer = mail.fake(...args))
   }
 
   public isSentTo(email: string) {

@@ -1,6 +1,6 @@
 export default {
   openapi: '3.0.0',
-  path: `${__dirname}../`,
+  path: `${import.meta.url}/../`,
   title: 'Adonis Boilerplate',
   version: '1.0.0',
   tagIndex: 2,

@@ -1,5 +1,5 @@
 //import JsonResource from '@samer/api-resource/resources/json_resource'
-import { groupBy } from 'lodash'
+import { groupBy } from 'lodash-es'
 
 export default class NotificationPreferenceCollection extends ResourceCollection {
 

@@ -1,4 +1,4 @@
-import { defineConfig } from "@adonisjs/core/app";
+import { defineConfig } from '@adonisjs/core/app'
 
 export default defineConfig({
   /*
@@ -10,34 +10,13 @@ export default defineConfig({
   | will be scanned automatically from the "./commands" directory.
   |
   */
-  commands: [() => import('./app/Commands'), () => import('@adonisjs/core/commands'), () => import('@adonisjs/bouncer/build/commands'), () => import('@adonisjs/lucid/commands'), () => import('@adonisjs/mail/commands'), () => import('@verful/notifications/build/commands')],
-  /*
-  |--------------------------------------------------------------------------
-  | Preloads
-  |--------------------------------------------------------------------------
-  |
-  | List of modules to import before starting the application.
-  |
-  */
-  preloads: [
-    () => import('./start/kernel.js'),
-    () => import('./start/bouncer.js'),
-    () => import('./start/limiter.js'),
-    () => import('./start/client.js'),
-    {
-      file: () => import('./start/response'),
-      environment: ["web", "test"],
-    },
-    () => import('./start/database.js'),
-    {
-      file: () => import('./start/validator'),
-      environment: ["web", "test"],
-    },
-    {
-      file: () => import('./start/routes'),
-      environment: ["web", "test"],
-    }
+  commands: [
+    //   () => import('#app/commands'),
+    () => import('@adonisjs/core/commands'),
+    () => import('@adonisjs/lucid/commands'),
+    () => import('@adonisjs/mail/commands')
   ],
+
   /*
   |--------------------------------------------------------------------------
   | Service providers
@@ -48,33 +27,54 @@ export default defineConfig({
   |
   */
   providers: [
+    () => import('@adonisjs/core/providers/app_provider'),
+    () => import('@adonisjs/core/providers/hash_provider'),
+    {
+      file: () => import('@adonisjs/core/providers/repl_provider'),
+      environment: ['repl', 'test'],
+    },
+    () => import('@adonisjs/core/providers/vinejs_provider'),
+    () => import('@adonisjs/cors/cors_provider'),
+    () => import('@adonisjs/lucid/database_provider'),
+    () => import('@adonisjs/ally/ally_provider'),
+    () => import('@adonisjs/limiter/limiter_provider'),
+    () => import('@adonisjs/mail/mail_provider'),
+    () => import('@adonisjs/redis/redis_provider'),
     () => import('#providers/app_provider'),
-    () => import('@adonisjs/core'),
-    () => import('@adonisjs/redis'),
-    () => import('#providers/hash_provider'),
-    () => import('@adonisjs/bouncer'),
-    () => import('@adonisjs/ally'),
+    () => import('#providers/route_provider'),
     () => import('#providers/twilio_provider'),
     () => import('#providers/validation_provider'),
-    () => import('@adonisjs/limiter'),
-    () => import('#providers/route_provider'),
-    () => import('@adonisjs/lucid'),
-    () => import('@adonisjs/auth'),
-    () => import('#providers/auth_provider'),
-    () => import('#providers/event_provider'),
-    () => import('@adonisjs/mail'),
-    () => import('@adonisjs/view'),
-    () => import('#providers/client_provider')
+    () => import('#providers/client_provider'),
+    () => import('@adonisjs/auth/auth_provider')
   ],
-  metaFiles: [
+
+  /*
+  |--------------------------------------------------------------------------
+  | Preloads
+  |--------------------------------------------------------------------------
+  |
+  | List of modules to import before starting the application.
+  |
+  */
+  preloads: [
+    () => import('#start/routes'),
+    () => import('#start/kernel'),
+    () => import('#start/client'),
     {
-      "pattern": "resources/views/**/*.edge",
-      "reloadServer": false
+      file: () => import('#start/response'),
+      environment: ["web", "test"],
+    },
+    () => import('#start/database'),
+    {
+      file: () => import('#start/validator'),
+      environment: ["web", "test"],
+    },
+    {
+      file: () => import('#start/routes'),
+      environment: ["web", "test"],
     }
   ],
-  directories: {
-    "providers": "app/Providers"
-  },
+
   /*
   |--------------------------------------------------------------------------
   | Tests
@@ -85,21 +85,18 @@ export default defineConfig({
   |
   */
   tests: {
-    "suites": [
+    suites: [
       {
-        "name": "functional",
-        "files": [
-          "tests/functional/**/*.spec(.ts|.js)"
-        ],
-        "timeout": 60000
+        files: ['tests/unit/**/*.spec(.ts|.js)'],
+        name: 'unit',
+        timeout: 2000,
       },
       {
-        "name": "unit",
-        "files": [
-          "tests/unit/**/*.spec(.ts|.js)"
-        ],
-        "timeout": 60000
-      }
-    ]
-  }
-});
+        files: ['tests/functional/**/*.spec(.ts|.js)'],
+        name: 'functional',
+        timeout: 30000,
+      },
+    ],
+    forceExit: false,
+  },
+})

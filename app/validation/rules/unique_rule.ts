@@ -3,7 +3,7 @@ import { FieldContext } from '@vinejs/vine/types'
 import db from '@adonisjs/lucid/services/db'
 
 
-export function unique(value: unknown, column: string, field: FieldContext) {
+export async function unique(value: unknown, column: string, field: FieldContext) {
   const [table, columnName] = column.split('.')
   const exists = await db.from(table).where(columnName, value).exists()
   
@@ -11,7 +11,7 @@ export function unique(value: unknown, column: string, field: FieldContext) {
 
   field.report(
     `${field.name} already exists`,
-    'unique'
+    'unique',
     field
   )
 }

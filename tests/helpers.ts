@@ -1,5 +1,6 @@
 import db from '@adonisjs/lucid/services/db'
 import { join } from 'path'
+import testUtils from '@adonisjs/core/services/test_utils'
 
 
 export function fakeFilePathPath(name: string) {
@@ -7,8 +8,5 @@ export function fakeFilePathPath(name: string) {
 }
 
 export function refreshDatabase(group) {
-  group.each.setup(async () => {
-    await db.beginGlobalTransaction()
-    return () => db.rollbackGlobalTransaction()
-  })
+  group.each.setup(() => testUtils.db().truncate())
 }

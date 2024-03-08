@@ -1,4 +1,4 @@
-import { range } from 'lodash'
+import { range } from 'lodash-es'
 import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 

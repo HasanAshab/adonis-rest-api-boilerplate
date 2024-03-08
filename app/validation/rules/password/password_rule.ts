@@ -4,7 +4,7 @@ import passwordStrategy from '#app/validation/rules/password/password_strategy_m
 import { PasswordStrategyName } from '#interfaces/validation/rules/password'
 
 
-export function password(value: unknown, strategyName: PasswordStrategyName, field: FieldContext) {
+export async function password(value: unknown, strategyName: PasswordStrategyName, field: FieldContext) {
   if(typeof value !== 'string') return 
   
   const strategy = await passwordStrategy.use(strategyName)

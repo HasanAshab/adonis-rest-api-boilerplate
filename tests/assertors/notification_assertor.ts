@@ -1,7 +1,7 @@
 import { BaseMailer } from '@ioc:adonis/addons/mail'
-import Assertor from './assertor'
+import Assertor from './assertor.js'
 import Notification, { NotifiableModel } from '@ioc:verful/notification'
-import { isEqual } from 'lodash'
+import { isEqual } from 'lodash-es'
 
 interface Notifiable {
   table: string

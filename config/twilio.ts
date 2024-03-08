@@ -1,5 +1,5 @@
 import { TwilioConfig } from '#interfaces/twilio'
-import env from '#start/env/index'
+import env from '#start/env'
 
 const twilioConfig: TwilioConfig = {
   sid: env.get('TWILIO_SID'),

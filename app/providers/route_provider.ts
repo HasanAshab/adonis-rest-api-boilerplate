@@ -5,11 +5,11 @@ import { ApplicationService } from "@adonisjs/core/types";
 export default class RouteProvider {
   constructor(protected app: ApplicationService) {}
 
-  private extendRoute() {
-    const Application = this.app.container.use('Adonis/Core/Application')
-    const Route = this.app.container.use('Adonis/Core/Route')
+  private async extendRoute() {
+    const { Router, Route } = await import('@adonisjs/core/http')
+    const app = this.app
 
-    Route.discover = function (base: string) {
+    Router.macro('discover', async function(base: string, cb) {
       const stack = [base]
       while (stack.length > 0) {
         const currentPath = stack.pop()
@@ -20,44 +20,48 @@ export default class RouteProvider {
           const status = fs.statSync(itemPath)
 
           if (status.isFile()) {
-            const itemPathEndpoint = itemPath.replace(base, '').split('.')[0].toLowerCase()
+            const itemPathEndpoint = itemPath
+              .replace(base, '')
+              .split('.')[0]
+              .replace('index', '')
+              .toLowerCase()
 
-            const routerPath = Application.makePath(itemPath.split('.')[0])
+            const routerPath = '#' + itemPath.split('.')[0]
 
-            const group = this.group(() => require(routerPath))
-            if (!itemPath.endsWith('index.ts')) {
-              group.prefix(itemPathEndpoint)
-            }
+            const { default: createRoutes } = await import(routerPath)
+            if(typeof createRoutes !== 'function') continue
+
+            const group = this.group(() => {
+              this.group(() => createRoutes(this))
+              .prefix(itemPathEndpoint)
+            })
+            cb(group)
           } else if (status.isDirectory()) {
             stack.push(itemPath)
           }
         }
       }
-    }
-    
-    Route.RouteGroup.macro('invoke', function (route, method, params) {
-      if (route instanceof Route.RouteGroup) {
-        route.routes.forEach((child) => this.invoke(child, method, params))
-        return
-      }
-      if (route instanceof Route.BriskRoute) {
-        if (route.route) {
-          if (method === 'as' && !route.route.name) {
-            return
-          }
-          route.route[method](...params)
-        }
-        return
-      }
-
-      if (method === 'as' && !route.name) {
-        return
-      }
-      route[method](...params)
     })
-  }
+    Route.macro('as', function(name: string, prepend = false) {})
 
-  public boot() {
-    this.extendRoute()
+/*
+    Route.macro('as', function(name: string, prepend = false) {
+      if (prepend) {
+        if (!this.#name) {
+          return
+        }
+  
+        this.#name = `${name}.${this.#name}`
+        return this
+      }
+
+      this.#name = name
+      return this
+    })
+ */
+ }
+
+  public async boot() {
+    await this.extendRoute()
   }
 }

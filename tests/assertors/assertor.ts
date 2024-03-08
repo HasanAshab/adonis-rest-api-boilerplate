@@ -1,4 +1,4 @@
-import expect from 'expect'
+import { expect } from 'expect'
 
 export default abstract class Assertor {
   public abstract fake(...args: any[]): any

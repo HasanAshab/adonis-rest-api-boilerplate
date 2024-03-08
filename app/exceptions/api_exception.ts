@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { Exception } from "@adonisjs/core/exceptions";
-import { string } from "@adonisjs/core/helpers/string";
+import string from "@adonisjs/core/helpers/string";
 
 export default abstract class ApiException extends Exception {
   public abstract status: number

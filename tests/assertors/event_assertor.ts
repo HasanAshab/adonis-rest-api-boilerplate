@@ -1,8 +1,8 @@
-import Assertor from './assertor'
+import Assertor from './assertor.js'
 import Event from '@ioc:adonis/core/event'
 import { BaseModel } from '@ioc:adonis/lucid/orm'
 import expect from 'expect'
-import { isEqual } from 'lodash'
+import { isEqual } from 'lodash-es'
 
 type FakeEmitter = ReturnType<Event['fake']>
 
