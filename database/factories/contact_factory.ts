@@ -1,4 +1,4 @@
-import Factory from '#models/traits/has_factory/factory'
+import Factory from '#models/traits/has_factory/mixin/factory'
 import Contact from '#models/contact'
 
 export default class ContactFactory extends Factory<Contact> {

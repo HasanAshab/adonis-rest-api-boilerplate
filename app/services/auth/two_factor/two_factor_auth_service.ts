@@ -1,5 +1,5 @@
 import { range } from 'lodash-es'
-import Encryption from '@ioc:adonis/core/encryption'
+import encryption from '@adonisjs/core/services/encryption'
 import config from '@adonisjs/core/services/config'
 import User from '#models/user'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
@@ -42,7 +42,7 @@ export default class TwoFactorAuthService {
 
   public async generateRecoveryCodes(user: User, count = 8) {
     const codes = range(count).map(RecoveryCode.generate)
-    user.twoFactorRecoveryCodes = Encryption.encrypt(JSON.stringify(codes))
+    user.twoFactorRecoveryCodes = encryption.encrypt(JSON.stringify(codes))
     await user.save()
     return codes
   }

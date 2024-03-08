@@ -1,4 +1,4 @@
-import Factory from '#models/traits/has_factory/factory'
+import Factory from '#models/traits/has_factory/mixin/factory'
 import User from '#models/user'
 import BaseModel from '#models/base_model'
 import createNotificationModel from '@verful/notifications/build/src/models/database_notification'

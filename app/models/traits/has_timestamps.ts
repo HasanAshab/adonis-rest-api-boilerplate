@@ -12,7 +12,7 @@ export default function HasTimestamps(Superclass: NormalizeConstructor<typeof Ba
       column.dateTime({ autoCreate: true, autoUpdate: true })(this.prototype, 'updatedAt')
     }
 
-    public createdAt: DateTime
-    public updatedAt: DateTime
+    declare createdAt: DateTime
+    declare updatedAt: DateTime
   }
 }

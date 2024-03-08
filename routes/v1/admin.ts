@@ -7,7 +7,7 @@ const DashboardController = () => import("#controllers/v1/dashboard_controller")
 /**
  * Endpoints for admin
  */
-export default (router: Router) => {
+export default function adminRoutes(router: Router) {
   router.use([
     middleware.auth(),
     middleware.roles('admin')

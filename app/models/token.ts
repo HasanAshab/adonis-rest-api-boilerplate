@@ -1,7 +1,7 @@
 import { column, beforeSave } from '@adonisjs/lucid/orm'
 import BaseModel from '#models/base_model'
 import { DateTime } from 'luxon'
-import { compose } from '@poppinss/utils/build/helpers'
+import { compose } from '@adonisjs/core/helpers'
 import { stringToLuxonDate } from '#app/helpers'
 import hash from '@adonisjs/core/services/hash'
 import Expirable from '#models/traits/expirable'

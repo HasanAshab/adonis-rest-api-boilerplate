@@ -1,7 +1,7 @@
 import BaseModel from '#models/base_model'
 import { column } from '@adonisjs/lucid/orm'
-import { compose } from '@poppinss/utils/build/helpers'
-import HasFactory from '#models/traits/has_factory'
+import { compose } from '@adonisjs/core/helpers'
+import HasFactory from '#models/traits/has_factory/mixin'
 import HasTimestamps from '#models/traits/has_timestamps'
 import NotificationService from '#services/notification_service'
 

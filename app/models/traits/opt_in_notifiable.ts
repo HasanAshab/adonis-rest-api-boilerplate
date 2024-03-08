@@ -1,5 +1,5 @@
 import type { NormalizeConstructor } from '@adonisjs/core/helpers'
-import { compose } from '@poppinss/utils/build/helpers'
+import { compose } from '@adonisjs/core/helpers'
 import { mapValues, reduce } from 'lodash'
 import { DateTime } from 'luxon'
 import db from '@adonisjs/lucid/services/db'
@@ -29,7 +29,7 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
       })
     }
    
-    public notificationPreference: ManyToMany<NotificationType>
+    declare notificationPreference: ManyToMany<NotificationType>
     
     public unreadNotifications() {
       return this.related('notifications').query().whereNull('readAt')

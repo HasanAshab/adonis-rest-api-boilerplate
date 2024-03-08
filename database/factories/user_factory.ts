@@ -1,4 +1,4 @@
-import Factory from '#models/traits/has_factory/factory'
+import Factory from '#models/traits/has_factory/mixin/factory'
 import User from '#models/user'
 
 export default class UserFactory extends Factory<User> {

@@ -1,10 +1,10 @@
 import BaseModel from '#models/base_model'
 import { column, beforeSave } from '@adonisjs/lucid/orm'
-import { attachment, AttachmentContract } from '@ioc:adonis/addons/attachment_lite'
-import { compose } from '@poppinss/utils/build/helpers'
+//import { attachment, AttachmentContract } from '@ioc:adonis/addons/attachment_lite'
+import { compose } from '@adonisjs/core/helpers'
 import config from '@adonisjs/core/services/config'
 import hash from '@adonisjs/core/services/hash'
-import HasFactory from '#models/traits/has_factory'
+import HasFactory from '#models/traits/has_factory/mixin'
 import HasTimestamps from '#models/traits/has_timestamps'
 import HasApiTokens from '#models/traits/has_api_tokens'
 import TwoFactorAuthenticable from '#models/traits/two_factor_authenticable'
@@ -37,8 +37,8 @@ export default class User extends compose(
   @column()
   declare email: string
 
-  @attachment()
-  declare avatar: AttachmentContract = null
+ // @attachment()
+//  declare avatar: AttachmentContract = null
 
   @column()
   declare phoneNumber: string | null = null

@@ -131,8 +131,7 @@ const updateImportPathsInFile = (filePath) => {
 
 //updateImportPaths('tests');
 
-new Search(`todo`).run()
+//await new Search(`#models/traits/has_factory`, '#models/traits/has_factory/mixin').run()
 //new Search(`from 'Tests`, `from '#tests`).run()
 //new Search(...process.argv.splice(2)).run()
 
-//await new Search(`@poppinss/utils/build/helpers`, `@adonisjs/core/helpers`).run()

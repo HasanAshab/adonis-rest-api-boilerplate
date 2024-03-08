@@ -1,8 +1,8 @@
 import BaseModel from '#models/base_model'
 import { DateTime } from 'luxon'
-import { compose } from '@poppinss/utils/build/helpers'
+import { compose } from '@adonisjs/core/helpers'
 import { column } from '@adonisjs/lucid/orm'
-import HasFactory from '#models/traits/has_factory'
+import HasFactory from '#models/traits/has_factory/mixin'
 //import Searchable from 'app/models/traits/searchable';
 
 export default class Contact extends compose(BaseModel, HasFactory) {

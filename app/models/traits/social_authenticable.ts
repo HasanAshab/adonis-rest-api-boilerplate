@@ -14,8 +14,8 @@ export default function SocialAuthenticable(Superclass: NormalizeConstructor<typ
       column()(this.prototype, 'socialAvatarUrl')
     }
     
-    public socialProvider?: string
-    public socialId?: string
-    public socialAvatarUrl?: string
+    declare socialProvider?: string
+    declare socialId?: string
+    declare socialAvatarUrl?: string
   }
 }
