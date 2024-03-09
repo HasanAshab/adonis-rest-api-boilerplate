@@ -26,7 +26,7 @@ Deleted dep:
 "@adonisjs/route-model-binding": "^1.0.1",
 "@verful/notifications": "^2.3.0",
 "@adonisjs/attachment-lite": "^1.0.8",
-    "adonis-recaptcha2": "^2.0.1",
+"adonis-recaptcha2": "^2.0.1",
 
 
 Ghema:

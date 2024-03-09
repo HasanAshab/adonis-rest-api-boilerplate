@@ -29,7 +29,7 @@ Response.macro('sendOriginal', Response.prototype.send)
  * @param generateEtag - Whether to generate an ETag header.
  */
 Response.macro(
-  'send',
+  'sendd',
   function (
     body: null | number | string | Record<string, any> | any[] = {},
     generateEtag = this.config.etag

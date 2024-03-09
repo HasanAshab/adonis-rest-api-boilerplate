@@ -12,6 +12,7 @@ import TwoFactorAuthenticable from '#models/traits/two_factor_authenticable'
 import SocialAuthenticable from '#models/traits/social_authenticable'
 //import OptInNotifiable from '#models/traits/opt_in_notifiable'
 import InvalidPasswordException from '#exceptions/invalid_password_exception'
+import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 
 
 export type Role = 'user' | 'admin'
@@ -26,6 +27,8 @@ export default class User extends compose(
   TwoFactorAuthenticable,
   SocialAuthenticable
 ) {
+  public static accessTokens = DbAccessTokensProvider.forModel(User)
+
   static factoryClass = UserFactory 
   
   

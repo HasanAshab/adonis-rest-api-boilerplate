@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 class Wildcard {
-  static caseInsensitive = true
+  static caseInsensitive = false
   
   static match(str, query) {
     if(this.caseInsensitive) {
@@ -130,8 +130,8 @@ const updateImportPathsInFile = (filePath) => {
 };
 
 //updateImportPaths('tests');
-
-//await new Search(`#models/traits/has_factory`, '#models/traits/has_factory/mixin').run()
-new Search(`Invalid user object`, undefined, 'node_modules/@adonisjs/auth').run()
+Wildcard.caseInsensitive = true
+await new Search(`middleware.throttle`).run()
+//new Search(`Invalid user object`, undefined, 'node_modules/@adonisjs/auth').run()
 //new Search(...process.argv.splice(2)).run()
 

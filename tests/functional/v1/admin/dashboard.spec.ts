@@ -12,12 +12,12 @@ test.group('Admin / Dashboard', (group) => {
 
   test("Users shouldn't get admin dashboard", async ({ client, expect }) => {
     const user = await User.factory().create()
-log(user)
+
     const response = await client.get('/api/v1/admin/dashboard').loginAs(user)
 
     response.assertStatus(403)
     response.assertBodyNotHaveProperty('data')
-  })
+  }).pin()
 
   test('Admin should get dashboard', async ({ client, expect }) => {
     const admin = await User.factory().withRole('admin').create()

@@ -1,4 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { inject } from '@adonisjs/core'
 import User from '#models/user'
 import Token from '#models/token'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
@@ -13,11 +14,11 @@ import {
 } from "#validators/v1/settings_validator";
 
 
+@inject()
 export default class SettingsController {
-  //todo
   constructor(
-    private readonly twoFactorAuthService = new TwoFactorAuthService,
-    private readonly notificationService = new NotificationService
+    private readonly twoFactorAuthService: TwoFactorAuthService,
+    private readonly notificationService: NotificationService
   ) {}
   
   public async twoFactorAuth({ auth }: HttpContext) {

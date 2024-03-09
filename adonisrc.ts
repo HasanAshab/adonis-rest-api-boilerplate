@@ -60,6 +60,7 @@ export default defineConfig({
     () => import('#start/routes'),
     () => import('#start/kernel'),
     () => import('#start/client'),
+    () => import('#start/limiter'),
     {
       file: () => import('#start/response'),
       environment: ["web", "test"],

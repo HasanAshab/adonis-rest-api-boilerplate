@@ -1,5 +1,5 @@
-import type { NormalizeConstructor } from '@adonisjs/core/helpers'
-import { compose } from '@adonisjs/core/helpers'
+import type { NormalizeConstructor, compose } from '@adonisjs/core/helpers'
+import { inject } from '@adonisjs/core'
 import { mapValues, reduce } from 'lodash-es'
 import { DateTime } from 'luxon'
 import db from '@adonisjs/lucid/services/db'
@@ -47,7 +47,7 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
       const preference = await this.related('notificationPreferences')
         .query()
         .where('name', notificationType)
-        .select('pivot_channels') // Todo check
+        .select('pivot_channels')
         .pojo()
         .first()
       
@@ -58,8 +58,8 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
       return preference.pivot_channels 
     }
 
-    //todo
-    public async initNotificationPreference(notificationService = new NotificationService) {
+    @inject()
+    public async initNotificationPreference(notificationService: NotificationService) {
       const ids = await NotificationType.pluck('id')
       const channels = notificationService.channels()
       const preferences = ids.reduce((acc, id) => {
