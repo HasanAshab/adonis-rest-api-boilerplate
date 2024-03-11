@@ -40,8 +40,6 @@ router.use([() => import('@adonisjs/core/bodyparser_middleware'), () => import('
  */
 export const middleware = router.named({
   auth: () => import('#middleware/auth'),
-  'throttle': () => import('#middleware/limit_request_rate'),
-  'auth': () => import('#middleware/auth'),
   'verified': () => import('#middleware/ensure_email_is_verified'),
   'signed': () => import('#middleware/validate_signature'),
   'roles': () => import('#middleware/check_role'),

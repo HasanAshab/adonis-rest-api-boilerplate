@@ -1,11 +1,5 @@
-/*
- * adonis-recaptcha2
- *
- * Source: https://git.io/JnNoc
- */
-
 import env from '#start/env'
-import { RecaptchaConfig } from '@ioc:Adonis/Addons/Recaptcha2'
+import { RecaptchaConfig } from '#interfaces/recaptcha'
 
 const recaptchaConfig: RecaptchaConfig = {
   /*
@@ -40,15 +34,5 @@ const recaptchaConfig: RecaptchaConfig = {
   |
   */
   ssl: true,
-
-  /*
-   |--------------------------------------------------------------------------
-   | Views
-   |--------------------------------------------------------------------------
-   |
-   | Enable if you need use recaptcha in Views
-   |
-   */
-  views: false,
 }
 export default recaptchaConfig

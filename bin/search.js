@@ -131,7 +131,7 @@ const updateImportPathsInFile = (filePath) => {
 
 //updateImportPaths('tests');
 Wildcard.caseInsensitive = true
-await new Search(`middleware.throttle`).run()
+//await new Search(`middleware.throttle('*')`, '*Throttle').run()
 //new Search(`Invalid user object`, undefined, 'node_modules/@adonisjs/auth').run()
 //new Search(...process.argv.splice(2)).run()
 

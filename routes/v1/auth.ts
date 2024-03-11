@@ -1,6 +1,6 @@
 import type Router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
-
+import { criticalThrottle, highThrottle } from '#start/limiter'
 
 const AuthController = () => import("#controllers/v1/auth_controller")
 
@@ -14,7 +14,7 @@ export default function authRoutes(router: Router) {
   // Login through various methods
   router.group(() => {
     router.post('/', [AuthController, 'login']).use([
-      middleware.throttle('high'),
+      highThrottle,
       middleware.recaptcha()
     ])
   
@@ -31,10 +31,10 @@ export default function authRoutes(router: Router) {
   router.group(() => {
     router.post('/recover', [AuthController, 'recoverTwoFactorAccount']).use(middleware.recaptcha())
     router.post('/challenges', [AuthController, 'sendTwoFactorChallenge']).use([
-      middleware.throttle('critical'),
+      criticalThrottle,
       middleware.recaptcha()
     ])
-    router.post('/challenges/verification', [AuthController, 'verifyTwoFactorChallenge']).use(middleware.throttle('high'))
+    router.post('/challenges/verification', [AuthController, 'verifyTwoFactorChallenge']).use(highThrottle)
   }).prefix('two-factor')
   
   // Password Reset
@@ -42,7 +42,7 @@ export default function authRoutes(router: Router) {
     router.post('/forgot', [AuthController, 'forgotPassword'])
     .use([
       middleware.recaptcha(),
-      middleware.throttle('critical')
+      criticalThrottle
     ])
     router.patch('/reset', [AuthController, 'resetPassword'])
   }).prefix('password')
@@ -50,6 +50,6 @@ export default function authRoutes(router: Router) {
   // Verify user
   router.group(() => {
     router.post('/', [AuthController, 'verifyEmail'])
-    router.post('/notification', [AuthController, 'resendEmailVerification']).use(middleware.throttle('critical'))
+    router.post('/notification', [AuthController, 'resendEmailVerification']).use(criticalThrottle)
   }).prefix('verification')
 }
