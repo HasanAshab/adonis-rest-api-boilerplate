@@ -17,7 +17,12 @@ import app from '@adonisjs/core/services/app'
 |
 */
 //Todo
-export default ['./app/Commands/Search', './app/Commands/ClearUploads', './app/Commands/CreateTestUser']
+export default [
+  './search.js',
+  './clear_uploads.js',
+  './create_test_user.js',
+  './decrypt_env.js'
+]
 
 /*
 export default listDirectoryFiles(__dirname, Application.appRoot, [
