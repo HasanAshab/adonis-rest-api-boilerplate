@@ -10,7 +10,6 @@ export default class VerifyRecaptcha {
     }
     catch (errors) {
       const message = recaptcha.translateErrors(errors || 'invalid-input-response')[0]
-      throw new ApiException
       throw new ApiException(message, {
         code: 'E_RE_CAPTCHTA_EXCEPTION',
         status: 403
