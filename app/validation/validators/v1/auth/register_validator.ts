@@ -7,14 +7,14 @@ export const registerValidator = vine.compile(
     email: vine.string().email().unique('users.email'),
     
     username: vine.string()
-      .alphaNum(),
+      .alphaNum()
       .minLength(config.get('app.constraints.user.username.minLength'))
-      .maxLength(config.get('app.constraints.user.username.maxLength')),
+      .maxLength(config.get('app.constraints.user.username.maxLength'))
       .unique('users.username'),
 
     password: vine.string()
-      .password(config.get('app.constraints.user.password.strategy')),
-      .maxLength(config.get('app.constraints.user.password.maxLength'))
+      .password(config.get('app.constraints.user.password.strategy'))
+      .maxLength(config.get('app.constraints.user.password.maxLength')),
 
     avatar: vine.file()
       .optional()

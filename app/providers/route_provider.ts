@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { ApplicationService } from "@adonisjs/core/types";
-import { importDefault } from "@poppinss/utils";
+import { importDefault } from "#app/helpers";
 
 export default class RouteProvider {
   constructor(protected app: ApplicationService) {}
@@ -29,7 +29,6 @@ export default class RouteProvider {
 
             const routerPath = '#' + itemPath.split('.')[0]
             const createRoutes = await importDefault(routerPath)
-            log(createRoutes)
             if(typeof createRoutes !== 'function') continue
             const group = this.group(() => {
               this.group(() => createRoutes(this)).prefix(itemPathEndpoint)

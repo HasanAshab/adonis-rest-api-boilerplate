@@ -2,7 +2,6 @@ This:
 F: event
 F: time travel test
 
-D: Encr env
 D: Recaptcha
 Th: maintain 2fa logic
 t: feature/socialauth
@@ -29,11 +28,5 @@ Deleted dep:
 "adonis-recaptcha2": "^2.0.1",
 
 
-Ghema:
-Sat -> co
-Fri -> co
-Tue -> sc
 
-name, location
-
-npm i @adonisjs/bouncer @adonisjs/view @japa/expect @japa/preset-adonis
+name, locations

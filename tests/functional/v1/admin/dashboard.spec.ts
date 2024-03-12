@@ -1,7 +1,6 @@
 import { test } from '@japa/runner'
 import User from '#models/user'
 import { refreshDatabase } from '#tests/helpers'
-import { DateTime } from 'luxon'
 
 /*
 Run this suits:
@@ -22,7 +21,7 @@ test.group('Admin / Dashboard', (group) => {
   test('Admin should get dashboard', async ({ client, expect }) => {
     const admin = await User.factory().withRole('admin').create()
     const todayUser = await User.factory().count(2).create()
-    const oldUser = await User.factory().count(3).registeredBefore('1 day')
+    const oldUser = await User.factory().count(3).registeredBefore('1 day').create()
 
     const response = await client.get('/api/v1/admin/dashboard').loginAs(admin)
 

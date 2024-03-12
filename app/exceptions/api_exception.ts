@@ -2,14 +2,12 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { Exception } from "@adonisjs/core/exceptions";
 import string from "@adonisjs/core/helpers/string";
 
-export default abstract class ApiException extends Exception {
-  public abstract status: number
-  public abstract message: string
-  public headers = {}
-
-  constructor() {
-    super('')
+export default class ApiException extends Exception {
+  static status = 500
+  static get code() {
+    return 'E_' + string.snakeCase(this.name).toUpperCase()
   }
+  public headers = {}
 
   protected async payload() {
     return {
@@ -27,11 +25,8 @@ export default abstract class ApiException extends Exception {
     return this.headers
   }
 
-  public get code() {
-    return 'E_' + string.snakeCase(this.name).toUpperCase()
-  }
-
   public async handle(error: this, ctx: HttpContext) {
+    log(error)
     ctx.response
       .status(error.status)
       .setHeaders(await error.withHeaders(ctx))

@@ -44,7 +44,8 @@ export default defineConfig({
     () => import('#providers/twilio_provider'),
     () => import('#providers/validation_provider'),
     () => import('#providers/client_provider'),
-    () => import('@adonisjs/auth/auth_provider')
+    () => import('@adonisjs/auth/auth_provider'),
+    () => import('#providers/recaptcha_provider')
   ],
 
   /*

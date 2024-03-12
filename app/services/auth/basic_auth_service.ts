@@ -1,7 +1,7 @@
 import type RegisterValidator from '#validators/v1/auth/register_validator'
 import config from '@adonisjs/core/services/config'
 import { inject } from '@adonisjs/core'
-import { Attachment } from '@ioc:adonis/addons/attachment_lite'
+//import { Attachment } from '@ioc:adonis/addons/attachment_lite'
 import User from '#models/user'
 import Token from '#models/token'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'

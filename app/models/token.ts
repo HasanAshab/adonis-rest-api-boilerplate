@@ -6,7 +6,7 @@ import { stringToLuxonDate } from '#app/helpers'
 import hash from '@adonisjs/core/services/hash'
 import Expirable from '#models/traits/expirable'
 import InvalidTokenException from '#exceptions/invalid_token_exception'
-import { string } from "@adonisjs/core/helpers/string";
+import string from "@adonisjs/core/helpers/string";
 
 export interface SignTokenOptions {
   secret?: string | number

@@ -1,7 +1,7 @@
 import env from '#start/env'
-import { RecaptchaConfig } from '#interfaces/recaptcha'
+import { Options } from 'recaptcha2'
 
-const recaptchaConfig: RecaptchaConfig = {
+const recaptchaConfig: Options = {
   /*
   |--------------------------------------------------------------------------
   | Site Key

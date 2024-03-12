@@ -29,10 +29,10 @@ Response.macro('sendOriginal', Response.prototype.send)
  * @param generateEtag - Whether to generate an ETag header.
  */
 Response.macro(
-  'sendd',
+  'send',
   function (
     body: null | number | string | Record<string, any> | any[] = {},
-    generateEtag = this.config.etag
+    generateEtag = false
   ) {
     const acceptsJson = this.request.headers.accept === 'application/json'
     if (acceptsJson) {

@@ -1,26 +1,20 @@
 import { HttpContext } from '@adonisjs/core/http'
-import recaptcha2 from '@ioc:adonis/addons/recaptcha2'
-import { Exception } from "@adonisjs/core/exceptions";
+import recaptcha from '#ioc/recaptcha'
+import ApiException from "#exceptions/api_exception";
 
-/**
- * ReCAPTCHA middleware is meant to check recaptcha response
- * when POST/PUT requests
- *
- * You must register this middleware inside `start/kernel.ts` file under the list
- * of named middleware
- */
 export default class VerifyRecaptcha {
-  public async handle({ request }: HttpContext, next: () => Promise<void>): Promise<void> {
-    return await next()
+  public async handle({ request, response }: HttpContext, next: () => Promise<void>) {
     try {
-      await recaptcha2.validate(request.input('recaptchaResponse'))
-    } catch (errors) {
-      throw new Exception(
-        recaptcha2.translateErrors(errors || 'invalid-input-response'),
-        400,
-        'E_CAPTCHA'
-      )
+      await recaptcha.validate(request.input('recaptchaResponse'))
+      await next()
     }
-    await next()
+    catch (errors) {
+      const message = recaptcha.translateErrors(errors || 'invalid-input-response')[0]
+      throw new ApiException
+      throw new ApiException(message, {
+        code: 'E_RE_CAPTCHTA_EXCEPTION',
+        status: 403
+      })
+    }
   }
 }

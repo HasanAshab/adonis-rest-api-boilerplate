@@ -1,6 +1,11 @@
 import { DateTime } from 'luxon'
 import { clone } from 'lodash-es'
 import string from "@adonisjs/core/helpers/string";
+import { importDefault as getDefaultFromImport } from "@poppinss/utils";
+
+export function importDefault<T = any>(path: string): T {
+  return getDefaultFromImport(() => import(path))
+}
 
 export function sleep(seconds: number) {
   return new Promise((r) => setTimeout(r, seconds * 1000))
