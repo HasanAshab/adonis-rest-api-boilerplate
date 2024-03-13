@@ -32,7 +32,7 @@ export default class DecryptEnv extends BaseCommand {
     if(!this.force && existsSync('.env')) {
       const overwrite = await this.prompt.confirm(".env file already exist. want to overwrite?")
       if(!overwrite) {
-        console.log(decryptedEnv)
+        return console.log(decryptedEnv)
       }
     }
     

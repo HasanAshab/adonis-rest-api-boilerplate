@@ -26,7 +26,6 @@ export default class ApiException extends Exception {
   }
 
   public async handle(error: this, ctx: HttpContext) {
-    log(error)
     ctx.response
       .status(error.status)
       .setHeaders(await error.withHeaders(ctx))

@@ -17,7 +17,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   APP_KEY: Env.schema.string(),
   HOST: Env.schema.string({ format: 'host' }),
   LOG_LEVEL: Env.schema.string(),
-  
+
   /*
   |----------------------------------------------------------
   | Variables for configuring database connection
@@ -28,11 +28,11 @@ export default await Env.create(new URL('../', import.meta.url), {
   DB_USER: Env.schema.string(),
   DB_PASSWORD: Env.schema.string.optional(),
   DB_DATABASE: Env.schema.string(),
-  
-  
+
+
   REDIS_HOST: Env.schema.string({ format: 'host' }),
   REDIS_PORT: Env.schema.number(),
-  
+
   /*
   |----------------------------------------------------------
   | Variables for configuring the limiter package
@@ -47,16 +47,16 @@ export default await Env.create(new URL('../', import.meta.url), {
   */
   SMTP_HOST: Env.schema.string(),
   SMTP_PORT: Env.schema.string(),
-  
+
   MAILGUN_API_KEY: Env.schema.string(),
   MAILGUN_DOMAIN: Env.schema.string(),
 
   RECAPTCHA_SITE_KEY: Env.schema.string(),
   RECAPTCHA_SECRET_KEY: Env.schema.string(),
- 
+
   TWILIO_SID: Env.schema.string(),
   TWILIO_AUTH_TOKEN: Env.schema.string(),
-  
+
   /*
   |----------------------------------------------------------
   | Variables for configuring ally package
@@ -64,7 +64,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   */
   FACEBOOK_CLIENT_ID: Env.schema.string(),
   FACEBOOK_CLIENT_SECRET: Env.schema.string(),
-  
+
   GOOGLE_CLIENT_ID: Env.schema.string(),
   GOOGLE_CLIENT_SECRET: Env.schema.string(),
 

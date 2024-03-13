@@ -132,6 +132,5 @@ const updateImportPathsInFile = (filePath) => {
 //updateImportPaths('tests');
 Wildcard.caseInsensitive = true
 //await new Search(`middleware.throttle('*')`, '*Throttle').run()
-//new Search(`Invalid user object`, undefined, 'node_modules/@adonisjs/auth').run()
-//new Search(...process.argv.splice(2)).run()
+new Search(`import { test } from '@japa/runner'`, `import { test } from '@japa/runner'\nimport { refreshDatabase } from '#tests/helpers'`).run()
 

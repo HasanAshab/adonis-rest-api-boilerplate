@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
+import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
-import config from '@ioc:adonis/core/config'
 
 /*
 Run this suits:
@@ -47,13 +47,12 @@ test.group('Auth / Login', (group) => {
   })
 
   test('should prevent Brute Force login', async ({ client, expect }) => {
-    const limit = config.get('auth.loginAttemptThrottler.maxFailedAttempts')
-
+    const limit = 5
+    const responses = []
     const payload = {
       email: user.email,
       password: 'wrong-pass',
     }
-    const responses = []
 
     for (let i = 0; i < limit + 1; i++) {
       const response = await client.post('/api/v1/auth/login').json(payload)

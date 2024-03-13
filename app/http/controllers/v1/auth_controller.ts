@@ -10,7 +10,7 @@ import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_se
 import OtpService from '#services/otp_service'
 import PasswordChangedMail from '#mails/password_changed_mail'
 import { registerValidator } from '#validators/v1/auth/register_validator'
-import { LoginValidator, socialAuthTokenLoginValidator } from '#validators/v1/auth/login_validator'
+import { loginValidator, socialAuthTokenLoginValidator } from '#validators/v1/auth/login_validator'
 import { emailVerificationValidator, resendEmailVerificationValidator } from '#validators/v1/auth/email_validator'
 import { forgotPasswordValidator, resetPasswordValidator } from '#validators/v1/auth/password_validator'
 import { 

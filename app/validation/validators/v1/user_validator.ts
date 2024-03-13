@@ -14,7 +14,7 @@ export const updateProfileValidator = vine.compile(
       .optional()
       .minLength(config.get('app.constraints.user.username.minLength'))
       .maxLength(config.get('app.constraints.user.username.maxLength'))
-      .alphaNum()
+      .alphaNumeric()
       .unique('users.username'),
       
     email: vine.string()

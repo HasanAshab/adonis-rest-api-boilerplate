@@ -6,10 +6,10 @@ import { CustomMessages } from "@adonisjs/validator/types";
 type RuleName = keyof CustomMessages
 
 export default class ValidationException extends ApiException {
-  public status = 422
+  public static status = 422
 
   constructor(public fieldsWithRule: Record<string, RuleName> = {}) {
-    super()
+    super('')
   }
 
   static field(name: string, rule: RuleName) {

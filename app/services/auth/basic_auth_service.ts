@@ -5,14 +5,16 @@ import { inject } from '@adonisjs/core'
 import User from '#models/user'
 import Token from '#models/token'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
+import mail from '@adonisjs/mail/services/main'
 import EmailVerificationMail from '#mails/email_verification_mail'
 import ResetPasswordMail from '#mails/reset_password_mail'
+import limiter from '@adonisjs/limiter/services/main'
 import InvalidCredentialException from '#exceptions/invalid_credential_exception'
 import LoginAttemptLimitExceededException from '#exceptions/login_attempt_limit_exceeded_exception'
 import OtpRequiredException from '#exceptions/validation/otp_required_exception'
 import PasswordChangeNotAllowedException from '#exceptions/password_change_not_allowed_exception'
 import TwoFactorAuthRequiredException from '#exceptions/two_factor_auth_required_exception'
-import { limiter } from "@adonisjs/limiter/services/main";
+
 
 export interface LoginCredentials {
   email: string
@@ -21,11 +23,10 @@ export interface LoginCredentials {
 }
 
 
-
 export default class BasicAuthService {
-  private loginThrottler = limiter.use({
+  private loginLimiter = limiter.use({
     requests: 5,
-    duration: '15 minutes',
+    duration: '2 minutes',
     blockDuration: '1 hour'
   })
 
@@ -46,9 +47,14 @@ export default class BasicAuthService {
     { email, password, ip }: LoginCredentials, 
     twoFactorAuthService: TwoFactorAuthService
   ) {
-    const throttleKey = this.throttleKeyFor(user, ip)
+    const limiterKey = this.limiterKeyFor(user, ip)
 
-    if (await this.loginThrottler.isBlocked(throttleKey)) {
+    const res = await this.loginLimiter.penalize(limiterKey, () => {
+      
+    })
+    return log(res)
+    
+    if (await this.loginLimiter.isBlocked(limiterKey)) {
       throw new LoginAttemptLimitExceededException()
     }
 
@@ -59,11 +65,11 @@ export default class BasicAuthService {
     }
 
     if (!(await user.comparePassword(password))) {
-      await this.loginThrottler.increment(throttleKey)
+      await this.loginLimiter.increment(limiterKey)
       throw new InvalidCredentialException()
     }
     
-    await this.loginThrottler.delete(throttleKey)
+    await this.loginLimiter.delete(limiterKey)
 
     if (user.hasEnabledTwoFactorAuth()) {
       await twoFactorAuthService.challenge(user)
@@ -93,7 +99,7 @@ export default class BasicAuthService {
       return false
     }
 
-    await new EmailVerificationMail(user).sendLater()
+    await mail.sendLater(new EmailVerificationMail(user))
     return true
   }
   
@@ -111,7 +117,7 @@ export default class BasicAuthService {
       user = await User.internals().where('email', user).where('verified', true).first()
     }
     if(user && user.verified) {
-      await new ResetPasswordMail(user).sendLater()
+      await mail.sendLater(new ResetPasswordMail(user))
       return true
     }
     return false
@@ -124,7 +130,7 @@ export default class BasicAuthService {
   }
 
 
-  private throttleKeyFor(user: User, ip: string) {
+  private limiterKeyFor(user: User, ip: string) {
     return `login__${user.email}_${ip}`
   }
 

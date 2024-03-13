@@ -1,9 +1,6 @@
 This:
 F: event
-F: time travel test
-
-D: Recaptcha
-Th: maintain 2fa logic
+F: time based tests
 t: feature/socialauth
 I: login alerts, settings disable for new
 I: trust device

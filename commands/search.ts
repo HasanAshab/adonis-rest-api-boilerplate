@@ -1,8 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { BaseCommand } from "@adonisjs/core/ace";
-import { args } from "@adonisjs/core/ace";
-import { flags } from "@adonisjs/core/ace";
+import { args, flags } from "@adonisjs/core/ace";
 
 class Wildcard {
   static match(str: string, query: string): boolean {
@@ -27,19 +26,14 @@ class Wildcard {
 export default class Search extends BaseCommand {
   public static commandName = 'search'
 
-  public static settings = {
-    loadApp: false,
-    stayAlive: false,
-  }
-
   @args.string()
   declare query: string
 
-  @args.string({ required: false })
+  @flags.string()
   declare replace?: string
 
   @flags.string()
-  declare dir: string
+  declare dir?: string
 
   protected exclude = [
     'package.json',

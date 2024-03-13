@@ -1,23 +1,25 @@
+import { BaseMail } from "@adonisjs/mail";
 import client from '#ioc/client'
 import Token, { SignTokenOptions } from '#models/token'
-import { BaseMailer } from "@adonisjs/mail";
-import { Message } from "@adonisjs/mail";
+import User from '#models/user'
 
-export default class EmailVerificationMail extends BaseMailer {
+
+export default class EmailVerificationMail extends BaseMail {
+  public subject = 'Verify Email Address!'
+
   private tokenOptions: SignTokenOptions = {
     oneTimeOnly: true,
     expiresIn: '3 days'
   }
   
-  constructor(private user: User) {
+  constructor(private recipient: User) {
     super()
   }
 
-  public async prepare(message: Message) {
+  public async prepare() {
     const url = this.verificationUrl(await this.verificationToken())
-    message
-      .subject('Verify Email Address!')
-      .to(this.user.email)
+    this.message
+      .to(this.recipient.email)
       .htmlView('emails/verification', { url })
   }
 
