@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import NotificationFactory from 'database/factories/notification_factory'
 import ListNotificationResource from '~/app/http/resources/v1/notification/list_notification_resource'

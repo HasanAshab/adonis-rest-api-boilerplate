@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
 import EmailRequiredException from '#exceptions/validation/email_required_exception'

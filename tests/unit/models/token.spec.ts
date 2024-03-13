@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import { refreshDatabase } from '#tests/helpers'
 import Token from '#models/token'
 
 /*

@@ -132,5 +132,5 @@ const updateImportPathsInFile = (filePath) => {
 //updateImportPaths('tests');
 Wildcard.caseInsensitive = true
 //await new Search(`middleware.throttle('*')`, '*Throttle').run()
-new Search(`import { test } from '@japa/runner'`, `import { test } from '@japa/runner'\nimport { refreshDatabase } from '#tests/helpers'`).run()
+//new Search(`import { test } from '@japa/runner'`, `import { test } from '@japa/runner'\nimport { refreshDatabase } from '#tests/helpers'`).run()
 

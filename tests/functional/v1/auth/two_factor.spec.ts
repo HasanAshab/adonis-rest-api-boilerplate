@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import Token from '#models/token'

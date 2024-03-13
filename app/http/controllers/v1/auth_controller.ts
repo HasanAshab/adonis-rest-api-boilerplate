@@ -45,17 +45,19 @@ export default class AuthController {
       user,
     })
 
-    const profile = router.makeUrl(AuthController.VERSION + ".users.show", {
+    /*const profileUrl = router.makeUrl(AuthController.VERSION + ".users.show", {
       username: user.username 
-    });
+    });*/
 
-    response.header('Location', profile).created({
-      message: 'Verification email sent!',
-      data: {
-        user,
-        token: await user.createToken()
-      },
-    })
+    response
+   //   .header('Location', profileUrl)
+      .created({
+        message: 'Verification email sent!',
+        data: {
+          user,
+          token: await user.createToken()
+        },
+      })
   }
 
   /**

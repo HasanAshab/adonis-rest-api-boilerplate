@@ -10,22 +10,20 @@ type TwoFactorEnabled<T> = Required<Pick<T, 'twoFactorMethod' | 'twoFactorSecret
 
 
 export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<typeof BaseModel>) {
-  return class extends Superclass {
-    public static boot() {
-      if (this.booted) return
-      super.boot()
-      
-      column()(this.prototype, 'twoFactorEnabled')
-      column()(this.prototype, 'twoFactorMethod')
-      column({ serializeAs: null })(this.prototype, 'twoFactorSecret')
-      column({ serializeAs: null })(this.prototype, 'twoFactorRecoveryCodes')
-    }
-
+  class TwoFactorAuthenticableUser extends Superclass {
+    @column()
     public twoFactorEnabled = false
+   
+    @column()
     public twoFactorMethod: string | null = null
+    
+    @column({ serializeAs: null })
     public twoFactorSecret: string | null = null
+    
+    @column({ serializeAs: null })
     public twoFactorRecoveryCodes: string | null = null
     
+  
     public hasEnabledTwoFactorAuth() {
       return this.twoFactorEnabled
     }
@@ -60,4 +58,6 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
         : null
     }
   }
+  
+  return TwoFactorAuthenticableUser
 }

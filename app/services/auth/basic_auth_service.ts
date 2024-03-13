@@ -37,7 +37,7 @@ export default class BasicAuthService {
     }
 
     const user = await User.create(data)
-    await user.related('settings').create()
+    await user.initNotificationPreference()
 
     return user
   }
@@ -47,30 +47,17 @@ export default class BasicAuthService {
     { email, password, ip }: LoginCredentials, 
     twoFactorAuthService: TwoFactorAuthService
   ) {
-    const limiterKey = this.limiterKeyFor(user, ip)
-
-    const res = await this.loginLimiter.penalize(limiterKey, () => {
+    const limiterKey = this.limiterKeyFor(email, ip)
       
+    const [error, user] = await this.loginLimiter.penalize(limiterKey, async () => {
+      const user = await User.verifyCredentials(email, password)
+      return user
     })
-    return log(res)
     
-    if (await this.loginLimiter.isBlocked(limiterKey)) {
-      throw new LoginAttemptLimitExceededException()
+    if(error) {
+      throw error
     }
-
-    const user = await User.internals().where('email', email).first()
-
-    if (!user) {
-      throw new InvalidCredentialException()
-    }
-
-    if (!(await user.comparePassword(password))) {
-      await this.loginLimiter.increment(limiterKey)
-      throw new InvalidCredentialException()
-    }
-    
-    await this.loginLimiter.delete(limiterKey)
-
+  
     if (user.hasEnabledTwoFactorAuth()) {
       await twoFactorAuthService.challenge(user)
       throw new TwoFactorAuthRequiredException(user)
@@ -130,8 +117,8 @@ export default class BasicAuthService {
   }
 
 
-  private limiterKeyFor(user: User, ip: string) {
-    return `login__${user.email}_${ip}`
+  private limiterKeyFor(email: string, ip: string) {
+    return `login__${email}_${ip}`
   }
 
 }

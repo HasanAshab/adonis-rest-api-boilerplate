@@ -3,14 +3,8 @@ import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 
 export default function Expirable(Superclass: NormalizeConstructor<typeof BaseModel>) {
-  return class extends Superclass {
-    public static boot() {
-      if (this.booted) return
-      super.boot()
-      
-      column.dateTime()(this.prototype, 'expiresAt')
-    }
-
+  class ExpirableModel extends Superclass {
+    @column.dateTime()
     public expiresAt: DateTime | null = null
 
     public isExpired() {
@@ -21,4 +15,6 @@ export default function Expirable(Superclass: NormalizeConstructor<typeof BaseMo
       return !this.isExpired()
     }
   }
+  
+  return ExpirableModel
 }

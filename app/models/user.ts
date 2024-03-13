@@ -1,5 +1,5 @@
 import BaseModel from '#models/base_model'
-import { column, beforeSave } from '@adonisjs/lucid/orm'
+import { column } from '@adonisjs/lucid/orm'
 //import { attachment, AttachmentContract } from '@ioc:adonis/addons/attachment_lite'
 import { compose } from '@adonisjs/core/helpers'
 import config from '@adonisjs/core/services/config'
@@ -12,21 +12,29 @@ import TwoFactorAuthenticable from '#models/traits/two_factor_authenticable'
 import SocialAuthenticable from '#models/traits/social_authenticable'
 //import OptInNotifiable from '#models/traits/opt_in_notifiable'
 import InvalidPasswordException from '#exceptions/invalid_password_exception'
+import { withAuthFinder } from '@adonisjs/auth'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 
 
+const AuthFinder = withAuthFinder(() => hash.use(), {
+  uids: ['email'],
+  passwordColumnName: 'password',
+})
+
+
 export type Role = 'user' | 'admin'
-//export type Role = typeof import('Config/app')['constraints']['user']['role'][number]
 
 export default class User extends compose(
   BaseModel,
-  HasFactory,
+  AuthFinder,
+   HasFactory,
   HasTimestamps,
-  HasApiTokens,
-  //OptInNotifiable,
-  TwoFactorAuthenticable,
-  SocialAuthenticable
+   HasApiTokens,
+    //OptInNotifiable,
+   TwoFactorAuthenticable,
+   SocialAuthenticable
 ) {
+  
   public static accessTokens = DbAccessTokensProvider.forModel(User)
 
   static factoryClass = UserFactory 
@@ -98,13 +106,6 @@ export default class User extends compose(
     }
 
     return null
-  }
-
-  @beforeSave()
-  public static async hashPasswordIfModified(user: User) {
-    if (user.$dirty.password) {
-      user.password = await hash.make(user.password)
-    }
   }
 
   public static internals() {

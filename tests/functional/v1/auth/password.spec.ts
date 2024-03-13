@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import { refreshDatabase } from '#tests/helpers'
 import Mail from '#tests/assertors/mail_assertor'
 import User from '#models/user'
 import ResetPasswordMail from '#mails/reset_password_mail'

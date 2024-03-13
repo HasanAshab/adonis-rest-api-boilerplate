@@ -5,7 +5,7 @@ import ApiException from "#exceptions/api_exception";
 export default class VerifyRecaptcha {
   public async handle({ request, response }: HttpContext, next: () => Promise<void>) {
     try {
-      await recaptcha.validate(request.input('recaptchaResponse'))
+     // await recaptcha.validate(request.input('recaptchaResponse'))
       await next()
     }
     catch (errors) {

@@ -15,6 +15,8 @@ export const registerValidator = vine.compile(
       .password(config.get('app.constraints.user.password.strategy'))
       .maxLength(config.get('app.constraints.user.password.maxLength')),
 
-    avatar: vine.file(config.get('app.constraints.user.avatar'))
+    avatar: vine.file(
+      config.get('app.constraints.user.avatar')
+    ).optional()
   })
 )

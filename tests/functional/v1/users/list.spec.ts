@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import { extract } from '#app/helpers'
 import ListUserResource from '#app/http/resources/v1/user/list_user_resource'
