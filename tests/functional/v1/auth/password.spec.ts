@@ -4,7 +4,6 @@ import mail from '@adonisjs/mail/services/main'
 import User from '#models/user'
 import ResetPasswordMail from '#mails/reset_password_mail'
 import PasswordChangedMail from '#mails/password_changed_mail'
-import { Settings } from 'luxon'
 
 
 /*

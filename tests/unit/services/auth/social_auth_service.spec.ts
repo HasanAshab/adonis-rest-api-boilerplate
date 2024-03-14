@@ -13,8 +13,6 @@ Run this suits:
 node ace test unit --files="services/auth/social_auth_service.spec.ts"
 */
 test.group('Services/Auth/SocialAuthService', (group) => {
-  const service = new SocialAuthService()
-
   refreshDatabase(group)
 
   //Create
@@ -27,7 +25,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       emailVerificationState: 'verified',
     }
 
-    const result = await service.upsertUser('google', data)
+    const result = await SocialAuthService.sync('google', data)
 
     expect(result.user.email).toBe(data.email)
     expect(result.user.username).toBe('test')
@@ -53,7 +51,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
         emailVerificationState: state,
       }
 
-      const result = await service.upsertUser('google', data)
+      const result = await SocialAuthService.sync('google', data)
 
       expect(result.user.verified).toBe(status)
     })
@@ -66,7 +64,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       emailVerificationState: 'verified',
     }
 
-    const result = await service.upsertUser('google', data)
+    const result = await SocialAuthService.sync('google', data)
 
     expect(result.user.username).toBe('test')
   })
@@ -92,7 +90,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       socialAvatarUrl: 'http://example.com/old-avatar.jpg',
     })
 
-    const result = await service.upsertUser(socialProvider, data)
+    const result = await SocialAuthService.sync(socialProvider, data)
 
     expect(result.user.name).toBe(data.name)
     expect(result.user.socialAvatarUrl).toBe(data.avatarUrl)
@@ -116,7 +114,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       username: 'test',
     })
 
-    const result = await service.upsertUser(socialProvider, data)
+    const result = await SocialAuthService.sync(socialProvider, data)
 
     expect(result.user.email).toBe(user.email)
   })
@@ -138,7 +136,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       username: 'test',
     })
 
-    const result = await service.upsertUser(socialProvider, data, 'test12')
+    const result = await SocialAuthService.sync(socialProvider, data, 'test12')
 
     expect(result.user.username).toBe(user.username)
   })
@@ -162,7 +160,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       username: 'test',
     })
 
-    const result = await service.upsertUser(socialProvider, data)
+    const result = await SocialAuthService.sync(socialProvider, data)
 
     expect(result.user.username).toBe(user.username)
   })
@@ -194,7 +192,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
         verified: status,
       })
 
-      const result = await service.upsertUser(socialProvider, data)
+      const result = await SocialAuthService.sync(socialProvider, data)
 
       expect(result.user.verified).toBe(status)
     })
@@ -229,7 +227,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
         verified: status,
       })
 
-      const result = await service.upsertUser(socialProvider, data)
+      const result = await SocialAuthService.sync(socialProvider, data)
 
       expect(result.user.verified).toBe(status)
     })
@@ -246,7 +244,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       emailVerificationState: 'verified',
     }
 
-    const result = await service.upsertUser('google', data)
+    const result = await SocialAuthService.sync('google', data)
 
     expect(result.isRegisteredNow).toBeTrue()
   })
@@ -260,8 +258,8 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       emailVerificationState: 'verified',
     }
 
-    const result1 = await service.upsertUser('google', data)
-    const result2 = await service.upsertUser('google', data)
+    const result1 = await SocialAuthService.sync('google', data)
+    const result2 = await SocialAuthService.sync('google', data)
 
     expect(result1.isRegisteredNow).toBeTrue()
     expect(result2.isRegisteredNow).toBeFalse()
@@ -278,7 +276,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       avatarUrl: 'http://example.com/avatar.jpg',
       emailVerificationState: 'unsupported',
     }
-    const result = service.upsertUser('google', data, 'test')
+    const result = SocialAuthService.sync('google', data, 'test')
 
     await expect(result).rejects.toThrow(EmailRequiredException)
   })
@@ -294,7 +292,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
     }
 
     await User.create({ email })
-    const result = service.upsertUser('google', data)
+    const result = SocialAuthService.sync('google', data)
 
     await expect(result).rejects.toThrow(DuplicateEmailException)
   })
@@ -314,7 +312,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       socialProvider,
     })
 
-    const result = service.upsertUser(socialProvider, data)
+    const result = SocialAuthService.sync(socialProvider, data)
 
     await expect(result).rejects.toThrow(UsernameRequiredException)
   })
@@ -331,7 +329,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
     }
 
     User.prototype.generateUsername = () => null
-    const result = service.upsertUser('google', data)
+    const result = SocialAuthService.sync('google', data)
 
     await expect(result).rejects.toThrow(UsernameRequiredException)
   })
@@ -348,7 +346,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
     await User.create({
       username: data.username,
     })
-    const result = service.upsertUser('google', data)
+    const result = SocialAuthService.sync('google', data)
 
     await expect(result).rejects.toThrow(DuplicateUsernameException)
   })
@@ -370,7 +368,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       username: data.username,
     })
 
-    const result = service.upsertUser('google', data)
+    const result = SocialAuthService.sync('google', data)
 
     await expect(result).rejects.toThrow(DuplicateEmailAndUsernameException)
   })
