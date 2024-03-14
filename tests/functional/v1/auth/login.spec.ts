@@ -65,7 +65,7 @@ test.group('Auth / Login', (group) => {
     const lockedResponse = await client.post('/api/v1/auth/login').json(payload)
 
     responses.forEach(response => {
-      response.assertStatus(400)
+      response.assertStatus(401)
     })
     lockedResponse.assertStatus(429)
   }).pin()

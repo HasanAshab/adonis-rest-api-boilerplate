@@ -19,8 +19,8 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * response to the client
    */
   async handle(error: unknown, ctx: HttpContext) {
-    if(errors.E_INVALID_CREDENTIALS) {
-    //  error = new InvalidCredentialException
+    if(error instanceof errors.E_INVALID_CREDENTIALS) {
+      error = new InvalidCredentialException
     }
     
     return super.handle(error, ctx)
