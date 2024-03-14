@@ -34,8 +34,17 @@ export default class User extends compose(
   TwoFactorAuthenticable,
   SocialAuthenticable
 ) {
-  
+  public currentAccessToken?: string
   public static accessTokens = DbAccessTokensProvider.forModel(User)
+  public static findForAuth<T extends typeof UserWithUserFinder>(
+    this: T,
+    uids: string[],
+    value: string
+  ): Promise<InstanceType<T> | null> {
+    const query = this.query()
+    uids.forEach((uid) => query.orWhere(uid, value))
+    return query.whereNotNull('password').limit(1).first()
+  }
 
   static factoryClass = UserFactory 
   

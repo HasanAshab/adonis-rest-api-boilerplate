@@ -21,7 +21,6 @@ export interface LoginCredentials {
   ip: string
 }
 
-let i = 0, j = 0 
 export default class AuthService {
   private static loginLimiter = limiter.use({
     requests: 5,
@@ -45,10 +44,7 @@ export default class AuthService {
   }
   public static async attempt({ email, password, ip }: LoginCredentials) {
     const limiterKey = this.limiterKeyFor(email, ip)
-      
-      log(i++)
     const [error, user] = await this.loginLimiter.penalize(limiterKey, async () => {
-      log(j++)
       const user = await User.verifyCredentials(email, password)
       return user
     })
@@ -63,6 +59,12 @@ export default class AuthService {
     }
     
     return await user.createToken()
+  }
+  
+  public static async logout(user: User) {
+    if(user.currentAccessToken){
+      await User.accessTokens.delete(user, user.currentAccessToken.identifier)
+    }
   }
 
   public static async changePassword(user: User, oldPassword: string, newPassword: string) {

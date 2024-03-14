@@ -25,17 +25,17 @@ test.group('Auth / Login', (group) => {
     response.assertBodyHaveProperty('data.token')
   })
 
-  test("shouldn't login with wrong password", async ({ client, expect }) => {
+  test("shouldn't login with wrong password", async ({ client }) => {
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
       password: 'wrong-pass',
     })
 
     response.assertStatus(401)
-    expect(response.body()).not.toHaveProperty('data.token')
+    response.assertBodyNotHaveProperty('data.token')
   })
 
-  test("shouldn't login manually in social account", async ({ client, expect }) => {
+  test("shouldn't login manually in social account", async ({ client }) => {
     const user = await User.factory().social().create()
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
@@ -43,21 +43,18 @@ test.group('Auth / Login', (group) => {
     })
 
     response.assertStatus(401)
-    expect(response.body()).not.toHaveProperty('data.token')
+    response.assertBodyNotHaveProperty('data.token')
   })
 
-  test('should prevent Brute Force login', async ({ client, expect }) => {
-    const limit = 10
+  test('should prevent Brute Force login', async ({ client }) => {
+    const limit = 5
     const responses = []
     const payload = {
       email: user.email,
       password: 'wrong-pass',
     }
     
-    let z =0
     for (let i = 0; i < limit; i++) {
-      log('yo', z++)
-
       const response = await client.post('/api/v1/auth/login').json(payload)
       responses.push(response)
     }
@@ -68,7 +65,7 @@ test.group('Auth / Login', (group) => {
       response.assertStatus(401)
     })
     lockedResponse.assertStatus(429)
-  }).pin()
+  })
 
   test('Login should flag for two factor auth', async ({ client }) => {
     const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()

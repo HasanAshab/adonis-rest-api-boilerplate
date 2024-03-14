@@ -1,6 +1,4 @@
 This:
-F: login
-
 F: event
 F: time based tests
 t: feature/socialauth

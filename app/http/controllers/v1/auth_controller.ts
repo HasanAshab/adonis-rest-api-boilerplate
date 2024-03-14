@@ -73,7 +73,7 @@ export default class AuthController {
    * @responseBody 200 - { message: <string> }
    */
   public async logout({ auth }: HttpContext) {
-    await auth.logout()
+    await AuthService.logout(auth.user)
     return 'Logged out successfully!'
   }
 
