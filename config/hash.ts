@@ -2,8 +2,7 @@ import { defineConfig, drivers } from '@adonisjs/core/hash'
 import { plainTextDriver } from '#app/hashing/drivers/plain_text_driver'
 
 const hashConfig = defineConfig({
-  default: 'plainText',
-
+  default: 'scrypt',
   list: {
     scrypt: drivers.scrypt({
       cost: 16384,
@@ -12,7 +11,7 @@ const hashConfig = defineConfig({
       maxMemory: 33554432,
     }),
     plainText: plainTextDriver()
-  },
+  }
 })
 
 export default hashConfig

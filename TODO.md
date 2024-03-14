@@ -1,9 +1,7 @@
 This:
-t: feature/socialauth
-F: 2fa user removed phone number
+I: needs rehash
 
 Fallback: solve type, doc
-
 
 
 

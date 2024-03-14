@@ -1,6 +1,7 @@
 import type RegisterValidator from '#validators/v1/auth/register_validator'
 import config from '@adonisjs/core/services/config'
 //import { Attachment } from '@ioc:adonis/addons/attachment_lite'
+import hash from '@adonisjs/core/services/hash'
 import User from '#models/user'
 import Token from '#models/token'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
@@ -56,6 +57,11 @@ export default class AuthService {
     if (user.hasEnabledTwoFactorAuth()) {
       await TwoFactorAuthService.challenge(user)
       throw new TwoFactorAuthRequiredException(user)
+    }
+
+    if (await hash.needsReHash(user.password)) {
+      user.password = password
+      await user.save()
     }
     
     return await user.createToken()

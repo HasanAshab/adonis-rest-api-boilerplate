@@ -1,6 +1,6 @@
 import type Registered from '#events/registered'
 //import Notification from '@ioc:verful/notification'
-import NewUserJoinedNotification from '#otifications/new_user_joined_notification'
+import NewUserJoinedNotification from '#notifications/new_user_joined_notification'
 import User from '#models/user'
 
 export default class SendNewUserJoinedNotificationToAdmins {
