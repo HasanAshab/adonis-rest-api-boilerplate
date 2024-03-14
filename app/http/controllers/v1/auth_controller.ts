@@ -1,10 +1,9 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { inject } from '@adonisjs/core'
 import router from '@adonisjs/core/services/router'
 import emitter from '@adonisjs/core/services/emitter'
 import User from '#models/user'
 import Token from '#models/token'
-import BasicAuthService from '#services/auth/basic_auth_service'
+import AuthService from '#services/auth/auth_service'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
 import OtpService from '#services/otp_service'
@@ -20,16 +19,9 @@ import {
 } from '#validators/v1/auth/two_factor_validator'
 
 
-@inject()
 export default class AuthController {
   public static readonly VERSION = 'v1'
   
-  constructor(
-    private readonly authService: BasicAuthService,
-    private readonly twoFactorAuthService: TwoFactorAuthService,
-    private readonly socialAuthService: SocialAuthService
-  ) {}
-
   /**
    * @register
    * @responseBody 201 - { "message": "Verification email sent", "data": { "user": <User>, "token": } }
@@ -37,7 +29,7 @@ export default class AuthController {
   public async register({ request, response }: HttpContext) {
     const registrationData = await request.validateUsing(registerValidator)
 
-    const user = await this.authService.register(registrationData)
+    const user = await AuthService.register(registrationData)
 
     emitter.emit('registered', {
       version: AuthController.VERSION,
@@ -65,7 +57,7 @@ export default class AuthController {
    * @responseBody 200 - { message: <string>, data: { token: } }
    */
   public async login({ request }: HttpContext) {
-    const token = await this.authService.attempt({
+    const token = await AuthService.attempt({
       ...(await request.validateUsing(loginValidator)),
       ip: request.ip(),
     })
@@ -91,27 +83,27 @@ export default class AuthController {
    */
   public async verifyEmail({ request }) {
     const { id, token } = await request.validateUsing(emailVerificationValidator)
-    await this.authService.verifyEmail(id, token)
+    await AuthService.verifyEmail(id, token)
     return 'Email verified successfully!'  
   }
 
 
   public async resendEmailVerification({ request, response }: HttpContext) {
     const { email } = await request.validateUsing(resendEmailVerificationValidator)
-    await this.authService.sendVerificationMail(email)
+    await AuthService.sendVerificationMail(email)
     response.accepted('Verification link sent to email!')
   }
 
   public async forgotPassword({ request, response }: HttpContext) {
     const { email } = await request.validateUsing(forgotPasswordValidator)
-    await this.authService.forgotPassword(email)
+    await AuthService.forgotPassword(email)
     response.accepted('Password reset link sent to your email!')
   }
 
   public async resetPassword({ request }: HttpContext) {
     const { id, token, password } = await request.validateUsing(resetPasswordValidator)
     const user = await User.findOrFail(id)
-    await this.authService.resetPassword(user, token, password)
+    await AuthService.resetPassword(user, token, password)
     await new PasswordChangedMail(user).sendLater()
     return 'Password changed successfully!'
   }
@@ -126,7 +118,7 @@ export default class AuthController {
     const user = await User.findByOrFail('email', email)
     
     await Token.verify('two_factor_auth_challenge', user.id, token)
-    await this.twoFactorAuthService.challenge(user)
+    await TwoFactorAuthService.challenge(user)
     
     return 'Challenge sent!'
   }
@@ -135,7 +127,7 @@ export default class AuthController {
     const { email, token, challengeToken } = await request.validateUsing(twoFactorChallengeVerificationValidator)
     const user = await User.findByOrFail('email', email)
 
-    const authToken = await this.twoFactorAuthService.verify(user, challengeToken)
+    const authToken = await TwoFactorAuthService.verify(user, challengeToken)
     await Token.verify('two_factor_auth_challenge_verification', user.id, token)
 
     return {
@@ -149,12 +141,12 @@ export default class AuthController {
    * @responseBody 200 - { data: string[] }
    */
   public generateRecoveryCodes({ auth }: AuthenticRequest) {
-    return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
+    return TwoFactorAuthService.generateRecoveryCodes(auth.user!)
   }
 
   public async recoverTwoFactorAccount({ request }: HttpContext) {
     const { email, code } = await request.validateUsing(twoFactorAccountRecoveryValidator)
-    const token = await this.twoFactorAuthService.recover(email, code)
+    const token = await TwoFactorAuthService.recover(email, code)
 
     return {
       message: 'Account recovered successfully!',
@@ -173,7 +165,7 @@ export default class AuthController {
       data.emailVerificationState = 'unverified'
     }
 
-    const { user, isRegisteredNow } = await this.socialAuthService.sync(params.provider, data)
+    const { user, isRegisteredNow } = await SocialAuthService.sync(params.provider, data)
     const token = await user.createToken()
 
     if (!isRegisteredNow) {

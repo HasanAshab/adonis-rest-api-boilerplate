@@ -22,9 +22,9 @@ export default class NotificationType extends compose(BaseModel, HasFactory, Has
   @column()
   declare description: string
   
-  //todo
-  public serializeExtras(notificationService = new NotificationService) {
-    const defaultChannelPreferences = notificationService.defaultChannelPreferences(false)
+
+  public serializeExtras() {
+    const defaultChannelPreferences = NotificationService.defaultChannelPreferences(false)
     return {
       channels: this.$extras.pivot_channels.reduce((channelPreference, channel) => {
         channelPreference[channel] = true

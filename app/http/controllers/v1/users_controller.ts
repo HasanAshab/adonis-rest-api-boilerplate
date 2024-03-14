@@ -1,8 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { bind } from '@adonisjs/route-model-binding'
-import { inject } from '@adonisjs/core'
 import User from '#models/user'
-import BasicAuthService from '#services/auth/basic_auth_service'
+import AuthService from '#services/auth/auth_service'
 import Otp from '#services/auth/otp'
 import { Attachment } from '@ioc:adonis/addons/attachment_lite'
 import { 
@@ -26,11 +25,7 @@ export default class UsersController {
     return UserProfileResource.make(auth.user!)
   }
 
-  @inject()
-  public async updateProfile(
-    { request, auth: { user } }: HttpContext,
-    authService: BasicAuthService
-  ) {
+  public async updateProfile({ request, auth: { user } }: HttpContext) {
     const { avatar, ...data } = await request.validateUsing(updateProfileValidator)
     user.merge(data)
 
@@ -45,7 +40,7 @@ export default class UsersController {
     await user.save()
 
     if (data.email) {
-      await authService.sendVerificationMail(user)
+      await AuthService.sendVerificationMail(user)
       return 'Verification email sent to your new email address!'
     }
 
@@ -81,13 +76,9 @@ export default class UsersController {
       : response.notFound('User not found')
   }
 
-  @inject()
-  public async changePassword(
-    { request, auth }: HttpContext,
-    authService: BasicAuthService
-  ) {
+  public async changePassword({ request, auth }: HttpContext) {
     const { oldPassword, newPassword } = await request.validateUsing(changePasswordValidator)
-    await authService.changePassword(auth.user!, oldPassword, newPassword)
+    await AuthService.changePassword(auth.user!, oldPassword, newPassword)
     await new PasswordChangedMail(auth.user!).sendLater()
     return 'Password changed!'
   }

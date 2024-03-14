@@ -1,5 +1,4 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { inject } from '@adonisjs/core'
 import User from '#models/user'
 import Token from '#models/token'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
@@ -14,31 +13,25 @@ import {
 } from "#validators/v1/settings_validator";
 
 
-@inject()
 export default class SettingsController {
-  constructor(
-    private readonly twoFactorAuthService: TwoFactorAuthService,
-    private readonly notificationService: NotificationService
-  ) {}
-  
   public async twoFactorAuth({ auth }: HttpContext) {
     return TwoFactorSettingsResource.make(auth.user!)
   }
   
   public async enableTwoFactorAuth({ request, auth }: HttpContext) {
     const { method } = await request.validateUsing(twoFactorAuthMethodValidator)
-    await this.twoFactorAuthService.enable(auth.user!, method)
+    await TwoFactorAuthService.enable(auth.user!, method)
     return 'Two-Factor Authentication enabled!'
   }
   
   public async disableTwoFactorAuth({ auth }: HttpContext) {
-    await this.twoFactorAuthService.disable(auth.user!)
+    await TwoFactorAuthService.disable(auth.user!)
     return 'Two-Factor Authentication disabled!'
   }
   
   public async updateTwoFactorAuthMethod({ request, auth }: HttpContext) {
     const { method } = await request.validateUsing(twoFactorAuthMethodValidator)
-    await this.twoFactorAuthService.changeMethod(auth.user!, method)
+    await TwoFactorAuthService.changeMethod(auth.user!, method)
     return 'Two-Factor Authentication method changed!'
   }
 
@@ -53,7 +46,7 @@ export default class SettingsController {
   }
   
   public generateRecoveryCodes({ auth }: HttpContext) {
-    return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
+    return TwoFactorAuthService.generateRecoveryCodes(auth.user!)
   }
 
   public async notificationPreference({ auth: { user } }: HttpContext) {
@@ -75,11 +68,11 @@ export default class SettingsController {
     
     await Token.verify(
       'email_unsubscription',
-      this.notificationService.emailUnsubscriptionTokenKey(user, notificationTypeName),
+      NotificationService.emailUnsubscriptionTokenKey(user, notificationTypeName),
       token
     )
     await user.disableNotification(notificationType.id, 'email')
-    const resubscribtionToken = await this.notificationService.emailResubscriptionToken(user, notificationTypeName)
+    const resubscribtionToken = await NotificationService.emailResubscriptionToken(user, notificationTypeName)
     
     return { 
       message: 'Email unsubscribed!',
@@ -95,7 +88,7 @@ export default class SettingsController {
     
     await Token.verify(
       'email_resubscription',
-      this.notificationService.emailResubscriptionTokenKey(user, notificationTypeName),
+      NotificationService.emailResubscriptionTokenKey(user, notificationTypeName),
       token
     )
     
@@ -103,14 +96,4 @@ export default class SettingsController {
     
     return 'Email re-subscribed!'
   }
-
-  /*
-  async getAppSettings() {
-    return config.get();
-  }
-  async updateAppSettings({ body }: UpdateAppSettingsRequest) {
-    config.set(body);
-    return "App Settings updated!";
-  }
-  */
 }

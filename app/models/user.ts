@@ -27,12 +27,12 @@ export type Role = 'user' | 'admin'
 export default class User extends compose(
   BaseModel,
   AuthFinder,
-   HasFactory,
+  HasFactory,
   HasTimestamps,
-   HasApiTokens,
-    //OptInNotifiable,
-   TwoFactorAuthenticable,
-   SocialAuthenticable
+  HasApiTokens,
+  //OptInNotifiable,
+  TwoFactorAuthenticable,
+  SocialAuthenticable
 ) {
   
   public static accessTokens = DbAccessTokensProvider.forModel(User)

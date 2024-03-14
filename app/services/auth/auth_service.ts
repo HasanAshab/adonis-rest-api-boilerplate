@@ -1,6 +1,5 @@
 import type RegisterValidator from '#validators/v1/auth/register_validator'
 import config from '@adonisjs/core/services/config'
-import { inject } from '@adonisjs/core'
 //import { Attachment } from '@ioc:adonis/addons/attachment_lite'
 import User from '#models/user'
 import Token from '#models/token'
@@ -23,7 +22,7 @@ export interface LoginCredentials {
 }
 
 
-export default class BasicAuthService {
+export default class AuthService {
   private loginLimiter = limiter.use({
     requests: 5,
     duration: '2 minutes',
@@ -31,7 +30,7 @@ export default class BasicAuthService {
   })
 
 
-  public async register(data: RegisterValidator['__type']) {
+  public static async register(data: RegisterValidator['__type']) {
     if (data.avatar) {
       data.avatar = Attachment.fromFile(data.avatar)
     }
@@ -42,11 +41,7 @@ export default class BasicAuthService {
     return user
   }
 
-  @inject()
-  public async attempt(
-    { email, password, ip }: LoginCredentials, 
-    twoFactorAuthService: TwoFactorAuthService
-  ) {
+  public static async attempt({ email, password, ip }: LoginCredentials) {
     const limiterKey = this.limiterKeyFor(email, ip)
       
     const [error, user] = await this.loginLimiter.penalize(limiterKey, async () => {
@@ -59,14 +54,14 @@ export default class BasicAuthService {
     }
   
     if (user.hasEnabledTwoFactorAuth()) {
-      await twoFactorAuthService.challenge(user)
+      await TwoFactorAuthService.challenge(user)
       throw new TwoFactorAuthRequiredException(user)
     }
     
     return await user.createToken()
   }
 
-  public async changePassword(user: User, oldPassword: string, newPassword: string) {
+  public static async changePassword(user: User, oldPassword: string, newPassword: string) {
     if (!user.password) {
       throw new PasswordChangeNotAllowedException()
     }
@@ -77,7 +72,7 @@ export default class BasicAuthService {
     await user.save()
   }
   
-  public async sendVerificationMail(user: User | string) {
+  public static async sendVerificationMail(user: User | string) {
     if (typeof user === 'string') {
       user = await User.internals().where('email', user).first()
     }
@@ -90,16 +85,16 @@ export default class BasicAuthService {
     return true
   }
   
-  public async verifyEmail(id: number, token: string) {
+  public static async verifyEmail(id: number, token: string) {
     await Token.verify('verification', id, token)
     await this.markAsVerified(id)
   }
   
-  public async markAsVerified(id: number) {
+  public static async markAsVerified(id: number) {
     await User.query().whereUid(id).updateOrFail({ verified: true });
   }
 
-  public async forgotPassword(user: User | string) {
+  public static async forgotPassword(user: User | string) {
     if (typeof user === 'string') {
       user = await User.internals().where('email', user).where('verified', true).first()
     }
@@ -110,7 +105,7 @@ export default class BasicAuthService {
     return false
   }
 
-  public async resetPassword(user: User, token: string, password: string) {
+  public static async resetPassword(user: User, token: string, password: string) {
     await Token.verify('password_reset', user.id, token)
     user.password = password
     await user.save()
@@ -120,5 +115,4 @@ export default class BasicAuthService {
   private limiterKeyFor(email: string, ip: string) {
     return `login__${email}_${ip}`
   }
-
 }

@@ -10,28 +10,28 @@ import InvalidRecoveryCodeException from '#exceptions/invalid_recovery_code_exce
 
 
 export default class TwoFactorAuthService {
-  public enable(user: User, method: string) {
+  public static enable(user: User, method: string) {
     return TwoFactorMethod.use(method).enable(user)
   }
 
-  public disable(user: User) {
+  public static disable(user: User) {
     return TwoFactorMethod.use(user.twoFactorMethod ?? 'authenticator').disable(user)
   }
   
-  public changeMethod(user: User, method: string) {
+  public static changeMethod(user: User, method: string) {
     return TwoFactorMethod.use(method).assign(user)
   }
   
-  public challenge(user: User) {
+  public static challenge(user: User) {
     return TwoFactorMethod.use(user.twoFactorMethod).challenge(user)
   }
   
-  public async verify(user: User, token: string) {
+  public static async verify(user: User, token: string) {
     await TwoFactorMethod.use(user.twoFactorMethod).verify(user, token)
     return await user.createToken()
   }
 
-  public async recover(email: string, code: string) {
+  public static async recover(email: string, code: string) {
     const user = await User.findByOrFail('email', email)
     if(!user.isValidRecoveryCode(code)) {
       throw new InvalidRecoveryCodeException()
@@ -40,7 +40,7 @@ export default class TwoFactorAuthService {
     return await user.createToken()
   }
 
-  public async generateRecoveryCodes(user: User, count = 8) {
+  public static async generateRecoveryCodes(user: User, count = 8) {
     const codes = range(count).map(RecoveryCode.generate)
     user.twoFactorRecoveryCodes = encryption.encrypt(JSON.stringify(codes))
     await user.save()
