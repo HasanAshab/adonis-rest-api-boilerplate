@@ -16,6 +16,7 @@
   },
   "imports": {
     "#controllers/*": "./app/http/controllers/*.js",
+    "#resources/*": "./app/http/resources/*.js",
     "#exceptions/*": "./app/exceptions/*.js",
     "#models/*": "./app/models/*.js",
     "#mails/*": "./app/mails/*.js",

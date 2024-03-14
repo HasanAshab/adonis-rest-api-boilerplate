@@ -2,7 +2,7 @@ import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import NotificationType from '#models/notification_type'
-import NotificationTypeCollection from '#app/http/resources/v1/notification_type/notification_type_collection'
+import NotificationTypeCollection from '#resources/v1/notification_type/notification_type_collection'
 
 /*
 Run this suits:

@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import NotificationCollection from '#app/http/resources/v1/notification/notification_collection'
-import ShowNotificationResource from '#app/http/resources/v1/notification/show_notification_resource'
+import NotificationCollection from '#resources/v1/notification/notification_collection'
+import ShowNotificationResource from '#resources/v1/notification/show_notification_resource'
 
 
 export default class NotificationsController {

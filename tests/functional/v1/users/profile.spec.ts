@@ -2,9 +2,9 @@ import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import { extract } from '#app/helpers'
-import ListUserResource from '#app/http/resources/v1/user/list_user_resource'
-import UserProfileResource from '#app/http/resources/v1/user/user_profile_resource'
-import ShowUserResource from '#app/http/resources/v1/user/show_user_resource'
+import ListUserResource from '#resources/v1/user/list_user_resource'
+import UserProfileResource from '#resources/v1/user/user_profile_resource'
+import ShowUserResource from '#resources/v1/user/show_user_resource'
 import Mail from '#tests/assertors/mail_assertor'
 
 /*

@@ -2,8 +2,8 @@ import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import NotificationFactory from 'database/factories/notification_factory'
-import NotificationCollection from '#app/http/resources/v1/notification/notification_collection'
-import ShowNotificationResource from '#app/http/resources/v1/notification/show_notification_resource'
+import NotificationCollection from '#resources/v1/notification/notification_collection'
+import ShowNotificationResource from '#resources/v1/notification/show_notification_resource'
 
 /*
 Run this suits:

@@ -3,8 +3,8 @@ import User from '#models/user'
 import Token from '#models/token'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import NotificationService from '#services/notification_service'
-import NotificationPreferenceCollection from '#app/http/resources/v1/settings/notification_preference_collection'
-import TwoFactorSettingsResource from '#app/http/resources/v1/settings/two_factor_settings_resource'
+import NotificationPreferenceCollection from '#resources/v1/settings/notification_preference_collection'
+import TwoFactorSettingsResource from '#resources/v1/settings/two_factor_settings_resource'
 import { 
   twoFactorAuthMethodValidator,
   updateNotificationPreferenceValidator,

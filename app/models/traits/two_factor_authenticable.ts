@@ -1,6 +1,7 @@
 import type { NormalizeConstructor } from '@adonisjs/core/helpers'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, beforeUpdate } from '@adonisjs/lucid/orm'
 import encryption from '@adonisjs/core/services/encryption'
+import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
 import RecoveryCode from '#services/auth/two_factor/recovery_code'
 import { authenticator } from 'otplib';
 import qrcode from 'qrcode';
@@ -13,7 +14,7 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
   class TwoFactorAuthenticableUser extends Superclass {
     @column()
     public twoFactorEnabled = false
-   
+  
     @column()
     public twoFactorMethod: string | null = null
     
@@ -22,8 +23,7 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
     
     @column({ serializeAs: null })
     public twoFactorRecoveryCodes: string | null = null
-    
-  
+
     public hasEnabledTwoFactorAuth() {
       return this.twoFactorEnabled
     }
@@ -34,7 +34,6 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
         : []
     }
     
-
     public isValidRecoveryCode(code: string) {
       return !!this.recoveryCodes().find(recoveryCode => recoveryCode === code)
     }
@@ -56,6 +55,13 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
       return this.twoFactorSecret
         ? await qrcode.toString(this.twoFactorQrCodeUrl(), { type: 'svg' })
         : null
+    }
+    
+    @beforeUpdate()
+    public static async disableTwoFactorAuth(user: TwoFactorAuthenticableUser) {
+      if(!user.hasEnabledTwoFactorAuth()) return
+      const method = twoFactorMethod.use(user.twoFactorMethod)
+      method.shouldDisable(user) && await method.disable(user)
     }
   }
   

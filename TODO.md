@@ -1,16 +1,6 @@
 This:
-F: time based tests
 t: feature/socialauth
-I: login alerts, settings disable for new
-I: trust device
 F: 2fa user removed phone number
-F: Sql I
-I: Mail queue
-
-
-F: Circ Dep Api Res
-D: Api Res
-
 
 Fallback: solve type, doc
 

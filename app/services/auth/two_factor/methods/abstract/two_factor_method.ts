@@ -20,6 +20,10 @@ export default abstract class TwoFactorMethod {
     await user.save()
   }
   
+  public shouldDisable(user: User) {
+    return false
+  }
+
   public async disable(user: User) {
     if(user.hasEnabledTwoFactorAuth()) {
       user.twoFactorEnabled = false

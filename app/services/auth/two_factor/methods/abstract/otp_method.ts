@@ -32,4 +32,17 @@ export default abstract class OtpMethod extends TwoFactorMethod {
   public isValid(user: User, token: string) {
     return Otp.isValid(token, user.twoFactorSecret)
   }
+  
+  public shouldDisable(user: User) {
+    if(!user.phoneNumber) {
+      return true
+    }
+    
+    // checking if the phone number is changed or not
+    if(user.$dirty.phoneNumber && user.phoneNumber !== user.$original.phoneNumber) {
+      return true
+    }
+    
+    return false
+  }
 }

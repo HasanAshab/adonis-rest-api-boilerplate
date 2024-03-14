@@ -1,9 +1,9 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { bind } from '@adonisjs/route-model-binding'
+//import { bind } from '@adonisjs/route-model-binding'
 import User from '#models/user'
 import AuthService from '#services/auth/auth_service'
 import Otp from '#services/auth/otp'
-import { Attachment } from '@ioc:adonis/addons/attachment_lite'
+//import { Attachment } from '@ioc:adonis/addons/attachment_lite'
 import { 
   updateProfileValidator,
   changePasswordValidator, 
@@ -11,9 +11,9 @@ import {
 } from '#validators/v1/user_validator'
 import SamePhoneNumberException from '#exceptions/validation/same_phone_number_exception'
 import PasswordChangedMail from '#mails/password_changed_mail'
-import ListUserResource from '#app/http/resources/v1/user/list_user_resource'
-import UserProfileResource from '#app/http/resources/v1/user/user_profile_resource'
-import ShowUserResource from '#app/http/resources/v1/user/show_user_resource'
+import ListUserResource from '#resources/v1/user/list_user_resource'
+import UserProfileResource from '#resources/v1/user/user_profile_resource'
+import ShowUserResource from '#resources/v1/user/show_user_resource'
 
 
 export default class UsersController {
@@ -61,7 +61,7 @@ export default class UsersController {
     response.noContent()
   }
 
-  @bind()
+ // @bind() todo
   public async deleteById({ request, response, bouncer }: HttpContext, user: User) {
     if (await bouncer.with('UserPolicy').denies('delete', user)) {
       return response.forbidden()

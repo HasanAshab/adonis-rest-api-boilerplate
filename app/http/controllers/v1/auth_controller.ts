@@ -151,9 +151,9 @@ export default class AuthController {
   }
 
   public async loginWithSocialAuthToken({ request, response, params, ally }: HttpContext) {
-    let { email, username, token: oauthToken } = await request.validateUsing(socialAuthTokenLoginValidator)
+    let { email, username, token: socialToken } = await request.validateUsing(socialAuthTokenLoginValidator)
 
-    const data: SocialAuthData = await ally.use(params.provider).userFromToken(oauthToken)
+    const data: SocialAuthData = await ally.use(params.provider).userFromToken(socialToken)
 
     data.username = username
     if (email) {

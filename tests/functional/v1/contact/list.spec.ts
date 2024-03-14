@@ -3,8 +3,8 @@ import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import Contact from '#models/contact'
 import { extract } from '#app/helpers'
-import ListContactResource from '#app/http/resources/v1/contact/list_contact_resource'
-import ShowContactResource from '#app/http/resources/v1/contact/show_contact_resource'
+import ListContactResource from '#resources/v1/contact/list_contact_resource'
+import ShowContactResource from '#resources/v1/contact/show_contact_resource'
 
 /*
 Run this suits:

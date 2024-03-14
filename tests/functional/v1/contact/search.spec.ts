@@ -2,7 +2,7 @@ import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import Contact from '#models/contact'
-import ListContactResource from '#app/http/resources/v1/contact/list_contact_resource'
+import ListContactResource from '#resources/v1/contact/list_contact_resource'
 
 /*
 Run this suits:
