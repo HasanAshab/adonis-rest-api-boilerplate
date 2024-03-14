@@ -25,12 +25,12 @@ export default class EmailVerificationMail extends BaseMail {
 
   public verificationUrl(token: string) {
     return client.makeUrl('verify', {
-      id: this.user.id,
+      id: this.recipient.id,
       token
     })
   }
   
   public verificationToken() {
-    return Token.sign('verification', this.user.id, this.tokenOptions)
+    return Token.sign('verification', this.recipient.id, this.tokenOptions)
   }
 }

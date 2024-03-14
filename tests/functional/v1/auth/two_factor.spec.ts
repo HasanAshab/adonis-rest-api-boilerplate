@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
+import User from '#models/user'
 import Token from '#models/token'
 import twilio from '#ioc/twilio'
 import TwoFactorAuthRequiredException from '#exceptions/two_factor_auth_required_exception'
@@ -15,7 +15,6 @@ Run this suits:
 node ace test functional --files="v1/auth/two_factor.spec.ts"
 */
 test.group('Auth/TwoFactor', (group) => {
-  const twoFactorAuthService = new TwoFactorAuthService()
   let user: User
   let token: string
 
@@ -28,7 +27,7 @@ test.group('Auth/TwoFactor', (group) => {
   
   test('should recover account with valid recovery code', async ({ client }) => {
     const user = await User.factory().twoFactorAuthEnabled().create()
-    const [code] = await twoFactorAuthService.generateRecoveryCodes(user, 1)
+    const [code] = await TwoFactorAuthService.generateRecoveryCodes(user, 1)
     
     const response = await client.post('/api/v1/auth/two-factor/recover').json({
       email: user.email,
@@ -41,7 +40,7 @@ test.group('Auth/TwoFactor', (group) => {
 
   test("shouldn't recover account with same recovery code", async ({ client }) => {
     const user = await User.factory().twoFactorAuthEnabled().create()
-    const [code] = await twoFactorAuthService.generateRecoveryCodes(user, 1)
+    const [code] = await TwoFactorAuthService.generateRecoveryCodes(user, 1)
     const data = { 
       email: user.email,
       code 
@@ -58,7 +57,7 @@ test.group('Auth/TwoFactor', (group) => {
 
   test("shouldn't recover account with invalid recovery code", async ({ client }) => {
     const user = await User.factory().twoFactorAuthEnabled().create()
-    await twoFactorAuthService.generateRecoveryCodes(user, 1)
+    await TwoFactorAuthService.generateRecoveryCodes(user, 1)
 
     const response = await client.post('/api/v1/auth/two-factor/recover').json({
       email: user.email,
@@ -141,7 +140,7 @@ test.group('Auth/TwoFactor', (group) => {
 
     const response = await client.post('/api/v1/auth/two-factor/challenges/verification').json({
       email: user.email,
-      challengeToken
+      challengeToken,
       token
     })
 

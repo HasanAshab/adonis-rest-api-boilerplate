@@ -1,8 +1,9 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
+import mail from '@adonisjs/mail/services/main'
 import EmailVerificationMail from '#mails/email_verification_mail'
-import Mail from '#tests/assertors/mail_assertor'
+
 
 /*
 Run this suits:
@@ -42,23 +43,25 @@ test.group('Auth / Verification', (group) => {
   
   
   test('should resend verification email', async ({ client }) => {
-    Mail.fake()
+    const { mails } = mail.fake()
 
     const response = await client.post('/api/v1/auth/verification/notification').json({
       email: user.email,
     })
 
     response.assertStatus(202)
-    Mail.assertSentTo(user.email)
+    mails.assertQueued(EmailVerificationMail, ({ message }) => {
+      return message.hasTo(user.email)
+    })
   })
 
   test("shouldn't resend verification email when no user found", async ({ client }) => {
-    Mail.fake()
+    const { mails } = mail.fake()
     const email = 'test@gmail.com'
 
     const response = await client.post('/api/v1/auth/verification/notification').json({ email })
 
     response.assertStatus(202)
-    Mail.assertNotSentTo(user.email)
+    mails.assertNoneQueued()
   })
 })
