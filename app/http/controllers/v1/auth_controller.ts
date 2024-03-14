@@ -1,11 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import router from '@adonisjs/core/services/router'
-import emitter from '@adonisjs/core/services/emitter'
 import User from '#models/user'
 import Token from '#models/token'
-import AuthService from '#services/auth/auth_service'
-import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
-import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
+import Registered from '#events/registered'
 import mail from '@adonisjs/mail/services/main'
 import PasswordChangedMail from '#mails/password_changed_mail'
 import { registerValidator } from '#validators/v1/auth/register_validator'
@@ -17,6 +14,9 @@ import {
   twoFactorChallengeVerificationValidator,
   twoFactorAccountRecoveryValidator
 } from '#validators/v1/auth/two_factor_validator'
+import AuthService from '#services/auth/auth_service'
+import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
+import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
 
 
 export default class AuthController {
@@ -30,12 +30,8 @@ export default class AuthController {
     const registrationData = await request.validateUsing(registerValidator)
 
     const user = await AuthService.register(registrationData)
-
-    emitter.emit('registered', {
-      version: AuthController.VERSION,
-      method: 'internal',
-      user,
-    })
+   
+    Registered.dispatch(user, 'internal', AuthController.VERSION)
 
     /*const profileUrl = router.makeUrl(AuthController.VERSION + ".users.show", {
       username: user.username 
@@ -175,15 +171,13 @@ export default class AuthController {
       }
     }
     
-    emitter.emit('registered', {
-      version: AuthController.VERSION,
-      method: 'social',
-      user,
-    })
-      
+
+    Registered.dispatch(user, 'social', AuthController.VERSION)
+
+
     const profile = router.makeUrl(AuthController.VERSION + ".users.show", {
       username: user.username 
-    });
+    })
     
     response.header('Location', profile).created({
       message: 'Registered successfully!',

@@ -85,7 +85,8 @@ export default defineConfig({
     {
       file: () => import('#start/auth'),
       environment: ["web", "test"],
-    }
+    },
+    () => import('#start/events')
   ],
 
   /*

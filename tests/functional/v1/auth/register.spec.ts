@@ -1,8 +1,9 @@
 import { test } from '@japa/runner'
-import { refreshDatabase } from '#tests/helpers'
+import { refreshDatabase, fakeFilePath } from '#tests/helpers'
 import { omit, pick } from 'lodash-es'
-import User from '#models/user'
 import emitter from '@adonisjs/core/services/emitter'
+import User from '#models/user'
+import Registered from '#events/registered'
 
 
 /*
@@ -22,11 +23,11 @@ test.group('Auth / Register', (group) => {
     }
 
     const response = await client.post('/api/v1/auth/register').json(data)
-    const userCreated = await User.exists(omit(data, 'password'))
+    const user = await User.findByFields(omit(data, 'password'))
    
-    expect(response.status()).toBe(201)
-    expect(response.body()).toHaveProperty('data.token')
-    expect(userCreated).toBeTrue()
+    response.assertStatus(201)
+    response.assertBodyHaveProperty('data.token')
+    expect(user).not.toBeNull()
     events.assertEmitted(Registered, ({ data }) => {
       return data.version === 'v1' &&
         data.method === 'internal' &&
@@ -34,7 +35,8 @@ test.group('Auth / Register', (group) => {
     })
   })
 
-  test('should register a user with avatar', async ({ expect, client }) => {
+  test('should register a user with avatar', async ({ client, expect }) => {
+    const events = emitter.fake()
     const data = {
       username: 'foobar123',
       email: 'foo@gmail.com',
@@ -43,25 +45,25 @@ test.group('Auth / Register', (group) => {
 
     const response = await client
       .post('/api/v1/auth/register')
-      .file('avatar', fakeFilePathPath('image.png'))
+      .file('avatar', fakeFilePath('image.png'))
       .fields(data)
 
     const user = await User.query().whereEqual(omit(data, 'password')).preload('settings').first()
 
-    expect(response.status()).toBe(201)
-    expect(response.body()).toHaveProperty('data.token')
+    response.assertStatus(201)
+    response.assertBodyHaveProperty('data.token')
     expect(user).not.toBeNull()
     expect(user.avatar).not.toBeNull()
-    expect(user.settings).not.toBeNull()
 
-    Event.assertDispatchedContain('registered', {
-      version: 'v1',
-      method: 'internal',
-      user: pick(user, 'id'),
+    events.assertEmitted(Registered, ({ data }) => {
+      return data.version === 'v1' &&
+        data.method === 'internal' &&
+        data.user.id === user.id
     })
   })
 
-  test("shouldn't register with existing email", async ({ client, expect }) => {
+  test("shouldn't register with existing email", async ({ client }) => {
+    const events = emitter.fake()
     const user = await User.factory().create()
 
     const response = await client.post('/api/v1/auth/register').json({
@@ -70,11 +72,13 @@ test.group('Auth / Register', (group) => {
       password: 'Password@1234',
     })
 
-    expect(response.status()).toBe(422)
-    expect(response.body()).not.toHaveProperty('token')
+    response.assertStatus(422)
+    response.assertBodyNotHaveProperty('token')
+    events.assertNoneEmitted()
   })
 
-  test("shouldn't register with existing username", async ({ client, expect }) => {
+  test("shouldn't register with existing username", async ({ client }) => {
+    const events = emitter.fake()
     const user = await User.factory().create()
 
     const response = await client.post('/api/v1/auth/register').json({
@@ -83,7 +87,8 @@ test.group('Auth / Register', (group) => {
       password: 'Password@1234',
     })
 
-    expect(response.status()).toBe(422)
-    expect(response.body()).not.toHaveProperty('data')
+    response.assertStatus(422)
+    response.assertBodyNotHaveProperty('data')
+    events.assertNoneEmitted()
   })
 })

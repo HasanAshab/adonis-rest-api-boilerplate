@@ -38,7 +38,7 @@ export default class AuthService {
     }
 
     const user = await User.create(data)
-    await user.initNotificationPreference()
+    //await user.initNotificationPreference()
 
     return user
   }

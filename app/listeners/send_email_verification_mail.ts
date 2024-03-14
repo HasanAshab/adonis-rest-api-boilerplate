@@ -1,11 +1,9 @@
-import BasicAuthService from '#services/auth/basic_auth_service'
-import { Listener } from "@adonisjs/core/events";
-import { EventsList } from "@adonisjs/core/events";
+import AuthService from '#services/auth/auth_service'
+import type Registered from '#events/registered'
 
-export default class SendEmailVerificationMail implements Listener<'registered'> {
-  constructor(private readonly authService = new BasicAuthService()) {}
 
-  async dispatch({ user }: EventsList['registered']) {
-    await this.authService.sendVerificationMail(user)
+export default class SendEmailVerificationMail {
+  public async handle(event: Registered) {
+    await AuthService.sendVerificationMail(event.user)
   }
 }
