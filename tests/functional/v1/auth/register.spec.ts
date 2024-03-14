@@ -2,7 +2,8 @@ import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import { omit, pick } from 'lodash-es'
 import User from '#models/user'
-import Event from '#tests/assertors/event_assertor'
+import emitter from '@adonisjs/core/services/emitter'
+
 
 /*
 Run this suits:
@@ -11,11 +12,9 @@ node ace test functional --files="v1/auth/register.spec.ts"
 test.group('Auth / Register', (group) => {
   refreshDatabase(group)
 
-  group.setup(async () => {
-    Event.fake()
-  })
 
   test('should register a user', async ({ expect, client }) => {
+    const events = emitter.fake()
     const data = {
       username: 'foobar123',
       email: 'foo@gmail.com',
@@ -23,17 +22,15 @@ test.group('Auth / Register', (group) => {
     }
 
     const response = await client.post('/api/v1/auth/register').json(data)
-
-    const user = await User.query().whereEqual(omit(data, 'password')).preload('settings').first()
+    const userCreated = await User.exists(omit(data, 'password'))
+   
     expect(response.status()).toBe(201)
     expect(response.body()).toHaveProperty('data.token')
-    expect(user).not.toBeNull()
-    expect(user.settings).not.toBeNull()
-
-    Event.assertDispatchedContain('registered', {
-      version: 'v1',
-      method: 'internal',
-      user: pick(user, 'id'),
+    expect(userCreated).toBeTrue()
+    events.assertEmitted(Registered, ({ data }) => {
+      return data.version === 'v1' &&
+        data.method === 'internal' &&
+        data.user.id === user.id
     })
   })
 
