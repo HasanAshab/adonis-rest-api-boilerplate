@@ -8,7 +8,6 @@ I: login alerts, settings disable for new
 I: trust device
 F: 2fa user removed phone number
 F: Sql I
-T: Complete todo marked comments
 
 
 F: Circ Dep Api Res

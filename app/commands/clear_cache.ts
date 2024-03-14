@@ -1,12 +1,16 @@
-import { Command } from 'samer-artisan'
-import Cache from 'cache'
+import { BaseCommand } from "@adonisjs/core/ace";
+import { args } from "@adonisjs/core/ace";
+//import Cache from 'cache'
 
-export default class ClearCache extends Command<{}, { driver: string | null }> {
-  signature = 'clear:cache {--driver=}'
+export default class ClearCache extends BaseCommand {
+  public static commandName = 'clear:cache'
+  public static settings = { loadApp: true }
 
-  async handle() {
-    const driver = this.option('driver') ?? undefined
-    await Cache.driver(driver).flush()
-    this.info('Cache cleared successfully!')
+  @args.string()
+  declare driver: string
+
+  public async run() {
+    await Cache.driver(this.driver).flush()
+    this.logger.success('Cache cleared successfully!')
   }
 }

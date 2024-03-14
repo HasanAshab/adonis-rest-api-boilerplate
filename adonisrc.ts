@@ -1,6 +1,13 @@
 import { defineConfig } from '@adonisjs/core/app'
 
 export default defineConfig({
+  directories: {
+    commands: 'app/commands',
+    providers: 'app/providers',
+    httpControllers: 'app/http/controllers',
+    middleware: 'app/http/middleware',
+    validators: 'app/validation/validators'
+  },
   /*
   |--------------------------------------------------------------------------
   | Commands
@@ -72,6 +79,10 @@ export default defineConfig({
     },
     {
       file: () => import('#start/routes'),
+      environment: ["web", "test"],
+    },
+    {
+      file: () => import('#start/auth'),
       environment: ["web", "test"],
     }
   ],

@@ -1,8 +1,7 @@
 import { BaseCommand } from "@adonisjs/core/ace";
 import { Encryption } from '@adonisjs/core/encryption'
 import { readFileSync, existsSync, writeFileSync } from 'fs';
-import { args } from "@adonisjs/core/ace";
-import { flags } from "@adonisjs/core/ace";
+import { args, flags } from "@adonisjs/core/ace";
 
 
 export default class DecryptEnv extends BaseCommand {

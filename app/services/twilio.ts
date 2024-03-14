@@ -1,10 +1,10 @@
-import { Twilio as TwilioClient } from 'twilio'
+import twilioSdk from 'twilio'
 import { TwilioFakedData, TwilioConfig } from '#app/interfaces/twilio'
 import Assertor from '#tests/assertors/assertor'
 
 
 export default class Twilio extends Assertor {
-  private client: TwilioClient
+  private client: twilioSdk.Twilio
   private isFaked = false
   private faked: TwilioFakedData = {
     messages: [],
@@ -14,7 +14,7 @@ export default class Twilio extends Assertor {
   constructor(private config: TwilioConfig) {
     super()
     this.config = config
-    this.client = new TwilioClient(config.sid, config.authToken)
+    this.client = twilioSdk(config.sid, config.authToken)
   }
 
   public fake() {

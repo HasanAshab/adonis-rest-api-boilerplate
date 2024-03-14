@@ -1,22 +1,22 @@
-import { Command } from 'samer-artisan'
-import { model } from 'mongoose'
-import DB from 'db'
-import DatabaseSeeder from '~/database/seeders/database_seeder'
-import { HasFactoryModel } from '~/app/plugins/has_factory'
+import { BaseCommand } from "@adonisjs/core/ace";
+import { args } from "@adonisjs/core/ace";
 
-interface Arguments {
-  modelName: string
-  count: string
-}
 
-export default class FactorySeedDatabase extends Command<Arguments> {
-  signature = 'db:seedFactory {modelName} {count}'
+export default class FactorySeedDatabase extends BaseCommand {
+  public static commandName = 'db:seedFactory'
+  public static settings = { loadApp: true }
 
-  async handle() {
-    await DB.connect()
-    const { modelName, count } = this.arguments()
-    const Model = model<any, HasFactoryModel>(modelName)
-    await Model.factory().count(parseInt(count)).create()
-    this.info('Seeded successfully!')
+  @args.string()
+  declare modelPath: string
+  
+  @args.string({
+    parse: value => parseInt(value)
+  })
+  declare count: number
+
+  public async run() {
+    const { default: Model } = await import(this.modelPath)
+    await Model.factory().count(this.count).create()
+    this.logger.success('Seeded successfully!')
   }
 }

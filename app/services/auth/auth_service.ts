@@ -21,14 +21,17 @@ export interface LoginCredentials {
   ip: string
 }
 
-
+let i = 0, j = 0 
 export default class AuthService {
-  private loginLimiter = limiter.use({
+  private static loginLimiter = limiter.use({
     requests: 5,
     duration: '2 minutes',
     blockDuration: '1 hour'
   })
-
+  
+  private static limiterKeyFor(email: string, ip: string) {
+    return `login__${email}_${ip}`
+  }
 
   public static async register(data: RegisterValidator['__type']) {
     if (data.avatar) {
@@ -40,11 +43,12 @@ export default class AuthService {
 
     return user
   }
-
   public static async attempt({ email, password, ip }: LoginCredentials) {
     const limiterKey = this.limiterKeyFor(email, ip)
       
+      log(i++)
     const [error, user] = await this.loginLimiter.penalize(limiterKey, async () => {
+      log(j++)
       const user = await User.verifyCredentials(email, password)
       return user
     })
@@ -109,10 +113,5 @@ export default class AuthService {
     await Token.verify('password_reset', user.id, token)
     user.password = password
     await user.save()
-  }
-
-
-  private limiterKeyFor(email: string, ip: string) {
-    return `login__${email}_${ip}`
   }
 }

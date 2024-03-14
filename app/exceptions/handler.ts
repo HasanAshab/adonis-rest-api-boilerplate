@@ -1,6 +1,9 @@
 import { range } from 'lodash-es'
 import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
+import InvalidCredentialException from '#exceptions/invalid_credential_exception'
+import { errors } from '@adonisjs/auth'
+
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -16,6 +19,10 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * response to the client
    */
   async handle(error: unknown, ctx: HttpContext) {
+    if(errors.E_INVALID_CREDENTIALS) {
+    //  error = new InvalidCredentialException
+    }
+    
     return super.handle(error, ctx)
   }
 

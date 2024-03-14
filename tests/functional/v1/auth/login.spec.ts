@@ -47,23 +47,28 @@ test.group('Auth / Login', (group) => {
   })
 
   test('should prevent Brute Force login', async ({ client, expect }) => {
-    const limit = 5
+    const limit = 10
     const responses = []
     const payload = {
       email: user.email,
       password: 'wrong-pass',
     }
+    
+    let z =0
+    for (let i = 0; i < limit; i++) {
+      log('yo', z++)
 
-    for (let i = 0; i < limit + 1; i++) {
       const response = await client.post('/api/v1/auth/login').json(payload)
       responses.push(response)
     }
 
     const lockedResponse = await client.post('/api/v1/auth/login').json(payload)
 
-    expect(responses.every((res) => res.status() === 401)).toBeTrue()
-    expect(lockedResponse.status()).toBe(429)
-  })
+    responses.forEach(response => {
+      response.assertStatus(400)
+    })
+    lockedResponse.assertStatus(429)
+  }).pin()
 
   test('Login should flag for two factor auth', async ({ client }) => {
     const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
@@ -76,5 +81,5 @@ test.group('Auth / Login', (group) => {
     response.assertStatus(200)
     response.assertBodyNotHaveProperty('data.token')
     response.assertBodyHaveProperty('twoFactor', true)
-  }).pin()
+  })
 })

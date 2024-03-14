@@ -11,23 +11,23 @@ import InvalidRecoveryCodeException from '#exceptions/invalid_recovery_code_exce
 
 export default class TwoFactorAuthService {
   public static enable(user: User, method: string) {
-    return TwoFactorMethod.use(method).enable(user)
+    return twoFactorMethod.use(method).enable(user)
   }
 
   public static disable(user: User) {
-    return TwoFactorMethod.use(user.twoFactorMethod ?? 'authenticator').disable(user)
+    return twoFactorMethod.use(user.twoFactorMethod ?? 'authenticator').disable(user)
   }
   
   public static changeMethod(user: User, method: string) {
-    return TwoFactorMethod.use(method).assign(user)
+    return twoFactorMethod.use(method).assign(user)
   }
   
   public static challenge(user: User) {
-    return TwoFactorMethod.use(user.twoFactorMethod).challenge(user)
+    return twoFactorMethod.use(user.twoFactorMethod).challenge(user)
   }
   
   public static async verify(user: User, token: string) {
-    await TwoFactorMethod.use(user.twoFactorMethod).verify(user, token)
+    await twoFactorMethod.use(user.twoFactorMethod).verify(user, token)
     return await user.createToken()
   }
 
