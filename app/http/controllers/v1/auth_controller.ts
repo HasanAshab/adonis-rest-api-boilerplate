@@ -6,7 +6,7 @@ import Token from '#models/token'
 import AuthService from '#services/auth/auth_service'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
-import OtpService from '#services/otp_service'
+import mail from '@adonisjs/mail/services/main'
 import PasswordChangedMail from '#mails/password_changed_mail'
 import { registerValidator } from '#validators/v1/auth/register_validator'
 import { loginValidator, socialAuthTokenLoginValidator } from '#validators/v1/auth/login_validator'
@@ -104,7 +104,7 @@ export default class AuthController {
     const { id, token, password } = await request.validateUsing(resetPasswordValidator)
     const user = await User.findOrFail(id)
     await AuthService.resetPassword(user, token, password)
-    await new PasswordChangedMail(user).sendLater()
+    await mail.sendLater(new PasswordChangedMail(user))
     return 'Password changed successfully!'
   }
 

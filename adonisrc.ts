@@ -52,7 +52,8 @@ export default defineConfig({
     () => import('#providers/validation_provider'),
     () => import('#providers/client_provider'),
     () => import('@adonisjs/auth/auth_provider'),
-    () => import('#providers/recaptcha_provider')
+    () => import('#providers/recaptcha_provider'),
+    () => import('@adonisjs/core/providers/edge_provider')
   ],
 
   /*
@@ -111,4 +112,8 @@ export default defineConfig({
     ],
     forceExit: false,
   },
+  metaFiles: [{
+    pattern: 'resources/views/**/*.edge',
+    reloadServer: false,
+  }]
 })

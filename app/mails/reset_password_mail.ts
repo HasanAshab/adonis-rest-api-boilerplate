@@ -25,12 +25,12 @@ export default class ResetPasswordMail extends BaseMail {
 
   public resetUrl(token: string) {
     return client.makeUrl('password.reset', {
-      id: this.user.id,
+      id: this.recipient.id,
       token,
     })
   }
 
   public resetToken() {
-    return Token.sign('password_reset', this.user.id, this.tokenOptions)
+    return Token.sign('password_reset', this.recipient.id, this.tokenOptions)
   }
 }

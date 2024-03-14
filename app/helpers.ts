@@ -46,5 +46,5 @@ export function toJSON(obj: object) {
 }
 
 export function stringToLuxonDate(timeStr: string) {
-  return DateTime.local().plus(string.toMs(timeStr))
+  return DateTime.local().plus(string.milliseconds.parse(timeStr))
 }
