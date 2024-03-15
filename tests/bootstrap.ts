@@ -33,7 +33,9 @@ export const plugins: Config['plugins'] = [
 export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
   setup: [
     () => testUtils.db().truncate(),
-    () => import('#tests/bindings/bind')
+    async () => { 
+      await import('#tests/bindings/bind')
+    }
   ],
   teardown: [],
 }

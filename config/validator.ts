@@ -1,6 +1,4 @@
-import { CustomMessages } from "@adonisjs/validator/types";
-
-export const customMessages: CustomMessages = {
+export const customMessages: Record<string, string> = {
   required: '{{ field }} field is required',
   requiredIf: '{{ field }} field is required based on other criteria.',
   file: '{{ field }} field must be a file.',

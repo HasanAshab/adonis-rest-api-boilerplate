@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class CheckRole {
-  handle({ response, auth: { user } }: HttpContext, next: NextFunction, roles: string[]) {
+  handle({ response, auth: { user } }: HttpContext, next: NextFunction, ...roles: string[]) {
     if (!user) {
       throw new Error('You have to use "auth" middleware before using "role" middleware.')
     }

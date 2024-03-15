@@ -11,7 +11,7 @@ export async function exists(value: unknown, column: string, field: FieldContext
 
   field.report(
     `${field.name} doesn't exists`,
-    'exists'
+    'exists',
     field
   )
 }

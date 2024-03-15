@@ -8,10 +8,10 @@ client.addPaths({
 //TODO
 import JsonResource from '../res_dev/json_resource.js'
 import ResourceCollection from '../res_dev/resource_collection.js'
-globalThis.JsonResource = JsonResource
-globalThis.ResourceCollection = ResourceCollection
+(globalThis as any).JsonResource = JsonResource
+(globalThis as any).ResourceCollection = ResourceCollection
 
-
+/*
 
 import User from '#models/user'
 import Contact from '#models/contact'
@@ -65,4 +65,4 @@ return log((await user.createToken()).token)
   //log(c)
 }
 
-
+*/

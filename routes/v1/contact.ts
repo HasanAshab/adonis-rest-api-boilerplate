@@ -1,10 +1,10 @@
-import type Router from '@adonisjs/core/services/router'
+import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
 const ContactsController = () => import("#controllers/v1/contacts_controller")
 
 // Endpoints for contact
-export default function contactRoutes(router: Router) {
+export default function contactRoutes() {
   router.group(() => {
     router.post('/', [ContactsController, 'store'])
   

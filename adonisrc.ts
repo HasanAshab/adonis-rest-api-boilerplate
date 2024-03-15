@@ -20,7 +20,8 @@ export default defineConfig({
   commands: [
     () => import('@adonisjs/core/commands'),
     () => import('@adonisjs/lucid/commands'),
-    () => import('@adonisjs/mail/commands')
+    () => import('@adonisjs/mail/commands'),
+    () => import('@adonisjs/bouncer/commands')
   ],
 
   /*
@@ -53,7 +54,8 @@ export default defineConfig({
     () => import('#providers/client_provider'),
     () => import('@adonisjs/auth/auth_provider'),
     () => import('#providers/recaptcha_provider'),
-    () => import('@adonisjs/core/providers/edge_provider')
+    () => import('@adonisjs/core/providers/edge_provider'),
+    () => import('@adonisjs/bouncer/bouncer_provider')
   ],
 
   /*

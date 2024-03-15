@@ -1,13 +1,12 @@
 import { BaseModel as Model } from '@adonisjs/lucid/orm'
 import is from '@adonisjs/core/helpers/is'
-import db from '@adonisjs/lucid/services/db'
-import type { ModelQueryBuilderContract } from "@adonisjs/lucid/types/model";
+import type { ModelQueryBuilder } from "@adonisjs/lucid/orm";
 
 /**
  * Base model class with common utility methods.
  */
 export default class BaseModel extends Model {
-  public static where(...args: Parameters<ModelQueryBuilderContract['where']>) {
+  public static where(...args: Parameters<ModelQueryBuilder['where']>) {
     return this.query().where(...args)
   }
   
@@ -31,7 +30,7 @@ export default class BaseModel extends Model {
   }
 
   /**
-   * Exclude a model or ID from the query result.
+   * Exclude a row from the query result.
    * @param modelOrId - The model or ID to exclude.
    * @returns A new query builder instance.
    */
@@ -134,7 +133,7 @@ export default class BaseModel extends Model {
    * @param args - Parameters for the search method.
    * @returns A new query builder instance.
    */
-  public static search(...args: Parameters<ModelQueryBuilderContract['search']>) {
+  public static search(...args: Parameters<ModelQueryBuilder['search']>) {
     return this.query().search(...args)
   }
 
@@ -143,7 +142,7 @@ export default class BaseModel extends Model {
    * @param args - Parameters for pagination.
    * @returns A paginated result.
    */
-  public static paginate(...args: Parameters<ModelQueryBuilderContract['paginate']>) {
+  public static paginate(...args: Parameters<ModelQueryBuilder['paginate']>) {
     return this.query().paginate(...args)
   }
 
@@ -152,7 +151,7 @@ export default class BaseModel extends Model {
    * @param args - Parameters for pagination using a custom paginator.
    * @returns A paginated result.
    */
-  public static paginateUsing(...args: Parameters<ModelQueryBuilderContract['paginateUsing']>) {
+  public static paginateUsing(...args: Parameters<ModelQueryBuilder['paginateUsing']>) {
     return this.query().paginateUsing(...args)
   }
 

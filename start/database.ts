@@ -1,14 +1,16 @@
 import db from '@adonisjs/lucid/services/db'
-import type { BaseModel } from '@adonisjs/lucid/orm'
-import { Exception } from "@adonisjs/core/exceptions";
+import { BaseModel } from '@adonisjs/lucid/orm'
 import { forIn } from 'lodash-es'
 import { DatabaseQueryBuilder } from "@adonisjs/lucid/database";
 import { ModelQueryBuilder } from "@adonisjs/lucid/orm";
+import type { Request } from '@adonisjs/core/http'
+import { errors } from '@adonisjs/lucid'
+
 
 /**
  * Macro to check if any records match the query.
  */
-DatabaseQueryBuilder.macro('exists', async function () {
+DatabaseQueryBuilder.macro('exists', async function (this: DatabaseQueryBuilder) {
   return !!(await this.select(1).first())
 })
 
@@ -17,7 +19,7 @@ DatabaseQueryBuilder.macro('exists', async function () {
  * Macro to add WHERE clauses for multiple fields with their respective values.
  * @param fields - The fields and their values to filter by.
  */
-ModelQueryBuilder.macro('whereEqual', function (fields: Record<string, any>) {
+ModelQueryBuilder.macro('whereEqual', function (this: ModelQueryBuilder, fields: Record<string, any>) {
   for (const name in fields) {
     this.where(name, fields[name])
   }
@@ -28,7 +30,7 @@ ModelQueryBuilder.macro('whereEqual', function (fields: Record<string, any>) {
  * Macro to add a WHERE clause for the primary key of the model.
  * @param uid - The value of the primary key.
  */
-ModelQueryBuilder.macro('whereUid', function (uid: number) {
+ModelQueryBuilder.macro('whereUid', function (this: ModelQueryBuilder, uid: number) {
   return this.where(this.model.primaryKey, uid)
 })
 
@@ -36,13 +38,13 @@ ModelQueryBuilder.macro('whereUid', function (uid: number) {
  * Macro to pluck a single column value from the resulting rows.
  * @param column - The name of the column to pluck.
  */
-ModelQueryBuilder.macro('pluck', async function (column: string) {
+ModelQueryBuilder.macro('pluck', async function (this: ModelQueryBuilder, column: string) {
   const records = await this.select(column).pojo()
-  return records.map((record) => record[column])
+  return records.map((record: Record<string, any>) => record[column])
 })
 
 
-ModelQueryBuilder.macro('last', function () {
+ModelQueryBuilder.macro('last', function (this: ModelQueryBuilder) {
   return this.orderBy('created_at', 'desc').first()
 })
 
@@ -51,7 +53,7 @@ ModelQueryBuilder.macro('last', function () {
  * Macro to find a record by its primary key.
  * @param uid - The value of the primary key.
  */
-ModelQueryBuilder.macro('find', function (uid: number) {
+ModelQueryBuilder.macro('find', function (this: ModelQueryBuilder, uid: number) {
   return this.whereUid(uid).first()
 })
 
@@ -59,7 +61,7 @@ ModelQueryBuilder.macro('find', function (uid: number) {
  * Macro to find a record by its primary key or throw an exception if not found.
  * @param uid - The value of the primary key.
  */
-ModelQueryBuilder.macro('findOrFail', function (uid: number) {
+ModelQueryBuilder.macro('findOrFail', function (this: ModelQueryBuilder, uid: number) {
   return this.whereUid(uid).firstOrFail()
 })
 
@@ -67,20 +69,20 @@ ModelQueryBuilder.macro('findOrFail', function (uid: number) {
  * Macro to update records based on a query or throw an exception if no rows are affected.
  * @param data - The data to update.
  */
-ModelQueryBuilder.macro('updateOrFail', async function (data: object) {
+ModelQueryBuilder.macro('updateOrFail', async function (this: ModelQueryBuilder, data: object) {
   const count = await this.update(data)
   if (!parseInt(count)) {
-    throw new Exception('Row not found', 404, 'E_ROW_NOT_FOUND')
+    throw new errors.E_ROW_NOT_FOUND()
   }
 })
 
 /**
  * Macro to delete records based on a query or throw an exception if no rows are affected.
  */
-ModelQueryBuilder.macro('deleteOrFail', async function () {
+ModelQueryBuilder.macro('deleteOrFail', async function (this: ModelQueryBuilder) {
   const count = await this.delete()
   if (!parseInt(count)) {
-    throw new Exception('Row not found', 404, 'E_ROW_NOT_FOUND')
+    throw new errors.E_ROW_NOT_FOUND()
   }
 })
 
@@ -88,7 +90,7 @@ ModelQueryBuilder.macro('deleteOrFail', async function () {
 /**
  * Macro to check if any records match the query.
  */
-ModelQueryBuilder.macro('exists', async function () {
+ModelQueryBuilder.macro('exists', async function (this: ModelQueryBuilder) {
   return !!(await this.select(1).pojo().first())
 })
 
@@ -96,9 +98,11 @@ ModelQueryBuilder.macro('exists', async function () {
  * Macro to exclude a specific model instance or ID from the query results.
  * @param modelOrId - The model instance or ID to exclude.
  */
-ModelQueryBuilder.macro('except', function (modelOrId: BaseModel | number) {
-  const id = modelOrId instanceof BaseModel ? modelOrId.id : modelOrId
-  return this.whereNot('id', id)
+ModelQueryBuilder.macro('except', function (this: ModelQueryBuilder, modelOrUid: InstanceType<typeof BaseModel> | number | string) {
+  const uid = modelOrUid instanceof BaseModel 
+    ? (modelOrUid as any)[this.model.primaryKey]
+    : modelOrUid
+  return this.whereNot(this.model.primaryKey, uid)
 })
 
 /**
@@ -106,7 +110,7 @@ ModelQueryBuilder.macro('except', function (modelOrId: BaseModel | number) {
  * @param condition - The boolean condition determining whether to apply the query scope.
  * @param cb - The callback function defining the query scope.
  */
-ModelQueryBuilder.macro('when', function (condition: boolean, cb: QueryBuilderCallback) {
+ModelQueryBuilder.macro('when', function (this: ModelQueryBuilder, condition: boolean, cb: ((query: this) => this)) {
   if (condition) {
     cb(this)
   }
@@ -117,9 +121,8 @@ ModelQueryBuilder.macro('when', function (condition: boolean, cb: QueryBuilderCa
  * Macro to count the number of records matching the query.
  * @param column - The column or columns to count.
  */
-ModelQueryBuilder.macro('getCount', async function (column = '*') {
+ModelQueryBuilder.macro('getCount', async function (this: ModelQueryBuilder, column: string | object = '*') {
   const isString = typeof column === 'string'
-  const parse = (rawCount: string) => parseInt(BigInt(rawCount))
 
   if (isString) {
     this.select(db.raw(`COUNT(${column}) as total`))
@@ -132,11 +135,11 @@ ModelQueryBuilder.macro('getCount', async function (column = '*') {
   const result = await this.pojo().first()
 
   if (isString) {
-    return parse(result.total)
+    return parseInt(result.total)
   }
 
-  forIn(column, (columnName, alias) => {
-    result[alias] = parse(result[alias.toLowerCase()])
+  forIn(column, (_, alias) => {
+    result[alias] = parseInt(result[alias.toLowerCase()])
   })
 
   return result
@@ -147,7 +150,7 @@ ModelQueryBuilder.macro('getCount', async function (column = '*') {
  * @param query - The search query.
  * @param vectorColumn - The name of the column containing the search vector.
  */
-ModelQueryBuilder.macro('search', function (query: string, vectorColumn = 'search_vector') {
+ModelQueryBuilder.macro('search', function (this: ModelQueryBuilder, query: string, vectorColumn = 'search_vector') {
   this._tsQuery = `plainto_tsquery('${query}')`
   return this.where(vectorColumn, '@@', db.raw(this._tsQuery))
 })
@@ -156,7 +159,7 @@ ModelQueryBuilder.macro('search', function (query: string, vectorColumn = 'searc
  * Macro to calculate the rank of search results based on their relevance to the search query.
  * @param vectorColumn - The name of the column containing the search vector.
  */
-ModelQueryBuilder.macro('rank', function (vectorColumn = 'search_vector') {
+ModelQueryBuilder.macro('rank', function (this: ModelQueryBuilder, vectorColumn = 'search_vector') {
   if (!this._tsQuery) {
     throw new Error('Must use search() before using rank()')
   }
@@ -171,7 +174,7 @@ ModelQueryBuilder.macro('rank', function (vectorColumn = 'search_vector') {
  * Macro to paginate query results using request parameters.
  * @param request - The HTTP request object containing pagination parameters.
  */
-ModelQueryBuilder.macro('paginateUsing', function (request: Request) {
+ModelQueryBuilder.macro('paginateUsing', function (this: ModelQueryBuilder, request: Request) {
   const page = request.input('page', 1)
   const limit = request.input('limit', 15)
   return this.paginate(page, limit)

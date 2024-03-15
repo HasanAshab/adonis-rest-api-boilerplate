@@ -1,11 +1,11 @@
-import type Router from '@adonisjs/core/services/router'
+import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
 
 const UsersController = () => import("#controllers/v1/users_controller")
 
 
-export default function userRoutes(router: Router) {
+export default function userRoutes() {
 // Endpoints for user management
 router.group(() => {
   // Routes related to the authenticated user

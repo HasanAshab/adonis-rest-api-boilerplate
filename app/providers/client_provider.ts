@@ -3,7 +3,7 @@ import { ApplicationService } from "@adonisjs/core/types";
 
 declare module '@adonisjs/core/types' {
   interface ContainerBindings {
-    client: typeof import('#services/client')
+    client: InstanceType<typeof import('#services/client').default>
   }
 }
 

@@ -19,7 +19,7 @@ export default abstract class Assertor {
   }
 
   private resolveTestContext(err: Error, steps = 2) {
-    err.stack = err.stack.split('\n').toSpliced(4, steps).join('\n')
+    err.stack = err.stack!.split('\n').toSpliced(4, steps).join('\n')
     return err
   }
 }

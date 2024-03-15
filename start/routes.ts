@@ -1,5 +1,4 @@
 import router from '@adonisjs/core/services/router'
-import { middleware } from '#start/kernel'
 import { lowThrottle } from '#start/limiter'
 
 // Routes for V1

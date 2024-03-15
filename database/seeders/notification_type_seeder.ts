@@ -1,4 +1,4 @@
-import BaseSeeder from '@adonisjs/lucid/seeders'
+import { BaseSeeder } from '@adonisjs/lucid/seeders'
 import NotificationType from '#models/notification_type'
 
 export default class extends BaseSeeder {

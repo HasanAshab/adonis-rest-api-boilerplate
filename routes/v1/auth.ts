@@ -1,4 +1,4 @@
-import type Router from '@adonisjs/core/services/router'
+import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 import { criticalThrottle, highThrottle } from '#start/limiter'
 
@@ -8,7 +8,7 @@ const AuthController = () => import("#controllers/v1/auth_controller")
 /**
  * Endpoints to authenticate users
  */
-export default function authRoutes(router: Router) {
+export default function authRoutes() {
   router.post('/register', [AuthController, 'register']).use(middleware.recaptcha())
   
   // Login through various methods

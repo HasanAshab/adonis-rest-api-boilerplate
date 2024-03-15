@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { ApplicationService } from "@adonisjs/core/types";
+import type { RouteGroup } from '@adonisjs/core/http'
 import { importDefault } from "#app/helpers";
 
 export default class RouteProvider {
@@ -31,7 +32,7 @@ export default class RouteProvider {
             const createRoutes = await importDefault(routerPath)
             if(typeof createRoutes !== 'function') continue
             const group = this.group(() => {
-              this.group(() => createRoutes(this)).prefix(itemPathEndpoint)
+              this.group(createRoutes).prefix(itemPathEndpoint)
             })
             cb(group)
           } else if (status.isDirectory()) {

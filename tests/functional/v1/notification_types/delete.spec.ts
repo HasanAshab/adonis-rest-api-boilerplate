@@ -12,7 +12,7 @@ test.group('Notification Types / Delete', (group) => {
   let notificationType: NotificationType
   refreshDatabase(group)
   
-  group.each.setup(async () {
+  group.each.setup(async () => {
     notificationType = await NotificationType.factory().create()
   })
 

@@ -1,10 +1,10 @@
 import JsonResource from './json_resource.js'
 import { SimplePaginator } from '@adonisjs/lucid/database'
 
-export default class ResourceCollection {
+export default class ResourceCollection<Item extends JsonResource> {
   protected shouldWrap = true
-  protected collects = JsonResource
-  protected collection!: this['collects'][]
+  protected collects: constructor<Item> = JsonResource
+  protected collection!: Item[]
 
   constructor(protected readonly resources: Array<Record<string, any>>) {}
 
@@ -17,15 +17,12 @@ export default class ResourceCollection {
     return this
   }
 
-  public isPaginated(): this is this & { resources: SimplePaginator } {
-    return this.resources instanceof SimplePaginator
-  }
 
   public toJSON() {
-    if (this.isPaginated()) {
-      this.setCollection(this.resources.rows)
+    if (this.resources instanceof SimplePaginator) {
+      this.setCollection((this.resources as any).rows)
       return {
-        meta: this.resources.serialize().meta,
+        meta: this.resources.toJSON().meta,
         ...this.serialize(),
       }
     }
@@ -34,7 +31,7 @@ export default class ResourceCollection {
   }
 
   protected serialize() {
-    return this.shouldWrap || this.isPaginated()
+    return this.shouldWrap || this.resources instanceof SimplePaginator
       ? {
           [this.collects.wrap]: this.collection,
         }
@@ -42,8 +39,8 @@ export default class ResourceCollection {
   }
 
   protected setCollection(collection: Array<Record<string, any>>) {
-    return (this.collection = collection.map((resource) => {
-      return this.collects.make(resource).dontWrap()
-    }))
+    this.collection = collection.map(resource => 
+      this.collects.make(resource).dontWrap()
+    )
   }
 }

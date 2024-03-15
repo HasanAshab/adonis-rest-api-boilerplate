@@ -11,4 +11,5 @@ export default {
     headers: {}, // OpenAPI conform headers that are commonly used
   },
   persistAuthorization: true, // persist authorization between reloads on the swagger page
+  snakeCase: true
 }
