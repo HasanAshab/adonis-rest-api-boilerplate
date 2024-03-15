@@ -171,17 +171,17 @@ export default class AuthController {
       }
     }
     
-
     Registered.dispatch(user, 'social', AuthController.VERSION)
-
-
-    const profile = router.makeUrl(AuthController.VERSION + ".users.show", {
+/*
+    const profileUrl = router.makeUrl(AuthController.VERSION + ".users.show", {
       username: user.username 
     })
-    
-    response.header('Location', profile).created({
-      message: 'Registered successfully!',
-      data: { user, token },
-    })
+*/
+    response
+     // .header('Location', profileUrl)
+      .created({
+        message: 'Registered successfully!',
+        data: { user, token },
+      })
   }
 }
