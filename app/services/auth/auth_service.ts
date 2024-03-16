@@ -33,28 +33,42 @@ export default class AuthService {
     return `login__${email}_${ip}`
   }
 
-  public static async register(data: RegisterValidator['__type']) {
+  public static async register(data: RegistrationData) {
     if (data.avatar) {
       data.avatar = Attachment.fromFile(data.avatar)
     }
 
     const user = await User.create(data)
     //await user.initNotificationPreference()
+    
+    await LoginDevice.create({
+      ...deviceInfo,
+      isTrusted: true
+    })
 
     return user
   }
-  public static async attempt({ email, password, ip }: LoginCredentials) {
+  public static async attempt({ email, password, ip, device: deviceInfo }: LoginCredentials) {
     const limiterKey = this.limiterKeyFor(email, ip)
     const [error, user] = await this.loginLimiter.penalize(limiterKey, async () => {
       const user = await User.verifyCredentials(email, password)
       return user
     })
-    
     if(error) {
       throw error
     }
+    
+    const device = await LoginDevice.firstOrCreate(
+      { id: deviceInfo.id },
+      {
+        type: deviceInfo.type,
+        vendor: deviceInfo.vendor,
+        model: deviceInfo.model
+      }
+    )
+
   
-    if (user.hasEnabledTwoFactorAuth()) {
+    if (user.hasEnabledTwoFactorAuth() && !device.isTrusted) {
       await TwoFactorAuthService.challenge(user)
       throw new TwoFactorAuthRequiredException(user)
     }
@@ -64,7 +78,13 @@ export default class AuthService {
       await user.save()
     }
     
-    return await user.createToken()
+    const accessToken = await user.createToken()
+    await LoginSession.create({
+      deviceId: device.id,
+      accessTokenId: accessToken.identifier,
+      ip
+    })
+    return accessToken
   }
   
   public static async logout(user: User) {

@@ -18,9 +18,9 @@ export default class SettingsController {
     return TwoFactorSettingsResource.make(auth.user!)
   }
   
-  public async enableTwoFactorAuth({ request, auth }: HttpContext) {
+  public async enableTwoFactorAuth({ request, auth: { user } }: HttpContext) {
     const { method } = await request.validateUsing(twoFactorAuthMethodValidator)
-    await TwoFactorAuthService.enable(auth.user!, method)
+    await TwoFactorAuthService.enable(user!, method)
     return 'Two-Factor Authentication enabled!'
   }
   

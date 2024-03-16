@@ -19,6 +19,7 @@ import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_serv
 import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
 
 
+
 export default class AuthController {
   public static readonly VERSION = 'v1'
   
@@ -53,9 +54,13 @@ export default class AuthController {
    * @responseBody 200 - { message: <string>, data: { token: } }
    */
   public async login({ request }: HttpContext) {
+    const { email, password } = await request.validateUsing(loginValidator)
+    
     const token = await AuthService.attempt({
-      ...(await request.validateUsing(loginValidator)),
+      email,
+      password,
       ip: request.ip(),
+      device: request.device
     })
 
     return {
@@ -120,15 +125,15 @@ export default class AuthController {
   }
   
   public async verifyTwoFactorChallenge({ request }: HttpContext) {
-    const { email, token, challengeToken } = await request.validateUsing(twoFactorChallengeVerificationValidator)
+    const { email, token, challengeToken, trustDevice } = await request.validateUsing(twoFactorChallengeVerificationValidator)
     const user = await User.findByOrFail('email', email)
-
-    const authToken = await TwoFactorAuthService.verify(user, challengeToken)
+    
+    const accessToken = await TwoFactorAuthService.verify(user, challengeToken, trustDevice && request.device.id)
     await Token.verify('two_factor_auth_challenge_verification', user.id, token)
 
     return {
       message: 'Challenge completed!',
-      data: { token: authToken },
+      data: { token: accessToken },
     }
   }
 

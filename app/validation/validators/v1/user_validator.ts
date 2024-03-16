@@ -41,7 +41,7 @@ export const changePasswordValidator = vine.compile(
 
 export const changePhoneNumberValidator = vine.compile(
   vine.object({
-    phoneNumber: vine.string().mobile({ strict: true }),
+    phoneNumber: vine.string().mobile({ strictMode: true }),
     otp: vine.string().optional(),
   })
 )

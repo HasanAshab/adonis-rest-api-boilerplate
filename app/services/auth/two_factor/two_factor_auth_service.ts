@@ -26,7 +26,10 @@ export default class TwoFactorAuthService {
     return twoFactorMethod.use(user.twoFactorMethod).challenge(user)
   }
   
-  public static async verify(user: User, token: string) {
+  public static async verify(user: User, token: string, deviceId?: string) {
+    if(deviceId) {
+      await LoginDevice.query().update(deviceId, { isTrusted: true })
+    }
     await twoFactorMethod.use(user.twoFactorMethod).verify(user, token)
     return await user.createToken()
   }
