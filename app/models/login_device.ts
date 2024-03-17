@@ -12,7 +12,7 @@ export default class LoginDevice extends BaseModel {
   declare vendor: string
   
   @column()
-  declare model: string
+  declare model: string 
   
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

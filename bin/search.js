@@ -130,7 +130,7 @@ const updateImportPathsInFile = (filePath) => {
 };
 
 //updateImportPaths('tests');
-Wildcard.caseInsensitive = true
-//await new Search(`middleware.throttle('*')`, '*Throttle').run()
+//Wildcard.caseInsensitive = true
+await new Search(`table.timestamp('*_at', { useTz: true })`, `table.timestamp('*_at')`).run()
 //new Search(`import { test } from '@japa/runner'`, `import { test } from '@japa/runner'\nimport { refreshDatabase } from '#tests/helpers'`).run()
 
