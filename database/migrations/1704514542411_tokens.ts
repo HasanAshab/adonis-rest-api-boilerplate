@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.string('type').notNullable()
       table.boolean('one_time').notNullable()
       table.string('secret').notNullable()
-      table.timestamp('expires_at', { useTz: true })
+      table.timestamp('expires_at')
     })
   }
 

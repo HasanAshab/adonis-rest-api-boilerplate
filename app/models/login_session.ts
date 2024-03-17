@@ -9,7 +9,10 @@ export default class LoginSession extends BaseModel {
   declare accessTokenId: number
   
   @column()
-  declare deviceId: string  
+  declare deviceId: string    
+  
+  @column()
+  declare ip: string  
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

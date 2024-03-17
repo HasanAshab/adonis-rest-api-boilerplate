@@ -2,6 +2,7 @@ import { range } from 'lodash-es'
 import encryption from '@adonisjs/core/services/encryption'
 import config from '@adonisjs/core/services/config'
 import User from '#models/user'
+import LoginDevice from '#models/login_device'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
 import RecoveryCode from '#services/auth/two_factor/recovery_code'
 import Otp from '#services/auth/two_factor/otp'
@@ -28,7 +29,7 @@ export default class TwoFactorAuthService {
   
   public static async verify(user: User, token: string, deviceId?: string) {
     if(deviceId) {
-      await LoginDevice.query().update(deviceId, { isTrusted: true })
+      await LoginDevice.markAsTrusted(deviceId)
     }
     await twoFactorMethod.use(user.twoFactorMethod).verify(user, token)
     return await user.createToken()

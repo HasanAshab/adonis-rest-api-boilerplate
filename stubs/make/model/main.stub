@@ -1,0 +1,18 @@
+{{#var modelName = generators.modelName(entity.name)}}
+{{#var modelFileName = generators.modelFileName(entity.name)}}
+{{{
+  exports({
+    to: app.modelsPath(entity.path, modelFileName)
+  })
+}}}
+import { DateTime } from 'luxon'
+import { compose } from '@adonisjs/core/helpers'
+import BaseModel from '#models/base_model'
+import { column } from '@adonisjs/lucid/orm'
+import HasTimestamps from '#models/traits/has_timestamps'
+
+
+export default class {{ modelName }} extends compose(BaseModel, HasTimestamps)  {
+  @column({ isPrimary: true })
+  declare id: number
+}

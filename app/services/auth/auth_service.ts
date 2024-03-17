@@ -1,9 +1,9 @@
-import type RegisterValidator from '#validators/v1/auth/register_validator'
-import config from '@adonisjs/core/services/config'
 //import { Attachment } from '@ioc:adonis/addons/attachment_lite'
 import hash from '@adonisjs/core/services/hash'
 import User from '#models/user'
 import Token from '#models/token'
+import LoginDevice from '#models/login_device'
+import LoginSession from '#models/login_session'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import mail from '@adonisjs/mail/services/main'
 import EmailVerificationMail from '#mails/email_verification_mail'
@@ -16,10 +16,17 @@ import PasswordChangeNotAllowedException from '#exceptions/password_change_not_a
 import TwoFactorAuthRequiredException from '#exceptions/two_factor_auth_required_exception'
 
 
+export interface RegistrationData {
+  email: string
+  username: string
+  password: string
+}
+
 export interface LoginCredentials {
   email: string
   password: string
-  ip: string
+  ip: string,
+  device: DeviceInfo
 }
 
 export default class AuthService {
@@ -40,15 +47,11 @@ export default class AuthService {
 
     const user = await User.create(data)
     //await user.initNotificationPreference()
-    
-    await LoginDevice.create({
-      ...deviceInfo,
-      isTrusted: true
-    })
 
     return user
   }
-  public static async attempt({ email, password, ip, device: deviceInfo }: LoginCredentials) {
+  
+  public static async attempt({ email, password, ip, device }: LoginCredentials) {
     const limiterKey = this.limiterKeyFor(email, ip)
     const [error, user] = await this.loginLimiter.penalize(limiterKey, async () => {
       const user = await User.verifyCredentials(email, password)
@@ -58,17 +61,16 @@ export default class AuthService {
       throw error
     }
     
-    const device = await LoginDevice.firstOrCreate(
-      { id: deviceInfo.id },
+    const loginDevice = await LoginDevice.firstOrCreate(
+      { id: device.id },
       {
-        type: deviceInfo.type,
-        vendor: deviceInfo.vendor,
-        model: deviceInfo.model
+        type: device.type,
+        vendor: device.vendor,
+        model: device.model
       }
     )
 
-  
-    if (user.hasEnabledTwoFactorAuth() && !device.isTrusted) {
+    if (user.hasEnabledTwoFactorAuth() && !loginDevice.isTrusted) {
       await TwoFactorAuthService.challenge(user)
       throw new TwoFactorAuthRequiredException(user)
     }
@@ -79,11 +81,11 @@ export default class AuthService {
     }
     
     const accessToken = await user.createToken()
-    await LoginSession.create({
-      deviceId: device.id,
+    log(await LoginSession.create({
+      deviceId: loginDevice.id,
       accessTokenId: accessToken.identifier,
       ip
-    })
+    }))
     return accessToken
   }
   

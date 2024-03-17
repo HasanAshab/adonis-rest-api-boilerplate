@@ -29,7 +29,6 @@ export default class AuthController {
    */
   public async register({ request, response }: HttpContext) {
     const registrationData = await request.validateUsing(registerValidator)
-
     const user = await AuthService.register(registrationData)
    
     Registered.dispatch(user, 'internal', AuthController.VERSION)
@@ -42,10 +41,7 @@ export default class AuthController {
    //   .header('Location', profileUrl)
       .created({
         message: 'Verification email sent!',
-        data: {
-          user,
-          token: await user.createToken()
-        },
+        data: user
       })
   }
 
@@ -60,7 +56,7 @@ export default class AuthController {
       email,
       password,
       ip: request.ip(),
-      device: request.device
+      device: request.device()
     })
 
     return {

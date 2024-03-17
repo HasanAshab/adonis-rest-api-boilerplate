@@ -6,6 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      table.string('ip')
       table
         .integer('access_token_id')
         .notNullable()
@@ -13,16 +14,13 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('auth_access_tokens')
         .onDelete('CASCADE')
-        
       table
         .string('device_id')
         .notNullable()
         .references('id')
         .inTable('login_devices')
         .onDelete('CASCADE')
-        
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamps()
     })
   }
 

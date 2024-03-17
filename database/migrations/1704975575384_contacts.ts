@@ -11,7 +11,7 @@ export default class extends BaseSchema {
       table.string('subject', config.get('app.contact.subject.maxLength')).notNullable().index()
       table.string('message', config.get('app.contact.message.maxLength')).notNullable()
       table.enum('status', ['opened', 'closed']).notNullable()
-      table.timestamp('created_at', { useTz: true })
+      table.timestamp('created_at')
     })
 
     this.defer(async (db) => {

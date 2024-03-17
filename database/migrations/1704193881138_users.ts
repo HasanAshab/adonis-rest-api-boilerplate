@@ -19,9 +19,8 @@ export default class extends BaseSchema {
       table.string('social_provider').nullable()
       table.string('social_id').nullable()
       table.string('social_avatar_url').nullable()
-      
-      table.timestamp('created_at', { useTz: true })
-      table.timestamp('updated_at', { useTz: true })
+
+      table.timestamps()
     })
   }
 

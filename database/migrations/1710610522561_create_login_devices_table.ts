@@ -7,8 +7,9 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.string('id').primary()
       table.string('type').notNullable()
-      table.string('vendor').notNullable()
+      table.string('vendor').nullable()
       table.string('model').notNullable()
+      table.boolean('is_trusted').notNullable()
       table.timestamp('created_at')
     })
   }

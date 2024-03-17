@@ -9,11 +9,18 @@ export default class LoginDevice extends BaseModel {
   declare type: string
   
   @column()
-  declare vendor: string
+  declare vendor: string | null = null
   
   @column()
-  declare model: string 
+  declare model: string
+  
+  @column()
+  public isTrusted = false 
   
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
+  
+  public markAsTrusted(id: string) {
+    return this.query().updateOrFail(deviceId, { isTrusted: true })
+  }
 }
