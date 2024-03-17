@@ -14,6 +14,11 @@ import {
 
 
 export default class SettingsController {
+  public async loginActivities({ auth }: HttpContext) {
+    await auth.user!.load('loginActivities')
+    return auth.user!.loginActivities
+  }
+  
   public async twoFactorAuth({ auth }: HttpContext) {
     return TwoFactorSettingsResource.make(auth.user!)
   }

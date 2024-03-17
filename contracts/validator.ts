@@ -1,7 +1,7 @@
 declare module '@vinejs/vine' {
   interface VineString {
-    unique(column: string): this;
-    exists(column: string): this;
+    unique(reference: string): this;
+    exists(reference: string): this;
     password(strategyName: string): this;
     slug(): this;
   }

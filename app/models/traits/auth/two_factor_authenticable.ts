@@ -58,7 +58,7 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
     }
     
     @beforeUpdate()
-    public static async disableTwoFactorAuth(user: TwoFactorAuthenticableUser) {
+    public static async checkWetherToDisableTwoFactorAuth(user: TwoFactorAuthenticableUser) {
       if(!user.hasEnabledTwoFactorAuth()) return
       const method = twoFactorMethod.use(user.twoFactorMethod)
       method.shouldDisable(user) && await method.disable(user)

@@ -1,4 +1,5 @@
 import User from '#models/user'
+import UsernameGenerator from '#services/username_generator'
 import EmailRequiredException from '#exceptions/validation/email_required_exception'
 import UsernameRequiredException from '#exceptions/validation/username_required_exception'
 import DuplicateEmailAndUsernameException from '#exceptions/validation/duplicate_email_and_username_exception'
@@ -73,7 +74,8 @@ export default class SocialAuthService {
 
       user.email = data.email
       user.verified = data.emailVerificationState === 'verified'
-      await user.generateUsername(10)
+
+      user.username = await UsernameGenerator.makeUnique(user.email, 10)
       await user.save()
 
       if (!user.username) {

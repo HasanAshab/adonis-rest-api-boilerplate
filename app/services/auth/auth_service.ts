@@ -3,7 +3,7 @@ import hash from '@adonisjs/core/services/hash'
 import User from '#models/user'
 import Token from '#models/token'
 import LoginDevice from '#models/login_device'
-import LoginSession from '#models/login_session'
+import LoginActivity from '#models/login_activity'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import mail from '@adonisjs/mail/services/main'
 import EmailVerificationMail from '#mails/email_verification_mail'
@@ -13,6 +13,7 @@ import InvalidCredentialException from '#exceptions/invalid_credential_exception
 import LoginAttemptLimitExceededException from '#exceptions/login_attempt_limit_exceeded_exception'
 import OtpRequiredException from '#exceptions/validation/otp_required_exception'
 import PasswordChangeNotAllowedException from '#exceptions/password_change_not_allowed_exception'
+import InvalidPasswordException from '#exceptions/invalid_password_exception'
 import TwoFactorAuthRequiredException from '#exceptions/two_factor_auth_required_exception'
 
 
@@ -81,34 +82,29 @@ export default class AuthService {
     }
     
     const accessToken = await user.createToken()
-    log(await LoginSession.create({
+    
+    await user.related('loginActivities').create({
       deviceId: loginDevice.id,
       accessTokenId: accessToken.identifier,
       ip
-    }))
+    })
+    
     return accessToken
   }
   
   public static async logout(user: User) {
-    if(user.currentAccessToken){
+    if(user.currentAccessToken) {
       await User.accessTokens.delete(user, user.currentAccessToken.identifier)
     }
   }
 
-  public static async changePassword(user: User, oldPassword: string, newPassword: string) {
-    if (!user.password) {
-      throw new PasswordChangeNotAllowedException()
-    }
-
-    await user.verifyPassword(oldPassword)
-
-    user.password = newPassword
-    await user.save()
-  }
-  
   public static async sendVerificationMail(user: User | string) {
     if (typeof user === 'string') {
-      user = await User.internals().where('email', user).first()
+      user = await User
+        .query()
+        .whereNotNull('password')
+        .where('email', user)
+        .first()
     }
 
     if (!user || user.verified) {
@@ -126,6 +122,19 @@ export default class AuthService {
   
   public static async markAsVerified(id: number) {
     await User.query().whereUid(id).updateOrFail({ verified: true });
+  }
+  
+  public static async changePassword(user: User, oldPassword: string, newPassword: string) {
+    if (user.isSocial()) {
+      throw new PasswordChangeNotAllowedException()
+    }
+
+    if(!await user.comparePassword(oldPassword)) {
+      throw new InvalidPasswordException()
+    }
+
+    user.password = newPassword
+    await user.save()
   }
 
   public static async forgotPassword(user: User | string) {

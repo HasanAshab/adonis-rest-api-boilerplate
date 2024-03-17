@@ -6,9 +6,9 @@ const SettingsController = () => import("#controllers/v1/settings_controller")
 
 // Settings management
 export default function settingsRoutes() {
-  router.get('/login-activities', [SettingsController, 'loginActivities'])
- 
   router.group(() => {
+    router.get('/login-activities', [SettingsController, 'loginActivities'])
+
     // Two-factor authentication settings
     router.group(() => {
       router.get('/', [SettingsController, 'twoFactorAuth'])

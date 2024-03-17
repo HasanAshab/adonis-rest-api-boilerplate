@@ -12,6 +12,12 @@ export default function SocialAuthenticable(Superclass: NormalizeConstructor<typ
     
     @column()
     declare socialAvatarUrl?: string
+    
+    declare password: string | null
+    
+    public isSocial() {
+      return !!!this.password
+    }
   }
   
   return SocialAuthenticableUser

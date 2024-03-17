@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
+import UsernameGenerator from '#services/username_generator'
 import EmailRequiredException from '#exceptions/validation/email_required_exception'
 import UsernameRequiredException from '#exceptions/validation/username_required_exception'
 import DuplicateEmailAndUsernameException from '#exceptions/validation/duplicate_email_and_username_exception'
@@ -328,7 +329,7 @@ test.group('Services/Auth/SocialAuthService', (group) => {
       emailVerificationState: 'verified',
     }
 
-    User.prototype.generateUsername = () => null
+    UsernameGenerator.makeUnique = () => null
     const result = SocialAuthService.sync('google', data)
 
     await expect(result).rejects.toThrow(UsernameRequiredException)

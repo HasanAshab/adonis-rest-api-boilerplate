@@ -1,5 +1,6 @@
+import BaseModel from '#models/base_model'
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { column } from '@adonisjs/lucid/orm'
 
 export default class LoginDevice extends BaseModel {
   @column({ isPrimary: true })
@@ -20,7 +21,7 @@ export default class LoginDevice extends BaseModel {
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   
-  public markAsTrusted(id: string) {
-    return this.query().updateOrFail(deviceId, { isTrusted: true })
+  public static markAsTrusted(id: string) {
+    return this.updateOrFail(id, { isTrusted: true })
   }
 }
