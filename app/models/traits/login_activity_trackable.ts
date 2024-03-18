@@ -7,7 +7,6 @@ export default function LoginActivityTrackable(Superclass: NormalizeConstructor<
   class LoginActivityTrackableModel extends Superclass {
     @hasMany(() => LoginActivity)
     declare loginActivities: HasMany<typeof LoginActivity>
-    
   }
   return LoginActivityTrackableModel
 }

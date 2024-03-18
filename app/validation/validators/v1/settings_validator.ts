@@ -2,7 +2,7 @@ import vine from '@vinejs/vine'
 import config from '@adonisjs/core/services/config'
 import NotificationType from '#models/notification_type'
 import NotificationService from '#services/notification_service'
-import { TwoFactorMethod } from '@ioc:adonis/addons/auth/two_factor'
+import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
 
 
 export const emailResubscriptionValidator = vine.compile(
@@ -25,7 +25,7 @@ export const emailUnsubscriptionValidator = vine.compile(
 
 export const twoFactorAuthMethodValidator = vine.compile(
   vine.object({
-    method: vine.enum(TwoFactorMethod.names())
+    method: vine.enum(twoFactorMethod.names())
   })
 )
 

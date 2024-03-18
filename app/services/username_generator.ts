@@ -3,16 +3,21 @@ import User from '#models/user'
 
 
 export default class UsernameGenerator {
-  public static MAX_LENGTH = config.get('app.constraints.user.username.maxLength')
+  public MAX_LENGTH = config.get('app.constraints.user.username.maxLength')
   
-  public static make(email: string) {
+  public maxLength(len: number) {
+    this.MAX_LENGTH = len
+    return this;
+  }
+  
+  public make(email: string) {
     return email
       .split('@')[0]
       .replace(/[&/\\#,+()$~%._@'":*?<>{}]/g, '')
       .substring(0, this.MAX_LENGTH)
   }
   
-  public static async makeUnique(email: string, maxAttempts: number) {
+  public async makeUnique(email: string, maxAttempts: number) {
     const username = this.make(email)
     let uniqueUsername = username
 
@@ -32,3 +37,4 @@ export default class UsernameGenerator {
     return null
   }
 }
+

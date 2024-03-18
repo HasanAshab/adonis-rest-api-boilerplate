@@ -32,6 +32,6 @@ export default function settingsRoutes() {
   })
   .use([
     middleware.auth(),
-    middleware.verified()
+    //middleware.verified()
   ])
 }

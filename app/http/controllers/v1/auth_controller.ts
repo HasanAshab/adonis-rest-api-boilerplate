@@ -1,4 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { inject } from '@adonisjs/core'
 import router from '@adonisjs/core/services/router'
 import User from '#models/user'
 import Token from '#models/token'
@@ -19,9 +20,11 @@ import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_serv
 import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
 
 
-
+@inject()
 export default class AuthController {
   public static readonly VERSION = 'v1'
+  
+  constructor(private readonly socialAuthService: SocialAuthService) {}
   
   /**
    * @register
@@ -162,7 +165,7 @@ export default class AuthController {
       data.emailVerificationState = 'unverified'
     }
 
-    const { user, isRegisteredNow } = await SocialAuthService.sync(params.provider, data)
+    const { user, isRegisteredNow } = await this.socialAuthService.sync(params.provider, data)
     const token = await user.createToken()
 
     if (!isRegisteredNow) {

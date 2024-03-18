@@ -11,10 +11,13 @@ import {
   emailUnsubscriptionValidator,
   emailResubscriptionValidator
 } from "#validators/v1/settings_validator";
+import LoginDevice from '#models/login_device'
 
 
 export default class SettingsController {
-  public async loginActivities({ auth }: HttpContext) {
+  public async loginActivities({ auth, request }: HttpContext) {
+    return auth.user.related('loginActivities').query().preload('device')
+
     await auth.user!.load('loginActivities')
     return auth.user!.loginActivities
   }

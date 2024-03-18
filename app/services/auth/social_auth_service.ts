@@ -1,3 +1,4 @@
+import { inject } from '@adonisjs/core'
 import User from '#models/user'
 import UsernameGenerator from '#services/username_generator'
 import EmailRequiredException from '#exceptions/validation/email_required_exception'
@@ -11,8 +12,11 @@ export interface SocialAuthData extends AllyUserContract {
   username?: string
 }
 
+@inject()
 export default class SocialAuthService {
-  public static async sync(provider: string, data: SocialAuthData) {
+  constructor(private readonly usernameGenerator: UsernameGenerator) {}
+  
+  public async sync(provider: string, data: SocialAuthData) {
     let isRegisteredNow = false
 
     const user = await User.updateOrCreate(
@@ -75,7 +79,7 @@ export default class SocialAuthService {
       user.email = data.email
       user.verified = data.emailVerificationState === 'verified'
 
-      user.username = await UsernameGenerator.makeUnique(user.email, 10)
+      user.username = await this.usernameGenerator.makeUnique(user.email, 10)
       await user.save()
 
       if (!user.username) {

@@ -84,6 +84,7 @@ export default class AuthService {
     const accessToken = await user.createToken()
     
     await user.related('loginActivities').create({
+      userId: user.id,
       deviceId: loginDevice.id,
       accessTokenId: accessToken.identifier,
       ip
