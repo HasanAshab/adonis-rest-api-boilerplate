@@ -24,7 +24,7 @@ export default class AuthController {
   public static readonly VERSION = 'v1'
   
   constructor(
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
     private readonly socialAuthService: SocialAuthService
   ) {}
   

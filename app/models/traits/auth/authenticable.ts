@@ -4,7 +4,6 @@ import { BaseModel } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth'
 import hash from '@adonisjs/core/services/hash'
 
-
 export default function Authenticable(Superclass: NormalizeConstructor<typeof BaseModel>) {
   const AuthFinder = withAuthFinder(() => hash.use(), {
     uids: ['email'],

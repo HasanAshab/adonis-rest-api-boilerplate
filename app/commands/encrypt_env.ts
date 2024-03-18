@@ -1,7 +1,6 @@
-import { BaseCommand } from "@adonisjs/core/ace";
+import { BaseCommand, flags } from "@adonisjs/core/ace";
 import { Encryption } from '@adonisjs/core/encryption'
 import { readFileSync, writeFileSync } from 'fs';
-import { flags } from "@adonisjs/core/ace";
 import string from "@adonisjs/core/helpers/string";
 
 

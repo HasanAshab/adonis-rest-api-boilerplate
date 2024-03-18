@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
 import User from '#models/user'
 import Token from '#models/token'
+import LoginDevice from '#models/login_device'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import NotificationService from '#services/notification_service'
 import NotificationPreferenceCollection from '#resources/v1/settings/notification_preference_collection'
@@ -22,10 +23,12 @@ export default class SettingsController {
   ) {}
   
   public async loginActivities({ auth, request }: HttpContext) {
-    return auth.user.related('loginActivities').query().preload('device')
-
-    await auth.user!.load('loginActivities')
-    return auth.user!.loginActivities
+    await auth.user.load('loginDevices')
+    return auth.user.loginDevices
+    
+    return await LoginDevice.query().whereHas('loginActivities', query => {
+      query.where('userId', auth.user.id);
+    })
   }
   
   public async twoFactorAuth({ auth }: HttpContext) {

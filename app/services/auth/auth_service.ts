@@ -31,6 +31,7 @@ export interface LoginCredentials {
   device: DeviceInfo
 }
 
+@inject()
 export default class AuthService {
   constructor(private readonly twoFactorAuthService: TwoFactorAuthService) {}
   
@@ -86,13 +87,11 @@ export default class AuthService {
     
     const accessToken = await user.createToken()
     
-    await user.related('loginActivities').create({
-      userId: user.id,
-      deviceId: loginDevice.id,
-      accessTokenId: accessToken.identifier,
-      ip
-    })
+    await user.related('devices').sync({
+      [loginDevice.id]: { ip }
+    }, false)
     
+  log(await user.related('devices').query())
     return accessToken
   }
   

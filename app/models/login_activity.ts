@@ -13,10 +13,7 @@ export default class LoginActivity extends BaseModel {
   declare userId: number
 
   @column()
-  declare accessTokenId: number
-  
-  @column()
-  declare deviceId: string    
+  declare loginDeviceId: string    
   
   @column()
   declare ip: string  
@@ -25,8 +22,6 @@ export default class LoginActivity extends BaseModel {
   declare createdAt: DateTime
   
   
-  @belongsTo(() => LoginDevice, {
-    foreignKey: 'deviceId'
-  })
+  @belongsTo(() => LoginDevice)
   declare device: BelongsTo<typeof LoginDevice>
 }

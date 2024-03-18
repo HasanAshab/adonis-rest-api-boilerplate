@@ -1,14 +1,13 @@
-import { BaseCommand } from "@adonisjs/core/ace";
+import { BaseCommand, args, flags } from "@adonisjs/core/ace";
 import { Encryption } from '@adonisjs/core/encryption'
 import { readFileSync, existsSync, writeFileSync } from 'fs';
-import { args, flags } from "@adonisjs/core/ace";
 
 
 export default class DecryptEnv extends BaseCommand {
   public static commandName = "env:decrypt"
   public static description = "Decrypt environment variables"
-  public static settings = { loadApp: true }
-  
+
+
   @args.string()
   declare key: string
   
