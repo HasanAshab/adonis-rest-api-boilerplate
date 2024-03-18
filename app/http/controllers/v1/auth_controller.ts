@@ -16,7 +16,6 @@ import {
   twoFactorAccountRecoveryValidator
 } from '#validators/v1/auth/two_factor_validator'
 import AuthService from '#services/auth/auth_service'
-import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
 
 
@@ -24,7 +23,10 @@ import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_se
 export default class AuthController {
   public static readonly VERSION = 'v1'
   
-  constructor(private readonly socialAuthService: SocialAuthService) {}
+  constructor(
+    private readonly authService: AuthService
+    private readonly socialAuthService: SocialAuthService
+  ) {}
   
   /**
    * @register
@@ -32,7 +34,7 @@ export default class AuthController {
    */
   public async register({ request, response }: HttpContext) {
     const registrationData = await request.validateUsing(registerValidator)
-    const user = await AuthService.register(registrationData)
+    const user = await this.authService.register(registrationData)
    
     Registered.dispatch(user, 'internal', AuthController.VERSION)
 
@@ -55,7 +57,7 @@ export default class AuthController {
   public async login({ request }: HttpContext) {
     const { email, password } = await request.validateUsing(loginValidator)
     
-    const token = await AuthService.attempt({
+    const token = await this.authService.attempt({
       email,
       password,
       ip: request.ip(),
@@ -73,7 +75,7 @@ export default class AuthController {
    * @responseBody 200 - { message: <string> }
    */
   public async logout({ auth }: HttpContext) {
-    await AuthService.logout(auth.user)
+    await this.authService.logout(auth.user)
     return 'Logged out successfully!'
   }
 
@@ -83,27 +85,27 @@ export default class AuthController {
    */
   public async verifyEmail({ request }) {
     const { id, token } = await request.validateUsing(emailVerificationValidator)
-    await AuthService.verifyEmail(id, token)
+    await this.authService.verifyEmail(id, token)
     return 'Email verified successfully!'  
   }
 
 
   public async resendEmailVerification({ request, response }: HttpContext) {
     const { email } = await request.validateUsing(resendEmailVerificationValidator)
-    await AuthService.sendVerificationMail(email)
+    await this.authService.sendVerificationMail(email)
     response.accepted('Verification link sent to email!')
   }
 
   public async forgotPassword({ request, response }: HttpContext) {
     const { email } = await request.validateUsing(forgotPasswordValidator)
-    await AuthService.forgotPassword(email)
+    await this.authService.forgotPassword(email)
     response.accepted('Password reset link sent to your email!')
   }
 
   public async resetPassword({ request }: HttpContext) {
     const { id, token, password } = await request.validateUsing(resetPasswordValidator)
     const user = await User.findOrFail(id)
-    await AuthService.resetPassword(user, token, password)
+    await this.authService.resetPassword(user, token, password)
     await mail.sendLater(new PasswordChangedMail(user))
     return 'Password changed successfully!'
   }
@@ -118,7 +120,7 @@ export default class AuthController {
     const user = await User.findByOrFail('email', email)
     
     await Token.verify('two_factor_auth_challenge', user.id, token)
-    await TwoFactorAuthService.challenge(user)
+    await TwoFactorthis.authService.challenge(user)
     
     return 'Challenge sent!'
   }
@@ -127,7 +129,7 @@ export default class AuthController {
     const { email, token, challengeToken, trustDevice } = await request.validateUsing(twoFactorChallengeVerificationValidator)
     const user = await User.findByOrFail('email', email)
     
-    const accessToken = await TwoFactorAuthService.verify(user, challengeToken, trustDevice && request.device.id)
+    const accessToken = await TwoFactorthis.authService.verify(user, challengeToken, trustDevice && request.device.id)
     await Token.verify('two_factor_auth_challenge_verification', user.id, token)
 
     return {
@@ -141,12 +143,12 @@ export default class AuthController {
    * @responseBody 200 - { data: string[] }
    */
   public generateRecoveryCodes({ auth }: AuthenticRequest) {
-    return TwoFactorAuthService.generateRecoveryCodes(auth.user!)
+    return TwoFactorthis.authService.generateRecoveryCodes(auth.user!)
   }
 
   public async recoverTwoFactorAccount({ request }: HttpContext) {
     const { email, code } = await request.validateUsing(twoFactorAccountRecoveryValidator)
-    const token = await TwoFactorAuthService.recover(email, code)
+    const token = await TwoFactorthis.authService.recover(email, code)
 
     return {
       message: 'Account recovered successfully!',
@@ -165,7 +167,7 @@ export default class AuthController {
       data.emailVerificationState = 'unverified'
     }
 
-    const { user, isRegisteredNow } = await this.socialAuthService.sync(params.provider, data)
+    const { user, isRegisteredNow } = await this.socialthis.authService.sync(params.provider, data)
     const token = await user.createToken()
 
     if (!isRegisteredNow) {

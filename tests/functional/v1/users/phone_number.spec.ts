@@ -11,6 +11,7 @@ node ace test functional --files="v1/users/phone_number.spec.ts"
 */
 
 test.group('Users / Phone Number', (group) => {
+  const otpService = new Otp
   let user: User
 
   refreshDatabase(group)
@@ -22,7 +23,7 @@ test.group('Users / Phone Number', (group) => {
 
   test('Should update phone number with valid otp', async ({ client, expect }) => {
     const phoneNumber = '+14155552671'
-    const otp = await Otp.generate(phoneNumber)
+    const otp = await otpService.generate(phoneNumber)
 
     const response = await client
       .patch('/api/v1/users/me/phone-number')
@@ -70,7 +71,7 @@ test.group('Users / Phone Number', (group) => {
     .run(async ({ client, expect }, method) => {
       const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
       const phoneNumber = '+14155552671'
-      const otp = await Otp.generate(phoneNumber)
+      const otp = await otpService.generate(phoneNumber)
   
       const response = await client
         .patch('/api/v1/users/me/phone-number')
@@ -87,7 +88,7 @@ test.group('Users / Phone Number', (group) => {
   test('Updating phone number on 2FA (authenticator) enabled account should not disable 2fa', async ({ client, expect }) => {
     const user = await User.factory().twoFactorAuthEnabled().create()
     const phoneNumber = '+14155552671'
-    const otp = await Otp.generate(phoneNumber)
+    const otp = await otpService.generate(phoneNumber)
 
     const response = await client
       .patch('/api/v1/users/me/phone-number')

@@ -1,4 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { inject } from '@adonisjs/core'
 //import { bind } from '@adonisjs/route-model-binding'
 import User from '#models/user'
 import AuthService from '#services/auth/auth_service'
@@ -82,28 +83,29 @@ export default class UsersController {
     await new PasswordChangedMail(auth.user!).sendLater()
     return 'Password changed!'
   }
-
-  async changePhoneNumber({ request, response, auth }: HttpContext) {
-    const { phoneNumber, otp } = await request.validateUsing(changePhoneNumberValidator)
+  
+  @inject()
+  public async changePhoneNumber({ request, response, auth }: HttpContext, otp: Otp) {
+    const { phoneNumber, otp: code } = await request.validateUsing(changePhoneNumberValidator)
     const user = auth.user!
 
     if (user.phoneNumber === phoneNumber) {
       throw new SamePhoneNumberException()
     }
 
-    if (!otp) {
-      await Otp.sendThroughSMS(phoneNumber)
+    if (!code) {
+      await otp.sendThroughSMS(phoneNumber)
       return response.accepted('Verification code sent to the phone number!')
     }
 
-    await Otp.verify(otp, phoneNumber)
+    await Otp.verify(code, phoneNumber)
     
     user.phoneNumber = phoneNumber
     await user.save()
     return 'Phone number updated!'
   }
   
-  async removePhoneNumber({ auth }: HttpContext) {
+  public async removePhoneNumber({ auth }: HttpContext) {
     auth.user!.phoneNumber = null
     await auth.user!.save()
     return 'Phone number removed!'

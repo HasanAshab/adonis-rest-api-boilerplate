@@ -136,7 +136,7 @@ test.group('Auth/TwoFactor', (group) => {
 
     const challengeToken = method === 'authenticator'
       ? authenticator.generate(user.twoFactorSecret)
-      : await Otp.generate(user.twoFactorSecret)
+      : await new Otp().generate(user.twoFactorSecret)
 
     const response = await client.post('/api/v1/auth/two-factor/challenges/verification').json({
       email: user.email,

@@ -1,3 +1,4 @@
+import { inject } from '@adonisjs/core'
 //import { Attachment } from '@ioc:adonis/addons/attachment_lite'
 import hash from '@adonisjs/core/services/hash'
 import User from '#models/user'
@@ -31,17 +32,19 @@ export interface LoginCredentials {
 }
 
 export default class AuthService {
-  private static loginLimiter = limiter.use({
+  constructor(private readonly twoFactorAuthService: TwoFactorAuthService) {}
+  
+  private loginLimiter = limiter.use({
     requests: 5,
     duration: '2 minutes',
     blockDuration: '1 hour'
   })
   
-  private static limiterKeyFor(email: string, ip: string) {
+  private limiterKeyFor(email: string, ip: string) {
     return `login__${email}_${ip}`
   }
 
-  public static async register(data: RegistrationData) {
+  public async register(data: RegistrationData) {
     if (data.avatar) {
       data.avatar = Attachment.fromFile(data.avatar)
     }
@@ -52,7 +55,7 @@ export default class AuthService {
     return user
   }
   
-  public static async attempt({ email, password, ip, device }: LoginCredentials) {
+  public async attempt({ email, password, ip, device }: LoginCredentials) {
     const limiterKey = this.limiterKeyFor(email, ip)
     const [error, user] = await this.loginLimiter.penalize(limiterKey, async () => {
       const user = await User.verifyCredentials(email, password)
@@ -72,7 +75,7 @@ export default class AuthService {
     )
 
     if (user.hasEnabledTwoFactorAuth() && !loginDevice.isTrusted) {
-      await TwoFactorAuthService.challenge(user)
+      await this.twoFactorAuthService.challenge(user)
       throw new TwoFactorAuthRequiredException(user)
     }
 
@@ -93,13 +96,13 @@ export default class AuthService {
     return accessToken
   }
   
-  public static async logout(user: User) {
+  public async logout(user: User) {
     if(user.currentAccessToken) {
       await User.accessTokens.delete(user, user.currentAccessToken.identifier)
     }
   }
 
-  public static async sendVerificationMail(user: User | string) {
+  public async sendVerificationMail(user: User | string) {
     if (typeof user === 'string') {
       user = await User
         .query()
@@ -116,16 +119,16 @@ export default class AuthService {
     return true
   }
   
-  public static async verifyEmail(id: number, token: string) {
+  public async verifyEmail(id: number, token: string) {
     await Token.verify('verification', id, token)
     await this.markAsVerified(id)
   }
   
-  public static async markAsVerified(id: number) {
+  public async markAsVerified(id: number) {
     await User.query().whereUid(id).updateOrFail({ verified: true });
   }
   
-  public static async changePassword(user: User, oldPassword: string, newPassword: string) {
+  public async changePassword(user: User, oldPassword: string, newPassword: string) {
     if (user.isSocial()) {
       throw new PasswordChangeNotAllowedException()
     }
@@ -138,7 +141,7 @@ export default class AuthService {
     await user.save()
   }
 
-  public static async forgotPassword(user: User | string) {
+  public async forgotPassword(user: User | string) {
     if (typeof user === 'string') {
       user = await User.internals().where('email', user).where('verified', true).first()
     }
@@ -149,7 +152,7 @@ export default class AuthService {
     return false
   }
 
-  public static async resetPassword(user: User, token: string, password: string) {
+  public async resetPassword(user: User, token: string, password: string) {
     await Token.verify('password_reset', user.id, token)
     user.password = password
     await user.save()
