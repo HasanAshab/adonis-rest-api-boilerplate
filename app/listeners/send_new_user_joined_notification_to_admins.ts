@@ -1,5 +1,5 @@
 import type Registered from '#events/registered'
-//import Notification from '@ioc:verful/notification'
+import Notification from '@ioc:verful/notification'
 import NewUserJoinedNotification from '#notifications/new_user_joined_notification'
 import User from '#models/user'
 

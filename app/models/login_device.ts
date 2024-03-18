@@ -3,7 +3,6 @@ import { DateTime } from 'luxon'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import { column, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import LoginActivity from '#models/login_activity'
 
 
 export default class LoginDevice extends BaseModel {
@@ -25,9 +24,12 @@ export default class LoginDevice extends BaseModel {
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   
-  @hasMany(() => LoginActivity)
-  declare loginActivities: HasMany<typeof LoginActivity>
-  
+  public serializeExtras() {
+    return {
+      ip: this.$extras.pivot_ip
+    }
+  }
+
   public static markAsTrusted(id: string) {
     return this.updateOrFail(id, { isTrusted: true })
   }

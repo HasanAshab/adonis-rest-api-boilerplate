@@ -87,11 +87,11 @@ export default class AuthService {
     
     const accessToken = await user.createToken()
     
-    await user.related('devices').sync({
+    await user.related('loginDevices').sync({
       [loginDevice.id]: { ip }
     }, false)
     
-  log(await user.related('devices').query())
+  log(await user.related('loginDevices').query())
     return accessToken
   }
   
