@@ -16,13 +16,13 @@ node ace test unit --files="services/auth/social_auth_service.spec.ts"
 */
 test.group('Services/Auth/service', (group) => {
   let service: SocialAuthService
-  
+
   group.setup(async () => {
     service = await app.container.make(SocialAuthService)
   })
 
   refreshDatabase(group)
-  
+
   //Create
   test('should create a new user', async ({ expect }) => {
     const data: Partial<SocialAuthData> = {
@@ -329,11 +329,11 @@ test.group('Services/Auth/service', (group) => {
     expect,
   }) => {
     app.container.swap(UsernameGenerator, () => ({
-      makeUnique: () => null
+      makeUnique: () => null,
     }))
-    
-    const service = await app.container.make(SocialAuthService)
-    
+
+    service = await app.container.make(SocialAuthService)
+
     const data: Partial<SocialAuthData> = {
       id: '1',
       name: 'Test User',
@@ -342,7 +342,6 @@ test.group('Services/Auth/service', (group) => {
       emailVerificationState: 'verified',
     }
 
-    
     const result = service.sync('google', data)
 
     await expect(result).rejects.toThrow(UsernameRequiredException)

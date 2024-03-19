@@ -1,5 +1,4 @@
-import { ApplicationService } from "@adonisjs/core/types";
-
+import { ApplicationService } from '@adonisjs/core/types'
 
 declare module '@adonisjs/core/types' {
   interface ContainerBindings {
@@ -7,11 +6,10 @@ declare module '@adonisjs/core/types' {
   }
 }
 
-
 export default class ClientProvider {
   constructor(protected app: ApplicationService) {}
 
-  public register() {
+  register() {
     this.app.container.singleton('client', async () => {
       const { default: Client } = await import('#services/client')
       const config = this.app.config.get('client')

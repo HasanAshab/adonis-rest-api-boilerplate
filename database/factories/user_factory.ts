@@ -2,7 +2,6 @@ import Factory from '#models/traits/has_factory/factory'
 import User from '#models/user'
 import { stringToLuxonDate } from '#app/helpers'
 
-
 export default class UserFactory extends Factory<User> {
   definition() {
     return {
@@ -10,7 +9,7 @@ export default class UserFactory extends Factory<User> {
       username: this.faker.person.firstName(),
       email: this.faker.internet.email(),
       password: 'password',
-      verified: true
+      verified: true,
     }
   }
 
@@ -45,22 +44,22 @@ export default class UserFactory extends Factory<User> {
   }
 
   twoFactorAuthEnabled(method = 'authenticator') {
-    return this.state(user => {
+    return this.state((user) => {
       user.twoFactorEnabled = true
       user.twoFactorSecret = '2fa-secret'
       user.twoFactorMethod = method
       return user
     })
   }
-  
+
   hasNotificationPreferences() {
-    return this.external(async user => {
+    return this.external(async (user) => {
       await user.initNotificationPreference()
     })
   }
-  
+
   registeredBefore(time: string) {
-    return this.state(user => {
+    return this.state((user) => {
       user.createdAt = stringToLuxonDate('-' + time)
       return user
     })

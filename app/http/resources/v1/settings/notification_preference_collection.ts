@@ -2,10 +2,9 @@
 import { groupBy } from 'lodash-es'
 
 export default class NotificationPreferenceCollection extends ResourceCollection {
-
-  public serialize() {
+  serialize() {
     return {
-      data: groupBy(this.collection, 'resource.groupName')
+      data: groupBy(this.collection, 'resource.groupName'),
     }
   }
 }

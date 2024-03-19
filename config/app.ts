@@ -54,47 +54,47 @@ export const http = defineConfig({
 export const constraints = {
   user: {
     name: {
-      maxLength: 35
+      maxLength: 35,
     },
     username: {
       minLength: 3,
-      maxLength: 20
+      maxLength: 20,
     },
     password: {
       maxLength: 128,
-      strategy: 'standard'
+      strategy: 'standard',
     },
     avatar: {
       size: '1mb',
       extnames: ['jpg', 'png'],
-    }
+    },
   },
   contact: {
     subject: {
       minLength: 5,
-      maxLength: 72
+      maxLength: 72,
     },
     message: {
       minLength: 20,
-      maxLength: 300
-    }
+      maxLength: 300,
+    },
   },
   notificationType: {
     pattern: /^[a-zA-Z0-9_-]+$/,
     name: {
-      maxLength: 50
+      maxLength: 50,
     },
     displayText: {
       maxLength: 30,
-      minLength: 3
+      minLength: 3,
     },
     groupName: {
       maxLength: 20,
-      minLength: 3
+      minLength: 3,
     },
     description: {
       maxLength: 200,
-      minLength: 5
-    }
-  }
+      minLength: 5,
+    },
+  },
 }

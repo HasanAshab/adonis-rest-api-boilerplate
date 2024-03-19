@@ -1,23 +1,22 @@
 import config from '@adonisjs/core/services/config'
 import User from '#models/user'
 
-
 export default class UsernameGenerator {
-  public MAX_LENGTH = config.get('app.constraints.user.username.maxLength')
-  
-  public maxLength(len: number) {
+  MAX_LENGTH = config.get('app.constraints.user.username.maxLength')
+
+  maxLength(len: number) {
     this.MAX_LENGTH = len
-    return this;
+    return this
   }
-  
-  public make(email: string) {
+
+  make(email: string) {
     return email
       .split('@')[0]
       .replace(/[&/\\#,+()$~%._@'":*?<>{}]/g, '')
       .substring(0, this.MAX_LENGTH)
   }
-  
-  public async makeUnique(email: string, maxAttempts: number) {
+
+  async makeUnique(email: string, maxAttempts: number) {
     const username = this.make(email)
     let uniqueUsername = username
 
@@ -37,4 +36,3 @@ export default class UsernameGenerator {
     return null
   }
 }
-

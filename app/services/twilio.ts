@@ -2,7 +2,6 @@ import twilioSdk from 'twilio'
 import { TwilioFakedData, TwilioConfig } from '#app/interfaces/twilio'
 import Assertor from '#tests/assertors/assertor'
 
-
 export default class Twilio extends Assertor {
   private client: twilioSdk.Twilio
   private isFaked = false
@@ -17,19 +16,19 @@ export default class Twilio extends Assertor {
     this.client = twilioSdk(config.sid, config.authToken)
   }
 
-  public fake() {
+  fake() {
     this.isFaked = true
     this.restore()
   }
 
-  public restore() {
+  restore() {
     this.faked = {
       messages: [],
       calls: [],
     }
   }
 
-  public async sendMessage(to: string, body: string) {
+  async sendMessage(to: string, body: string) {
     if (this.isFaked) {
       return this.faked.messages.push(to)
     }
@@ -41,7 +40,7 @@ export default class Twilio extends Assertor {
     })
   }
 
-  public async makeCall(to: string, twiml: string) {
+  async makeCall(to: string, twiml: string) {
     if (this.isFaked) {
       return this.faked.calls.push(to)
     }
@@ -52,12 +51,12 @@ export default class Twilio extends Assertor {
       twiml,
     })
   }
-  
-  public assertMessaged(phoneNumber: string) {
+
+  assertMessaged(phoneNumber: string) {
     this.assertTrue(this.faked.messages.includes(phoneNumber))
   }
 
-  public assertCalled(phoneNumber: string) {
+  assertCalled(phoneNumber: string) {
     this.assertTrue(this.faked.calls.includes(phoneNumber))
   }
 }

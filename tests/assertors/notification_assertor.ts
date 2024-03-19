@@ -18,33 +18,33 @@ export class NotificationAssertor extends Assertor {
     }
   }
 
-  public fake() {
+  fake() {
     Notification.trap((_, to) => {
       this.notifiables.push(this.extractData(to))
     })
   }
 
-  public isSentTo(user: NotifiableModel) {
+  isSentTo(user: NotifiableModel) {
     return !!this.notifiables.find((notifiable) => {
       return isEqual(notifiable, this.extractData(user))
     })
   }
 
-  public assertSentTo(users: NotifiableModel | NotifiableModel[]) {
+  assertSentTo(users: NotifiableModel | NotifiableModel[]) {
     if (Array.isArray(users)) {
       return users.forEach((user) => this.assertSentTo(user))
     }
     this.assertTrue(this.isSentTo(users))
   }
 
-  public assertNotSentTo(users: NotifiableModel | NotifiableModel[]) {
+  assertNotSentTo(users: NotifiableModel | NotifiableModel[]) {
     if (Array.isArray(users)) {
       return users.forEach((user) => this.assertNotSentTo(user))
     }
     this.assertFalse(this.isSentTo(users))
   }
 
-  public assertNothingSent() {
+  assertNothingSent() {
     this.assertTrue(this.notifiables.length === 0)
   }
 }

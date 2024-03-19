@@ -14,7 +14,6 @@ import HasTimestamps from '#models/traits/has_timestamps'
 //import OptInNotifiable from '#models/traits/opt_in_notifiable'
 import HasRole from '#models/traits/has_role'
 
-
 export default class User extends compose(
   BaseModel,
   Authenticable,
@@ -27,34 +26,33 @@ export default class User extends compose(
   //OptInNotifiable,
   HasRole
 ) {
-  static factoryClass = UserFactory 
-  
+  static factoryClass = UserFactory
+
   @column({ isPrimary: true })
   declare id: number
 
   @column()
-  public name: string | null = null
+  name: string | null = null
 
   @column()
-  public username: string | null = null
+  username: string | null = null
 
   @column()
   declare email: string
 
   @column()
-  public phoneNumber: string | null = null
+  phoneNumber: string | null = null
 
   @column()
-  public verified = false
+  verified = false
 
   @column({ serializeAs: null })
-  public password: string | null = null
+  password: string | null = null
 
   //@attachment()
-//  declare avatar: AttachmentContract = null
+  //  declare avatar: AttachmentContract = null
 
-  public async avatarUrl() {
-    return await this.avatar?.getUrl()
-      ?? this.socialAvatarUrl
+  async avatarUrl() {
+    return (await this.avatar?.getUrl()) ?? this.socialAvatarUrl
   }
 }

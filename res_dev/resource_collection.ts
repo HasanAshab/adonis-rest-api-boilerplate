@@ -8,17 +8,16 @@ export default class ResourceCollection<Item extends JsonResource> {
 
   constructor(protected readonly resources: Array<Record<string, any>>) {}
 
-  public static make(resources: Array<Record<string, any>>) {
+  static make(resources: Array<Record<string, any>>) {
     return new this(resources)
   }
 
-  public dontWrap() {
+  dontWrap() {
     this.shouldWrap = false
     return this
   }
 
-
-  public toJSON() {
+  toJSON() {
     if (this.resources instanceof SimplePaginator) {
       this.setCollection((this.resources as any).rows)
       return {
@@ -39,8 +38,6 @@ export default class ResourceCollection<Item extends JsonResource> {
   }
 
   protected setCollection(collection: Array<Record<string, any>>) {
-    this.collection = collection.map(resource => 
-      this.collects.make(resource).dontWrap()
-    )
+    this.collection = collection.map((resource) => this.collects.make(resource).dontWrap())
   }
 }

@@ -11,7 +11,7 @@ export default function Authenticable(Superclass: NormalizeConstructor<typeof Ba
   })
 
   class AuthenticableModel extends compose(Superclass, AuthFinder) {
-    public static findForAuth<T extends typeof UserWithUserFinder>(
+    static findForAuth<T extends typeof UserWithUserFinder>(
       this: T,
       uids: string[],
       value: string
@@ -20,8 +20,8 @@ export default function Authenticable(Superclass: NormalizeConstructor<typeof Ba
       uids.forEach((uid) => query.orWhere(uid, value))
       return query.whereNotNull('password').limit(1).first()
     }
-    
-    public comparePassword(password: string) {
+
+    comparePassword(password: string) {
       if (!this.password) {
         throw new Error('The user must have a password to compare with')
       }

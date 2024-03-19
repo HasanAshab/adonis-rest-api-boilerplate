@@ -3,7 +3,6 @@ import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import NotificationType from '#models/notification_type'
 
-
 /*
 Run this suits:
 node ace test functional --files="v1/notification_types/create.spec.ts"
@@ -12,7 +11,7 @@ test.group('Notification Types / Create', (group) => {
   let admin: User
 
   refreshDatabase(group)
-  
+
   group.each.setup(async () => {
     admin = await User.factory().withRole('admin').create()
   })
@@ -22,7 +21,7 @@ test.group('Notification Types / Create', (group) => {
       name: 'name',
       displayText: 'Text',
       groupName: 'Group Name',
-      description: 'description bla bla ...'
+      description: 'description bla bla ...',
     }
 
     const response = await client.post('/api/v1/notification-types/').loginAs(admin).json(data)
@@ -30,7 +29,6 @@ test.group('Notification Types / Create', (group) => {
     response.assertStatus(201)
     await expect(NotificationType.exists(data)).resolves.toBeTrue()
   })
-  
 
   test('Users should not create notification type', async ({ client, expect }) => {
     const user = await User.factory().create()
@@ -38,7 +36,7 @@ test.group('Notification Types / Create', (group) => {
       name: 'name',
       displayText: 'Text',
       groupName: 'Group Name',
-      description: 'description bla bla ...'
+      description: 'description bla bla ...',
     }
 
     const response = await client.post('/api/v1/notification-types/').loginAs(user).json(data)
@@ -53,7 +51,7 @@ test.group('Notification Types / Create', (group) => {
       name: existingNotificationType.name,
       displayText: 'Text',
       groupName: 'Group Name',
-      description: 'description bla bla ...'
+      description: 'description bla bla ...',
     }
 
     const response = await client.post('/api/v1/notification-types').loginAs(admin).json(data)

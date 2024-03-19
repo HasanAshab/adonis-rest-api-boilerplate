@@ -1,18 +1,20 @@
-import { PasswordStrategyName, PasswordValidationStrategy, PasswordValidationStrategyFactory } from '#interfaces/validation/rules/password'
-
+import {
+  PasswordStrategyName,
+  PasswordValidationStrategy,
+  PasswordValidationStrategyFactory,
+} from '#interfaces/validation/rules/password'
 
 export class PasswordStrategyManager {
   protected strategies = new Map<string, PasswordValidationStrategy>()
   protected factories = new Map<string, PasswordValidationStrategyFactory>()
-  
 
-  public register(name: PasswordStrategyName, factory: PasswordValidationStrategyFactory) {
+  register(name: PasswordStrategyName, factory: PasswordValidationStrategyFactory) {
     this.factories.set(name, factory)
     return this
   }
 
-  public async use(name: PasswordStrategyName) {
-    return this.strategies.get(name) ?? await this.resolve(name)
+  async use(name: PasswordStrategyName) {
+    return this.strategies.get(name) ?? (await this.resolve(name))
   }
 
   protected async resolve(name: PasswordStrategy) {
@@ -30,4 +32,4 @@ export class PasswordStrategyManager {
   }
 }
 
-export default new PasswordStrategyManager
+export default new PasswordStrategyManager()

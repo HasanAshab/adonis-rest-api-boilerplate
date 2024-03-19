@@ -1,11 +1,10 @@
 import db from '@adonisjs/lucid/services/db'
 import { BaseModel } from '@adonisjs/lucid/orm'
 import { forIn } from 'lodash-es'
-import { DatabaseQueryBuilder } from "@adonisjs/lucid/database";
-import { ModelQueryBuilder } from "@adonisjs/lucid/orm";
+import { DatabaseQueryBuilder } from '@adonisjs/lucid/database'
+import { ModelQueryBuilder } from '@adonisjs/lucid/orm'
 import type { Request } from '@adonisjs/core/http'
 import { errors } from '@adonisjs/lucid'
-
 
 /**
  * Macro to check if any records match the query.
@@ -14,17 +13,19 @@ DatabaseQueryBuilder.macro('exists', async function (this: DatabaseQueryBuilder)
   return !!(await this.select(1).first())
 })
 
-
 /**
  * Macro to add WHERE clauses for multiple fields with their respective values.
  * @param fields - The fields and their values to filter by.
  */
-ModelQueryBuilder.macro('whereEqual', function (this: ModelQueryBuilder, fields: Record<string, any>) {
-  for (const name in fields) {
-    this.where(name, fields[name])
+ModelQueryBuilder.macro(
+  'whereEqual',
+  function (this: ModelQueryBuilder, fields: Record<string, any>) {
+    for (const name in fields) {
+      this.where(name, fields[name])
+    }
+    return this
   }
-  return this
-})
+)
 
 /**
  * Macro to add a WHERE clause for the primary key of the model.
@@ -43,11 +44,9 @@ ModelQueryBuilder.macro('pluck', async function (this: ModelQueryBuilder, column
   return records.map((record: Record<string, any>) => record[column])
 })
 
-
 ModelQueryBuilder.macro('last', function (this: ModelQueryBuilder) {
   return this.orderBy('created_at', 'desc').first()
 })
-
 
 /**
  * Macro to find a record by its primary key.
@@ -71,7 +70,7 @@ ModelQueryBuilder.macro('findOrFail', function (this: ModelQueryBuilder, uid: nu
  */
 ModelQueryBuilder.macro('updateOrFail', async function (this: ModelQueryBuilder, data: object) {
   const count = await this.update(data)
-  if (!parseInt(count)) {
+  if (!Number.parseInt(count)) {
     throw new errors.E_ROW_NOT_FOUND()
   }
 })
@@ -81,11 +80,10 @@ ModelQueryBuilder.macro('updateOrFail', async function (this: ModelQueryBuilder,
  */
 ModelQueryBuilder.macro('deleteOrFail', async function (this: ModelQueryBuilder) {
   const count = await this.delete()
-  if (!parseInt(count)) {
+  if (!Number.parseInt(count)) {
     throw new errors.E_ROW_NOT_FOUND()
   }
 })
-
 
 /**
  * Macro to check if any records match the query.
@@ -98,62 +96,73 @@ ModelQueryBuilder.macro('exists', async function (this: ModelQueryBuilder) {
  * Macro to exclude a specific model instance or ID from the query results.
  * @param modelOrId - The model instance or ID to exclude.
  */
-ModelQueryBuilder.macro('except', function (this: ModelQueryBuilder, modelOrUid: InstanceType<typeof BaseModel> | number | string) {
-  const uid = modelOrUid instanceof BaseModel 
-    ? (modelOrUid as any)[this.model.primaryKey]
-    : modelOrUid
-  return this.whereNot(this.model.primaryKey, uid)
-})
+ModelQueryBuilder.macro(
+  'except',
+  function (this: ModelQueryBuilder, modelOrUid: InstanceType<typeof BaseModel> | number | string) {
+    const uid =
+      modelOrUid instanceof BaseModel ? (modelOrUid as any)[this.model.primaryKey] : modelOrUid
+    return this.whereNot(this.model.primaryKey, uid)
+  }
+)
 
 /**
  * Macro to conditionally apply a query scope based on a boolean condition.
  * @param condition - The boolean condition determining whether to apply the query scope.
  * @param cb - The callback function defining the query scope.
  */
-ModelQueryBuilder.macro('when', function (this: ModelQueryBuilder, condition: boolean, cb: ((query: this) => this)) {
-  if (condition) {
-    cb(this)
+ModelQueryBuilder.macro(
+  'when',
+  function (this: ModelQueryBuilder, condition: boolean, cb: (query: this) => this) {
+    if (condition) {
+      cb(this)
+    }
+    return this
   }
-  return this
-})
+)
 
 /**
  * Macro to count the number of records matching the query.
  * @param column - The column or columns to count.
  */
-ModelQueryBuilder.macro('getCount', async function (this: ModelQueryBuilder, column: string | object = '*') {
-  const isString = typeof column === 'string'
+ModelQueryBuilder.macro(
+  'getCount',
+  async function (this: ModelQueryBuilder, column: string | object = '*') {
+    const isString = typeof column === 'string'
 
-  if (isString) {
-    this.select(db.raw(`COUNT(${column}) as total`))
-  } else {
-    forIn(column, (columnName, alias) => {
-      this.select(db.raw(`COUNT(${columnName}) as ${alias}`))
+    if (isString) {
+      this.select(db.raw(`COUNT(${column}) as total`))
+    } else {
+      forIn(column, (columnName, alias) => {
+        this.select(db.raw(`COUNT(${columnName}) as ${alias}`))
+      })
+    }
+
+    const result = await this.pojo().first()
+
+    if (isString) {
+      return Number.parseInt(result.total)
+    }
+
+    forIn(column, (_, alias) => {
+      result[alias] = Number.parseInt(result[alias.toLowerCase()])
     })
+
+    return result
   }
-
-  const result = await this.pojo().first()
-
-  if (isString) {
-    return parseInt(result.total)
-  }
-
-  forIn(column, (_, alias) => {
-    result[alias] = parseInt(result[alias.toLowerCase()])
-  })
-
-  return result
-})
+)
 
 /**
  * Macro to perform a full-text search using PostgreSQL's built-in text search functionality.
  * @param query - The search query.
  * @param vectorColumn - The name of the column containing the search vector.
  */
-ModelQueryBuilder.macro('search', function (this: ModelQueryBuilder, query: string, vectorColumn = 'search_vector') {
-  this._tsQuery = `plainto_tsquery('${query}')`
-  return this.where(vectorColumn, '@@', db.raw(this._tsQuery))
-})
+ModelQueryBuilder.macro(
+  'search',
+  function (this: ModelQueryBuilder, query: string, vectorColumn = 'search_vector') {
+    this._tsQuery = `plainto_tsquery('${query}')`
+    return this.where(vectorColumn, '@@', db.raw(this._tsQuery))
+  }
+)
 
 /**
  * Macro to calculate the rank of search results based on their relevance to the search query.

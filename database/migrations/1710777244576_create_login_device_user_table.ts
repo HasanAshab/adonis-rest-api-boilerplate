@@ -13,7 +13,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE')
-     table
+      table
         .string('login_device_id')
         .notNullable()
         .references('id')

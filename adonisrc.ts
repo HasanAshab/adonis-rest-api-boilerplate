@@ -6,7 +6,7 @@ export default defineConfig({
     providers: 'app/providers',
     httpControllers: 'app/http/controllers',
     middleware: 'app/http/middleware',
-    validators: 'app/validation/validators'
+    validators: 'app/validation/validators',
   },
   /*
   |--------------------------------------------------------------------------
@@ -21,7 +21,7 @@ export default defineConfig({
     () => import('@adonisjs/core/commands'),
     () => import('@adonisjs/lucid/commands'),
     () => import('@adonisjs/mail/commands'),
-    () => import('@adonisjs/bouncer/commands')
+    () => import('@adonisjs/bouncer/commands'),
   ],
 
   /*
@@ -55,7 +55,7 @@ export default defineConfig({
     () => import('@adonisjs/auth/auth_provider'),
     () => import('#providers/recaptcha_provider'),
     () => import('@adonisjs/core/providers/edge_provider'),
-    () => import('@adonisjs/bouncer/bouncer_provider')
+    () => import('@adonisjs/bouncer/bouncer_provider'),
   ],
 
   /*
@@ -73,23 +73,23 @@ export default defineConfig({
     () => import('#start/limiter'),
     {
       file: () => import('#start/response'),
-      environment: ["web", "test"],
+      environment: ['web', 'test'],
     },
     () => import('#start/database'),
     {
       file: () => import('#start/validator'),
-      environment: ["web", "test"],
+      environment: ['web', 'test'],
     },
     {
       file: () => import('#start/routes'),
-      environment: ["web", "test"],
+      environment: ['web', 'test'],
     },
     {
       file: () => import('#start/auth'),
-      environment: ["web", "test"],
+      environment: ['web', 'test'],
     },
     () => import('#start/events'),
-    () => import('#start/request')
+    () => import('#start/request'),
   ],
 
   /*
@@ -116,8 +116,10 @@ export default defineConfig({
     ],
     forceExit: false,
   },
-  metaFiles: [{
-    pattern: 'resources/views/**/*.edge',
-    reloadServer: false,
-  }]
+  metaFiles: [
+    {
+      pattern: 'resources/views/**/*.edge',
+      reloadServer: false,
+    },
+  ],
 })

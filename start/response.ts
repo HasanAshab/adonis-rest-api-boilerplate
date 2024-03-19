@@ -28,37 +28,29 @@ Response.macro('sendOriginal', Response.prototype.send)
  * @param body - The response body.
  * @param generateEtag - Whether to generate an ETag header.
  */
-Response.macro(
-  'send',
-  function (
-    this: Response,
-    body: any | any[] = {},
-    generateEtag = false
-  ) {
-    const acceptsJson = this.request.headers.accept === 'application/json'
-    if (acceptsJson) {
-      if (body instanceof SimplePaginator || body instanceof ResourceCollection || body instanceof JsonResource) {
-        body = body.toJSON()
-      }
-
-      else if (is.null(body)) {
-        body = {}
-      } 
-      else if (is.string(body)) {
-        body = { message: body }
-      }
-      else if (is.number(body) || is.array(body) || body instanceof BaseModel) {
-        body = { data: body }
-      }
-
-      
-      body.success = body.success ?? this.isSuccessful;
-      body.message = body.message ?? this.standardMessage;
+Response.macro('send', function (this: Response, body: any | any[] = {}, generateEtag = false) {
+  const acceptsJson = this.request.headers.accept === 'application/json'
+  if (acceptsJson) {
+    if (
+      body instanceof SimplePaginator ||
+      body instanceof ResourceCollection ||
+      body instanceof JsonResource
+    ) {
+      body = body.toJSON()
+    } else if (is.null(body)) {
+      body = {}
+    } else if (is.string(body)) {
+      body = { message: body }
+    } else if (is.number(body) || is.array(body) || body instanceof BaseModel) {
+      body = { data: body }
     }
 
-    return this.sendOriginal(body, generateEtag)
+    body.success = body.success ?? this.isSuccessful
+    body.message = body.message ?? this.standardMessage
   }
-)
+
+  return this.sendOriginal(body, generateEtag)
+})
 
 /**
  * Macro to send a response with a specified HTTP status code and an empty body.

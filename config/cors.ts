@@ -1,4 +1,4 @@
-import { defineConfig } from "@adonisjs/cors";
+import { defineConfig } from '@adonisjs/cors'
 
 const corsConfig = defineConfig({
   /*
@@ -96,7 +96,7 @@ const corsConfig = defineConfig({
     'CONTENT-TYPE',
     'EXPIRES',
     'LAST-MODIFIED',
-    'PRAGMA'
+    'PRAGMA',
   ],
 
   /*

@@ -13,14 +13,14 @@ test.group('Contact / Update', (group) => {
   refreshDatabase(group)
 
   test('Should close contact', async ({ client, expect }) => {
-    const contact = await Contact.factory().create()
+    contact = await Contact.factory().create()
     const admin = await User.factory().withRole('admin').create()
 
     const response = await client
       .patch(`/api/v1/contact/inquiries/${contact.id}/status`)
       .loginAs(admin)
       .json({ status: 'closed' })
-      
+
     await contact.refresh()
 
     response.assertStatus(200)
@@ -28,7 +28,7 @@ test.group('Contact / Update', (group) => {
   })
 
   test('Should reopen contact', async ({ client, expect }) => {
-    const contact = await Contact.factory().closed().create()
+    contact = await Contact.factory().closed().create()
     const admin = await User.factory().withRole('admin').create()
 
     const response = await client
@@ -42,7 +42,7 @@ test.group('Contact / Update', (group) => {
   })
 
   test('Users should not close contact', async ({ client, expect }) => {
-    const contact = await Contact.factory().create()
+    contact = await Contact.factory().create()
     const user = await User.factory().create()
 
     const response = await client
@@ -56,7 +56,7 @@ test.group('Contact / Update', (group) => {
   })
 
   test('Users should not reopen contact', async ({ client, expect }) => {
-    const contact = await Contact.factory().closed().create()
+    contact = await Contact.factory().closed().create()
     const user = await User.factory().create()
 
     const response = await client

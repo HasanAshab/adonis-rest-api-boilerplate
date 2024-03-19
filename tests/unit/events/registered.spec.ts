@@ -15,7 +15,7 @@ test.group('Events / Registered', (group) => {
   let user
 
   refreshDatabase(group)
-  
+
   group.each.setup(() => {
     Notification.fake()
     user = await User.factory().unverified().create()
@@ -24,9 +24,9 @@ test.group('Events / Registered', (group) => {
   test('should send verification email on internal method', async () => {
     const { mails } = mail.fake()
     const event = new Registered(user, 'internal', 'v1')
-    
+
     await new SendEmailVerificationMail().handle(event)
-    
+
     mails.assertQueued(Registered, ({ message }) => {
       return message.hasTo(user.email)
     })
@@ -34,11 +34,11 @@ test.group('Events / Registered', (group) => {
 
   test("shouldn't send verification email for verified user", async () => {
     const { mails } = mail.fake()
-    const user = await User.factory().create()
+    user = await User.factory().create()
     const event = new Registered(user, 'internal', 'v1')
-    
+
     await new SendEmailVerificationMail().handle(event)
-    
+
     mails.assertNoneQueued()
   })
 

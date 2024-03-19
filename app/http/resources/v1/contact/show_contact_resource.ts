@@ -3,7 +3,7 @@ import type { Request } from '~/core/express'
 import type { ContactDocument } from '~/app/models/contact'
 
 export default class ShowContactResource extends JsonResource<ContactDocument> {
-  public serialize() {
+  serialize() {
     return {
       id: this.resource.id,
       email: this.resource.email,

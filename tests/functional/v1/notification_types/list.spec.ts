@@ -26,10 +26,11 @@ test.group('Notification Types / List', (group) => {
     response.assertBodyContains(NotificationTypeCollection.make(notificationTypes))
   })
 
-
   test('Should get notification', async ({ client }) => {
     const notificationType = await NotificationType.factory().create()
-    const response = await client.get('/api/v1/notification-types/' + notificationType.id).loginAs(user)
+    const response = await client
+      .get('/api/v1/notification-types/' + notificationType.id)
+      .loginAs(user)
 
     response.assertStatus(200)
     response.assertBodyHaveProperty('data', notificationType)

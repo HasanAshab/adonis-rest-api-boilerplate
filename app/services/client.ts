@@ -1,4 +1,4 @@
-import { join } from 'path'
+import { join } from 'node:path'
 import { ClientConfig } from '@ioc:adonis/addons/client'
 
 export default class Client {
@@ -6,18 +6,18 @@ export default class Client {
 
   constructor(private config: ClientConfig) {}
 
-  public addPaths(paths: Record<string, string>) {
+  addPaths(paths: Record<string, string>) {
     for (const name in paths) {
       this.urlPaths.set(name, paths[name])
     }
     return this
   }
 
-  public url(path = '') {
+  url(path = '') {
     return 'https://' + join(this.config.domain, path)
   }
 
-  public makePath(name: string, data?: Record<string, any>) {
+  makePath(name: string, data?: Record<string, any>) {
     let path = this.urlPaths.get(name)
 
     if (!path) {
@@ -32,7 +32,7 @@ export default class Client {
     return path
   }
 
-  public makeUrl(name: string, data?: Record<string, any>) {
+  makeUrl(name: string, data?: Record<string, any>) {
     return this.url(this.makePath(name, data))
   }
 }

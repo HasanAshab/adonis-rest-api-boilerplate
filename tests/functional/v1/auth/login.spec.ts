@@ -36,7 +36,7 @@ test.group('Auth / Login', (group) => {
   })
 
   test("shouldn't login manually in social account", async ({ client }) => {
-    const user = await User.factory().social().create()
+    user = await User.factory().social().create()
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
       password: 'password',
@@ -53,7 +53,7 @@ test.group('Auth / Login', (group) => {
       email: user.email,
       password: 'wrong-pass',
     }
-    
+
     for (let i = 0; i < limit; i++) {
       const response = await client.post('/api/v1/auth/login').json(payload)
       responses.push(response)
@@ -61,14 +61,14 @@ test.group('Auth / Login', (group) => {
 
     const lockedResponse = await client.post('/api/v1/auth/login').json(payload)
 
-    responses.forEach(response => {
+    responses.forEach((response) => {
       response.assertStatus(401)
     })
     lockedResponse.assertStatus(429)
   })
 
   test('Login should flag for two factor auth', async ({ client }) => {
-    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+    user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
 
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,

@@ -1,8 +1,8 @@
-import fs from 'fs'
-import path from 'path'
-import { ApplicationService } from "@adonisjs/core/types";
+import fs from 'node:fs'
+import path from 'node:path'
+import { ApplicationService } from '@adonisjs/core/types'
 import type { RouteGroup } from '@adonisjs/core/http'
-import { importDefault } from "#app/helpers";
+import { importDefault } from '#app/helpers'
 
 export default class RouteProvider {
   constructor(protected app: ApplicationService) {}
@@ -11,7 +11,7 @@ export default class RouteProvider {
     const { Router, Route } = await import('@adonisjs/core/http')
     const app = this.app
 
-    Router.macro('discover', async function(base: string, cb: ((group: RouteGroup) => any)) {
+    Router.macro('discover', async function (base: string, cb: (group: RouteGroup) => any) {
       const stack = [base]
       while (stack.length > 0) {
         const currentPath = stack.pop()
@@ -30,7 +30,7 @@ export default class RouteProvider {
 
             const routerPath = '#' + itemPath.split('.')[0]
             const createRoutes = await importDefault(routerPath)
-            if(typeof createRoutes !== 'function') continue
+            if (typeof createRoutes !== 'function') continue
             const group = this.group(() => {
               this.group(createRoutes).prefix(itemPathEndpoint)
             })
@@ -41,9 +41,9 @@ export default class RouteProvider {
         }
       }
     })
-    Route.macro('as', function(name: string, prepend = false) {})
+    Route.macro('as', function (name: string, prepend = false) {})
 
-/*
+    /*
     Route.macro('as', function(name: string, prepend = false) {
       if (prepend) {
         if (!this.#name) {
@@ -58,9 +58,9 @@ export default class RouteProvider {
       return this
     })
  */
- }
+  }
 
-  public async boot() {
+  async boot() {
     await this.extendRoute()
   }
 }

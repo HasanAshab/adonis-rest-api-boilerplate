@@ -6,7 +6,7 @@ import UsernameRequiredException from '#exceptions/validation/username_required_
 import DuplicateEmailAndUsernameException from '#exceptions/validation/duplicate_email_and_username_exception'
 import DuplicateUsernameException from '#exceptions/validation/duplicate_username_exception'
 import DuplicateEmailException from '#exceptions/validation/duplicate_email_exception'
-import { AllyUserContract } from "@adonisjs/ally";
+import { AllyUserContract } from '@adonisjs/ally'
 
 export interface SocialAuthData extends AllyUserContract {
   username?: string
@@ -15,8 +15,8 @@ export interface SocialAuthData extends AllyUserContract {
 @inject()
 export default class SocialAuthService {
   constructor(private readonly usernameGenerator: UsernameGenerator) {}
-  
-  public async sync(provider: string, data: SocialAuthData) {
+
+  async sync(provider: string, data: SocialAuthData) {
     let isRegisteredNow = false
 
     const user = await User.updateOrCreate(
@@ -40,8 +40,10 @@ export default class SocialAuthService {
         .orWhere('username', data.username)
         .select('email', 'username')
 
-      const emailExists = existingUsers.some((user) => user?.email === data.email)
-      const usernameExists = existingUsers.some((user) => user?.username === data.username)
+      const emailExists = existingUsers.some((existingUser) => existingUser.email === data.email)
+      const usernameExists = existingUsers.some(
+        (existingUser) => existingUser.username === data.username
+      )
 
       if (emailExists && usernameExists) {
         throw new DuplicateEmailAndUsernameException()
@@ -64,8 +66,7 @@ export default class SocialAuthService {
 
       isRegisteredNow = true
       await user.initNotificationPreference()
-    } 
-    else if (!user.email && !data.username) {
+    } else if (!user.email && !data.username) {
       if (!data.email) {
         throw new EmailRequiredException()
       }

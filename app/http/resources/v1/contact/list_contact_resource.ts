@@ -1,8 +1,8 @@
 //import JsonResource from "@samer/api-resource/resources/json_resource";
-import string from "@adonisjs/core/helpers/string";
+import string from '@adonisjs/core/helpers/string'
 
 export default class ListContactResource extends JsonResource {
-  public serialize() {
+  serialize() {
     return {
       id: this.resource.id,
       email: this.resource.email,
@@ -13,8 +13,8 @@ export default class ListContactResource extends JsonResource {
       links: {
         self: this.makeUrl('v1.contact.show'),
         updateStatus: this.makeUrl('v1.contact.update.status'),
-        delete: this.makeUrl('v1.contact.delete')
-      }
+        delete: this.makeUrl('v1.contact.delete'),
+      },
     }
   }
 }

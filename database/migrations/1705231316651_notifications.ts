@@ -1,9 +1,9 @@
-import { BaseSchema } from "@adonisjs/lucid/schema";
+import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class Notifications extends BaseSchema {
   protected tableName = 'notifications'
 
-  public async up() {
+  async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.json('data').notNullable()
@@ -18,7 +18,7 @@ export default class Notifications extends BaseSchema {
     })
   }
 
-  public async down() {
+  async down() {
     this.schema.dropTable(this.tableName)
   }
 }

@@ -3,7 +3,7 @@ import { defineConfig, transports } from '@adonisjs/mail'
 
 const mailConfig = defineConfig({
   default: 'smtp',
-  
+
   /**
    * A static address for the "from" property. It will be
    * used unless an explicit from address is set on the
@@ -13,17 +13,17 @@ const mailConfig = defineConfig({
     address: 'test@example.com',
     name: env.get('app.name'),
   },
-  
-   /**
-    * The mailers object can be used to configure multiple mailers
-    * each using a different transport or same transport with different
-    * options.
+
+  /**
+   * The mailers object can be used to configure multiple mailers
+   * each using a different transport or same transport with different
+   * options.
    */
-  mailers: { 
+  mailers: {
     smtp: transports.smtp({
       host: env.get('SMTP_HOST'),
       port: env.get('SMTP_PORT'),
-			/**
+      /**
        * Uncomment the auth block if your SMTP
        * server needs authentication
        */
@@ -33,13 +33,12 @@ const mailConfig = defineConfig({
         pass: env.get('SMTP_PASSWORD'),
       }, */
     }),
-		  
+
     mailgun: transports.mailgun({
       key: env.get('MAILGUN_API_KEY'),
       baseUrl: 'https://api.mailgun.net/v3',
       domain: env.get('MAILGUN_DOMAIN'),
     }),
-		   
   },
 })
 

@@ -10,6 +10,6 @@ export default function HasFactory(Superclass: NormalizeConstructor<typeof BaseM
       return factory
     }
   }
-  
+
   return HasFactoryModel
 }

@@ -6,14 +6,16 @@ import { BaseModel } from '@adonisjs/lucid/orm'
 import { Notifiable } from '@ioc:verful/notification/mixins'
 import NotificationType from '#models/notification_type'
 import NotificationService from '#services/notification_service'
-import { ManyToMany } from "@adonisjs/lucid/types/relations";
+import { ManyToMany } from '@adonisjs/lucid/types/relations'
 
-export type NotificationPreferences = Record<string, string[] | Record<string, boolean>> 
+export type NotificationPreferences = Record<string, string[] | Record<string, boolean>>
 
-
-export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof BaseModel>, tableName = 'notifications') {
+export default function OptInNotifiable(
+  Superclass: NormalizeConstructor<typeof BaseModel>,
+  tableName = 'notifications'
+) {
   return class extends compose(Superclass, Notifiable(tableName)) {
-    public static boot() {
+    static boot() {
       if (this.booted) return
       super.boot()
 
@@ -24,78 +26,80 @@ export default function OptInNotifiable(Superclass: NormalizeConstructor<typeof 
       const relatedModel = () => NotificationType
       this.$addRelation('notificationPreferences', 'manyToMany', relatedModel, {
         pivotTable: 'notification_preferences',
-        pivotColumns: ['channels']
+        pivotColumns: ['channels'],
       })
     }
-   
+
     declare notificationPreference: ManyToMany<NotificationType>
-    
-    public unreadNotifications() {
+
+    unreadNotifications() {
       return this.related('notifications').query().whereNull('readAt')
     }
-    
-    public markNotificationAsRead(id: number) {
-      return this.unreadNotifications()
-        .whereUid(id)
-        .updateOrFail({
-          readAt: DateTime.local(),
-        })
+
+    markNotificationAsRead(id: number) {
+      return this.unreadNotifications().whereUid(id).updateOrFail({
+        readAt: DateTime.local(),
+      })
     }
-    
-    public async notificationPreferenceFor(notificationType: string) {
+
+    async notificationPreferenceFor(notificationType: string) {
       const preference = await this.related('notificationPreferences')
         .query()
         .where('name', notificationType)
         .select('pivot_channels')
         .pojo()
         .first()
-      
-      if(!preference) {
+
+      if (!preference) {
         throw new Error(`Notification type "${notificationType}" not exists`)
       }
-      
-      return preference.pivot_channels 
+
+      return preference.pivot_channels
     }
 
-    public async initNotificationPreference() {
+    async initNotificationPreference() {
       const ids = await NotificationType.pluck('id')
       const channels = NotificationService.channels()
       const preferences = ids.reduce((acc, id) => {
-        acc[id] = channels;
-        return acc;
-      }, {});
+        acc[id] = channels
+        return acc
+      }, {})
       await this.syncNotificationPreference(preferences)
     }
-    
-    public syncNotificationPreference(preferences: NotificationPreferences, detach = false) {
-      const formatedPreferences = mapValues(preferences, channelPreferences => {
-       if(!Array.isArray(channelPreferences)) {
-          channelPreferences = reduce(channelPreferences, (preferedChannels, enabled, channel) => {
-            enabled && preferedChannels.push(channel)
-            return preferedChannels
-          }, [])
-       }
+
+    syncNotificationPreference(preferences: NotificationPreferences, detach = false) {
+      const formatedPreferences = mapValues(preferences, (channelPreferences) => {
+        if (!Array.isArray(channelPreferences)) {
+          channelPreferences = reduce(
+            channelPreferences,
+            (preferedChannels, enabled, channel) => {
+              enabled && preferedChannels.push(channel)
+              return preferedChannels
+            },
+            []
+          )
+        }
         return { channels: channelPreferences }
       })
-      
+
       return this.related('notificationPreferences').sync(formatedPreferences, detach)
     }
 
-    public async enableNotification(id: number, channel: string) {
+    async enableNotification(id: number, channel: string) {
       await this.related('notificationPreferences')
         .pivotQuery()
         .whereUid(id)
-        .updateOrFail({ 
-          channels: db.raw(`ARRAY_APPEND(channels, '${channel}')`)
+        .updateOrFail({
+          channels: db.raw(`ARRAY_APPEND(channels, '${channel}')`),
         })
     }
-    
-    public async disableNotification(id: number, channel: string) {
+
+    async disableNotification(id: number, channel: string) {
       await this.related('notificationPreferences')
         .pivotQuery()
         .whereUid(id)
-        .updateOrFail({ 
-          channels: db.raw(`ARRAY_REMOVE(channels, '${channel}')`)
+        .updateOrFail({
+          channels: db.raw(`ARRAY_REMOVE(channels, '${channel}')`),
         })
     }
   }

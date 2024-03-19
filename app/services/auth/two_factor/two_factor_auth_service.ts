@@ -9,42 +9,41 @@ import Otp from '#services/auth/two_factor/otp'
 import PhoneNumberRequiredException from '#exceptions/phone_number_required_exception'
 import InvalidRecoveryCodeException from '#exceptions/invalid_recovery_code_exception'
 
-
 export default class TwoFactorAuthService {
-  public enable(user: User, method: string) {
+  enable(user: User, method: string) {
     return twoFactorMethod.use(method).enable(user)
   }
 
-  public disable(user: User) {
+  disable(user: User) {
     return twoFactorMethod.use(user.twoFactorMethod ?? 'authenticator').disable(user)
   }
-  
-  public changeMethod(user: User, method: string) {
+
+  changeMethod(user: User, method: string) {
     return twoFactorMethod.use(method).assign(user)
   }
-  
-  public challenge(user: User) {
+
+  challenge(user: User) {
     return twoFactorMethod.use(user.twoFactorMethod).challenge(user)
   }
-  
-  public async verify(user: User, token: string, deviceId?: string) {
-    if(deviceId) {
+
+  async verify(user: User, token: string, deviceId?: string) {
+    if (deviceId) {
       await LoginDevice.markAsTrusted(deviceId)
     }
     await twoFactorMethod.use(user.twoFactorMethod).verify(user, token)
     return await user.createToken()
   }
 
-  public async recover(email: string, code: string) {
+  async recover(email: string, code: string) {
     const user = await User.findByOrFail('email', email)
-    if(!user.isValidRecoveryCode(code)) {
+    if (!user.isValidRecoveryCode(code)) {
       throw new InvalidRecoveryCodeException()
     }
     await user.replaceRecoveryCode(code)
     return await user.createToken()
   }
 
-  public async generateRecoveryCodes(user: User, count = 8) {
+  async generateRecoveryCodes(user: User, count = 8) {
     const codes = range(count).map(RecoveryCode.generate)
     user.twoFactorRecoveryCodes = encryption.encrypt(JSON.stringify(codes))
     await user.save()

@@ -1,5 +1,4 @@
-import { ApplicationService } from "@adonisjs/core/types";
-
+import { ApplicationService } from '@adonisjs/core/types'
 
 declare module '@adonisjs/core/types' {
   interface ContainerBindings {
@@ -10,7 +9,7 @@ declare module '@adonisjs/core/types' {
 export default class TwilioProvider {
   constructor(protected app: ApplicationService) {}
 
-  public register() {
+  register() {
     this.app.container.singleton('twilio', async () => {
       const { default: Twilio } = await import('#services/twilio')
       const config = this.app.config.get('twilio')

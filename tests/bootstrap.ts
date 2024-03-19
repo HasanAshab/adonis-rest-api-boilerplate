@@ -20,7 +20,7 @@ export const plugins: Config['plugins'] = [
   expect(),
   apiClient(),
   pluginAdonisJS(app),
-  authApiClient(app)
+  authApiClient(app),
 ]
 
 /**
@@ -33,9 +33,9 @@ export const plugins: Config['plugins'] = [
 export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
   setup: [
     () => testUtils.db().truncate(),
-    async () => { 
+    async () => {
       await import('#tests/bindings/bind')
-    }
+    },
   ],
   teardown: [],
 }

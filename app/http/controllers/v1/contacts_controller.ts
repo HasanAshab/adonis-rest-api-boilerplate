@@ -3,31 +3,30 @@ import { bind } from '@adonisjs/route-model-binding'
 import Contact from '#models/contact'
 import ListContactResource from '#resources/v1/contact/list_contact_resource'
 import ShowContactResource from '#resources/v1/contact/show_contact_resource'
-import { 
-  createContactValidator, 
-  updateContactStatusValidator, 
-  suggestContactValidator, 
-  searchContactValidator
+import {
+  createContactValidator,
+  updateContactStatusValidator,
+  suggestContactValidator,
+  searchContactValidator,
 } from '#validators/v1/contact_validator'
 
-
 export default class ContactsController {
-  public async index({ request }: HttpContext) {
+  async index({ request }: HttpContext) {
     return ListContactResource.collection(await Contact.paginateUsing(request))
   }
 
-  public async store({ request, response }: HttpContext) {
+  async store({ request, response }: HttpContext) {
     const data = await request.validateUsing(createContactValidator)
     response.created(await Contact.create(data))
   }
 
-  public async updateStatus({ request, params }: HttpContext) {
+  async updateStatus({ request, params }: HttpContext) {
     const { status } = await request.validateUsing(updateContactStatusValidator)
     await Contact.updateOrFail(params.id, { status })
     return `Contact form ${status}!`
   }
 
-  public async suggest({ request }: HttpContext) {
+  async suggest({ request }: HttpContext) {
     const { q, status, limit = 10 } = await request.validateUsing(suggestContactValidator)
 
     return await Contact.search(q)
@@ -40,7 +39,7 @@ export default class ContactsController {
       .pluck('subject')
   }
 
-  public async search({ request }: HttpContext) {
+  async search({ request }: HttpContext) {
     const { q, status } = await request.validateUsing(searchContactValidator)
 
     const contacts = await Contact.search(q)
@@ -55,11 +54,11 @@ export default class ContactsController {
   }
 
   @bind()
-  public show(_, contact: Contact) {
+  show(_, contact: Contact) {
     return ShowContactResource.make(contact)
   }
 
-  public async delete({ response, params }: HttpContext) {
+  async delete({ response, params }: HttpContext) {
     await Contact.deleteOrFail(params.id)
     response.noContent()
   }

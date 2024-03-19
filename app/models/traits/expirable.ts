@@ -5,16 +5,16 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 export default function Expirable(Superclass: NormalizeConstructor<typeof BaseModel>) {
   class ExpirableModel extends Superclass {
     @column.dateTime()
-    public expiresAt: DateTime | null = null
+    expiresAt: DateTime | null = null
 
-    public isExpired() {
+    isExpired() {
       return this.expiresAt && this.expiresAt < DateTime.local()
     }
 
-    public isNotExpired() {
+    isNotExpired() {
       return !this.isExpired()
     }
   }
-  
+
   return ExpirableModel
 }

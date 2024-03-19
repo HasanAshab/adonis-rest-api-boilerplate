@@ -17,7 +17,6 @@ import PasswordChangeNotAllowedException from '#exceptions/password_change_not_a
 import InvalidPasswordException from '#exceptions/invalid_password_exception'
 import TwoFactorAuthRequiredException from '#exceptions/two_factor_auth_required_exception'
 
-
 export interface RegistrationData {
   email: string
   username: string
@@ -27,25 +26,25 @@ export interface RegistrationData {
 export interface LoginCredentials {
   email: string
   password: string
-  ip: string,
+  ip: string
   device: DeviceInfo
 }
 
 @inject()
 export default class AuthService {
   constructor(private readonly twoFactorAuthService: TwoFactorAuthService) {}
-  
+
   private loginLimiter = limiter.use({
     requests: 5,
     duration: '2 minutes',
-    blockDuration: '1 hour'
+    blockDuration: '1 hour',
   })
-  
+
   private limiterKeyFor(email: string, ip: string) {
     return `login__${email}_${ip}`
   }
 
-  public async register(data: RegistrationData) {
+  async register(data: RegistrationData) {
     if (data.avatar) {
       data.avatar = Attachment.fromFile(data.avatar)
     }
@@ -55,23 +54,22 @@ export default class AuthService {
 
     return user
   }
-  
-  public async attempt({ email, password, ip, device }: LoginCredentials) {
+
+  async attempt({ email, password, ip, device }: LoginCredentials) {
     const limiterKey = this.limiterKeyFor(email, ip)
-    const [error, user] = await this.loginLimiter.penalize(limiterKey, async () => {
-      const user = await User.verifyCredentials(email, password)
-      return user
+    const [error, user] = await this.loginLimiter.penalize(limiterKey, () => {
+      return User.verifyCredentials(email, password)
     })
-    if(error) {
+    if (error) {
       throw error
     }
-    
+
     const loginDevice = await LoginDevice.firstOrCreate(
       { id: device.id },
       {
         type: device.type,
         vendor: device.vendor,
-        model: device.model
+        model: device.model,
       }
     )
 
@@ -84,30 +82,29 @@ export default class AuthService {
       user.password = password
       await user.save()
     }
-    
+
     const accessToken = await user.createToken()
-    
-    await user.related('loginDevices').sync({
-      [loginDevice.id]: { ip }
-    }, false)
-    
-  log(await user.related('loginDevices').query())
+
+    await user.related('loginDevices').sync(
+      {
+        [loginDevice.id]: { ip },
+      },
+      false
+    )
+
+    log(await user.related('loginDevices').query())
     return accessToken
   }
-  
-  public async logout(user: User) {
-    if(user.currentAccessToken) {
+
+  async logout(user: User) {
+    if (user.currentAccessToken) {
       await User.accessTokens.delete(user, user.currentAccessToken.identifier)
     }
   }
 
-  public async sendVerificationMail(user: User | string) {
+  async sendVerificationMail(user: User | string) {
     if (typeof user === 'string') {
-      user = await User
-        .query()
-        .whereNotNull('password')
-        .where('email', user)
-        .first()
+      user = await User.query().whereNotNull('password').where('email', user).first()
     }
 
     if (!user || user.verified) {
@@ -117,22 +114,22 @@ export default class AuthService {
     await mail.sendLater(new EmailVerificationMail(user))
     return true
   }
-  
-  public async verifyEmail(id: number, token: string) {
+
+  async verifyEmail(id: number, token: string) {
     await Token.verify('verification', id, token)
     await this.markAsVerified(id)
   }
-  
-  public async markAsVerified(id: number) {
-    await User.query().whereUid(id).updateOrFail({ verified: true });
+
+  async markAsVerified(id: number) {
+    await User.query().whereUid(id).updateOrFail({ verified: true })
   }
-  
-  public async changePassword(user: User, oldPassword: string, newPassword: string) {
+
+  async changePassword(user: User, oldPassword: string, newPassword: string) {
     if (user.isSocial()) {
       throw new PasswordChangeNotAllowedException()
     }
 
-    if(!await user.comparePassword(oldPassword)) {
+    if (!(await user.comparePassword(oldPassword))) {
       throw new InvalidPasswordException()
     }
 
@@ -140,18 +137,18 @@ export default class AuthService {
     await user.save()
   }
 
-  public async forgotPassword(user: User | string) {
+  async forgotPassword(user: User | string) {
     if (typeof user === 'string') {
       user = await User.internals().where('email', user).where('verified', true).first()
     }
-    if(user && user.verified) {
+    if (user && user.verified) {
       await mail.sendLater(new ResetPasswordMail(user))
       return true
     }
     return false
   }
 
-  public async resetPassword(user: User, token: string, password: string) {
+  async resetPassword(user: User, token: string, password: string) {
     await Token.verify('password_reset', user.id, token)
     user.password = password
     await user.save()

@@ -2,29 +2,29 @@ import AnonymousResourceCollection from './anonymous_resource_collection.js'
 import router from '@adonisjs/core/services/router'
 
 export default class JsonResource {
-  public static wrap = 'data'
+  static wrap = 'data'
   protected shouldWrap = true
 
   constructor(protected readonly resource: Record<string, any>) {}
 
-  public static make(resource: Record<string, any>) {
+  static make(resource: Record<string, any>) {
     return new this(resource)
   }
 
-  public static collection(resources: Array<Record<string, any>>) {
+  static collection(resources: Array<Record<string, any>>) {
     return new AnonymousResourceCollection(resources, this)
   }
 
-  public dontWrap() {
+  dontWrap() {
     this.shouldWrap = false
     return this
   }
 
-  public serialize() {
+  serialize() {
     return this.resource.toJSON?.() ?? this.resource
   }
 
-  public toJSON() {
+  toJSON() {
     return this.shouldWrap
       ? {
           [this.constructor.wrap]: this.serialize(),

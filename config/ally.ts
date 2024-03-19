@@ -11,7 +11,7 @@ const allyConfig = defineConfig({
     clientId: env.get('FACEBOOK_CLIENT_ID'),
     clientSecret: env.get('FACEBOOK_CLIENT_SECRET'),
     callbackUrl: '',
-  })
+  }),
 })
 
 export default allyConfig

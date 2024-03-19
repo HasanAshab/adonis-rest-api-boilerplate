@@ -16,7 +16,7 @@ test.group('Users/Delete', (group) => {
   })
 
   test('Should delete own account', async ({ client, expect }) => {
-    const user = await User.factory().create()
+    user = await User.factory().create()
 
     const response = await client.delete(`/api/v1/users/me`).loginAs(user)
 

@@ -19,36 +19,36 @@ export default class Contact extends compose(BaseModel, HasFactory) {
   declare message: string
 
   @column()
-  public status: 'opened' | 'closed' = 'opened'
+  status: 'opened' | 'closed' = 'opened'
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
-  public isOpened() {
+  isOpened() {
     return this.status === 'opened'
   }
 
-  public isClosed() {
+  isClosed() {
     return !this.isOpened()
   }
-  
-  public open() {
+
+  open() {
     this.status = 'opened'
     return this.save()
   }
-  
-  public close() {
+
+  close() {
     this.status = 'closed'
     return this.save()
   }
-  
-  public static open(id: number) {
+
+  static open(id: number) {
     return this.updateOrFail(id, {
       status: 'opened',
     })
   }
-  
-  public static close(id: number) {
+
+  static close(id: number) {
     return this.updateOrFail(id, {
       status: 'closed',
     })

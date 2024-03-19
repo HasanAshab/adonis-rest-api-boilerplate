@@ -50,7 +50,7 @@ export default abstract class Factory<
   /**
    * Configure the factory.
    */
-  public configure() {
+  configure() {
     //
   }
 
@@ -62,7 +62,7 @@ export default abstract class Factory<
   /**
    * Specify the number of records to be generated
    */
-  public count(total: number) {
+  count(total: number) {
     this.total = total
     return this
   }
@@ -70,7 +70,7 @@ export default abstract class Factory<
   /**
    * Adds state customizer
    */
-  public state(cb: StateCustomizer<Attributes>) {
+  state(cb: StateCustomizer<Attributes>) {
     this.stateCustomizers.push(cb)
     return this
   }
@@ -78,7 +78,7 @@ export default abstract class Factory<
   /**
    * Adds external operations callback
    */
-  public external(cb: ExternalCallback<Model>) {
+  external(cb: ExternalCallback<Model>) {
     this.externalCallbacks.push(cb)
     return this
   }
@@ -86,7 +86,7 @@ export default abstract class Factory<
   /**
    * Generate all records stub data
    */
-  public make(data?: Partial<Attributes>) {
+  make(data?: Partial<Attributes>) {
     if (this.total === 1) {
       return this.generateData(data)
     }
@@ -99,7 +99,7 @@ export default abstract class Factory<
   /**
    * generate and persists all records to database
    */
-  public async create(data: Partial<Attributes>) {
+  async create(data: Partial<Attributes>) {
     const stubModels = this.make(data)
     const records = Array.isArray(stubModels)
       ? await this.Model.createMany(stubModels)

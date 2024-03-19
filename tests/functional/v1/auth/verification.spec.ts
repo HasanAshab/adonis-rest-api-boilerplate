@@ -4,7 +4,6 @@ import User from '#models/user'
 import mail from '@adonisjs/mail/services/main'
 import EmailVerificationMail from '#mails/email_verification_mail'
 
-
 /*
 Run this suits:
 node ace test functional --files="v1/auth/verification.spec.ts"
@@ -20,10 +19,10 @@ test.group('Auth / Verification', (group) => {
 
   test('should verify email', async ({ client, expect }) => {
     const token = await new EmailVerificationMail(user, 'v1').verificationToken()
-    
+
     const response = await client.post('api/v1/auth/verification').json({
       id: user.id,
-      token
+      token,
     })
     await user.refresh()
 
@@ -33,15 +32,14 @@ test.group('Auth / Verification', (group) => {
 
   test("shouldn't verify email without token", async ({ client, expect }) => {
     const response = await client.post('api/v1/auth/verification').json({
-      id: user.id
+      id: user.id,
     })
     await user.refresh()
 
     response.assertStatus(422)
     expect(user.verified).toBeFalse()
   })
-  
-  
+
   test('should resend verification email', async ({ client }) => {
     const { mails } = mail.fake()
 

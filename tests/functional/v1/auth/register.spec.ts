@@ -5,7 +5,6 @@ import emitter from '@adonisjs/core/services/emitter'
 import User from '#models/user'
 import Registered from '#events/registered'
 
-
 /*
 Run this suits:
 node ace test functional --files="v1/auth/register.spec.ts"
@@ -13,31 +12,28 @@ node ace test functional --files="v1/auth/register.spec.ts"
 test.group('Auth / Register', (group) => {
   refreshDatabase(group)
 
-
   test('should register a user', async ({ expect, client }) => {
     const events = emitter.fake()
-    const data = {
+    const payload = {
       username: 'foobar123',
       email: 'foo@gmail.com',
       password: 'Password@1234',
     }
 
-    const response = await client.post('/api/v1/auth/register').json(data)
-    const user = await User.findByFields(omit(data, 'password'))
-   
+    const response = await client.post('/api/v1/auth/register').json(payload)
+    const user = await User.findByFields(omit(payload, 'password'))
+
     response.assertStatus(201)
     response.assertBodyHaveProperty('data.token')
     expect(user).not.toBeNull()
     events.assertEmitted(Registered, ({ data }) => {
-      return data.version === 'v1' &&
-        data.method === 'internal' &&
-        data.user.id === user.id
+      return data.version === 'v1' && data.method === 'internal' && data.user.id === user.id
     })
   })
 
   test('should register a user with avatar', async ({ client, expect }) => {
     const events = emitter.fake()
-    const data = {
+    const payload = {
       username: 'foobar123',
       email: 'foo@gmail.com',
       password: 'Password@1234',
@@ -46,9 +42,9 @@ test.group('Auth / Register', (group) => {
     const response = await client
       .post('/api/v1/auth/register')
       .file('avatar', fakeFilePath('image.png'))
-      .fields(data)
+      .fields(payload)
 
-    const user = await User.query().whereEqual(omit(data, 'password')).preload('settings').first()
+    const user = await User.findByFields(omit(payload, 'password'))
 
     response.assertStatus(201)
     response.assertBodyHaveProperty('data.token')
@@ -56,9 +52,7 @@ test.group('Auth / Register', (group) => {
     expect(user.avatar).not.toBeNull()
 
     events.assertEmitted(Registered, ({ data }) => {
-      return data.version === 'v1' &&
-        data.method === 'internal' &&
-        data.user.id === user.id
+      return data.version === 'v1' && data.method === 'internal' && data.user.id === user.id
     })
   })
 

@@ -1,0 +1,13 @@
+{{#var exceptionName = generators.exceptionName(entity.name)}}
+{{#var exceptionFileName = generators.exceptionFileName(entity.name)}}
+{{{
+  exports({
+    to: app.exceptionsPath(entity.path, exceptionFileName)
+  })
+}}}
+import ApiException from '#exceptions/api_exception'
+
+export default class {{ exceptionName }} extends ApiException {
+  static status = 500
+  static message = 'Internal Server Error'
+}

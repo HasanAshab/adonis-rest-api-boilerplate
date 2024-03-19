@@ -1,7 +1,7 @@
-import fs from 'fs'
-import path from 'path'
-import { BaseCommand } from "@adonisjs/core/ace";
-import { args, flags } from "@adonisjs/core/ace";
+import fs from 'node:fs'
+import path from 'node:path'
+import { BaseCommand } from '@adonisjs/core/ace'
+import { args, flags } from '@adonisjs/core/ace'
 
 class Wildcard {
   static match(str: string, query: string): boolean {
@@ -24,7 +24,7 @@ class Wildcard {
 }
 
 export default class Search extends BaseCommand {
-  public static commandName = 'search'
+  static commandName = 'search'
 
   @args.string()
   declare query: string
@@ -52,12 +52,12 @@ export default class Search extends BaseCommand {
     'storage',
   ]
 
-  public async run() {
+  async run() {
     this.logger.info((this.replace ? 'Replacing' : 'Searching') + ' started...\n')
-    await this.searchFiles(this.dir ?? '.', this.query, this.replace)
+    await this.searchFiles(this.dir ?? '.', this.query)
   }
 
-  private async searchFiles(currentDir: string, query: string, replace?: string) {
+  private async searchFiles(currentDir: string, query: string) {
     const files = fs.readdirSync(currentDir)
     const promises = []
 
@@ -65,21 +65,21 @@ export default class Search extends BaseCommand {
       const filePath = path.join(currentDir, file)
       const fullPath = filePath
       const stat = fs.statSync(filePath)
-      if (this.isExcluded(fullPath)) continue
+      if (this.exclude.includes(fullPath)) continue
       if (stat.isDirectory()) {
-        const promise = this.searchFiles(filePath, query, replace)
+        const promise = this.searchFiles(filePath, query)
         promises.push(promise)
       } else if (stat.isFile()) {
         const fileContent = fs.readFileSync(filePath, 'utf-8')
         //this.logger.debug('Searching: ' + filePath);
 
         if (Wildcard.match(fileContent, query)) {
-          if (!replace) {
+          if (!this.replace) {
             this.logger.info('Matched: ' + filePath)
             continue
           }
 
-          const replacedContent = Wildcard.replace(fileContent, query, replace)
+          const replacedContent = Wildcard.replace(fileContent, query, this.replace)
           const promise = fs.promises.writeFile(filePath, replacedContent)
           promises.push(promise)
           this.logger.info('Modified: ' + filePath)
@@ -87,9 +87,5 @@ export default class Search extends BaseCommand {
       }
     }
     await Promise.all(promises)
-  }
-
-  private isExcluded(path: string) {
-    return this.exclude.includes(path)
   }
 }

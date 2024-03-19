@@ -10,8 +10,8 @@ const hashConfig = defineConfig({
       parallelization: 1,
       maxMemory: 33554432,
     }),
-    plainText: plainTextDriver()
-  }
+    plainText: plainTextDriver(),
+  },
 })
 
 export default hashConfig

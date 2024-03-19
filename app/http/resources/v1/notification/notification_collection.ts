@@ -5,7 +5,7 @@ import { groupBy } from 'lodash-es'
 export default class NotificationCollection extends ResourceCollection {
   protected collects = ListNotificationResource
 
-  public serialize() {
+  serialize() {
     return {
       data: groupBy(this.collection, (listNotificationResource) => {
         return listNotificationResource.resource.createdAt.startOf('day').toRelative()
