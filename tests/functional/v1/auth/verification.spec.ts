@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import { refreshDatabase, clearThrottle } from '#tests/helpers'
+import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import mail from '@adonisjs/mail/services/main'
 import EmailVerificationMail from '#mails/email_verification_mail'
@@ -13,8 +13,7 @@ test.group('Auth / Verification', (group) => {
   let user
 
   refreshDatabase(group)
-  clearThrottle(group)
-  
+
   group.each.setup(async () => {
     user = await User.factory().unverified().create()
   })

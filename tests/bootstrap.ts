@@ -6,6 +6,7 @@ import { pluginAdonisJS } from '@japa/plugin-adonisjs'
 import { authApiClient } from '@adonisjs/auth/plugins/api_client'
 import { expect } from '@japa/expect'
 import testUtils from '@adonisjs/core/services/test_utils'
+import { clearThrottle } from '#tests/helpers'
 
 /**
  * This file is imported by the "bin/test.ts" entrypoint file
@@ -45,7 +46,12 @@ export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
  * Learn more - https://japa.dev/docs/test-suites#lifecycle-hooks
  */
 export const configureSuite: Config['configureSuite'] = (suite) => {
-  if (['browser', 'functional', 'e2e'].includes(suite.name)) {
-    return suite.setup(() => testUtils.httpServer().start())
+  if (['browser', 'functional', 'e2e', 'unit'].includes(suite.name)) {
+    suite.setup(() => testUtils.httpServer().start())
+  }
+  
+  if(suite.name === 'functional') {
+    suite.onGroup(clearThrottle)
   }
 }
+

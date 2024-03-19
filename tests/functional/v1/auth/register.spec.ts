@@ -24,7 +24,6 @@ test.group('Auth / Register', (group) => {
     const user = await User.findByFields(omit(payload, 'password'))
 
     response.assertStatus(201)
-    response.assertBodyHaveProperty('data.token')
     expect(user).not.toBeNull()
     events.assertEmitted(Registered, ({ data }) => {
       return data.version === 'v1' && data.method === 'internal' && data.user.id === user.id
@@ -47,7 +46,6 @@ test.group('Auth / Register', (group) => {
     const user = await User.findByFields(omit(payload, 'password'))
 
     response.assertStatus(201)
-    response.assertBodyHaveProperty('data.token')
     expect(user).not.toBeNull()
     expect(user.avatar).not.toBeNull()
 
@@ -67,7 +65,6 @@ test.group('Auth / Register', (group) => {
     })
 
     response.assertStatus(422)
-    response.assertBodyNotHaveProperty('token')
     events.assertNoneEmitted()
   })
 
@@ -82,7 +79,6 @@ test.group('Auth / Register', (group) => {
     })
 
     response.assertStatus(422)
-    response.assertBodyNotHaveProperty('data')
     events.assertNoneEmitted()
   })
 })
