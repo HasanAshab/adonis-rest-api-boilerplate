@@ -3,4 +3,8 @@ import AuthenticatorMethod from '#services/auth/two_factor/methods/authenticator
 import SmsMethod from '#services/auth/two_factor/methods/sms_method'
 import CallMethod from '#services/auth/two_factor/methods/call_method'
 
-twoFactorMethod.register([AuthenticatorMethod, SmsMethod, CallMethod])
+await twoFactorMethod.register([
+  AuthenticatorMethod,
+  SmsMethod,
+  CallMethod
+])

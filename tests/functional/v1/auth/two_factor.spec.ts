@@ -144,7 +144,7 @@ test.group('Auth/TwoFactor', (group) => {
       response.assertBodyHaveProperty('data.token')
     })
 
-  test('should login user of method {$self} with valid otp')
+  test('should login user of {$self} method with valid otp')
     .with(['sms', 'call'])
     .run(async ({ client }, method) => {
       user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()

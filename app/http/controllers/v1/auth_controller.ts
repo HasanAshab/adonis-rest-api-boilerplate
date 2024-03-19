@@ -22,6 +22,7 @@ import {
   twoFactorAccountRecoveryValidator,
 } from '#validators/v1/auth/two_factor_validator'
 import AuthService from '#services/auth/auth_service'
+import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
 
 @inject()
@@ -30,7 +31,8 @@ export default class AuthController {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly socialAuthService: SocialAuthService
+    private readonly socialAuthService: SocialAuthService,
+    private readonly twoFactorAuthService: TwoFactorAuthService
   ) {}
 
   /**
@@ -123,7 +125,7 @@ export default class AuthController {
     const user = await User.findByOrFail('email', email)
 
     await Token.verify('two_factor_auth_challenge', user.id, token)
-    await TwoFactorthis.authService.challenge(user)
+    await this.twoFactorAuthService.challenge(user)
 
     return 'Challenge sent!'
   }
@@ -134,7 +136,7 @@ export default class AuthController {
     )
     const user = await User.findByOrFail('email', email)
 
-    const accessToken = await TwoFactorthis.authService.verify(
+    const accessToken = await this.twoFactorAuthService.verify(
       user,
       challengeToken,
       trustDevice && request.device.id
@@ -152,12 +154,12 @@ export default class AuthController {
    * @responseBody 200 - { data: string[] }
    */
   generateRecoveryCodes({ auth }: AuthenticRequest) {
-    return TwoFactorthis.authService.generateRecoveryCodes(auth.user!)
+    return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
   }
 
   async recoverTwoFactorAccount({ request }: HttpContext) {
     const { email, code } = await request.validateUsing(twoFactorAccountRecoveryValidator)
-    const token = await TwoFactorthis.authService.recover(email, code)
+    const token = await this.twoFactorAuthService.recover(email, code)
 
     return {
       message: 'Account recovered successfully!',

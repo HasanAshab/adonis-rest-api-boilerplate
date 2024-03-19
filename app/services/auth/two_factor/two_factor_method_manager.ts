@@ -1,4 +1,5 @@
 import TwoFactorMethod from '#services/auth/two_factor/methods/abstract/two_factor_method'
+import app from '@adonisjs/core/services/app'
 
 export class TwoFactorMethodManager {
   private methods = new Map<string, TwoFactorMethod>()
@@ -7,13 +8,15 @@ export class TwoFactorMethodManager {
     return Array.from(this.methods.keys())
   }
 
-  add(MethodClass: typeof TwoFactorMethod) {
-    const twoFactorMethod = new MethodClass()
+  async add(MethodClass: typeof TwoFactorMethod) {
+    const twoFactorMethod = await app.container.make(MethodClass)
     this.methods.set(twoFactorMethod.methodName, twoFactorMethod)
   }
 
-  register(MethodClasses: (typeof TwoFactorMethod)[]) {
-    MethodClasses.forEach((Method) => this.add(Method))
+  async register(MethodClasses: (typeof TwoFactorMethod)[]) {
+    await Promise.all(
+      MethodClasses.map(Method => this.add(Method))
+    )
   }
 
   use(methodName: string) {

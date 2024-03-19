@@ -71,25 +71,13 @@ export default defineConfig({
     () => import('#start/kernel'),
     () => import('#start/client'),
     () => import('#start/limiter'),
-    {
-      file: () => import('#start/response'),
-      environment: ['web', 'test'],
-    },
+    () => import('#start/response'),
     () => import('#start/database'),
-    {
-      file: () => import('#start/validator'),
-      environment: ['web', 'test'],
-    },
-    {
-      file: () => import('#start/routes'),
-      environment: ['web', 'test'],
-    },
-    {
-      file: () => import('#start/auth'),
-      environment: ['web', 'test'],
-    },
+    () => import('#start/validator'),
+    () => import('#start/routes'),
+    () => import('#start/auth'),
     () => import('#start/events'),
-    () => import('#start/request'),
+    () => import('#start/request')
   ],
 
   /*

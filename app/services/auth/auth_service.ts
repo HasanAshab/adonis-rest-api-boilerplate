@@ -104,7 +104,7 @@ export default class AuthService {
 
   async sendVerificationMail(user: User | string) {
     if (typeof user === 'string') {
-      user = await User.query().whereNotNull('password').where('email', user).first()
+      user = await User.natives().where('email', user).first()
     }
 
     if (!user || user.verified) {
@@ -139,7 +139,7 @@ export default class AuthService {
 
   async forgotPassword(user: User | string) {
     if (typeof user === 'string') {
-      user = await User.internals().where('email', user).where('verified', true).first()
+      user = await User.natives().where('email', user).where('verified', true).first()
     }
     if (user && user.verified) {
       await mail.sendLater(new ResetPasswordMail(user))

@@ -14,8 +14,20 @@ export default function SocialAuthenticable(Superclass: NormalizeConstructor<typ
 
     declare password: string | null
 
+    isNative() {
+      return !!this.password
+    }
+
     isSocial() {
-      return !this.password
+      return !!!this.password
+    }
+    
+    static natives() {
+      return this.query().whereNotNull('password')
+    }
+    
+    static socials() {
+      return this.query().whereNull('password')
     }
   }
 

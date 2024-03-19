@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.string('id').primary()
       table.string('type').notNullable()
       table.string('vendor').nullable()
-      table.string('model').notNullable()
+      table.string('model').nullable()
       table.boolean('is_trusted').notNullable()
       table.timestamp('created_at')
     })
