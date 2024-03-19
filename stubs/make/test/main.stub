@@ -1,0 +1,18 @@
+{{#var testGroupName = generators.testGroupName(entity)}}
+{{#var testFileName = generators.testFileName(entity.name)}}
+{{#var location = entity.path.replace('./', '')}}
+{{{
+  exports({
+    to: app.makePath(suite.directory, entity.path, testFileName)
+  })
+}}}
+import { test } from '@japa/runner'
+
+/*
+Run this suits:
+node ace test {{ flags.suite }} --files="{{ location }}/{{ testFileName }}"
+*/
+test.group('{{ testGroupName }}', () => {
+  test('example test', async ({ expect }) => {
+  })
+})
