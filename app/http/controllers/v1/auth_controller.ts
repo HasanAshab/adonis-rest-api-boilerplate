@@ -8,7 +8,6 @@ import mail from '@adonisjs/mail/services/main'
 import PasswordChangedMail from '#mails/password_changed_mail'
 import { registerValidator } from '#validators/v1/auth/register_validator'
 import { loginValidator, socialAuthTokenLoginValidator } from '#validators/v1/auth/login_validator'
-import { logoutOnDevicesValidator } from '#validators/v1/auth/logout_validator'
 import {
   emailVerificationValidator,
   resendEmailVerificationValidator,
@@ -87,27 +86,15 @@ export default class AuthController {
     return 'Logged out successfully!'
   }
   
-  async logoutOnDevices({ request, auth }: HttpContext) {
-    const { deviceIds } = await request.validateUsing(logoutOnDevicesValidator)
+  async logoutOnDevice({ request, auth, params }: HttpContext) {
     log(await auth.getUserOrFail().accessTokens())
-  
-   log(
-     await auth
+    const loginSession = await auth
       .getUserOrFail()
       .related('loginSessions')
-      .whereIn('loginDeviceId', deviceIds)
-      .delete()
-    )
+      .where('loginDeviceId', params.id)
+      .firstOrFail()
+    await loginSession.delete()
     log(await auth.getUserOrFail().accessTokens())
-
-    const loginSessions = await auth
-      .getUserOrFail()
-      .related('loginSessions')
-      .whereIn('loginDeviceId', deviceIds)
-    
-    await Promise.all(
-      loginSessions.map(session => session.delete())
-    )
 
   }
 

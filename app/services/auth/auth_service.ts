@@ -86,7 +86,7 @@ export default class AuthService {
       false
     )
     await user.related('loginSessions').create({
-      accessTokenId: accessToken.identifier
+      accessTokenId: accessToken.identifier,
       loginDeviceId: loginDevice.id
     })
 
@@ -151,7 +151,7 @@ export default class AuthService {
     await user.save()
   }
   
-  private reHashPasswordIfNeeded(user: User, password: string) {
+  private async reHashPasswordIfNeeded(user: User, password: string) {
     if (!await hash.needsReHash(user.password)) return
     user.password = password
     await user.save()

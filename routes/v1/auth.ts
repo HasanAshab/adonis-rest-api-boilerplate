@@ -24,7 +24,7 @@ export default function authRoutes() {
 
   router.group(() => {
     router.post('/', [AuthController, 'logout'])
-    router.post('device', [AuthController, 'logoutOnDevices'])
+    router.post('device/:id', [AuthController, 'logoutOnDevices'])
   })
   .prefix('logout')
   .use(middleware.auth())
