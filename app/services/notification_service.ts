@@ -8,7 +8,7 @@ export default class NotificationService {
   }
 
   defaultChannelPreferences(enabled = true) {
-    return this.channels().reduce((channelPreference, channel) => {
+    return this.channels().reduce((channelPreference: Record<string, boolean>, channel) => {
       channelPreference[channel] = enabled
       return channelPreference
     }, {})

@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import { ClientConfig } from '@ioc:adonis/addons/client'
+import { ClientConfig } from '#interfaces/client'
 
 export default class Client {
   private urlPaths = new Map<string, string>()
@@ -25,7 +25,7 @@ export default class Client {
     }
 
     if (data) {
-      path = path.replace(/:(\w+)/g, (match, param) => {
+      path = path.replace(/:(\w+)/g, (_, param) => {
         return encodeURIComponent(data[param])
       })
     }

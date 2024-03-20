@@ -2,7 +2,7 @@ import config from '@adonisjs/core/services/config'
 import User from '#models/user'
 
 export default class UsernameGenerator {
-  MAX_LENGTH = config.get('app.constraints.user.username.maxLength')
+  MAX_LENGTH = config.get<number>('app.constraints.user.username.maxLength')
 
   maxLength(len: number) {
     this.MAX_LENGTH = len
@@ -25,7 +25,7 @@ export default class UsernameGenerator {
         return username
       }
 
-      uniqueUsername = name + attempt
+      uniqueUsername = username + attempt
       if (uniqueUsername.length > this.MAX_LENGTH) {
         const overflowedLength = uniqueUsername.length - this.MAX_LENGTH
         const lastIndex = username.length - overflowedLength

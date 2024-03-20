@@ -1,3 +1,4 @@
+T: device uid
 t: no u-a on insta
 I: recent login review
 t: register, login, verify 2fa token

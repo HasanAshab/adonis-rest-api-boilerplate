@@ -1,4 +1,3 @@
-import app from '@adonisjs/core/services/app'
 import ReCaptcha2 from 'recaptcha2'
 import InvalidReCaptchaException from '#exceptions/invalid_re_captcha_exception'
 
