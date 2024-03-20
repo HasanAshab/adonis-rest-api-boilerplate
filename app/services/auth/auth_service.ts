@@ -72,27 +72,24 @@ export default class AuthService {
         model: device.model,
       }
     )
-
     if (user.hasEnabledTwoFactorAuth() && !loginDevice.isTrusted) {
       await this.twoFactorAuthService.challenge(user)
       throw new TwoFactorAuthRequiredException(user)
     }
-
-    if (await hash.needsReHash(user.password)) {
-      user.password = password
-      await user.save()
-    }
+    await this.reHashPasswordIfNeeded(user, password)
 
     const accessToken = await user.createToken()
-
     await user.related('loginDevices').sync(
       {
         [loginDevice.id]: { ip },
       },
       false
     )
+    await user.related('loginSessions').create({
+      accessTokenId: accessToken.identifier
+      loginDeviceId: loginDevice.id
+    })
 
-    log(await user.related('loginDevices').query())
     return accessToken
   }
 
@@ -150,6 +147,12 @@ export default class AuthService {
 
   async resetPassword(user: User, token: string, password: string) {
     await Token.verify('password_reset', user.id, token)
+    user.password = password
+    await user.save()
+  }
+  
+  private reHashPasswordIfNeeded(user: User, password: string) {
+    if (!await hash.needsReHash(user.password)) return
     user.password = password
     await user.save()
   }

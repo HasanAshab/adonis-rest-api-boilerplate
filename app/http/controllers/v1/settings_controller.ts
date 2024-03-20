@@ -2,7 +2,6 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
 import User from '#models/user'
 import Token from '#models/token'
-import LoginDevice from '#models/login_device'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import NotificationService from '#services/notification_service'
 import NotificationPreferenceCollection from '#resources/v1/settings/notification_preference_collection'
@@ -24,14 +23,10 @@ export default class SettingsController {
   async loginActivities({ auth, request }: HttpContext) {
     await auth.user.load('loginDevices')
     return auth.user.loginDevices
-
-    return await LoginDevice.query().whereHas('loginActivities', (query) => {
-      query.where('userId', auth.user.id)
-    })
   }
 
   async twoFactorAuth({ auth }: HttpContext) {
-    return TwoFactorSettingsResource.make(auth.user!)
+    return TwoFactorSettingsResource.make(auth.getUserOrFail())
   }
 
   async enableTwoFactorAuth({ request, auth: { user } }: HttpContext) {
@@ -41,28 +36,28 @@ export default class SettingsController {
   }
 
   async disableTwoFactorAuth({ auth }: HttpContext) {
-    await this.twoFactorAuthService.disable(auth.user!)
+    await this.twoFactorAuthService.disable(auth.getUserOrFail())
     return 'Two-Factor Authentication disabled!'
   }
 
   async updateTwoFactorAuthMethod({ request, auth }: HttpContext) {
     const { method } = await request.validateUsing(twoFactorAuthMethodValidator)
-    await this.twoFactorAuthService.changeMethod(auth.user!, method)
+    await this.twoFactorAuthService.changeMethod(auth.getUserOrFail(), method)
     return 'Two-Factor Authentication method changed!'
   }
 
   async twoFactorAuthQrCode({ auth }: HttpContext) {
     return {
-      data: await auth.user!.twoFactorQrCodeSvg(),
+      data: await auth.getUserOrFail().twoFactorQrCodeSvg(),
     }
   }
 
   recoveryCodes({ auth }: HttpContext) {
-    return auth.user!.recoveryCodes()
+    return auth.getUserOrFail().recoveryCodes()
   }
 
   generateRecoveryCodes({ auth }: HttpContext) {
-    return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
+    return this.twoFactorAuthService.generateRecoveryCodes(auth.getUserOrFail())
   }
 
   async notificationPreference({ auth: { user } }: HttpContext) {
@@ -73,7 +68,7 @@ export default class SettingsController {
   async updateNotificationPreference({ request, auth }: HttpContext) {
     const validator = await updateNotificationPreferenceValidator()
     const preferences = await request.validateUsing(validator)
-    await auth.user!.syncNotificationPreference(preferences)
+    await auth.getUserOrFail().syncNotificationPreference(preferences)
     return 'Settings saved!'
   }
 

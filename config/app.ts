@@ -3,8 +3,7 @@ import app from '@adonisjs/core/services/app'
 import { Secret } from '@adonisjs/core/helpers'
 import { defineConfig } from '@adonisjs/core/http'
 
-export const name = 'Adonis-Boilerplate'
-
+export const name = env.get('APP_NAME')
 /**
  * The app key is used for encrypting cookies, generating signed URLs,
  * and by the "encryption" module.

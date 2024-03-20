@@ -1,3 +1,4 @@
+import type { NormalizeConstructor } from '@adonisjs/core/helpers'
 import TwoFactorMethod from '#services/auth/two_factor/methods/abstract/two_factor_method'
 import app from '@adonisjs/core/services/app'
 
@@ -8,12 +9,12 @@ export class TwoFactorMethodManager {
     return Array.from(this.methods.keys())
   }
 
-  async add(MethodClass: typeof TwoFactorMethod) {
+  async add(MethodClass: NormalizeConstructor<typeof TwoFactorMethod>) {
     const twoFactorMethod = await app.container.make(MethodClass)
     this.methods.set(twoFactorMethod.methodName, twoFactorMethod)
   }
 
-  async register(MethodClasses: (typeof TwoFactorMethod)[]) {
+  async register(MethodClasses: (NormalizeConstructor<typeof TwoFactorMethod>)[]) {
     await Promise.all(
       MethodClasses.map(Method => this.add(Method))
     )

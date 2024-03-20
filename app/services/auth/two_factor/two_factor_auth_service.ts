@@ -1,6 +1,5 @@
 import { range } from 'lodash-es'
 import encryption from '@adonisjs/core/services/encryption'
-import config from '@adonisjs/core/services/config'
 import User from '#models/user'
 import LoginDevice from '#models/login_device'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'

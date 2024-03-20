@@ -22,8 +22,13 @@ export default function authRoutes() {
     })
     .prefix('login')
 
-  router.post('/logout', [AuthController, 'logout']).use(middleware.auth())
-
+  router.group(() => {
+    router.post('/', [AuthController, 'logout'])
+    router.post('device', [AuthController, 'logoutOnDevices'])
+  })
+  .prefix('logout')
+  .use(middleware.auth())
+  
   // Two factor authentication
   router
     .group(() => {

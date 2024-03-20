@@ -9,9 +9,8 @@ export default class RouteProvider {
 
   private async extendRoute() {
     const { Router, Route } = await import('@adonisjs/core/http')
-    const app = this.app
 
-    Router.macro('discover', async function (base: string, cb: (group: RouteGroup) => any) {
+    Router.macro('discover', async function (this: Router, base: string, cb: (group: RouteGroup) => any) {
       const stack = [base]
       while (stack.length > 0) {
         const currentPath = stack.pop()

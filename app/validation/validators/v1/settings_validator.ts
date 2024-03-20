@@ -1,8 +1,9 @@
+import { reduce } from 'lodash-es'
 import vine from '@vinejs/vine'
-import config from '@adonisjs/core/services/config'
 import NotificationType from '#models/notification_type'
 import NotificationService from '#services/notification_service'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
+
 
 export const emailResubscriptionValidator = vine.compile(
   vine.object({
@@ -33,10 +34,10 @@ export async function updateNotificationPreferenceValidator() {
 
   const schemaDefinition = reduce(
     notificationTypesId,
-    (accumulator, id) => {
+    (accumulator: Record<string, any>, id) => {
       const channelPreferenceSchema = reduce(
         channels,
-        (schemaAccumulator, channel) => {
+        (schemaAccumulator: Record<string, any>, channel) => {
           schemaAccumulator[channel] = vine.boolean()
           return schemaAccumulator
         },

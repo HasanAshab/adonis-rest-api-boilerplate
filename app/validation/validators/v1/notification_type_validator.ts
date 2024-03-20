@@ -1,8 +1,7 @@
 import vine from '@vinejs/vine'
 import config from '@adonisjs/core/services/config'
 
-export const createNotificationTypeValidator = vine.compile(
-  vine.object({
+const notificationTypeSchema = vine.object({
     name: vine
       .string()
       .regex(config.get('app.constraints.notificationType.pattern'))
@@ -25,8 +24,11 @@ export const createNotificationTypeValidator = vine.compile(
       .maxLength(config.get('app.constraints.notificationType.description.maxLength'))
       .minLength(config.get('app.constraints.notificationType.description.minLength')),
   })
+
+export const createNotificationTypeValidator = vine.compile(
+  notificationTypeSchema.clone()
 )
 
 export const updateNotificationTypeValidator = vine.compile(
-  createNotificationTypeValidator.clone().optional()
+  notificationTypeSchema.clone().optional()
 )

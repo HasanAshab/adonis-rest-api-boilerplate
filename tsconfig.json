@@ -24,7 +24,8 @@
       "#start/*": ["./start/*.js"],
       "#routes/*": ["./routes/*.js"],
       "#config/*": ["./config/*.js"],
-      "#ioc/*": ["./app/ioc/*.js"]
+      "#ioc/*": ["./app/ioc/*.js"],
+      "#interfaces/*": ["./app/interfaces/*.js"]
     }
   },
   "exclude": ["node_modules", "tests"]

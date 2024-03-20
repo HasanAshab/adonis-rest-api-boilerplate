@@ -11,7 +11,7 @@ const mailConfig = defineConfig({
    */
   from: {
     address: 'test@example.com',
-    name: env.get('app.name'),
+    name: env.get('APP_NAME')
   },
 
   /**

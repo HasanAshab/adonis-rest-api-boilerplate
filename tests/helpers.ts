@@ -8,12 +8,12 @@ export function fakeFilePath(name: string) {
   return app.tmpPath(join('test/', name))
 }
 
-export function refreshDatabase(group) {
+export function refreshDatabase(group: any) {
   group.each.setup(() => testUtils.db().truncate())
 }
 
-export function clearThrottle(group, stores?: string[]) {
+export function clearThrottle(group: any) {
   group.each.setup(() => {
-    return () => limiter.clear(stores)
+    return () => limiter.clear()
   })
 }

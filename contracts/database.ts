@@ -8,8 +8,8 @@ declare module '@adonisjs/lucid/database' {
 }
 
 declare module '@adonisjs/lucid/orm' {
-  export interface ModelQueryBuilderContract<
-    Model extends typeof BaseModel,
+  interface ModelQueryBuilder<
+    Model extends typeof BaseModel = typeof BaseModel,
     Result = InstanceType<Model>,
   > {
     /**
@@ -64,7 +64,7 @@ declare module '@adonisjs/lucid/orm' {
      * Macro to exclude a specific model instance or UID from the query results.
      * @param modelOrId - The model instance or UID to exclude.
      */
-    except(modelOrId: BaseModel | number | string): this
+    except(modelOrId: InstanceType<typeof BaseModel> | number | string): this
 
     /**
      * Macro to conditionally apply a query scope based on a boolean condition.
@@ -103,6 +103,6 @@ declare module '@adonisjs/lucid/orm' {
      * Macro to paginate query results using request parameters.
      * @param request - The HTTP request object containing pagination parameters.
      */
-    paginateUsing(request: Request): ReturnType<ModelQueryBuilderContract<Model>['paginate']>
+    paginateUsing(request: Request): ReturnType<ModelQueryBuilder<Model>['paginate']>
   }
 }

@@ -1,5 +1,4 @@
 import vine from '@vinejs/vine'
-import config from '@adonisjs/core/services/config'
 
 export const twoFactorAccountRecoveryValidator = vine.compile(
   vine.object({

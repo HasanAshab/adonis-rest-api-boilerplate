@@ -8,6 +8,7 @@ import mail from '@adonisjs/mail/services/main'
 import PasswordChangedMail from '#mails/password_changed_mail'
 import { registerValidator } from '#validators/v1/auth/register_validator'
 import { loginValidator, socialAuthTokenLoginValidator } from '#validators/v1/auth/login_validator'
+import { logoutOnDevicesValidator } from '#validators/v1/auth/logout_validator'
 import {
   emailVerificationValidator,
   resendEmailVerificationValidator,
@@ -79,16 +80,40 @@ export default class AuthController {
 
   /**
    * @logout
-   * @responseBody 200 - { message: <string> }
+   * @responseBody 200 - { message: "Logged out successfully" }
    */
   async logout({ auth }: HttpContext) {
-    await this.authService.logout(auth.user)
+    await this.authService.logout(auth.getUserOrFail())
     return 'Logged out successfully!'
+  }
+  
+  async logoutOnDevices({ request, auth }: HttpContext) {
+    const { deviceIds } = await request.validateUsing(logoutOnDevicesValidator)
+    log(await auth.getUserOrFail().accessTokens())
+  
+   log(
+     await auth
+      .getUserOrFail()
+      .related('loginSessions')
+      .whereIn('loginDeviceId', deviceIds)
+      .delete()
+    )
+    log(await auth.getUserOrFail().accessTokens())
+
+    const loginSessions = await auth
+      .getUserOrFail()
+      .related('loginSessions')
+      .whereIn('loginDeviceId', deviceIds)
+    
+    await Promise.all(
+      loginSessions.map(session => session.delete())
+    )
+
   }
 
   /**
    * @verifyEmail
-   * @responseBody 200
+   * @responseBody 200 - { message: "Email verified successfully" }
    */
   async verifyEmail({ request }) {
     const { id, token } = await request.validateUsing(emailVerificationValidator)
@@ -154,7 +179,7 @@ export default class AuthController {
    * @responseBody 200 - { data: string[] }
    */
   generateRecoveryCodes({ auth }: AuthenticRequest) {
-    return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
+    return this.twoFactorAuthService.generateRecoveryCodes(auth.getUserOrFail())
   }
 
   async recoverTwoFactorAccount({ request }: HttpContext) {

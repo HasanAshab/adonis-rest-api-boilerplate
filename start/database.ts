@@ -40,7 +40,7 @@ ModelQueryBuilder.macro('whereUid', function (this: ModelQueryBuilder, uid: numb
  * @param column - The name of the column to pluck.
  */
 ModelQueryBuilder.macro('pluck', async function (this: ModelQueryBuilder, column: string) {
-  const records = await this.select(column).pojo()
+  const records = await this.pojo().select(column)
   return records.map((record: Record<string, any>) => record[column])
 })
 
@@ -112,7 +112,7 @@ ModelQueryBuilder.macro(
  */
 ModelQueryBuilder.macro(
   'when',
-  function (this: ModelQueryBuilder, condition: boolean, cb: (query: this) => this) {
+  function (this: ModelQueryBuilder, condition: boolean, cb: (query: ModelQueryBuilder) => ModelQueryBuilder) {
     if (condition) {
       cb(this)
     }

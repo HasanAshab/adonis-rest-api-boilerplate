@@ -5,10 +5,9 @@
     to: app.modelsPath(entity.path, modelFileName)
   })
 }}}
-import { DateTime } from 'luxon'
 import { compose } from '@adonisjs/core/helpers'
-import BaseModel from '#models/base_model'
 import { column } from '@adonisjs/lucid/orm'
+import BaseModel from '#models/base_model'
 import HasTimestamps from '#models/traits/has_timestamps'
 
 

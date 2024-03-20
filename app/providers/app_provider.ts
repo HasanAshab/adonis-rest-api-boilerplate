@@ -6,8 +6,8 @@ export default class AppProvider {
 
   boot() {
     if (!this.app.inProduction) {
-      globalThis.log = console.log
-      globalThis.trace = trace
+      global.log = console.log
+      global.trace = trace
     }
   }
 }
