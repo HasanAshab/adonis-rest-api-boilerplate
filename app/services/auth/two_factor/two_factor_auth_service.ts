@@ -4,8 +4,6 @@ import User from '#models/user'
 import LoginDevice from '#models/login_device'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
 import RecoveryCode from '#services/auth/two_factor/recovery_code'
-import Otp from '#services/auth/two_factor/otp'
-import PhoneNumberRequiredException from '#exceptions/phone_number_required_exception'
 import InvalidRecoveryCodeException from '#exceptions/invalid_recovery_code_exception'
 
 export default class TwoFactorAuthService {

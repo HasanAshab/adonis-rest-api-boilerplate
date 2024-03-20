@@ -4,8 +4,9 @@ import User from '#models/user'
 import Token from '#models/token'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import NotificationService from '#services/notification_service'
-import NotificationPreferenceCollection from '#resources/v1/settings/notification_preference_collection'
+import LoginActivityResource from '#resources/v1/settings/login_activity_resource'
 import TwoFactorSettingsResource from '#resources/v1/settings/two_factor_settings_resource'
+import NotificationPreferenceCollection from '#resources/v1/settings/notification_preference_collection'
 import {
   twoFactorAuthMethodValidator,
   updateNotificationPreferenceValidator,
@@ -22,11 +23,11 @@ export default class SettingsController {
 
   async loginActivities({ auth, request }: HttpContext) {
     await auth.user.load('loginDevices')
-    return auth.user.loginDevices
+    return LoginActivityResource.collection(auth.user!.loginDevices)
   }
 
   async twoFactorAuth({ auth }: HttpContext) {
-    return TwoFactorSettingsResource.make(auth.getUserOrFail())
+    return TwoFactorSettingsResource.make(auth.user!)
   }
 
   async enableTwoFactorAuth({ request, auth: { user } }: HttpContext) {
@@ -36,28 +37,28 @@ export default class SettingsController {
   }
 
   async disableTwoFactorAuth({ auth }: HttpContext) {
-    await this.twoFactorAuthService.disable(auth.getUserOrFail())
+    await this.twoFactorAuthService.disable(auth.user!)
     return 'Two-Factor Authentication disabled!'
   }
 
   async updateTwoFactorAuthMethod({ request, auth }: HttpContext) {
     const { method } = await request.validateUsing(twoFactorAuthMethodValidator)
-    await this.twoFactorAuthService.changeMethod(auth.getUserOrFail(), method)
+    await this.twoFactorAuthService.changeMethod(auth.user!, method)
     return 'Two-Factor Authentication method changed!'
   }
 
   async twoFactorAuthQrCode({ auth }: HttpContext) {
     return {
-      data: await auth.getUserOrFail().twoFactorQrCodeSvg(),
+      data: await auth.user!.twoFactorQrCodeSvg(),
     }
   }
 
   recoveryCodes({ auth }: HttpContext) {
-    return auth.getUserOrFail().recoveryCodes()
+    return auth.user!.recoveryCodes()
   }
 
   generateRecoveryCodes({ auth }: HttpContext) {
-    return this.twoFactorAuthService.generateRecoveryCodes(auth.getUserOrFail())
+    return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
   }
 
   async notificationPreference({ auth: { user } }: HttpContext) {
@@ -68,7 +69,7 @@ export default class SettingsController {
   async updateNotificationPreference({ request, auth }: HttpContext) {
     const validator = await updateNotificationPreferenceValidator()
     const preferences = await request.validateUsing(validator)
-    await auth.getUserOrFail().syncNotificationPreference(preferences)
+    await auth.user!.syncNotificationPreference(preferences)
     return 'Settings saved!'
   }
 

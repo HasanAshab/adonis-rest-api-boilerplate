@@ -1,4 +1,4 @@
-import type { NormalizeConstructor } from '@adonisjs/core/helpers'
+import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
 import LoginDevice from '#models/login_device'

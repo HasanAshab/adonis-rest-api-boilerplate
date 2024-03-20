@@ -1,4 +1,4 @@
-import type { NormalizeConstructor } from '@adonisjs/core/helpers'
+import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 

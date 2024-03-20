@@ -1,4 +1,4 @@
-import type { NormalizeConstructor } from '@adonisjs/core/helpers'
+import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import { BaseModel, hasMany } from '@adonisjs/lucid/orm'
 import { DbAccessTokensProvider, AccessToken } from '@adonisjs/auth/access_tokens'

@@ -1,4 +1,4 @@
-import type { NormalizeConstructor } from '@adonisjs/core/helpers'
+import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
 import TwoFactorMethod from '#services/auth/two_factor/methods/abstract/two_factor_method'
 import app from '@adonisjs/core/services/app'
 

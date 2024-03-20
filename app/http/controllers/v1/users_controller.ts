@@ -22,7 +22,7 @@ export default class UsersController {
   }
 
   profile({ auth }: HttpContext) {
-    return UserProfileResource.make(auth.getUserOrFail())
+    return UserProfileResource.make(auth.user!)
   }
 
   async updateProfile({ request, auth: { user } }: HttpContext) {
@@ -57,7 +57,7 @@ export default class UsersController {
   }
 
   async delete({ response, auth }: HttpContext) {
-    await auth.getUserOrFail().delete()
+    await auth.user!.delete()
     response.noContent()
   }
 
@@ -78,15 +78,15 @@ export default class UsersController {
 
   async changePassword({ request, auth }: HttpContext) {
     const { oldPassword, newPassword } = await request.validateUsing(changePasswordValidator)
-    await AuthService.changePassword(auth.getUserOrFail(), oldPassword, newPassword)
-    await new PasswordChangedMail(auth.getUserOrFail()).sendLater()
+    await AuthService.changePassword(auth.user!, oldPassword, newPassword)
+    await new PasswordChangedMail(auth.user!).sendLater()
     return 'Password changed!'
   }
 
   @inject()
   async changePhoneNumber({ request, response, auth }: HttpContext, otp: Otp) {
     const { phoneNumber, otp: code } = await request.validateUsing(changePhoneNumberValidator)
-    const user = auth.getUserOrFail()
+    const user = auth.user!
 
     if (user.phoneNumber === phoneNumber) {
       throw new SamePhoneNumberException()
@@ -105,8 +105,8 @@ export default class UsersController {
   }
 
   async removePhoneNumber({ auth }: HttpContext) {
-    auth.getUserOrFail().phoneNumber = null
-    await auth.getUserOrFail().save()
+    auth.user!.phoneNumber = null
+    await auth.user!.save()
     return 'Phone number removed!'
   }
 }

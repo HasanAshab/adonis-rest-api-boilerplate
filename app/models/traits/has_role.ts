@@ -1,4 +1,4 @@
-import type { NormalizeConstructor } from '@adonisjs/core/helpers'
+import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 
 export type Role = 'user' | 'admin'

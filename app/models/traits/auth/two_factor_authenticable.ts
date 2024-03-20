@@ -1,4 +1,4 @@
-import type { NormalizeConstructor } from '@adonisjs/core/helpers'
+import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
 import { BaseModel, column, beforeUpdate } from '@adonisjs/lucid/orm'
 import encryption from '@adonisjs/core/services/encryption'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'

@@ -69,7 +69,7 @@ export default class AuthService {
       {
         type: device.type,
         vendor: device.vendor,
-        model: device.model,
+        model: device.model
       }
     )
     if (user.hasEnabledTwoFactorAuth() && !loginDevice.isTrusted) {
@@ -81,7 +81,10 @@ export default class AuthService {
     const accessToken = await user.createToken()
     await user.related('loginDevices').sync(
       {
-        [loginDevice.id]: { ip },
+        [loginDevice.id]: { 
+          lastLoggedAt: DateTime.local(),
+          ip
+        },
       },
       false
     )
@@ -97,6 +100,16 @@ export default class AuthService {
     if (user.currentAccessToken) {
       await User.accessTokens.delete(user, user.currentAccessToken.identifier)
     }
+  }
+  
+  async logoutOnDevice(user: User, deviceId: string) {
+    await user.related('loginDevices').detach([deviceId])
+    await user.load('loginSessions', query => {
+      query.where('loginDeviceId', deviceId)
+    })
+    await Promise.all(
+      user.loginSessions.map(loginSession => loginSession.delete())
+    )
   }
 
   async sendVerificationMail(user: User | string) {

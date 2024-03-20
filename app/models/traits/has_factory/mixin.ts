@@ -1,4 +1,4 @@
-import type { NormalizeConstructor } from '@adonisjs/core/helpers'
+import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
 import { BaseModel } from '@adonisjs/lucid/orm'
 import string from '@adonisjs/core/helpers/string'
 

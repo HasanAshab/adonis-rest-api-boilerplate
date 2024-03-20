@@ -14,27 +14,27 @@ export default class NotificationsController {
   }
 
   async show({ params, auth }: HttpContext) {
-    const notification = await auth.getUserOrFail().related('notifications').query().findOrFail(params.id)
+    const notification = await auth.user!.related('notifications').query().findOrFail(params.id)
     return ShowNotificationResource.make(notification)
   }
 
   async markAllAsRead({ auth }: HttpContext) {
-    await auth.getUserOrFail().markNotificationsAsRead()
+    await auth.user!.markNotificationsAsRead()
     return 'All notifications marked as read'
   }
 
   async markAsRead({ params, auth }: HttpContext) {
-    await auth.getUserOrFail().markNotificationAsRead(params.id)
+    await auth.user!.markNotificationAsRead(params.id)
     return 'Notification marked as read'
   }
 
   async unreadCount({ auth }: HttpContext) {
-    const count = await auth.getUserOrFail().unreadNotifications().getCount()
+    const count = await auth.user!.unreadNotifications().getCount()
     return { data: { count } }
   }
 
   async delete({ response, params, auth }: HttpContext) {
-    await auth.getUserOrFail().related('notifications').query().whereUid(params.id).deleteOrFail()
+    await auth.user!.related('notifications').query().whereUid(params.id).deleteOrFail()
 
     response.noContent()
   }

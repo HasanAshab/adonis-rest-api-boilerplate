@@ -82,20 +82,13 @@ export default class AuthController {
    * @responseBody 200 - { message: "Logged out successfully" }
    */
   async logout({ auth }: HttpContext) {
-    await this.authService.logout(auth.getUserOrFail())
+    await this.authService.logout(auth.user!)
     return 'Logged out successfully!'
   }
   
-  async logoutOnDevice({ request, auth, params }: HttpContext) {
-    log(await auth.getUserOrFail().accessTokens())
-    const loginSession = await auth
-      .getUserOrFail()
-      .related('loginSessions')
-      .where('loginDeviceId', params.id)
-      .firstOrFail()
-    await loginSession.delete()
-    log(await auth.getUserOrFail().accessTokens())
-
+  async logoutOnDevice({ request, params, auth }: HttpContext) {
+    await this.authService.logoutOnDevice(auth.user!, params.id)
+    return 'Logged out successfully!'
   }
 
   /**
@@ -166,7 +159,7 @@ export default class AuthController {
    * @responseBody 200 - { data: string[] }
    */
   generateRecoveryCodes({ auth }: AuthenticRequest) {
-    return this.twoFactorAuthService.generateRecoveryCodes(auth.getUserOrFail())
+    return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
   }
 
   async recoverTwoFactorAccount({ request }: HttpContext) {
