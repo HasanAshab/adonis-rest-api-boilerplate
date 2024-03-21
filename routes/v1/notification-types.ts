@@ -9,7 +9,7 @@ export default function notificationTypeRoutes() {
   router
     .group(() => {
       router.get('/', [NotificationTypesController, 'index'])
-      router.get('/:id', [NotificationTypesController, 'show']).as('show')
+      router.get('/:id', [NotificationTypesController, 'show']).as('v1.notificationTypes.show')
 
       router
         .group(() => {
@@ -19,6 +19,5 @@ export default function notificationTypeRoutes() {
         })
         .use(middleware.roles('admin'))
     })
-    .as('notificationTypes')
     .use([middleware.auth(), middleware.verified()])
 }

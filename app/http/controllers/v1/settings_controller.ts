@@ -8,6 +8,7 @@ import LoginActivityCollection from '#resources/v1/settings/login_activity/login
 import TwoFactorSettingsResource from '#resources/v1/settings/two_factor_settings_resource'
 import NotificationPreferenceCollection from '#resources/v1/settings/notification_preference_collection'
 import {
+  showLoginActivitiesValidator,
   twoFactorAuthMethodValidator,
   updateNotificationPreferenceValidator,
   emailUnsubscriptionValidator,
@@ -22,9 +23,9 @@ export default class SettingsController {
   ) {}
 
   async loginActivities({ auth, request }: HttpContext) {
-    //const { deviceId } = await request.validateUsing()
+    const { deviceId } = await request.validateUsing(showLoginActivitiesValidator)
     await auth.user.load('loggedDevices')
-    return LoginActivityCollection.make(auth.user!.loggedDevices, 'bar-fokd')
+    return LoginActivityCollection.make(auth.user!.loggedDevices, deviceId)
   }
 
   async twoFactorAuth({ auth }: HttpContext) {

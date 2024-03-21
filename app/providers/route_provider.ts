@@ -8,7 +8,7 @@ export default class RouteProvider {
   constructor(protected app: ApplicationService) {}
 
   private async extendRoute() {
-    const { Router, Route } = await import('@adonisjs/core/http')
+    const { Router } = await import('@adonisjs/core/http')
 
     Router.macro('discover', async function (this: InstanceType<typeof Router>, base: string, cb: (group: RouteGroup) => any) {
       const stack = [base]
@@ -40,23 +40,7 @@ export default class RouteProvider {
         }
       }
     })
-    Route.macro('as', function (name: string, prepend = false) {})
 
-    /*
-    Route.macro('as', function(name: string, prepend = false) {
-      if (prepend) {
-        if (!this.#name) {
-          return
-        }
-  
-        this.#name = `${name}.${this.#name}`
-        return this
-      }
-
-      this.#name = name
-      return this
-    })
- */
   }
 
   async boot() {

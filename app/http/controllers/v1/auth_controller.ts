@@ -45,12 +45,12 @@ export default class AuthController {
 
     Registered.dispatch(user, 'internal', AuthController.VERSION)
 
-    /*const profileUrl = router.makeUrl(AuthController.VERSION + ".users.show", {
+    const profileUrl = router.makeUrl(AuthController.VERSION + ".users.show", {
       username: user.username 
-    });*/
+    });
 
     response
-      //   .header('Location', profileUrl)
+      .header('Location', profileUrl)
       .created({
         message: 'Verification email sent!',
         data: user,
@@ -201,13 +201,13 @@ export default class AuthController {
     }
 
     Registered.dispatch(user, 'social', AuthController.VERSION)
-    /*
+
     const profileUrl = router.makeUrl(AuthController.VERSION + ".users.show", {
       username: user.username 
     })
-*/
+
     response
-      // .header('Location', profileUrl)
+      .header('Location', profileUrl)
       .created({
         message: 'Registered successfully!',
         data: { user, token },

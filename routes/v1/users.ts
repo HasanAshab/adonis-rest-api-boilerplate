@@ -20,17 +20,16 @@ export default function userRoutes() {
         .prefix('me')
 
       // Routes for showing a specific user
-      router.get('/:username', [UsersController, 'show']).as('show')
+      router.get('/:username', [UsersController, 'show']).as('v1.users.show')
 
       // Routes for managing users
       router
         .group(() => {
           router.get('/', [UsersController, 'index'])
-          router.patch('/:id/admin', [UsersController, 'makeAdmin']).as('makeAdmin')
-          router.delete('/:id', [UsersController, 'deleteById']).as('delete')
+          router.patch('/:id/admin', [UsersController, 'makeAdmin']).as('v1.users.makeAdmin')
+          router.delete('/:id', [UsersController, 'deleteById']).as('v1.users.delete')
         })
         .use(middleware.roles('admin'))
     })
-    .as('users')
     .use([middleware.auth(), middleware.verified()])
 }
