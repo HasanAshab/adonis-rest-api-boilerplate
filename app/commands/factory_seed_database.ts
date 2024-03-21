@@ -8,14 +8,12 @@ export default class FactorySeedDatabase extends BaseCommand {
   @args.string()
   declare modelPath: string
 
-  @args.string({
-    parse: (value) => Number.parseInt(value),
-  })
-  declare count: number
+  @args.string()
+  declare count: string
 
   async run() {
     const { default: Model } = await import(this.modelPath)
-    await Model.factory().count(this.count).create()
+    await Model.factory().count(Number.parseInt(this.count)).create()
     this.logger.success('Seeded successfully!')
   }
 }

@@ -62,13 +62,16 @@ export default class AuthController {
    * @responseBody 200 - { message: <string>, data: { token: } }
    */
   async login({ request }: HttpContext) {
-    const { email, password } = await request.validateUsing(loginValidator)
+    const { email, password, deviceId } = await request.validateUsing(loginValidator)
 
     const token = await this.authService.attempt({
       email,
       password,
       ip: request.ip(),
-      device: request.device,
+      device: {
+        id: deviceId,
+        ...request.device
+      }
     })
 
     return {
@@ -136,15 +139,15 @@ export default class AuthController {
   }
 
   async verifyTwoFactorChallenge({ request }: HttpContext) {
-    const { email, token, challengeToken, trustDevice } = await request.validateUsing(
+    const { email, token, code, deviceId } = await request.validateUsing(
       twoFactorChallengeVerificationValidator
     )
     const user = await User.findByOrFail('email', email)
 
     const accessToken = await this.twoFactorAuthService.verify(
       user,
-      challengeToken,
-      trustDevice && request.device.id
+      code,
+      deviceId
     )
     await Token.verify('two_factor_auth_challenge_verification', user.id, token)
 

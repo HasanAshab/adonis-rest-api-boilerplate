@@ -1,10 +1,10 @@
 import { inject } from '@adonisjs/core'
+import { DateTime } from 'luxon'
 //import { Attachment } from '@ioc:adonis/addons/attachment_lite'
 import hash from '@adonisjs/core/services/hash'
 import User from '#models/user'
 import Token from '#models/token'
-import LoginDevice from '#models/login_device'
-import LoginActivity from '#models/login_activity'
+import LoggedDevice from '#models/logged_device'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import mail from '@adonisjs/mail/services/main'
 import EmailVerificationMail from '#mails/email_verification_mail'
@@ -64,35 +64,29 @@ export default class AuthService {
       throw error
     }
 
-    const loginDevice = await LoginDevice.firstOrCreate(
-      { id: device.id },
-      {
-        type: device.type,
-        vendor: device.vendor,
-        model: device.model
-      }
-    )
-    if (user.hasEnabledTwoFactorAuth() && !loginDevice.isTrusted) {
+    const loggedDevice = await LoggedDevice.sync(device)
+    const isTrustedDevice = await user.isDeviceTrusted(device.id)
+    
+    if (user.hasEnabledTwoFactorAuth() && !isTrustedDevice) {
       await this.twoFactorAuthService.challenge(user)
       throw new TwoFactorAuthRequiredException(user)
     }
     await this.reHashPasswordIfNeeded(user, password)
 
     const accessToken = await user.createToken()
-    await user.related('loginDevices').sync(
+    await user.related('loginSessions').create({
+      accessTokenId: accessToken.identifier,
+      loggedDeviceId: loggedDevice.id
+    })
+    await user.related('loggedDevices').sync(
       {
-        [loginDevice.id]: { 
-          lastLoggedAt: DateTime.local(),
-          ip
+        [loggedDevice.id]: { 
+          last_logged_at: DateTime.local(),
+          ip_address: ip
         },
       },
       false
     )
-    await user.related('loginSessions').create({
-      accessTokenId: accessToken.identifier,
-      loginDeviceId: loginDevice.id
-    })
-
     return accessToken
   }
 
@@ -103,9 +97,9 @@ export default class AuthService {
   }
   
   async logoutOnDevice(user: User, deviceId: string) {
-    await user.related('loginDevices').detach([deviceId])
+    await user.related('loggedDevices').detach([deviceId])
     await user.load('loginSessions', query => {
-      query.where('loginDeviceId', deviceId)
+      query.where('loggedDeviceId', deviceId)
     })
     await Promise.all(
       user.loginSessions.map(loginSession => loginSession.delete())
@@ -117,12 +111,12 @@ export default class AuthService {
       user = await User.natives().where('email', user).first()
     }
 
-    if (!user || user.verified) {
-      return false
+    if (user instanceof User && !user.verified) {
+      await mail.sendLater(new EmailVerificationMail(user))
+      return true
     }
 
-    await mail.sendLater(new EmailVerificationMail(user))
-    return true
+    return false
   }
 
   async verifyEmail(id: number, token: string) {
@@ -151,7 +145,7 @@ export default class AuthService {
     if (typeof user === 'string') {
       user = await User.natives().where('email', user).where('verified', true).first()
     }
-    if (user && user.verified) {
+    if (user instanceof User && user.verified) {
       await mail.sendLater(new ResetPasswordMail(user))
       return true
     }
@@ -165,8 +159,9 @@ export default class AuthService {
   }
   
   private async reHashPasswordIfNeeded(user: User, password: string) {
-    if (!await hash.needsReHash(user.password)) return
-    user.password = password
-    await user.save()
+    if (user.isNative() && await hash.needsReHash(user.password)) {
+      user.password = password
+      await user.save()
+    }
   }
 }

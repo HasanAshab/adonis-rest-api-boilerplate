@@ -1,7 +1,7 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'login_device_user'
+  protected tableName = 'logged_device_user'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
@@ -14,13 +14,13 @@ export default class extends BaseSchema {
         .inTable('users')
         .onDelete('CASCADE')
       table
-        .string('login_device_id')
+        .string('logged_device_id')
         .notNullable()
         .references('id')
-        .inTable('login_devices')
+        .inTable('logged_devices')
         .onDelete('CASCADE')
-      table.string('ip').notNullable()
-      table.timestamps()
+      table.string('ip_address').notNullable()
+      table.timestamp('last_logged_at').notNullable()
     })
   }
 

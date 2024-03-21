@@ -19,7 +19,7 @@ export default class CreateAdmin extends BaseCommand {
   declare name?: string
 
   async run() {
-    const { default: User } = await import('App/Models/User')
+    const { default: User } = await import('#models/user')
 
     const admin = await User.create({
       ...this.parsed.args,

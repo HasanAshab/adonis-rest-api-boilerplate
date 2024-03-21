@@ -4,7 +4,7 @@ import User from '#models/user'
 import Token from '#models/token'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import NotificationService from '#services/notification_service'
-import LoginActivityResource from '#resources/v1/settings/login_activity_resource'
+import LoginActivityCollection from '#resources/v1/settings/login_activity/login_activity_collection'
 import TwoFactorSettingsResource from '#resources/v1/settings/two_factor_settings_resource'
 import NotificationPreferenceCollection from '#resources/v1/settings/notification_preference_collection'
 import {
@@ -22,8 +22,9 @@ export default class SettingsController {
   ) {}
 
   async loginActivities({ auth, request }: HttpContext) {
-    await auth.user.load('loginDevices')
-    return LoginActivityResource.collection(auth.user!.loginDevices)
+    //const { deviceId } = await request.validateUsing()
+    await auth.user.load('loggedDevices')
+    return LoginActivityCollection.make(auth.user!.loggedDevices, 'bar-fokd')
   }
 
   async twoFactorAuth({ auth }: HttpContext) {

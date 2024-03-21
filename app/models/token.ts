@@ -1,6 +1,5 @@
 import { column, beforeSave } from '@adonisjs/lucid/orm'
 import BaseModel from '#models/base_model'
-import { DateTime } from 'luxon'
 import { compose } from '@adonisjs/core/helpers'
 import { stringToLuxonDate } from '#app/helpers'
 import hash from '@adonisjs/core/services/hash'
@@ -26,7 +25,7 @@ export default class Token extends compose(BaseModel, Expirable) {
   declare oneTime: boolean
 
   @column()
-  declare key: string
+  declare key: string | number
 
   @column()
   declare secret: string
@@ -42,7 +41,7 @@ export default class Token extends compose(BaseModel, Expirable) {
     }
   }
 
-  static async sign(type: string, key: string, options: SignTokenOptions = {}): string {
+  static async sign(type: string, key: string | number, options: SignTokenOptions = {}): string {
     const secret = options.secret ?? string.generateRandom(options.secretLength ?? 64)
 
     await this.create({
@@ -56,7 +55,7 @@ export default class Token extends compose(BaseModel, Expirable) {
     return secret
   }
 
-  static async isValid(type: string, key: string, secret: string) {
+  static async isValid(type: string, key: string | number, secret: string) {
     const token = await this.findByFields({ type, key })
 
     if (token && token.isNotExpired() && (await token.compareSecret(secret))) {
@@ -67,7 +66,7 @@ export default class Token extends compose(BaseModel, Expirable) {
     return false
   }
 
-  static async verify(type: string, key: string, secret: string) {
+  static async verify(type: string, key: string | number, secret: string) {
     const isValid = await this.isValid(type, key, secret)
     if (!isValid) {
       throw new InvalidTokenException()

@@ -13,7 +13,7 @@ class Wildcard {
     return regex.test(str)
   }
 
-  static replace(str: string, query: string, replacement: string, replacedStr = str): string {
+  static replace(str: string, query: string, replacement: string): string {
     const regexQuery = query
       .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
       .replace('*', `([^${query.split('*')[1]}]+)`)

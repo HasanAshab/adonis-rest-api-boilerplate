@@ -13,7 +13,7 @@ export default class LoginSession extends BaseModel  {
   declare accessTokenId: number
   
   @column()
-  declare loginDeviceId: string
+  declare loggedDeviceId: string
   
   @afterDelete()
   static deleteAccessToken(loginSession: LoginSession) {

@@ -15,7 +15,7 @@ export default class ResetPasswordMail extends BaseMail {
     super()
   }
 
-  async prepare(message: Message) {
+  async prepare() {
     const url = this.resetUrl(await this.resetToken())
 
     this.message.to(this.recipient.email).htmlView('emails/reset_password', { url })

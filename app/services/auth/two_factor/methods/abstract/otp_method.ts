@@ -9,7 +9,7 @@ import { authenticator } from 'otplib'
 
 @inject()
 export default abstract class OtpMethod extends TwoFactorMethod {
-  constructor(private readonly otp: Otp) {
+  constructor(protected readonly otp: Otp) {
     super()
   }
   
@@ -21,7 +21,7 @@ export default abstract class OtpMethod extends TwoFactorMethod {
     this.ensureHasPhoneNumber(user)
   }
 
-  protected ensureHasPhoneNumber(user: User): asserts user is user & { phoneNumber: string } {
+  protected ensureHasPhoneNumber(user: User): asserts user is User & { phoneNumber: string } {
     if (!user.phoneNumber) {
       throw new PhoneNumberRequiredException()
     }

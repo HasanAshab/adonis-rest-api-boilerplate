@@ -1,14 +1,15 @@
 import AnonymousResourceCollection from './anonymous_resource_collection.js'
 import router from '@adonisjs/core/services/router'
 
+
 export default class JsonResource {
   static wrap = 'data'
   protected shouldWrap = true
 
   constructor(protected readonly resource: Record<string, any>) {}
 
-  static make(resource: Record<string, any>) {
-    return new this(resource)
+  static make<T extends typeof JsonResource>(this: T, ...args: ConstructorParameters<T>) {
+    return new this(...args)
   }
 
   static collection(resources: Array<Record<string, any>>) {

@@ -1,6 +1,7 @@
 import { BaseModel as Model } from '@adonisjs/lucid/orm'
 import is from '@adonisjs/core/helpers/is'
 import type { ModelQueryBuilder } from '@adonisjs/lucid/orm'
+import { ExtractModelRelations } from '@adonisjs/lucid/types/relations'
 
 /**
  * Base model class with common utility methods.
@@ -20,10 +21,10 @@ export default class BaseModel extends Model {
    * @param options - Additional query options.
    * @returns The first matching record.
    */
-  static findByFields(fields: Record<string, any>, options?) {
-    return this.query(options).whereEqual(fields).first()
+  static findByFields(fields: Record<string, any>) {
+    return this.query().whereEqual(fields).first()
   }
-
+  
   static pluck(column: string) {
     return this.query().pluck(column)
   }
@@ -33,7 +34,7 @@ export default class BaseModel extends Model {
    * @param modelOrId - The model or ID to exclude.
    * @returns A new query builder instance.
    */
-  static except(modelOrId: Model | number) {
+  static except(modelOrId: instanceType<typeof Model> | number) {
     return this.query().except(modelOrId)
   }
 
@@ -157,18 +158,18 @@ export default class BaseModel extends Model {
    * Load a relation if it's not already loaded.
    * @param relation - The relation to load.
    */
-  async loadIfNotLoaded(relation: string) {
+  async loadIfNotLoaded(relation: ExtractModelRelations<this>) {
     if (this[relation] === undefined) {
       await this.load(relation)
     }
   }
 
   /**
-   * Check if the current record still exists in database.
+   * Check if the record currently exists in database.
    * @returns A boolean indicating whether the record exists.
    */
   exists() {
-    const uid = this[this.constructor.primaryKey]
+    const uid = this[this.constructor.primaryKey as keyof this] as string | number
     return this.constructor.exists(uid)
   }
 }

@@ -14,11 +14,11 @@ export default function SocialAuthenticable(Superclass: NormalizeConstructor<typ
 
     declare password: string | null
 
-    isNative() {
+    isNative(): this is typeof this & { password: string } {
       return !!this.password
     }
 
-    isSocial() {
+    isSocial(): this is typeof this & { password: null } {
       return !!!this.password
     }
     

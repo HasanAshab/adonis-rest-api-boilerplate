@@ -19,7 +19,7 @@ export default class DecryptEnv extends BaseCommand {
 
     const encryption = new Encryption({ secret: this.key })
     const encryptedEnv = readFileSync('.env.encrypted', 'utf-8')
-    const decryptedEnv = encryption.decrypt(encryptedEnv)
+    const decryptedEnv = encryption.decrypt(encryptedEnv) as string
 
     if (!decryptedEnv) {
       return this.logger.error('Invalid env key.')

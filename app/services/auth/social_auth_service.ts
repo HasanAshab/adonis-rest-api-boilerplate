@@ -6,11 +6,13 @@ import UsernameRequiredException from '#exceptions/validation/username_required_
 import DuplicateEmailAndUsernameException from '#exceptions/validation/duplicate_email_and_username_exception'
 import DuplicateUsernameException from '#exceptions/validation/duplicate_username_exception'
 import DuplicateEmailException from '#exceptions/validation/duplicate_email_exception'
-import { AllyUserContract } from '@adonisjs/ally'
+import { AllyUserContract, Oauth2AccessToken } from '@adonisjs/ally/types'
 
-export interface SocialAuthData extends AllyUserContract {
+
+export interface SocialAuthData extends AllyUserContract<Oauth2AccessToken> {
   username?: string
 }
+
 
 @inject()
 export default class SocialAuthService {

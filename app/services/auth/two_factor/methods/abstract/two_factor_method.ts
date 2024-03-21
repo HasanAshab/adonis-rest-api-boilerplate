@@ -4,7 +4,9 @@ import { Exception } from '@adonisjs/core/exceptions'
 export default abstract class TwoFactorMethod {
   abstract methodName: string
 
-  protected assertAssignable(user: User): void | Promise<void> {}
+  protected assertAssignable(user: User): void | Promise<void> {
+    user
+  }
 
   protected abstract verificationFailureException(): Exception
   protected abstract verificationFailureException(user: User): Exception
@@ -21,6 +23,7 @@ export default abstract class TwoFactorMethod {
   }
 
   shouldDisable(user: User) {
+    user
     return false
   }
 
@@ -39,6 +42,7 @@ export default abstract class TwoFactorMethod {
   }
 
   challenge(user: User): string | null | Promise<string | null> {
+    user
     return null
   }
 

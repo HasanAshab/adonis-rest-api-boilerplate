@@ -1,8 +1,10 @@
 import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
-import { BaseModel, column, beforeUpdate } from '@adonisjs/lucid/orm'
+import type { ManyToMany } from '@adonisjs/lucid/types/relations'
+import { BaseModel, column, manyToMany, beforeUpdate } from '@adonisjs/lucid/orm'
 import encryption from '@adonisjs/core/services/encryption'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
 import RecoveryCode from '#services/auth/two_factor/recovery_code'
+import LoggedDevice from '#models/logged_device'
 import { authenticator } from 'otplib'
 import qrcode from 'qrcode'
 
@@ -21,7 +23,12 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
 
     @column({ serializeAs: null })
     twoFactorRecoveryCodes: string | null = null
-
+    
+    @manyToMany(() => LoggedDevice, {
+      pivotTable: 'trusted_devices'
+    })
+    trustedDevices: ManyToMany<typeof LoggedDevice>
+    
     hasEnabledTwoFactorAuth() {
       return this.twoFactorEnabled
     }
@@ -54,7 +61,18 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
         ? await qrcode.toString(this.twoFactorQrCodeUrl(), { type: 'svg' })
         : null
     }
-
+    
+    isDeviceTrusted(id: string) {
+      return this.related('trustedDevices')
+        .query()
+        .where('logged_device_id', id)
+        .exists()
+    }
+    
+    trustDevice(id: string) {
+      return this.related('trustedDevices').attach(id)
+    }
+    
     @beforeUpdate()
     static async checkWetherToDisableTwoFactorAuth(user: TwoFactorAuthenticableUser) {
       if (!user.hasEnabledTwoFactorAuth()) return

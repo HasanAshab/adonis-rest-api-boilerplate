@@ -1,5 +1,4 @@
 import twilio from '#ioc/twilio'
-import User from '#models/user'
 import Token from '#models/token'
 import InvalidOtpException from '#exceptions/invalid_otp_exception'
 

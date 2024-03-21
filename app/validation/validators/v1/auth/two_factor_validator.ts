@@ -18,6 +18,7 @@ export const twoFactorChallengeVerificationValidator = vine.compile(
   vine.object({
     email: vine.string().email(),
     token: vine.string(),
-    challengeToken: vine.string(),
+    code: vine.string(),
+    deviceId: vine.string().exists('logged_devices.id').optional()
   })
 )

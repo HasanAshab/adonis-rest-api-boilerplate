@@ -1,7 +1,7 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'login_sessions'
+  protected tableName = 'trusted_devices'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
@@ -12,13 +12,6 @@ export default class extends BaseSchema {
         .unsigned()
         .references('id')
         .inTable('users')
-        .onDelete('CASCADE')
-      table
-        .integer('access_token_id')
-        .notNullable()
-        .unsigned()
-        .references('id')
-        .inTable('auth_access_tokens')
         .onDelete('CASCADE')
       table
         .string('logged_device_id')

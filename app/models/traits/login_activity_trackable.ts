@@ -1,15 +1,14 @@
 import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
-import LoginDevice from '#models/login_device'
+import LoggedDevice from '#models/logged_device'
 
 export default function LoginActivityTrackable(Superclass: NormalizeConstructor<typeof BaseModel>) {
   class LoginActivityTrackableModel extends Superclass {
-    @manyToMany(() => LoginDevice, {
-      pivotColumns: ['ip'],
-      pivotTimestamps: true,
+    @manyToMany(() => LoggedDevice, {
+      pivotColumns: ['ip_address', 'last_logged_at']
     })
-    declare loginDevices: ManyToMany<typeof LoginDevice>
+    declare loggedDevices: ManyToMany<typeof LoggedDevice>
   }
   return LoginActivityTrackableModel
 }

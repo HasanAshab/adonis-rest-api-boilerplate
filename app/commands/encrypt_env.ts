@@ -12,7 +12,7 @@ export default class EncryptEnv extends BaseCommand {
   })
   declare key: string
 
-  run() {
+  async run() {
     const envContents = readFileSync('.env', 'utf-8')
     const encryptedEnv = new Encryption({ secret: this.key }).encrypt(envContents)
     writeFileSync('.env.encrypted', encryptedEnv, 'utf-8')

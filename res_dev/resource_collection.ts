@@ -6,10 +6,10 @@ export default class ResourceCollection<Item extends JsonResource> {
   protected collects: constructor<Item> = JsonResource
   protected collection!: Item[]
 
-  constructor(protected readonly resources: Array<Record<string, any>>) {}
+  constructor(protected readonly resources: Array<Record<string, any>>, ..._: any[]) {}
 
-  static make(resources: Array<Record<string, any>>) {
-    return new this(resources)
+  static make<T extends typeof ResourceCollection<JsonResource>>(this: T, ...args: ConstructorParameters<T>) {
+    return new this(...args)
   }
 
   dontWrap() {
@@ -17,18 +17,10 @@ export default class ResourceCollection<Item extends JsonResource> {
     return this
   }
 
-  toJSON() {
-    if (this.resources instanceof SimplePaginator) {
-      this.setCollection((this.resources as any).rows)
-      return {
-        meta: this.resources.toJSON().meta,
-        ...this.serialize(),
-      }
-    }
-    this.setCollection(this.resources)
-    return this.serialize()
+  protected makeResource(resource: Record<string, any>) {
+    return this.collects.make(resource)
   }
-
+  
   protected serialize() {
     return this.shouldWrap || this.resources instanceof SimplePaginator
       ? {
@@ -37,7 +29,23 @@ export default class ResourceCollection<Item extends JsonResource> {
       : this.collection
   }
 
-  protected setCollection(collection: Array<Record<string, any>>) {
-    this.collection = collection.map((resource) => this.collects.make(resource).dontWrap())
+  protected makeCollection(resources: Array<Record<string, any>>) {
+    this.collection = resources.map(resource => 
+      this.makeResource(resource).dontWrap()
+    )
   }
+  
+  
+  toJSON() {
+    if (this.resources instanceof SimplePaginator) {
+      this.makeCollection((this.resources as any).rows)
+      return {
+        meta: this.resources.toJSON().meta,
+        ...this.serialize(),
+      }
+    }
+    this.makeCollection(this.resources)
+    return this.serialize()
+  }
+
 }

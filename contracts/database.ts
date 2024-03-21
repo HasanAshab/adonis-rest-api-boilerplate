@@ -2,15 +2,15 @@ import { BaseModel } from '@adonisjs/lucid/orm'
 import type { Request } from '@adonisjs/core/http'
 
 declare module '@adonisjs/lucid/database' {
-  export interface DatabaseQueryBuilder {
+  class DatabaseQueryBuilder {
     exists(): Promise<boolean>
   }
 }
 
 declare module '@adonisjs/lucid/orm' {
-  interface ModelQueryBuilder<
-    Model extends typeof BaseModel = typeof BaseModel,
-    Result = InstanceType<Model>,
+  interface ModelQueryBuilderContract<
+    Model extends LucidModel,
+    Result = InstanceType<Model>
   > {
     /**
      * Macro to add WHERE clauses for multiple columns with their respective values.
@@ -103,6 +103,6 @@ declare module '@adonisjs/lucid/orm' {
      * Macro to paginate query results using request parameters.
      * @param request - The HTTP request object containing pagination parameters.
      */
-    paginateUsing(request: Request): ReturnType<ModelQueryBuilder<Model>['paginate']>
+    paginateUsing(request: Request): ReturnType<ModelQueryBuilderContract['paginate']>
   }
 }
