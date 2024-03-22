@@ -1,5 +1,5 @@
-I: recent login review
-t: login, verify 2fa token
+I: untrust device
+t: verify 2fa token
 Fallback: solve type, doc
 
 

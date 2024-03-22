@@ -21,13 +21,12 @@ test.group('Auth / Logout', (group) => {
   
   test('Should logout on device', async ({ client, expect }) => {
     const user = await User.factory().create()
-    const deviceId = 'fake-device-id'
-    await LoggedDevice.create({ id: deviceId })
+    const loggedDevice = await LoggedDevice.factory().create()
     for(const i of range(3)) {
-      await user.createTrackableToken(deviceId, '127.0.0.1')
+      await user.createTrackableToken(loggedDevice.id, '127.0.0.1')
     }
     
-    const response = await client.post('/api/v1/auth/logout/device/' + deviceId).loginAs(user)
+    const response = await client.post('/api/v1/auth/logout/device/' + loggedDevice.id).loginAs(user)
     await user.load('loggedDevices')
     await user.load('loginSessions')
 
