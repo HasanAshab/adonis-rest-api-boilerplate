@@ -1,6 +1,7 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
 
+
 export default class extends BaseSchema {
   protected tableName = 'users'
 

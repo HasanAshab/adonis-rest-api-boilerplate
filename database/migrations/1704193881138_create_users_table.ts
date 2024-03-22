@@ -19,11 +19,6 @@ export default class extends BaseSchema {
       table.boolean('verified').notNullable()
       table.string('password').nullable()
       table.json('avatar').nullable()
-
-      table.string('social_provider').nullable()
-      table.string('social_id').nullable()
-      table.string('social_avatar_url').nullable()
-
       table.timestamps()
     })
   }
