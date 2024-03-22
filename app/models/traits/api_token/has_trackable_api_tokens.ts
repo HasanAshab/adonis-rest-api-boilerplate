@@ -1,19 +1,23 @@
 import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
-import type { ManyToMany } from '@adonisjs/lucid/types/relations'
+import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
+import { compose } from '@adonisjs/core/helpers'
 import { DateTime } from 'luxon'
-import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
-import { AccessToken } from '@adonisjs/auth/access_tokens'
+import { BaseModel, hasMany, manyToMany } from '@adonisjs/lucid/orm'
 import LoggedDevice from '#models/logged_device'
+import HasApiTokens from '#models/traits/api_token/has_api_tokens'
 
-export default function LoginActivityTrackable(Superclass: NormalizeConstructor<typeof BaseModel>) {
-  class LoginActivityTrackableModel extends Superclass {
+
+export default function HasTrackableApiTokens(Superclass: NormalizeConstructor<typeof BaseModel>) {
+  class HasTrackableApiTokensModel extends compose(Superclass, HasApiTokens) {
+    @hasMany(() => LoginSession)
+    declare loginSessions: HasMany<typeof LoginSession>
+
     @manyToMany(() => LoggedDevice, {
       pivotColumns: ['ip_address', 'last_logged_at']
     })
     declare loggedDevices: ManyToMany<typeof LoggedDevice>
-    
 
-    createLoginSession(loggedDevice: LoggedDevice, ipAddress: string) {
+    async createLoginSession(loggedDevice: LoggedDevice, ipAddress: string) {
       const accessToken = await this.createToken()
       await this.related('loginSessions').create({
         accessTokenId: accessToken.identifier,
@@ -31,5 +35,5 @@ export default function LoginActivityTrackable(Superclass: NormalizeConstructor<
       return accessToken
     }
   }
-  return LoginActivityTrackableModel
+  return HasTrackableApiTokensModel
 }

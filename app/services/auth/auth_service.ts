@@ -1,5 +1,4 @@
 import { inject } from '@adonisjs/core'
-import { DateTime } from 'luxon'
 //import { Attachment } from '@ioc:adonis/addons/attachment_lite'
 import hash from '@adonisjs/core/services/hash'
 import User from '#models/user'
@@ -73,21 +72,7 @@ export default class AuthService {
     }
     await this.reHashPasswordIfNeeded(user, password)
 
-    const accessToken = await user.createToken()
-    await user.related('loginSessions').create({
-      accessTokenId: accessToken.identifier,
-      loggedDeviceId: loggedDevice.id
-    })
-    await user.related('loggedDevices').sync(
-      {
-        [loggedDevice.id]: { 
-          last_logged_at: DateTime.local(),
-          ip_address: ip
-        },
-      },
-      false
-    )
-    return accessToken
+    return user.createLoginSession(loggedDevice, ip)
   }
 
   async logout(user: User) {

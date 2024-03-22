@@ -1,10 +1,7 @@
-F: rem is trusted
-T: pass data to resourse
-T: device uid
-t: no u-a on insta
 I: recent login review
 t: register, login, verify 2fa token
 Fallback: solve type, doc
+
 
 Deleted dep:
 "@adonisjs/route-model-binding": "^1.0.1",

@@ -6,8 +6,7 @@ import hash from '@adonisjs/core/services/hash'
 import Authenticable from '#models/traits/auth/authenticable'
 import TwoFactorAuthenticable from '#models/traits/auth/two_factor_authenticable'
 import SocialAuthenticable from '#models/traits/auth/social_authenticable'
-import HasApiTokens from '#models/traits/has_api_tokens'
-import LoginActivityTrackable from '#models/traits/login_activity_trackable'
+import HasTrackableApiTokens from '#models/traits/api_token/has_trackable_api_tokens'
 import HasFactory from '#models/traits/has_factory/mixin'
 import UserFactory from '#database/factories/user_factory'
 import HasTimestamps from '#models/traits/has_timestamps'
@@ -19,8 +18,7 @@ export default class User extends compose(
   Authenticable,
   TwoFactorAuthenticable,
   SocialAuthenticable,
-  HasApiTokens,
-  LoginActivityTrackable,
+  HasTrackableApiTokens,
   HasFactory,
   HasTimestamps,
   //OptInNotifiable,
