@@ -1,4 +1,5 @@
 import { inject } from '@adonisjs/core'
+import { SocialAuthData } from '#interfaces/auth'
 import User from '#models/user'
 import UsernameGenerator from '#services/username_generator'
 import EmailRequiredException from '#exceptions/validation/email_required_exception'
@@ -7,11 +8,6 @@ import DuplicateEmailAndUsernameException from '#exceptions/validation/duplicate
 import DuplicateUsernameException from '#exceptions/validation/duplicate_username_exception'
 import DuplicateEmailException from '#exceptions/validation/duplicate_email_exception'
 import { AllyUserContract, Oauth2AccessToken } from '@adonisjs/ally/types'
-
-
-export interface SocialAuthData extends AllyUserContract<Oauth2AccessToken> {
-  username?: string
-}
 
 
 @inject()

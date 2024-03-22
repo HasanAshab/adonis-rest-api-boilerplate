@@ -1,6 +1,8 @@
 import { test } from '@japa/runner'
+import { range } from 'lodash-es'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
+import LoggedDevice from '#models/logged_device'
 
 /*
 Run this suits:
@@ -15,5 +17,22 @@ test.group('Auth / Logout', (group) => {
 
     response.assertStatus(200)
     responseAfterLogout.assertStatus(401)
+  })
+  
+  test('Should logout on device', async ({ client, expect }) => {
+    const user = await User.factory().create()
+    const deviceId = 'fake-device-id'
+    await LoggedDevice.create({ id: deviceId })
+    for(const i of range(3)) {
+      await user.createTrackableToken(deviceId, '127.0.0.1')
+    }
+    
+    const response = await client.post('/api/v1/auth/logout/device/' + deviceId).loginAs(user)
+    await user.load('loggedDevices')
+    await user.load('loginSessions')
+
+    response.assertStatus(200)
+    expect(user.loggedDevices).toHaveLength(0)
+    expect(user.loginSessions).toHaveLength(0)
   })
 })

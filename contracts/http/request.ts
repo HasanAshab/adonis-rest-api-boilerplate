@@ -1,7 +1,7 @@
-import { DeviceInfo } from '#interfaces/http/request'
+import { IDevice } from 'ua-parser-js'
 
 declare module '@adonisjs/core/http' {
   export interface Request {
-    device: DeviceInfo
+    device: IDevice
   }
 }

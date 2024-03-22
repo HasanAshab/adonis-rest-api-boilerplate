@@ -70,7 +70,11 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
     }
     
     trustDevice(id: string) {
-      return this.related('trustedDevices').attach(id)
+      return this.related('trustedDevices').attach([id])
+    }
+    
+    trustDevices(ids: string[]) {
+      return this.related('trustedDevices').attach(ids)
     }
     
     @beforeUpdate()

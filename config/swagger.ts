@@ -1,15 +1,14 @@
+import path from "node:path";
+import url from "node:url";
+
 export default {
-  openapi: '3.0.0',
-  path: `${import.meta.url}/../`,
-  title: 'Adonis Boilerplate',
-  version: '1.0.0',
+  path: path.dirname(url.fileURLToPath(import.meta.url)) + "/../", // for AdonisJS v6
+  title: "Foo",
+  version: "1.0.0",
   tagIndex: 2,
-  ignore: ['/swagger', '/docs'],
-  preferredPutPatch: 'PUT', // if PUT/PATCH are provided for the same rout, prefer PUT
-  common: {
-    parameters: {}, // OpenAPI conform parameters that are commonly used
-    headers: {}, // OpenAPI conform headers that are commonly used
-  },
-  persistAuthorization: true, // persist authorization between reloads on the swagger page
   snakeCase: true,
-}
+  ignore: ["/swagger", "/docs"],
+  preferredPutPatch: "PUT",
+  persistAuthorization: true,
+  showFullPath: false
+};

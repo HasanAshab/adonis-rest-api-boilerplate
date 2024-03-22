@@ -1,5 +1,5 @@
 I: recent login review
-t: register, login, verify 2fa token
+t: login, verify 2fa token
 Fallback: solve type, doc
 
 

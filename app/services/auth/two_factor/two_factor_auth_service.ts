@@ -22,10 +22,10 @@ export default class TwoFactorAuthService {
     return twoFactorMethod.use(user.twoFactorMethod).challenge(user)
   }
 
-  async verify(user: User, token: string, deviceId?: string) {
+  async verify({ user, token, device }: TwoFactorChallengeVerification) {
     deviceId && await user.trustDevice(deviceId)
     await twoFactorMethod.use(user.twoFactorMethod).verify(user, token)
-    return await user.createToken()
+    return await user.createTrackableToken()
   }
 
   async recover(email: string, code: string) {

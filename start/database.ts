@@ -137,14 +137,15 @@ ModelQueryBuilder.macro(
       })
     }
 
-    const result = await this.pojo().first()
+    const data = await this.pojo().first()
 
     if (isString) {
-      return Number.parseInt(result.total)
+      return Number.parseInt(data.total)
     }
-
+    
+    const result: Record<string, number> = {}
     forIn(column, (_, alias) => {
-      result[alias] = Number.parseInt(result[alias.toLowerCase()])
+      result[alias] = Number.parseInt(data[alias.toLowerCase()])
     })
 
     return result

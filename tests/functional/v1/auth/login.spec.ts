@@ -1,6 +1,8 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
+import LoggedDevice from '#models/logged_device'
+
 
 /*
 Run this suits:
@@ -19,6 +21,7 @@ test.group('Auth / Login', (group) => {
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
       password: 'password',
+      deviceId: 'device-i'
     })
 
     response.assertStatus(200)
@@ -29,6 +32,7 @@ test.group('Auth / Login', (group) => {
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
       password: 'wrong-pass',
+      deviceId: 'device-id'
     })
 
     response.assertStatus(401)
@@ -40,6 +44,7 @@ test.group('Auth / Login', (group) => {
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
       password: 'password',
+      deviceId: 'device-id'
     })
 
     response.assertStatus(401)
@@ -52,6 +57,7 @@ test.group('Auth / Login', (group) => {
     const payload = {
       email: user.email,
       password: 'wrong-pass',
+      deviceId: 'device-id'
     }
 
     for (let i = 0; i < limit; i++) {
@@ -67,16 +73,33 @@ test.group('Auth / Login', (group) => {
     lockedResponse.assertStatus(429)
   })
 
-  test('Login should flag for two factor auth', async ({ client }) => {
+  test('Login should flag for two factor auth on 2FA enabled account', async ({ client }) => {
     user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
 
     const response = await client.post('/api/v1/auth/login').json({
       email: user.email,
       password: 'password',
+      deviceId: 'device-id'
     })
 
     response.assertStatus(200)
     response.assertBodyNotHaveProperty('data.token')
     response.assertBodyHaveProperty('twoFactor', true)
+  })
+  
+  test('Should login with trusted device on 2FA enabled account', async ({ client }) => {
+    const deviceId = 'device-id'
+    await LoggedDevice.create({ id: deviceId })
+    user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+    await user.trustDevice(deviceId)
+    
+    const response = await client.post('/api/v1/auth/login').json({
+      email: user.email,
+      password: 'password',
+      deviceId
+    })
+    
+    response.assertStatus(200)
+    response.assertBodyHaveProperty('data.token')
   })
 })

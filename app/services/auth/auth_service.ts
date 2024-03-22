@@ -1,5 +1,6 @@
 import { inject } from '@adonisjs/core'
 //import { Attachment } from '@ioc:adonis/addons/attachment_lite'
+import { RegistrationData, LoginCredentials } from '#interfaces/auth'
 import hash from '@adonisjs/core/services/hash'
 import User from '#models/user'
 import Token from '#models/token'
@@ -16,18 +17,6 @@ import PasswordChangeNotAllowedException from '#exceptions/password_change_not_a
 import InvalidPasswordException from '#exceptions/invalid_password_exception'
 import TwoFactorAuthRequiredException from '#exceptions/two_factor_auth_required_exception'
 
-export interface RegistrationData {
-  email: string
-  username: string
-  password: string
-}
-
-export interface LoginCredentials {
-  email: string
-  password: string
-  ip: string
-  device: DeviceInfo
-}
 
 @inject()
 export default class AuthService {
@@ -63,16 +52,15 @@ export default class AuthService {
       throw error
     }
 
-    const loggedDevice = await LoggedDevice.sync(device)
     const isTrustedDevice = await user.isDeviceTrusted(device.id)
-    
     if (user.hasEnabledTwoFactorAuth() && !isTrustedDevice) {
       await this.twoFactorAuthService.challenge(user)
       throw new TwoFactorAuthRequiredException(user)
     }
+    
     await this.reHashPasswordIfNeeded(user, password)
-
-    return user.createLoginSession(loggedDevice, ip)
+    await LoggedDevice.sync(device)
+    return user.createTrackableToken(device.id, ip)
   }
 
   async logout(user: User) {

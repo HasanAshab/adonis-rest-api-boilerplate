@@ -14,7 +14,7 @@ export default class ContactsController {
   async index({ request }: HttpContext) {
     return ListContactResource.collection(await Contact.paginateUsing(request))
   }
-
+  
   async store({ request, response }: HttpContext) {
     const data = await request.validateUsing(createContactValidator)
     response.created(await Contact.create(data))

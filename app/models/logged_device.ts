@@ -1,5 +1,6 @@
 import BaseModel from '#models/base_model'
 import { column } from '@adonisjs/lucid/orm'
+import { DeviceInfo } from '#interfaces/auth'
 
 
 export default class LoggedDevice extends BaseModel {
