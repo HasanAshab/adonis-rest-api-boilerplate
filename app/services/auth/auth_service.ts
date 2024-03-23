@@ -28,8 +28,8 @@ export default class AuthService {
     blockDuration: '1 hour',
   })
 
-  private limiterKeyFor(email: string, ip: string) {
-    return `login__${email}_${ip}`
+  private limiterKeyFor(email: string, ipAddress: string) {
+    return `login__${email}_${ipAddress}`
   }
 
   async register(data: RegistrationData) {
@@ -43,8 +43,8 @@ export default class AuthService {
     return user
   }
 
-  async attempt({ email, password, ip, device }: LoginCredentials) {
-    const limiterKey = this.limiterKeyFor(email, ip)
+  async attempt({ email, password, ipAddress, device }: LoginCredentials) {
+    const limiterKey = this.limiterKeyFor(email, ipAddress)
     const [error, user] = await this.loginLimiter.penalize(limiterKey, () => {
       return User.verifyCredentials(email, password)
     })
@@ -60,7 +60,7 @@ export default class AuthService {
     
     await this.reHashPasswordIfNeeded(user, password)
     await LoggedDevice.sync(device)
-    return user.createTrackableToken(device.id, ip)
+    return user.createTrackableToken(device.id, ipAddress)
   }
 
   async logout(user: User) {

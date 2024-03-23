@@ -6,6 +6,7 @@ import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_serv
 import NotificationService from '#services/notification_service'
 import LoginActivityCollection from '#resources/v1/settings/login_activity/login_activity_collection'
 import TwoFactorSettingsResource from '#resources/v1/settings/two_factor_settings_resource'
+import TrustedDeviceResource from '#resources/v1/settings/trusted_device_resource'
 import NotificationPreferenceCollection from '#resources/v1/settings/notification_preference_collection'
 import {
   showLoginActivitiesValidator,
@@ -60,6 +61,16 @@ export default class SettingsController {
 
   generateRecoveryCodes({ auth }: HttpContext) {
     return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
+  }
+  
+  async trustedDevices({ auth }: HttpContext) {
+    await auth.user!.load('trustedDevices')
+    return TrustedDeviceResource.collection(auth.user!.trustedDevices)
+  }
+  
+  async removeTrustedDevice({ response, params, auth }: HttpContext) {
+    await auth.user!.distrustDevice(params.id)
+    response.noContent()
   }
 
   async notificationPreference({ auth: { user } }: HttpContext) {

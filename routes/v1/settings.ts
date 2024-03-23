@@ -19,6 +19,8 @@ export default function settingsRoutes() {
           router.get('/qr-code', [SettingsController, 'twoFactorAuthQrCode'])
           router.get('/recovery-codes', [SettingsController, 'recoveryCodes'])
           router.post('/recovery-codes', [SettingsController, 'generateRecoveryCodes'])
+          router.get('/trusted-devices', [SettingsController, 'trustedDevices'])
+          router.delete('/trusted-devices/:id', [SettingsController, 'removeTrustedDevice']).as('v1.trustedDevices.remove')
         })
         .prefix('two-factor-auth')
 
@@ -34,6 +36,6 @@ export default function settingsRoutes() {
     })
     .use([
       middleware.auth(),
-      //middleware.verified()
+      middleware.verified()
     ])
 }

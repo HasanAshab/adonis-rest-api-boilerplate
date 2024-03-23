@@ -10,7 +10,7 @@ export interface RegistrationData {
 export interface LoginCredentials {
   email: string
   password: string
-  ip: string
+  ipAddress: string
   device: DeviceInfo
 }
 
@@ -22,6 +22,7 @@ export interface TwoFactorChallengeVerificationOptions {
 export interface TwoFactorChallengeVerificationData {
   code: string,
   device: DeviceInfo,
+  ipAddress: string,
   options?: TwoFactorChallengeVerificationOptions
 }
 

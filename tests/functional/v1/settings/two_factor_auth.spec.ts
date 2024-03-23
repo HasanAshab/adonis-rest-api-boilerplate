@@ -1,6 +1,8 @@
 import { test } from '@japa/runner'
+import { extract } from '#app/helpers'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
+import LoggedDevice from '#models/logged_device'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import TwoFactorSettingsResource from '#resources/v1/settings/two_factor_settings_resource'
 import PhoneNumberRequiredException from '#exceptions/phone_number_required_exception'
@@ -165,5 +167,33 @@ test.group('Settings / Two Factor Auth', (group) => {
     response.assertStatus(200)
     response.assertBodyHaveProperty('data', newCodes)
     expect(oldCodes).not.toEqual(newCodes)
+  })
+
+  test('Should get trusted devices', async ({ client }) => {
+    const user = await User.factory().twoFactorAuthEnabled().create()
+    const loggedDevices = await LoggedDevice.factory().count(3).create()
+    for(const loggedDevice of loggedDevices) {
+      await user.trustDevice(loggedDevice, '127.0.0.1')
+    }
+
+    const response = await client
+      .get('/api/v1/settings/two-factor-auth/trusted-devices')
+      .loginAs(user)
+
+    response.assertStatus(200)
+    response.assertBodyContainProperty('data', extract(loggedDevices, 'id'))
+  })
+ 
+  test('Should remove trusted device', async ({ client, expect }) => {
+    const user = await User.factory().twoFactorAuthEnabled().create()
+    const loggedDevice = await LoggedDevice.factory().create()
+    await user.trustDevice(loggedDevice, '127.0.0.1')
+
+    const response = await client
+      .delete('/api/v1/settings/two-factor-auth/trusted-devices/' + loggedDevice.id)
+      .loginAs(user)
+
+    response.assertStatus(204)
+    await expect(user.isDeviceTrusted(loggedDevice)).resolves.toBeFalse()
   })
 })

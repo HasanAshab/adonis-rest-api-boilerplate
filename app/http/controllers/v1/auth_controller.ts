@@ -78,7 +78,7 @@ export default class AuthController {
     const token = await this.authService.attempt({
       email,
       password,
-      ip: request.ip(),
+      ipAddress: request.ip(),
       device: request.device()
     })
 
@@ -191,6 +191,7 @@ export default class AuthController {
     const user = await User.findByOrFail('email', email)
     const accessToken = await this.twoFactorAuthService.verify(user, {
       code,
+      ipAddress: request.ip(),
       device,
       options: { trustThisDevice }
     })

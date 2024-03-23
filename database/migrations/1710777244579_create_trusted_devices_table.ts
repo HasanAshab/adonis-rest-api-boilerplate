@@ -19,6 +19,8 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('logged_devices')
         .onDelete('CASCADE')
+      table.string('ip_address').notNullable()
+      table.timestamp('last_logged_at').notNullable()
     })
   }
 

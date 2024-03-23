@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import { extract } from '#app/helpers'
 import User from '#models/user'
 import LoggedDevice from '#models/logged_device'
 
@@ -12,7 +13,7 @@ test.group('V1 / Settings / Login Activities', () => {
     const user = await User.factory().create()
     const loggedDevices = await LoggedDevice.factory().count(3).create()
     for(const device of loggedDevices) {
-      await user.createTrackableToken(device.id, '127.0.0.1')
+      await user.createTrackableToken(device, '127.0.0.1')
     }
 
     const response = await client
@@ -22,6 +23,6 @@ test.group('V1 / Settings / Login Activities', () => {
 
 
     response.assertStatus(200)
-    response.assertBodyHaveProperty('data.length', 3)
+    response.assertBodyContainProperty('data', extract(loggedDevices, 'id'))
   })
 })

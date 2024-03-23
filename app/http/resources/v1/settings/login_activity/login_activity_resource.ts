@@ -14,9 +14,7 @@ export default class LoginActivityResource extends JsonResource {
     if(this.isCurrentDevice()) {
       return 'Now'
     }
-    return DateTime
-      .fromJSDate(this.resource.$extras.pivot_last_logged_at)
-      .toRelative()
+    return this.resource.$extras.pivot_last_logged_at.toRelative()
   }
   
   serialize() {
@@ -29,7 +27,7 @@ export default class LoginActivityResource extends JsonResource {
       lastLoggedAt: this.lastLoggedAt(),
       isCurrentDevice: this.isCurrentDevice(),
       links: {
-        logout: this.makeUrl('v1.logout.device', { deviceId: this.deviceId })
+        logout: this.makeUrl('v1.logout.device')
       }
     }
   }

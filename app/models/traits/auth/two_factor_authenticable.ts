@@ -25,7 +25,11 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
     twoFactorRecoveryCodes: string | null = null
     
     @manyToMany(() => LoggedDevice, {
-      pivotTable: 'trusted_devices'
+      pivotTable: 'trusted_devices',
+      pivotColumns: ['ip_address', 'last_logged_at'],
+      pivotTimestamps: {
+        updatedAt: 'last_logged_at',
+      }
     })
     trustedDevices: ManyToMany<typeof LoggedDevice>
     
@@ -62,19 +66,30 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
         : null
     }
     
-    isDeviceTrusted(id: string) {
+    isDeviceTrusted(deviceOrId: LoggedDevice | string) {
+      const id = typeof deviceOrId === 'string'
+        ? deviceOrId
+        : deviceOrId.id
       return this.related('trustedDevices')
         .query()
         .where('logged_device_id', id)
         .exists()
     }
     
-    trustDevice(id: string) {
-      return this.related('trustedDevices').attach([id])
+    trustDevice(deviceOrId: LoggedDevice | string, ipAddress: string) {
+      const id = typeof deviceOrId === 'string'
+        ? deviceOrId
+        : deviceOrId.id 
+      return this.related('trustedDevices').attach({
+        [id]: { ip_address: ipAddress }
+      })
     }
     
-    trustDevices(ids: string[]) {
-      return this.related('trustedDevices').attach(ids)
+    distrustDevice(deviceOrId: LoggedDevice | string) {
+      const id = typeof deviceOrId === 'string'
+        ? deviceOrId
+        : deviceOrId.id 
+      return this.related('trustedDevices').detach([id])
     }
     
     @beforeUpdate()

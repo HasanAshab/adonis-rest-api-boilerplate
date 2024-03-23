@@ -14,15 +14,20 @@ export default function HasTrackableApiTokens(Superclass: NormalizeConstructor<t
     declare loginSessions: HasMany<typeof LoginSession>
 
     @manyToMany(() => LoggedDevice, {
-      pivotColumns: ['ip_address', 'last_logged_at']
+      pivotColumns: ['ip_address', 'last_logged_at'],
+      pivotTimestamps: {
+        updatedAt: 'last_logged_at',
+      }
     })
     declare loggedDevices: ManyToMany<typeof LoggedDevice>
 
-    async createLoginSession(accessToken: AccessToken, loggedDeviceId: string, ipAddress: string) {
+    async createLoginSession(accessToken: AccessToken, deviceOrId: LoggedDevice | string, ipAddress: string) {
+      const deviceId = typeof deviceOrId === 'string'
+        ? deviceOrId
+        : deviceOrId.id 
       await this.related('loggedDevices').sync(
         {
-          [loggedDeviceId]: { 
-            last_logged_at: DateTime.local(),
+          [deviceId]: { 
             ip_address: ipAddress
           },
         },
@@ -30,13 +35,13 @@ export default function HasTrackableApiTokens(Superclass: NormalizeConstructor<t
       )
       return await this.related('loginSessions').create({
         accessTokenId: accessToken.identifier,
-        loggedDeviceId
+        loggedDeviceId: deviceId
       })
     }
     
-    async createTrackableToken(loggedDeviceId: string, ipAddress: string) {
+    async createTrackableToken(deviceOrId: LoggedDevice | string, ipAddress: string) {
       const accessToken = await this.createToken()
-      await this.createLoginSession(accessToken, loggedDeviceId, ipAddress)
+      await this.createLoginSession(accessToken, deviceOrId, ipAddress)
       return accessToken
     }
   }
