@@ -23,7 +23,9 @@ import {
 } from '#validators/v1/auth/two_factor_validator'
 import AuthService from '#services/auth/auth_service'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
-import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
+import SocialAuthService from '#services/auth/social_auth_service'
+import { SocialAuthData } from '#interfaces/auth'
+
 
 @inject()
 export default class AuthController {
@@ -37,7 +39,11 @@ export default class AuthController {
 
   /**
    * @register
-   * @responseBody 201 - { "message": "Verification email sent", "data": { "user": <User>, "token": } }
+   * @summary Register a new user
+   * @requestBody { email: string, username: string, password: string, recaptchaResponse: string }
+   * @requestFormDataBody { "email": { "type": "string" }, "username": { "type": "string" }, "password": { "type": "string" }, "avatar": { "type": "string", "format": "binary" }, "recaptchaResponse": { "type": "string" } }
+   * @responseBody 201 - { "message": "Verification email sent", "data": <User> }
+   * @responseHeader 201 - Location - URL of the registered user's profile
    */
   async register({ request, response }: HttpContext) {
     const registrationData = await request.validateUsing(registerValidator)
@@ -59,7 +65,11 @@ export default class AuthController {
 
   /**
    * @login
-   * @responseBody 200 - { message: <string>, data: { token: } }
+   * @summary Login a user
+   * @requestBody { email: string, password: string, recaptchaResponse: string }
+   * @responseBody 200 - { message: "Logged in successfully!", data: { token: } }
+   * @responseBody 401 - { message: "Invalid credentials" }
+   * @responseBody 200 - { twoFactor: true, data: { tokens: { challengeVerification: string, resendChallenge: string } } }
    */
   async login({ request }: HttpContext) {
     const { email, password } = await request.validateUsing(loginValidator)
@@ -79,6 +89,7 @@ export default class AuthController {
 
   /**
    * @logout
+   * @summary Logout a user
    * @responseBody 200 - { message: "Logged out successfully" }
    */
   async logout({ auth }: HttpContext) {
@@ -86,6 +97,11 @@ export default class AuthController {
     return 'Logged out successfully!'
   }
   
+  /**
+   * @logoutOnDevice
+   * @summary Logout a user on specific device
+   * @responseBody 200 - { message: "Logged out successfully" }
+   */ 
   async logoutOnDevice({ request, params, auth }: HttpContext) {
     await this.authService.logoutOnDevice(auth.user!, params.id)
     return 'Logged out successfully!'
@@ -93,6 +109,8 @@ export default class AuthController {
 
   /**
    * @verifyEmail
+   * @summary Verify email
+   * @requestBody { id: string, token: string }
    * @responseBody 200 - { message: "Email verified successfully" }
    */
   async verifyEmail({ request }) {
@@ -101,18 +119,37 @@ export default class AuthController {
     return 'Email verified successfully!'
   }
 
+  /**
+   * @resendEmailVerification
+   * @summary Resend email verification
+   * @requestBody { email: string }
+   * @responseBody 202 - { message: "Verification link sent to email" }
+   */
   async resendEmailVerification({ request, response }: HttpContext) {
     const { email } = await request.validateUsing(resendEmailVerificationValidator)
     await this.authService.sendVerificationMail(email)
     response.accepted('Verification link sent to email!')
   }
 
+  /**
+   * @forgotPassword
+   * @summary Forgot password
+   * @requestBody { email: string }
+   * @responseBody 202- { message: "Password reset link sent to your email" }
+   */
   async forgotPassword({ request, response }: HttpContext) {
     const { email } = await request.validateUsing(forgotPasswordValidator)
     await this.authService.forgotPassword(email)
     response.accepted('Password reset link sent to your email!')
   }
 
+  /**
+   * @resetPassword
+   * @summary Reset password
+   * @requestBody { id: string, token: string, password: string }
+   * @responseBody 200 - { message: "Password changed successfully" }
+   * @responseBody 401 - { message: "Invalid credentials" }
+   */
   async resetPassword({ request }: HttpContext) {
     const { id, token, password } = await request.validateUsing(resetPasswordValidator)
     const user = await User.findOrFail(id)
@@ -123,18 +160,29 @@ export default class AuthController {
 
   /**
    * @twoFactorChallenge
+   * @summary Send two factor challenge
+   * @requestBody { email: string, token: string }
    * @responseBody 200 - { message: string }
+   * @responseBody 401 - { message: "invalid token" }
    */
   async sendTwoFactorChallenge({ request }) {
     const { email, token } = await request.validateUsing(twoFactorChallengeValidator)
     const user = await User.findByOrFail('email', email)
-
-    await Token.verify('two_factor_auth_challenge', user.id, token)
-    await this.twoFactorAuthService.challenge(user)
-
+    if(user.hasEnabledTwoFactorAuth()) {
+      await Token.verify('two_factor_auth_challenge', user.id, token)
+      await this.twoFactorAuthService.challenge(user)
+    }
     return 'Challenge sent!'
   }
 
+  /**
+   * @verifyTwoFactorChallenge
+   * @summary Verify two factor challenge
+   * @requestBody { email: string, token: string, code: string, trustThisDevice: boolean }
+   * @responseBody 200 - { data: { token:  } }
+   * @responseBody 401 - { message: "invalid token" }
+   * @responseBody 401 - { message: "invalid otp, please try again" }
+   */
   async verifyTwoFactorChallenge({ request }: HttpContext) {
     const { email, token, code, trustThisDevice } = await request.validateUsing(
       twoFactorChallengeVerificationValidator
@@ -156,12 +204,20 @@ export default class AuthController {
 
   /**
    * @generateRecoveryCodes
+   * @summary Generate recovery codes
    * @responseBody 200 - { data: string[] }
    */
   generateRecoveryCodes({ auth }: AuthenticRequest) {
     return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
   }
 
+  /**
+   * @recoverTwoFactorAccount
+   * @summary Recover two factor account
+   * @requestBody { email: string, code: string }
+   * @responseBody 200 - { message: "Account recovered successfully!", data: { token: } }
+   * @responseBody 401 - { message: "invalid recovery code" }
+   */
   async recoverTwoFactorAccount({ request }: HttpContext) {
     const { email, code } = await request.validateUsing(twoFactorAccountRecoveryValidator)
     const token = await this.twoFactorAuthService.recover(email, code)
@@ -172,6 +228,20 @@ export default class AuthController {
     }
   }
 
+  /**
+   * @loginWithSocialAuthToken
+   * @summary Login with social auth token
+   * @description Login with social auth token from social provider
+   * @requestBody { email: string, username: string, token: string }
+   * @responseBody 200 - { message: "Logged in successfully!", data: { token: } }
+   * @responseBody 201 - { message: "Registered successfully!", data: { user: User, token: } }
+   * @responseHeader 201 - Location - URL of the registered user's profile
+   * @responseBody 422 - { errors: [{ field: "email", rule: "unique" }, { field: "username", rule: "unique" }] }
+   * @responseBody 422 - { errors: [{ field: "email", rule: "unique" }] }
+   * @responseBody 422 - { errors: [{ field: "username", rule: "unique" }] }
+   * @responseBody 422 - { errors: [{ field: "email", rule: "required" }] }
+   * @responseBody 422 - { errors: [{ field: "username", rule: "required" }] }
+   */
   async loginWithSocialAuthToken({ request, response, params, ally }: HttpContext) {
     let {
       email,
@@ -187,7 +257,7 @@ export default class AuthController {
       data.emailVerificationState = 'unverified'
     }
 
-    const { user, isRegisteredNow } = await this.socialthis.authService.sync(params.provider, data)
+    const { user, isRegisteredNow } = await this.socialAuthService.sync(params.provider, data)
     const token = await user.createToken()
 
     if (!isRegisteredNow) {

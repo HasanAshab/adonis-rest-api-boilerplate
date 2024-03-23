@@ -4,8 +4,7 @@ import config from '@adonisjs/core/services/config'
 export const loginValidator = vine.compile(
   vine.object({
     email: vine.string().email(),
-    password: vine.string(),
-    deviceId: vine.string()
+    password: vine.string()
   })
 )
 

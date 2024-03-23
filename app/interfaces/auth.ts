@@ -1,9 +1,6 @@
-import { IDevice } from 'ua-parser-js'
+import { DeviceInfo } from '#interfaces/http/request'
+import { AllyUserContract, Oauth2AccessToken } from '@adonisjs/ally/types'
 
-
-export interface DeviceInfo extends IDevice {
-  id: string
-}
 
 export interface RegistrationData {
   email: string
