@@ -21,7 +21,6 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     if (error instanceof errors.E_INVALID_CREDENTIALS) {
       error = new InvalidCredentialException()
     }
-
     return super.handle(error, ctx)
   }
 

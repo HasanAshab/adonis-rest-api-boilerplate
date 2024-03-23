@@ -67,6 +67,7 @@ export default class AuthController {
    * @login
    * @summary Login a user
    * @requestBody { email: string, password: string, recaptchaResponse: string }
+   * @requestHeader - 
    * @responseBody 200 - { message: "Logged in successfully!", data: { token: } }
    * @responseBody 401 - { message: "Invalid credentials" }
    * @responseBody 200 - { twoFactor: true, data: { tokens: { challengeVerification: string, resendChallenge: string } } }
@@ -78,7 +79,7 @@ export default class AuthController {
       email,
       password,
       ip: request.ip(),
-      device: request.device()
+      device: {}//request.device()
     })
 
     return {
