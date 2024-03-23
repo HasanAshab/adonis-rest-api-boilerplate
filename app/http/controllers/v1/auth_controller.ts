@@ -192,7 +192,7 @@ export default class AuthController {
     const accessToken = await this.twoFactorAuthService.verify(user, {
       code,
       ipAddress: request.ip(),
-      device,
+      device: request.device(),
       options: { trustThisDevice }
     })
     await Token.verify('two_factor_auth_challenge_verification', user.id, token)

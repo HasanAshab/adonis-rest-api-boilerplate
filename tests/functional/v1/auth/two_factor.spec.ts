@@ -15,8 +15,6 @@ node ace test functional --files="v1/auth/two_factor.spec.ts"
 */
 test.group('Auth/TwoFactor', (group) => {
   const twoFactorAuthService = new TwoFactorAuthService()
-  let user: User
-  let token: string
 
   refreshDatabase(group)
 
@@ -25,7 +23,7 @@ test.group('Auth/TwoFactor', (group) => {
   })
 
   test('should recover account with valid recovery code', async ({ client }) => {
-    user = await User.factory().twoFactorAuthEnabled().create()
+    const user = await User.factory().twoFactorAuthEnabled().create()
     const [code] = await twoFactorAuthService.generateRecoveryCodes(user, 1)
 
     const response = await client.post('/api/v1/auth/two-factor/recover').json({
@@ -38,7 +36,7 @@ test.group('Auth/TwoFactor', (group) => {
   })
 
   test("shouldn't recover account with same recovery code", async ({ client }) => {
-    user = await User.factory().twoFactorAuthEnabled().create()
+    const user = await User.factory().twoFactorAuthEnabled().create()
     const [code] = await twoFactorAuthService.generateRecoveryCodes(user, 1)
     const data = {
       email: user.email,
@@ -55,7 +53,7 @@ test.group('Auth/TwoFactor', (group) => {
   })
 
   test("shouldn't recover account with invalid recovery code", async ({ client }) => {
-    user = await User.factory().twoFactorAuthEnabled().create()
+    const user = await User.factory().twoFactorAuthEnabled().create()
     await twoFactorAuthService.generateRecoveryCodes(user, 1)
 
     const response = await client.post('/api/v1/auth/two-factor/recover').json({
@@ -78,8 +76,8 @@ test.group('Auth/TwoFactor', (group) => {
   test('Should send otp through {$self}')
     .with(['sms', 'call'])
     .run(async ({ client }, method) => {
-      user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
-      token = await new TwoFactorAuthRequiredException(user).challengeToken()
+      const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
+      const token = await new TwoFactorAuthRequiredException(user).challengeToken()
 
       const response = await client.post(`/api/v1/auth/two-factor/challenges`).json({
         email: user.email,
@@ -97,8 +95,8 @@ test.group('Auth/TwoFactor', (group) => {
   test('Should not send otp through {$self} to phone numberless user')
     .with(['sms', 'call'])
     .run(async ({ client }, method) => {
-      user = await User.factory().twoFactorAuthEnabled(method).create()
-      token = await new TwoFactorAuthRequiredException(user).challengeToken()
+      const user = await User.factory().twoFactorAuthEnabled(method).create()
+      const token = await new TwoFactorAuthRequiredException(user).challengeToken()
 
       const response = await client.post(`/api/v1/auth/two-factor/challenges`).json({
         email: user.email,
@@ -112,51 +110,123 @@ test.group('Auth/TwoFactor', (group) => {
     })
 
   test('Should not verify challenge without token', async ({ client }) => {
-    user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
-    const challengeToken = authenticator.generate(user.twoFactorSecret)
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+    const code = authenticator.generate(user.twoFactorSecret)
 
-    const response = await client.post('/api/v1/auth/two-factor/challenges/verification').json({
-      email: user.email,
-      challengeToken,
-    })
+    const response = await client
+      .post('/api/v1/auth/two-factor/challenges/verification')
+      .deviceId('device-id')
+      .json({
+        email: user.email,
+        code,
+        trustThisDevice: false
+      })
 
     response.assertStatus(422)
   })
 
-  test('should verify challenge of method {$self} with valid challenge token')
+  test('should verify challenge of method {$self} with valid otp')
     .with(['authenticator', 'sms', 'call'])
     .run(async ({ client }, method) => {
-      user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
-      token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
+      const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
+      const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
 
-      const challengeToken =
+      const code =
         method === 'authenticator'
           ? authenticator.generate(user.twoFactorSecret)
           : await new Otp().generate(user.twoFactorSecret)
 
-      const response = await client.post('/api/v1/auth/two-factor/challenges/verification').json({
-        email: user.email,
-        challengeToken,
-        token,
-      })
+      const response = await client
+        .post('/api/v1/auth/two-factor/challenges/verification')
+        .deviceId('device-id')
+        .json({
+          email: user.email,
+          code,
+          token,
+          trustThisDevice: false
+        })
 
       response.assertStatus(200)
       response.assertBodyHaveProperty('data.token')
     })
 
-  test('should login user of {$self} method with valid otp')
+  test('should login user of {$self} method with invalid otp')
     .with(['sms', 'call'])
     .run(async ({ client }, method) => {
-      user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
-      token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
+      const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
+      const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
 
-      const response = await client.post('/api/v1/auth/two-factor/challenges/verification').json({
-        email: user.email,
-        challengeToken: '123456',
-        token,
-      })
+      const response = await client
+        .post('/api/v1/auth/two-factor/challenges/verification')
+        .deviceId('device-id')
+        .json({
+          email: user.email,
+          code: '123456',
+          token,
+          trustThisDevice: false
+        })
 
       response.assertStatus(401)
       response.assertBodyNotHaveProperty('data.token')
     })
+    
+  
+  //todo
+  test('should mark device as trusted when flagged for and otp is valid', async ({ client, expect }) => {
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+    const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
+    const code = authenticator.generate(user.twoFactorSecret)
+
+    const response = await client
+      .post('/api/v1/auth/two-factor/challenges/verification')
+      .deviceId('device-id')
+      .json({
+        email: user.email,
+        code,
+        token,
+        trustThisDevice: true
+      })
+
+    response.assertStatus(200)
+    response.assertBodyHaveProperty('data.token')
+    await expect(user.isDeviceTrusted('device-id')).resolves.toBeTrue()
+  })
+ 
+  test('should not mark device as trusted when not flagged for and otp is valid', async ({ client, expect }) => {
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+    const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
+    const code = authenticator.generate(user.twoFactorSecret)
+
+    const response = await client
+      .post('/api/v1/auth/two-factor/challenges/verification')
+      .deviceId('device-id')
+      .json({
+        email: user.email,
+        code,
+        token,
+        trustThisDevice: false
+      })
+
+    response.assertStatus(200)
+    response.assertBodyHaveProperty('data.token')
+    await expect(user.isDeviceTrusted('device-id')).resolves.toBeFalse()
+  })
+  
+  test('should not mark device as trusted when flagged for and otp is invalid', async ({ client, expect }) => {
+    const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+    const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
+
+    const response = await client
+      .post('/api/v1/auth/two-factor/challenges/verification')
+      .deviceId('device-id')
+      .json({
+        email: user.email,
+        code: '123456',
+        token,
+        trustThisDevice: true
+      })
+    response.assertStatus(401)
+    response.assertBodyNotHaveProperty('data.token')
+    await expect(user.isDeviceTrusted('device-id')).resolves.toBeFalse()
+  })
 })
