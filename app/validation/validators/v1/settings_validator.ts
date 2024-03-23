@@ -1,21 +1,9 @@
 import { reduce } from 'lodash-es'
 import vine from '@vinejs/vine'
-import User from '#models/user'
 import NotificationType from '#models/notification_type'
 import NotificationService from '#services/notification_service'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
 
-
-
-export const showLoginActivitiesValidator = vine
-  .withMetaData<{ user: User }>()
-  .compile(
-    vine.object({
-      deviceId: vine.string().exists((value, field) => {
-        return field.meta.user.related('loggedDevices').query().where('logged_device_id', value).exists()
-      })
-    })
-  )
 
 export const emailResubscriptionValidator = vine.compile(
   vine.object({

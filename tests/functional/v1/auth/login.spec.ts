@@ -18,22 +18,26 @@ test.group('Auth / Login', (group) => {
   })
 
   test('should login a user', async ({ client }) => {
-    const response = await client.post('/api/v1/auth/login').json({
-      email: user.email,
-      password: 'password',
-      deviceId: 'device-i'
-    })
+    const response = await client
+      .post('/api/v1/auth/login')
+      .deviceId('device-id')
+      .json({
+        email: user.email,
+        password: 'password'
+      })
 
     response.assertStatus(200)
     response.assertBodyHaveProperty('data.token')
   })
 
   test("shouldn't login with wrong password", async ({ client }) => {
-    const response = await client.post('/api/v1/auth/login').json({
-      email: user.email,
-      password: 'wrong-pass',
-      deviceId: 'device-id'
-    })
+    const response = await client
+      .post('/api/v1/auth/login')
+      .deviceId('device-id')
+      .json({
+        email: user.email,
+        password: 'wrong-pass'
+      })
 
     response.assertStatus(401)
     response.assertBodyNotHaveProperty('data.token')
@@ -41,11 +45,13 @@ test.group('Auth / Login', (group) => {
 
   test("shouldn't login manually in social account", async ({ client }) => {
     user = await User.factory().social().create()
-    const response = await client.post('/api/v1/auth/login').json({
-      email: user.email,
-      password: 'password',
-      deviceId: 'device-id'
-    })
+    const response = await client
+      .post('/api/v1/auth/login')
+      .deviceId('device-id')
+      .json({
+        email: user.email,
+        password: 'password'
+      })
 
     response.assertStatus(401)
     response.assertBodyNotHaveProperty('data.token')
@@ -56,16 +62,21 @@ test.group('Auth / Login', (group) => {
     const responses = []
     const payload = {
       email: user.email,
-      password: 'wrong-pass',
-      deviceId: 'device-id'
+      password: 'wrong-pass'
     }
 
     for (let i = 0; i < limit; i++) {
-      const response = await client.post('/api/v1/auth/login').json(payload)
+      const response = await client
+        .post('/api/v1/auth/login')
+        .deviceId('device-id')
+        .json(payload)
       responses.push(response)
     }
 
-    const lockedResponse = await client.post('/api/v1/auth/login').json(payload)
+    const lockedResponse = await client
+      .post('/api/v1/auth/login')
+      .deviceId('device-id')
+      .json(payload)
 
     responses.forEach((response) => {
       response.assertStatus(401)
@@ -76,11 +87,13 @@ test.group('Auth / Login', (group) => {
   test('Login should flag for two factor auth on 2FA enabled account', async ({ client }) => {
     user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
 
-    const response = await client.post('/api/v1/auth/login').json({
-      email: user.email,
-      password: 'password',
-      deviceId: 'device-id'
-    })
+    const response = await client
+      .post('/api/v1/auth/login')
+      .deviceId('device-id')
+      .json({
+        email: user.email,
+        password: 'password'
+      })
 
     response.assertStatus(200)
     response.assertBodyNotHaveProperty('data.token')
@@ -93,11 +106,13 @@ test.group('Auth / Login', (group) => {
     user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
     await user.trustDevice(deviceId)
     
-    const response = await client.post('/api/v1/auth/login').json({
-      email: user.email,
-      password: 'password',
-      deviceId
-    })
+    const response = await client
+      .post('/api/v1/auth/login')
+      .deviceId(deviceId)
+      .json({
+        email: user.email,
+        password: 'password'
+      })
     
     response.assertStatus(200)
     response.assertBodyHaveProperty('data.token')

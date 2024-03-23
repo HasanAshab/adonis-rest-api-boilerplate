@@ -23,11 +23,8 @@ export default class SettingsController {
   ) {}
 
   async loginActivities({ auth, request }: HttpContext) {
-    const { deviceId } = await request.validateUsing(showLoginActivitiesValidator, {
-      meta: { user: auth.user }
-    })
     await auth.user.load('loggedDevices')
-    return LoginActivityCollection.make(auth.user!.loggedDevices, deviceId)
+    return LoginActivityCollection.make(auth.user!.loggedDevices, request.deviceId())
   }
 
   async twoFactorAuth({ auth }: HttpContext) {

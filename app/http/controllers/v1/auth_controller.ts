@@ -79,7 +79,7 @@ export default class AuthController {
       email,
       password,
       ip: request.ip(),
-      device: {}//request.device()
+      device: request.device()
     })
 
     return {

@@ -1,4 +1,3 @@
-F: Exceptions static mess
 I: untrust device
 t: verify 2fa token
 Fallback: solve type, doc
