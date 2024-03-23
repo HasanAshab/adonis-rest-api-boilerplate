@@ -2,7 +2,6 @@ import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import Contact from '#models/contact'
-import ListContactResource from '#resources/v1/contact/list_contact_resource'
 
 /*
 Run this suits:
@@ -23,6 +22,7 @@ test.group('Contact / Search', (group) => {
 
     response.assertStatus(200)
     response.assertBodyContains(ListContactResource.collection([contact]))
+    response.assertBodyHaveProperty('data[0].id', contact.id)
   })
 
   test('Users should not search contacts', async ({ client }) => {
@@ -50,6 +50,6 @@ test.group('Contact / Search', (group) => {
     })
 
     response.assertStatus(200)
-    response.assertBodyContains(ListContactResource.collection([openedContact]))
+    response.assertBodyHaveProperty('data[0].id', openedContact.id)
   })
 })

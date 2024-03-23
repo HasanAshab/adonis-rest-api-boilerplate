@@ -16,7 +16,7 @@ test.group('Admin / Dashboard', (group) => {
 
     response.assertStatus(403)
     response.assertBodyNotHaveProperty('data')
-  }).pin()
+  })
 
   test('Admin should get dashboard', async ({ client, expect }) => {
     const admin = await User.factory().withRole('admin').create()

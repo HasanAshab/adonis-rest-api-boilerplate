@@ -1,6 +1,4 @@
 import { ApiRequest } from '@japa/api-client'
-import { get } from 'lodash-es'
-import { toJSON } from '#app/helpers'
 import LoggedDevice from '#models/logged_device'
 
 

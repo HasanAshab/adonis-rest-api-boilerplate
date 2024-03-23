@@ -1,4 +1,3 @@
-t: verify 2fa token
 Fallback: solve type, doc
 
 

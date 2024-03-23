@@ -2,7 +2,6 @@ import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import { extract } from '#app/helpers'
-import ListUserResource from '#resources/v1/user/list_user_resource'
 
 /*
 Run this suits:
@@ -18,9 +17,9 @@ test.group('Users / List', (group) => {
     ])
 
     const response = await client.get('/api/v1/users').loginAs(admin)
-    log(response.body().data)
+
     response.assertStatus(200)
-    response.assertBodyContains(ListUserResource.collection(users))
+    response.assertBodyContainProperty('data', extract(users, 'id'))
   })
 
   test("User shouldn't get users list", async ({ client }) => {

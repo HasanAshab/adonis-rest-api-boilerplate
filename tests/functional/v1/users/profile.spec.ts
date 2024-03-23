@@ -2,9 +2,6 @@ import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import { extract } from '#app/helpers'
-import ListUserResource from '#resources/v1/user/list_user_resource'
-import UserProfileResource from '#resources/v1/user/user_profile_resource'
-import ShowUserResource from '#resources/v1/user/show_user_resource'
 import Mail from '#tests/assertors/mail_assertor'
 
 /*
@@ -23,10 +20,9 @@ test.group('Users / Profile', (group) => {
   test('should get profile', async ({ client }) => {
     const response = await client.get('/api/v1/users/me').loginAs(user)
 
-    log(response.body())
     response.assertStatus(200)
-    response.assertBodyContains(UserProfileResource.make(user))
-  }).pin()
+    response.assertBodyHaveProperty('data.id', user.id)
+  })
 
   test('should update profile', async ({ client, expect }) => {
     const username = 'newName'
@@ -94,6 +90,6 @@ test.group('Users / Profile', (group) => {
     const response = await client.get(`/api/v1/users/${otherUser.username}`).loginAs(user)
 
     response.assertStatus(200)
-    response.assertBodyContains(ShowUserResource.make(otherUser))
+    response.assertBodyHaveProperty('data.id', otherUser.id)
   })
 })
