@@ -188,12 +188,11 @@ export default class AuthController {
       twoFactorChallengeVerificationValidator
     )
     const user = await User.findByOrFail('email', email)
-
-    const accessToken = await this.twoFactorAuthService.verify(
-      user,
+    const accessToken = await this.twoFactorAuthService.verify(user, {
       code,
-      trustThisDevice && request.device()
-    )
+      device,
+      options: { trustThisDevice }
+    })
     await Token.verify('two_factor_auth_challenge_verification', user.id, token)
 
     return {

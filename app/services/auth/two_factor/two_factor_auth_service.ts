@@ -5,6 +5,7 @@ import LoggedDevice from '#models/logged_device'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
 import RecoveryCode from '#services/auth/two_factor/recovery_code'
 import InvalidRecoveryCodeException from '#exceptions/invalid_recovery_code_exception'
+import { TwoFactorChallengeVerificationData } from '#interfaces/auth'
 
 export default class TwoFactorAuthService {
   enable(user: User, method: string) {
@@ -23,11 +24,13 @@ export default class TwoFactorAuthService {
     return twoFactorMethod.use(user.twoFactorMethod).challenge(user)
   }
 
-  async verify({ user, token, ip, device, trustThisDevice }: ) {
-    await twoFactorMethod.use(user.twoFactorMethod).verify(user, token)
-    await LoggedDevice.sync(device)
-    await user.trustDevice(device.id)
-    return await user.createTrackableToken(device.id, )
+  async verify(user: User, { code, ip, device, options = {} }: TwoFactorChallengeVerificationData) {
+    await twoFactorMethod.use(user.twoFactorMethod).verify(user, code);
+    await LoggedDevice.sync(device);
+    if (options.trustThisDevice) {
+      await user.trustDevice(device.id);
+    }
+    return await user.createTrackableToken(device.id, ip);
   }
 
   async recover(email: string, code: string) {
