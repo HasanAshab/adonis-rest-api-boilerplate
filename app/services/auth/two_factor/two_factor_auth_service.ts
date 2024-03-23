@@ -1,6 +1,7 @@
 import { range } from 'lodash-es'
 import encryption from '@adonisjs/core/services/encryption'
 import User from '#models/user'
+import LoggedDevice from '#models/logged_device'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
 import RecoveryCode from '#services/auth/two_factor/recovery_code'
 import InvalidRecoveryCodeException from '#exceptions/invalid_recovery_code_exception'
@@ -22,10 +23,11 @@ export default class TwoFactorAuthService {
     return twoFactorMethod.use(user.twoFactorMethod).challenge(user)
   }
 
-  async verify({ user, token, device }: TwoFactorChallengeVerification) {
-    deviceId && await user.trustDevice(deviceId)
+  async verify({ user, token, ip, device, trustThisDevice }: ) {
     await twoFactorMethod.use(user.twoFactorMethod).verify(user, token)
-    return await user.createTrackableToken()
+    await LoggedDevice.sync(device)
+    await user.trustDevice(device.id)
+    return await user.createTrackableToken(device.id, )
   }
 
   async recover(email: string, code: string) {
