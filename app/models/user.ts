@@ -13,6 +13,9 @@ import HasTimestamps from '#models/traits/has_timestamps'
 //import OptInNotifiable from '#models/traits/opt_in_notifiable'
 import HasRole from '#models/traits/has_role'
 
+class User {}
+export default User as any
+/*
 export default class User extends compose(
   BaseModel,
   Authenticable,
@@ -54,3 +57,4 @@ export default class User extends compose(
     return (await this.avatar?.getUrl()) ?? this.socialAvatarUrl
   }
 }
+*/

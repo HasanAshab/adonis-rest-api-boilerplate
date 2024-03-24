@@ -25,7 +25,7 @@ test.group('Events / Registered', (group) => {
     const user = await User.factory().unverified().create()
     const event = new Registered(user, 'internal', 'v1')
     const listener = await app.container.make(SendEmailVerificationMail)
-    
+
     await app.container.call(listener, 'handle', [event])
 
     mails.assertQueued(EmailVerificationMail, ({ message }) => {
@@ -38,7 +38,7 @@ test.group('Events / Registered', (group) => {
     const user = await User.factory().create()
     const event = new Registered(user, 'internal', 'v1')
     const listener = await app.container.make(SendEmailVerificationMail)
-    
+
     await app.container.call(listener, 'handle', [event])
 
     mails.assertNoneQueued()

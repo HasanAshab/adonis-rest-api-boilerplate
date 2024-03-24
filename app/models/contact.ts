@@ -3,9 +3,13 @@ import { DateTime } from 'luxon'
 import { compose } from '@adonisjs/core/helpers'
 import { column } from '@adonisjs/lucid/orm'
 import HasFactory from '#models/traits/has_factory/mixin'
+import ContactFactory from '#database/factories/contact_factory'
+
 //import Searchable from 'app/models/traits/searchable';
 
 export default class Contact extends compose(BaseModel, HasFactory) {
+  static factoryClass = ContactFactory
+  
   @column({ isPrimary: true })
   declare id: number
 

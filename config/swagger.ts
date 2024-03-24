@@ -3,9 +3,9 @@ import url from 'node:url'
 
 export default {
   path: path.dirname(url.fileURLToPath(import.meta.url)) + '/../', // for AdonisJS v6
-  title: 'Foo',
+  title: 'Adonis Rest Api Boilerplate',
   version: '1.0.0',
-  tagIndex: 2,
+  tagIndex: 3,
   snakeCase: true,
   ignore: ['/swagger', '/docs'],
   preferredPutPatch: 'PUT',

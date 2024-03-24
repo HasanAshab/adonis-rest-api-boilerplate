@@ -7,7 +7,11 @@ export default function docRoutes() {
     response.sendOriginal(AutoSwagger.default.ui('/api/v1/docs/swagger', swagger))
   )
 
-  router.get('/swagger', async ({ response }) =>
-    response.sendOriginal(await AutoSwagger.default.docs(router.toJSON(), swagger))
-  )
+  router.get('/swagger', async ({ response }) => {
+    const json = await AutoSwagger.default.json(router.toJSON(), swagger);
+    log(json.components.schemas)
+    const yaml = AutoSwagger.default.jsonToYaml(json);
+
+    response.sendOriginal(yaml)
+  })
 }

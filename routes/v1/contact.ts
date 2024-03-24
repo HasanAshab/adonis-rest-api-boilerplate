@@ -20,6 +20,6 @@ export default function contactRoutes() {
         router.delete('/:id', [ContactsController, 'delete']).as('v1.contact.delete')
       })
       .prefix('/inquiries')
-      .use([middleware.auth(), middleware.roles('admin')])
+      //.use([middleware.auth(), middleware.roles('admin')])
   })
 }

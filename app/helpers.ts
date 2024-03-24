@@ -20,16 +20,16 @@ export function trace(...args: unknown[]) {
 }
 
 export function extractFromObject<T extends object, U extends keyof T>(obj: T, ...props: U[]) {
-  return props.reduce((extracted, prop) => {
-    extracted[prop] = obj[prop]
-    return extracted
-  }, {} as Pick<T, U>)
+  return props.reduce(
+    (extracted, prop) => {
+      extracted[prop] = obj[prop]
+      return extracted
+    },
+    {} as Pick<T, U>
+  )
 }
 
-export function extract<
-  T extends object,
-  U extends keyof T 
->(obj: T | T[], ...props: U[]) {
+export function extract<T extends object, U extends keyof T>(obj: T | T[], ...props: U[]) {
   if (Array.isArray(obj)) {
     return obj.map((item) => extractFromObject(item, ...props))
   }
