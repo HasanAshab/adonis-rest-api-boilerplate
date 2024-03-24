@@ -23,16 +23,16 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
 
     @column({ serializeAs: null })
     twoFactorRecoveryCodes: string | null = null
-    
+
     @manyToMany(() => LoggedDevice, {
       pivotTable: 'trusted_devices',
       pivotColumns: ['ip_address', 'last_logged_at'],
       pivotTimestamps: {
         updatedAt: 'last_logged_at',
-      }
+      },
     })
     trustedDevices: ManyToMany<typeof LoggedDevice>
-    
+
     hasEnabledTwoFactorAuth() {
       return this.twoFactorEnabled
     }
@@ -65,33 +65,24 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
         ? await qrcode.toString(this.twoFactorQrCodeUrl(), { type: 'svg' })
         : null
     }
-    
+
     isDeviceTrusted(deviceOrId: LoggedDevice | string) {
-      const id = typeof deviceOrId === 'string'
-        ? deviceOrId
-        : deviceOrId.id
-      return this.related('trustedDevices')
-        .query()
-        .where('logged_device_id', id)
-        .exists()
+      const id = typeof deviceOrId === 'string' ? deviceOrId : deviceOrId.id
+      return this.related('trustedDevices').query().where('logged_device_id', id).exists()
     }
-    
+
     trustDevice(deviceOrId: LoggedDevice | string, ipAddress: string) {
-      const id = typeof deviceOrId === 'string'
-        ? deviceOrId
-        : deviceOrId.id 
+      const id = typeof deviceOrId === 'string' ? deviceOrId : deviceOrId.id
       return this.related('trustedDevices').attach({
-        [id]: { ip_address: ipAddress }
+        [id]: { ip_address: ipAddress },
       })
     }
-    
+
     distrustDevice(deviceOrId: LoggedDevice | string) {
-      const id = typeof deviceOrId === 'string'
-        ? deviceOrId
-        : deviceOrId.id 
+      const id = typeof deviceOrId === 'string' ? deviceOrId : deviceOrId.id
       return this.related('trustedDevices').detach([id])
     }
-    
+
     @beforeUpdate()
     static async checkWetherToDisableTwoFactorAuth(user: TwoFactorAuthenticableUser) {
       if (!user.hasEnabledTwoFactorAuth()) return

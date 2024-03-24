@@ -1,6 +1,5 @@
 import vine from '@vinejs/vine'
 
-
 export const twoFactorAccountRecoveryValidator = vine.compile(
   vine.object({
     email: vine.string().email(),
@@ -20,6 +19,6 @@ export const twoFactorChallengeVerificationValidator = vine.compile(
     email: vine.string().email(),
     token: vine.string(),
     code: vine.string(),
-    trustThisDevice: vine.boolean()
+    trustThisDevice: vine.boolean(),
   })
 )

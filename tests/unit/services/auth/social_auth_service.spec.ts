@@ -2,7 +2,8 @@ import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import app from '@adonisjs/core/services/app'
-import SocialAuthService, { SocialAuthData } from '#services/auth/social_auth_service'
+import { SocialAuthData } from '#interfaces/auth'
+import SocialAuthService from '#services/auth/social_auth_service'
 import UsernameGenerator from '#services/username_generator'
 import EmailRequiredException from '#exceptions/validation/email_required_exception'
 import UsernameRequiredException from '#exceptions/validation/username_required_exception'
@@ -33,7 +34,7 @@ test.group('Services/Auth/service', (group) => {
       emailVerificationState: 'verified',
     }
 
-    const result = await service.sync('google', data)
+    const result = await service.sync('google', data as SocialAuthData)
 
     expect(result.user.email).toBe(data.email)
     expect(result.user.username).toBe('test')
@@ -46,9 +47,9 @@ test.group('Services/Auth/service', (group) => {
     'should create user with verification status "{status}" when email verification state is {state}'
   )
     .with([
-      { state: 'verified', status: true },
-      { state: 'unverified', status: false },
-      { state: 'unsupported', status: false },
+      { state: 'verified', status: true } as const,
+      { state: 'unverified', status: false } as const,
+      { state: 'unsupported', status: false } as const,
     ])
     .run(async ({ expect }, { state, status }) => {
       const data: Partial<SocialAuthData> = {
@@ -59,7 +60,7 @@ test.group('Services/Auth/service', (group) => {
         emailVerificationState: state,
       }
 
-      const result = await service.sync('google', data)
+      const result = await service.sync('google', data as SocialAuthData)
 
       expect(result.user.verified).toBe(status)
     })
@@ -72,7 +73,7 @@ test.group('Services/Auth/service', (group) => {
       emailVerificationState: 'verified',
     }
 
-    const result = await service.sync('google', data)
+    const result = await service.sync('google', data as SocialAuthData)
 
     expect(result.user.username).toBe('test')
   })
@@ -81,15 +82,15 @@ test.group('Services/Auth/service', (group) => {
   test('should update name and avatar', async ({ expect }) => {
     const socialProvider = 'google'
 
-    const data: Partial<SocialAuthData> = {
+    const data = {
       id: '1',
       email: 'test@example.com',
       name: 'Test User',
       avatarUrl: 'http://example.com/avatar.jpg',
       emailVerificationState: 'verified',
-    }
+    } satisfies Partial<SocialAuthData>
 
-    const user = await User.create({
+    await User.create({
       socialId: data.id,
       socialProvider,
       email: data.email,
@@ -98,7 +99,7 @@ test.group('Services/Auth/service', (group) => {
       socialAvatarUrl: 'http://example.com/old-avatar.jpg',
     })
 
-    const result = await service.sync(socialProvider, data)
+    const result = await service.sync(socialProvider, data as SocialAuthData)
 
     expect(result.user.name).toBe(data.name)
     expect(result.user.socialAvatarUrl).toBe(data.avatarUrl)
@@ -122,7 +123,7 @@ test.group('Services/Auth/service', (group) => {
       username: 'test',
     })
 
-    const result = await service.sync(socialProvider, data)
+    const result = await service.sync(socialProvider, data as SocialAuthData)
 
     expect(result.user.email).toBe(user.email)
   })
@@ -133,6 +134,7 @@ test.group('Services/Auth/service', (group) => {
       id: '1',
       email: 'test.new@example.com',
       name: 'Test User',
+      username: 'test12',
       avatarUrl: 'http://example.com/avatar.jpg',
       emailVerificationState: 'verified',
     }
@@ -144,7 +146,7 @@ test.group('Services/Auth/service', (group) => {
       username: 'test',
     })
 
-    const result = await service.sync(socialProvider, data, 'test12')
+    const result = await service.sync(socialProvider, data as SocialAuthData)
 
     expect(result.user.username).toBe(user.username)
   })
@@ -168,7 +170,7 @@ test.group('Services/Auth/service', (group) => {
       username: 'test',
     })
 
-    const result = await service.sync(socialProvider, data)
+    const result = await service.sync(socialProvider, data as SocialAuthData)
 
     expect(result.user.username).toBe(user.username)
   })
@@ -177,9 +179,9 @@ test.group('Services/Auth/service', (group) => {
     'should update user verification status to {status} when oauth provided email is same and email verification state is {state}'
   )
     .with([
-      { state: 'verified', status: true },
-      { state: 'unverified', status: false },
-      { state: 'unsupported', status: false },
+      { state: 'verified', status: true } as const,
+      { state: 'unverified', status: false } as const,
+      { state: 'unsupported', status: false } as const,
     ])
     .run(async ({ expect }, { state, status }) => {
       const socialProvider = 'google'
@@ -192,7 +194,7 @@ test.group('Services/Auth/service', (group) => {
         emailVerificationState: state,
       }
 
-      const user = await User.create({
+      await User.create({
         socialId: data.id,
         socialProvider,
         email: 'test@example.com',
@@ -200,7 +202,7 @@ test.group('Services/Auth/service', (group) => {
         verified: status,
       })
 
-      const result = await service.sync(socialProvider, data)
+      const result = await service.sync(socialProvider, data as SocialAuthData)
 
       expect(result.user.verified).toBe(status)
     })
@@ -209,12 +211,12 @@ test.group('Services/Auth/service', (group) => {
     'should not update user verification status from {status} when social email not match and email verification state is {state}'
   )
     .with([
-      { state: 'verified', status: false },
-      { state: 'verified', status: true },
-      { state: 'unverified', status: false },
-      { state: 'unverified', status: true },
-      { state: 'unsupported', status: false },
-      { state: 'unsupported', status: true },
+      { state: 'verified', status: false } as const,
+      { state: 'verified', status: true } as const,
+      { state: 'unverified', status: false } as const,
+      { state: 'unverified', status: true } as const,
+      { state: 'unsupported', status: false } as const,
+      { state: 'unsupported', status: true } as const,
     ])
     .run(async ({ expect }, { state, status }) => {
       const socialProvider = 'google'
@@ -227,7 +229,7 @@ test.group('Services/Auth/service', (group) => {
         emailVerificationState: state,
       }
 
-      const user = await User.create({
+      await User.create({
         socialId: data.id,
         socialProvider,
         email: 'test@example.com',
@@ -235,7 +237,7 @@ test.group('Services/Auth/service', (group) => {
         verified: status,
       })
 
-      const result = await service.sync(socialProvider, data)
+      const result = await service.sync(socialProvider, data as SocialAuthData)
 
       expect(result.user.verified).toBe(status)
     })
@@ -252,7 +254,7 @@ test.group('Services/Auth/service', (group) => {
       emailVerificationState: 'verified',
     }
 
-    const result = await service.sync('google', data)
+    const result = await service.sync('google', data as SocialAuthData)
 
     expect(result.isRegisteredNow).toBeTrue()
   })
@@ -266,8 +268,8 @@ test.group('Services/Auth/service', (group) => {
       emailVerificationState: 'verified',
     }
 
-    const result1 = await service.sync('google', data)
-    const result2 = await service.sync('google', data)
+    const result1 = await service.sync('google', data as SocialAuthData)
+    const result2 = await service.sync('google', data as SocialAuthData)
 
     expect(result1.isRegisteredNow).toBeTrue()
     expect(result2.isRegisteredNow).toBeFalse()
@@ -276,7 +278,6 @@ test.group('Services/Auth/service', (group) => {
   //Validation Exception
   test('should throw validation exception when email not provided by the oauth', async ({
     expect,
-    assert,
   }) => {
     const data: Partial<SocialAuthData> = {
       id: '1',
@@ -284,7 +285,7 @@ test.group('Services/Auth/service', (group) => {
       avatarUrl: 'http://example.com/avatar.jpg',
       emailVerificationState: 'unsupported',
     }
-    const result = service.sync('google', data, 'test')
+    const result = service.sync('google', data as SocialAuthData)
 
     await expect(result).rejects.toThrow(EmailRequiredException)
   })
@@ -300,7 +301,7 @@ test.group('Services/Auth/service', (group) => {
     }
 
     await User.create({ email })
-    const result = service.sync('google', data)
+    const result = service.sync('google', data as SocialAuthData)
 
     await expect(result).rejects.toThrow(DuplicateEmailException)
   })
@@ -309,10 +310,10 @@ test.group('Services/Auth/service', (group) => {
     expect,
   }) => {
     const socialProvider = 'google'
-    const data: Partial<SocialAuthData> = {
+    const data = {
       id: '1',
       name: 'Test User',
-    }
+    } satisfies Partial<SocialAuthData>
 
     await User.create({
       email: 'test@gmail.com',
@@ -320,7 +321,7 @@ test.group('Services/Auth/service', (group) => {
       socialProvider,
     })
 
-    const result = service.sync(socialProvider, data)
+    const result = service.sync(socialProvider, data as SocialAuthData)
 
     await expect(result).rejects.toThrow(UsernameRequiredException)
   })
@@ -328,9 +329,12 @@ test.group('Services/Auth/service', (group) => {
   test('should throw validation exception if failed to generate unique username', async ({
     expect,
   }) => {
-    app.container.swap(UsernameGenerator, () => ({
-      makeUnique: () => null,
-    }))
+    class MockedUsernameGenerator extends UsernameGenerator {
+      async makeUnique() {
+        return null
+      }
+    }
+    app.container.swap(UsernameGenerator, () => new MockedUsernameGenerator())
 
     service = await app.container.make(SocialAuthService)
 
@@ -342,10 +346,9 @@ test.group('Services/Auth/service', (group) => {
       emailVerificationState: 'verified',
     }
 
-    const result = service.sync('google', data)
+    const result = service.sync('google', data as SocialAuthData)
 
     await expect(result).rejects.toThrow(UsernameRequiredException)
-    app.container.restore()
   })
 
   test('should throw validation exception if username is not unique', async ({ expect }) => {
@@ -360,7 +363,7 @@ test.group('Services/Auth/service', (group) => {
     await User.create({
       username: data.username,
     })
-    const result = service.sync('google', data)
+    const result = service.sync('google', data as SocialAuthData)
 
     await expect(result).rejects.toThrow(DuplicateUsernameException)
   })
@@ -368,21 +371,21 @@ test.group('Services/Auth/service', (group) => {
   test('should throw validation exception if email and username is not unique', async ({
     expect,
   }) => {
-    const data: Partial<SocialAuthData> = {
+    const data = {
       id: '1',
       name: 'Test User',
       avatarUrl: 'http://example.com/avatar.jpg',
       email: 'test@example.com',
       emailVerificationState: 'verified',
       username: 'test',
-    }
+    } satisfies Partial<SocialAuthData>
 
     await User.create({
       email: data.email,
       username: data.username,
     })
 
-    const result = service.sync('google', data)
+    const result = service.sync('google', data as SocialAuthData)
 
     await expect(result).rejects.toThrow(DuplicateEmailAndUsernameException)
   })

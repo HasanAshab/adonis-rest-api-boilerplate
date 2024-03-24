@@ -1,15 +1,16 @@
 import { test } from '@japa/runner'
-import { refreshDatabase } from '#tests/helpers'
+import { refreshDatabase, fakeFilePath } from '#tests/helpers'
 import User from '#models/user'
 import { extract } from '#app/helpers'
-import Mail from '#tests/assertors/mail_assertor'
+import mail from '@adonisjs/mail/services/main'
+import EmailVerificationMail from '#mails/email_verification_mail'
 
 /*
 Run this suits:
 node ace test functional --files="v1/users/profile.spec.ts"
 */
 test.group('Users / Profile', (group) => {
-  let user
+  let user: User
 
   refreshDatabase(group)
 
@@ -73,7 +74,7 @@ test.group('Users / Profile', (group) => {
   })
 
   test('updating email should send verification email', async ({ client, expect }) => {
-    Mail.fake()
+    const { mails } = mail.fake()
     const email = 'foo@test.com'
 
     const response = await client.patch('/api/v1/users/me').loginAs(user).json({ email })
@@ -81,10 +82,12 @@ test.group('Users / Profile', (group) => {
 
     response.assertStatus(200)
     expect(user.email).toBe(email)
-    Mail.assertSentTo(email)
+    mails.assertQueued(EmailVerificationMail, ({ message }) => {
+      return message.hasTo(user.email)
+    })
   })
 
-  test("Should get other user's profile", async ({ client, expect }) => {
+  test("Should get other user's profile", async ({ client }) => {
     const otherUser = await User.factory().create()
 
     const response = await client.get(`/api/v1/users/${otherUser.username}`).loginAs(user)

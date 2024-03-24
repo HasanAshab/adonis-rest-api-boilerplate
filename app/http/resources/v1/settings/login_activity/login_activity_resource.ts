@@ -2,21 +2,24 @@
 import { DateTime } from 'luxon'
 
 export default class LoginActivityResource extends JsonResource {
-  constructor(protected resource: Record<string, any>, protected deviceId: number) {
+  constructor(
+    protected resource: Record<string, any>,
+    protected deviceId: number
+  ) {
     super(resource)
   }
-  
+
   isCurrentDevice() {
     return this.resource.id === this.deviceId
   }
-  
+
   lastLoggedAt() {
-    if(this.isCurrentDevice()) {
+    if (this.isCurrentDevice()) {
       return 'Now'
     }
     return this.resource.$extras.pivot_last_logged_at.toRelative()
   }
-  
+
   serialize() {
     return {
       id: this.resource.id,
@@ -27,8 +30,8 @@ export default class LoginActivityResource extends JsonResource {
       lastLoggedAt: this.lastLoggedAt(),
       isCurrentDevice: this.isCurrentDevice(),
       links: {
-        logout: this.makeUrl('v1.logout.device')
-      }
+        logout: this.makeUrl('v1.logout.device'),
+      },
     }
   }
 }

@@ -62,12 +62,12 @@ export default class SettingsController {
   generateRecoveryCodes({ auth }: HttpContext) {
     return this.twoFactorAuthService.generateRecoveryCodes(auth.user!)
   }
-  
+
   async trustedDevices({ auth }: HttpContext) {
     await auth.user!.load('trustedDevices')
     return TrustedDeviceResource.collection(auth.user!.trustedDevices)
   }
-  
+
   async removeTrustedDevice({ response, params, auth }: HttpContext) {
     await auth.user!.distrustDevice(params.id)
     response.noContent()

@@ -49,9 +49,8 @@ export const configureSuite: Config['configureSuite'] = (suite) => {
   if (['browser', 'functional', 'e2e', 'unit'].includes(suite.name)) {
     suite.setup(() => testUtils.httpServer().start())
   }
-  
-  if(suite.name === 'functional') {
+
+  if (suite.name === 'functional') {
     suite.onGroup(clearThrottle)
   }
 }
-

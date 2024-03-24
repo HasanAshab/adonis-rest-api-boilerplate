@@ -17,7 +17,6 @@ import PasswordChangeNotAllowedException from '#exceptions/password_change_not_a
 import InvalidPasswordException from '#exceptions/invalid_password_exception'
 import TwoFactorAuthRequiredException from '#exceptions/two_factor_auth_required_exception'
 
-
 @inject()
 export default class AuthService {
   constructor(private readonly twoFactorAuthService: TwoFactorAuthService) {}
@@ -57,7 +56,7 @@ export default class AuthService {
       await this.twoFactorAuthService.challenge(user)
       throw new TwoFactorAuthRequiredException(user)
     }
-    
+
     await this.reHashPasswordIfNeeded(user, password)
     await LoggedDevice.sync(device)
     return user.createTrackableToken(device.id, ipAddress)
@@ -68,22 +67,19 @@ export default class AuthService {
       await User.accessTokens.delete(user, user.currentAccessToken.identifier)
     }
   }
-  
+
   async logoutOnDevice(user: User, deviceId: string) {
     await user.related('loggedDevices').detach([deviceId])
-    await user.load('loginSessions', query => {
+    await user.load('loginSessions', (query) => {
       query.where('loggedDeviceId', deviceId)
     })
-    await Promise.all(
-      user.loginSessions.map(loginSession => loginSession.delete())
-    )
+    await Promise.all(user.loginSessions.map((loginSession) => loginSession.delete()))
   }
 
   async sendVerificationMail(user: User | string) {
     if (typeof user === 'string') {
       user = await User.natives().where('email', user).first()
     }
-
     if (user instanceof User && !user.verified) {
       await mail.sendLater(new EmailVerificationMail(user))
       return true
@@ -130,9 +126,9 @@ export default class AuthService {
     user.password = password
     await user.save()
   }
-  
+
   private async reHashPasswordIfNeeded(user: User, password: string) {
-    if (user.isNative() && await hash.needsReHash(user.password)) {
+    if (user.isNative() && (await hash.needsReHash(user.password))) {
       user.password = password
       await user.save()
     }

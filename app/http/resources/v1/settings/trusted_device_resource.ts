@@ -10,8 +10,8 @@ export default class TrustedDeviceResource extends JsonResource {
       ipAddress: this.resource.$extras.pivot_ip_address,
       lastLoggedAt: this.resource.$extras.pivot_last_logged_at.toRelative(),
       links: {
-        remove: this.makeUrl('v1.trustedDevices.remove')
-      }
+        remove: this.makeUrl('v1.trustedDevices.remove'),
+      },
     }
   }
 }

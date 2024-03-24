@@ -4,7 +4,6 @@ import User from '#models/user'
 import mail from '@adonisjs/mail/services/main'
 import EmailVerificationMail from '#mails/email_verification_mail'
 
-
 /*
 Run this suits:
 node ace test functional --files="v1/auth/verification.spec.ts"

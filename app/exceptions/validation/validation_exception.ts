@@ -28,10 +28,9 @@ export default class ValidationException extends ApiException {
     return reduce(
       this.fieldsWithRule,
       (result, rule, field) => {
-        const message = config.get('validator.customMessages.' + rule)?.replace(
-          '{{ field }}',
-          field
-        )
+        const message = config
+          .get('validator.customMessages.' + rule)
+          ?.replace('{{ field }}', field)
 
         if (message) {
           result.push({ field, rule, message })

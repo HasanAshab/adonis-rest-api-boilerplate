@@ -26,7 +26,6 @@ import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_serv
 import SocialAuthService from '#services/auth/social_auth_service'
 import { SocialAuthData } from '#interfaces/auth'
 
-
 @inject()
 export default class AuthController {
   static readonly VERSION = 'v1'
@@ -51,23 +50,21 @@ export default class AuthController {
 
     Registered.dispatch(user, 'internal', AuthController.VERSION)
 
-    const profileUrl = router.makeUrl(AuthController.VERSION + ".users.show", {
-      username: user.username 
-    });
+    const profileUrl = router.makeUrl(AuthController.VERSION + '.users.show', {
+      username: user.username,
+    })
 
-    response
-      .header('Location', profileUrl)
-      .created({
-        message: 'Verification email sent!',
-        data: user,
-      })
+    response.header('Location', profileUrl).created({
+      message: 'Verification email sent!',
+      data: user,
+    })
   }
 
   /**
    * @login
    * @summary Login a user
    * @requestBody { email: string, password: string, recaptchaResponse: string }
-   * @requestHeader - 
+   * @requestHeader -
    * @responseBody 200 - { message: "Logged in successfully!", data: { token: } }
    * @responseBody 401 - { message: "Invalid credentials" }
    * @responseBody 200 - { twoFactor: true, data: { tokens: { challengeVerification: string, resendChallenge: string } } }
@@ -79,7 +76,7 @@ export default class AuthController {
       email,
       password,
       ipAddress: request.ip(),
-      device: request.device()
+      device: request.device(),
     })
 
     return {
@@ -97,12 +94,12 @@ export default class AuthController {
     await this.authService.logout(auth.user!)
     return 'Logged out successfully!'
   }
-  
+
   /**
    * @logoutOnDevice
    * @summary Logout a user on specific device
    * @responseBody 200 - { message: "Logged out successfully" }
-   */ 
+   */
   async logoutOnDevice({ request, params, auth }: HttpContext) {
     await this.authService.logoutOnDevice(auth.user!, params.id)
     return 'Logged out successfully!'
@@ -169,7 +166,7 @@ export default class AuthController {
   async sendTwoFactorChallenge({ request }) {
     const { email, token } = await request.validateUsing(twoFactorChallengeValidator)
     const user = await User.findByOrFail('email', email)
-    if(user.hasEnabledTwoFactorAuth()) {
+    if (user.hasEnabledTwoFactorAuth()) {
       await Token.verify('two_factor_auth_challenge', user.id, token)
       await this.twoFactorAuthService.challenge(user)
     }
@@ -193,7 +190,7 @@ export default class AuthController {
       code,
       ipAddress: request.ip(),
       device: request.device(),
-      options: { trustThisDevice }
+      options: { trustThisDevice },
     })
     await Token.verify('two_factor_auth_challenge_verification', user.id, token)
 
@@ -270,15 +267,13 @@ export default class AuthController {
 
     Registered.dispatch(user, 'social', AuthController.VERSION)
 
-    const profileUrl = router.makeUrl(AuthController.VERSION + ".users.show", {
-      username: user.username 
+    const profileUrl = router.makeUrl(AuthController.VERSION + '.users.show', {
+      username: user.username,
     })
 
-    response
-      .header('Location', profileUrl)
-      .created({
-        message: 'Registered successfully!',
-        data: { user, token },
-      })
+    response.header('Location', profileUrl).created({
+      message: 'Registered successfully!',
+      data: { user, token },
+    })
   }
 }

@@ -119,7 +119,7 @@ test.group('Auth/TwoFactor', (group) => {
       .json({
         email: user.email,
         code,
-        trustThisDevice: false
+        trustThisDevice: false,
       })
 
     response.assertStatus(422)
@@ -143,7 +143,7 @@ test.group('Auth/TwoFactor', (group) => {
           email: user.email,
           code,
           token,
-          trustThisDevice: false
+          trustThisDevice: false,
         })
 
       response.assertStatus(200)
@@ -163,16 +163,18 @@ test.group('Auth/TwoFactor', (group) => {
           email: user.email,
           code: '123456',
           token,
-          trustThisDevice: false
+          trustThisDevice: false,
         })
 
       response.assertStatus(401)
       response.assertBodyNotHaveProperty('data.token')
     })
-    
-  
+
   //todo
-  test('should mark device as trusted when flagged for and otp is valid', async ({ client, expect }) => {
+  test('should mark device as trusted when flagged for and otp is valid', async ({
+    client,
+    expect,
+  }) => {
     const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
     const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
     const code = authenticator.generate(user.twoFactorSecret)
@@ -184,15 +186,18 @@ test.group('Auth/TwoFactor', (group) => {
         email: user.email,
         code,
         token,
-        trustThisDevice: true
+        trustThisDevice: true,
       })
 
     response.assertStatus(200)
     response.assertBodyHaveProperty('data.token')
     await expect(user.isDeviceTrusted('device-id')).resolves.toBeTrue()
   })
- 
-  test('should not mark device as trusted when not flagged for and otp is valid', async ({ client, expect }) => {
+
+  test('should not mark device as trusted when not flagged for and otp is valid', async ({
+    client,
+    expect,
+  }) => {
     const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
     const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
     const code = authenticator.generate(user.twoFactorSecret)
@@ -204,15 +209,18 @@ test.group('Auth/TwoFactor', (group) => {
         email: user.email,
         code,
         token,
-        trustThisDevice: false
+        trustThisDevice: false,
       })
 
     response.assertStatus(200)
     response.assertBodyHaveProperty('data.token')
     await expect(user.isDeviceTrusted('device-id')).resolves.toBeFalse()
   })
-  
-  test('should not mark device as trusted when flagged for and otp is invalid', async ({ client, expect }) => {
+
+  test('should not mark device as trusted when flagged for and otp is invalid', async ({
+    client,
+    expect,
+  }) => {
     const user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
     const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
 
@@ -223,7 +231,7 @@ test.group('Auth/TwoFactor', (group) => {
         email: user.email,
         code: '123456',
         token,
-        trustThisDevice: true
+        trustThisDevice: true,
       })
     response.assertStatus(401)
     response.assertBodyNotHaveProperty('data.token')

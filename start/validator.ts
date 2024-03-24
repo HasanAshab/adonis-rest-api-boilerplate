@@ -6,7 +6,6 @@ import slugRule from '#app/validation/rules/slug_rule'
 import uniqueRule from '#app/validation/rules/unique_rule'
 import existsRule from '#app/validation/rules/exists_rule'
 
-
 VineString.macro('unique', function (this: VineString, referenceOrChecker: string | Checker) {
   return this.use(uniqueRule(referenceOrChecker))
 })

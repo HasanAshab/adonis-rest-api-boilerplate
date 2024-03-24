@@ -19,13 +19,13 @@ export default function SocialAuthenticable(Superclass: NormalizeConstructor<typ
     }
 
     isSocial(): this is typeof this & { password: null } {
-      return !!!this.password
+      return !this.password
     }
-    
+
     static natives() {
       return this.query().whereNotNull('password')
     }
-    
+
     static socials() {
       return this.query().whereNull('password')
     }

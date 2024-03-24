@@ -24,7 +24,10 @@ export default class TwoFactorAuthService {
     return twoFactorMethod.use(user.twoFactorMethod).challenge(user)
   }
 
-  async verify(user: User, { code, ipAddress, device, options = {} }: TwoFactorChallengeVerificationData) {
+  async verify(
+    user: User,
+    { code, ipAddress, device, options = {} }: TwoFactorChallengeVerificationData
+  ) {
     await twoFactorMethod.use(user.twoFactorMethod).verify(user, code)
     await LoggedDevice.sync(device)
     if (options.trustThisDevice) {

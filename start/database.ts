@@ -112,7 +112,11 @@ ModelQueryBuilder.macro(
  */
 ModelQueryBuilder.macro(
   'when',
-  function (this: ModelQueryBuilder, condition: boolean, cb: (query: ModelQueryBuilder) => ModelQueryBuilder) {
+  function (
+    this: ModelQueryBuilder,
+    condition: boolean,
+    cb: (query: ModelQueryBuilder) => ModelQueryBuilder
+  ) {
     if (condition) {
       cb(this)
     }
@@ -142,7 +146,7 @@ ModelQueryBuilder.macro(
     if (isString) {
       return Number.parseInt(data.total)
     }
-    
+
     const result: Record<string, number> = {}
     forIn(column, (_, alias) => {
       result[alias] = Number.parseInt(data[alias.toLowerCase()])

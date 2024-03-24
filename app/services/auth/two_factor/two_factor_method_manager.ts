@@ -14,10 +14,8 @@ export class TwoFactorMethodManager {
     this.methods.set(twoFactorMethod.methodName, twoFactorMethod)
   }
 
-  async register(MethodClasses: (NormalizeConstructor<typeof TwoFactorMethod>)[]) {
-    await Promise.all(
-      MethodClasses.map(Method => this.add(Method))
-    )
+  async register(MethodClasses: NormalizeConstructor<typeof TwoFactorMethod>[]) {
+    await Promise.all(MethodClasses.map((Method) => this.add(Method)))
   }
 
   use(methodName: string) {

@@ -7,7 +7,7 @@ Run this suits:
 node ace test functional --files="v1/users/delete.spec.ts"
 */
 test.group('Users/Delete', (group) => {
-  let user
+  let user: User
 
   refreshDatabase(group)
 

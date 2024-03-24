@@ -3,8 +3,11 @@ import LoginActivityResource from '#resources/v1/settings/login_activity/login_a
 
 export default class LoginActivityCollection extends ResourceCollection<LoginActivityResource> {
   protected collects = LoginActivityResource
-  
-  constructor(protected readonly resources: Array<Record<string, any>>, protected deviceId: string) {
+
+  constructor(
+    protected readonly resources: Array<Record<string, any>>,
+    protected deviceId: string
+  ) {
     super(resources)
   }
 

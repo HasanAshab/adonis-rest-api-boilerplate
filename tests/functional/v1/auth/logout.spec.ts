@@ -18,15 +18,17 @@ test.group('Auth / Logout', (group) => {
     response.assertStatus(200)
     responseAfterLogout.assertStatus(401)
   })
-  
+
   test('Should logout on device', async ({ client, expect }) => {
     const user = await User.factory().create()
     const loggedDevice = await LoggedDevice.factory().create()
-    for(const i of range(3)) {
+    for (const i of range(3)) {
       await user.createTrackableToken(loggedDevice.id, '127.0.0.1')
     }
-    
-    const response = await client.post('/api/v1/auth/logout/device/' + loggedDevice.id).loginAs(user)
+
+    const response = await client
+      .post('/api/v1/auth/logout/device/' + loggedDevice.id)
+      .loginAs(user)
     await user.load('loggedDevices')
     await user.load('loginSessions')
 

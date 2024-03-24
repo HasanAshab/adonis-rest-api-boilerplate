@@ -4,7 +4,6 @@ import NotificationType from '#models/notification_type'
 import NotificationService from '#services/notification_service'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
 
-
 export const emailResubscriptionValidator = vine.compile(
   vine.object({
     id: vine.number(),

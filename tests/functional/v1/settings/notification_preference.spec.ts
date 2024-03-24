@@ -54,10 +54,10 @@ test.group('Settings / Notification Preference', (group) => {
     })
   })
 
-  test('Should unsubscribe email notification', async ({ client }) => {
+  test('Should unsubscribe email notification', async ({ client, expect }) => {
     const expectedChannels = except(notificationService.channels(), 'email')
-    const { name } = await NotificationType.first()
-    const token = await notificationService.emailUnsubscriptionToken(user)
+    const { name } = await NotificationType.firstOrFail()
+    const token = await notificationService.emailUnsubscriptionToken(user, name)
 
     const response = await client
       .delete('/api/v1/settings/notification-preferences/email-subscription')
@@ -73,8 +73,8 @@ test.group('Settings / Notification Preference', (group) => {
   })
 
   test('Should re-subscribe email notification', async ({ client }) => {
-    const { id, name } = await NotificationType.first()
-    const token = await notificationService.emailResubscriptionToken(user)
+    const { id, name } = await NotificationType.firstOrFail()
+    const token = await notificationService.emailResubscriptionToken(user, name)
     await user.disableNotification(id, 'email')
 
     const response = await client

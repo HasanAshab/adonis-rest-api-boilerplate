@@ -77,7 +77,7 @@ export default defineConfig({
     () => import('#start/routes'),
     () => import('#start/auth'),
     () => import('#start/events'),
-    () => import('#start/request')
+    () => import('#start/request'),
   ],
 
   /*

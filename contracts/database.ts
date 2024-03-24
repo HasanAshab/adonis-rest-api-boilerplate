@@ -8,10 +8,7 @@ declare module '@adonisjs/lucid/database' {
 }
 
 declare module '@adonisjs/lucid/orm' {
-  interface ModelQueryBuilderContract<
-    Model extends LucidModel,
-    Result = InstanceType<Model>
-  > {
+  interface ModelQueryBuilderContract<Model extends LucidModel, Result = InstanceType<Model>> {
     /**
      * Macro to add WHERE clauses for multiple columns with their respective values.
      * @param fields - The fields and their values to filter by.

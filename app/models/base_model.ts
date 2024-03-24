@@ -24,7 +24,7 @@ export default class BaseModel extends Model {
   static findByFields(fields: Record<string, any>) {
     return this.query().whereEqual(fields).first()
   }
-  
+
   static pluck(column: string) {
     return this.query().pluck(column)
   }

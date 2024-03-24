@@ -5,7 +5,7 @@ export default class SmsMethod extends OtpMethod {
   methodName = 'sms'
 
   challenge(user: User) {
-     this.ensureHasPhoneNumber(user)
+    this.ensureHasPhoneNumber(user)
     return this.otp.sendThroughSMS(user.phoneNumber, user.twoFactorSecret)
   }
 }

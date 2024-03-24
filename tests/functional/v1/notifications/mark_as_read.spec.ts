@@ -3,7 +3,6 @@ import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
 import NotificationFactory from 'database/factories/notification_factory'
 
-
 /*
 Run this suits:
 node ace test functional --files="v1/notifications/mark_as_read.spec.ts"

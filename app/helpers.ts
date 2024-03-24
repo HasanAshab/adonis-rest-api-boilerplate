@@ -3,8 +3,8 @@ import { clone } from 'lodash-es'
 import string from '@adonisjs/core/helpers/string'
 import { importDefault as getDefaultFromImport } from '@poppinss/utils'
 
-export function importDefault<T = any>(path: string): T {
-  return getDefaultFromImport(() => import(path))
+export function importDefault<T = any>(path: string) {
+  return getDefaultFromImport(() => import(path)) as T
 }
 
 export function sleep(seconds: number) {
@@ -19,22 +19,21 @@ export function trace(...args: unknown[]) {
   console.log(...args, '\n\t', '\x1b[90m', lastCaller, '\x1b[0m', '\n')
 }
 
-export function extractFromObject<T extends object>(obj: T, props: (keyof T)[]) {
-  return props.reduce((extracted: Pick<T, keyof T>, prop) => {
+export function extractFromObject<T extends object, U extends keyof T>(obj: T, ...props: U[]) {
+  return props.reduce((extracted, prop) => {
     extracted[prop] = obj[prop]
     return extracted
-  }, {})
+  }, {} as Pick<T, U>)
 }
 
 export function extract<
-  T extends object | object[],
-  P = T extends object ? keyof T : keyof T[number],
->(obj: T, ...props: P[]) {
+  T extends object,
+  U extends keyof T 
+>(obj: T | T[], ...props: U[]) {
   if (Array.isArray(obj)) {
-    return obj.map((item) => extractFromObject(item, props))
+    return obj.map((item) => extractFromObject(item, ...props))
   }
-
-  return extractFromObject(obj, props)
+  return extractFromObject(obj, ...props)
 }
 
 export function except<T extends any[]>(arr: T, ...values: T[number][]) {

@@ -8,7 +8,6 @@ import DuplicateEmailAndUsernameException from '#exceptions/validation/duplicate
 import DuplicateUsernameException from '#exceptions/validation/duplicate_username_exception'
 import DuplicateEmailException from '#exceptions/validation/duplicate_email_exception'
 
-
 @inject()
 export default class SocialAuthService {
   constructor(private readonly usernameGenerator: UsernameGenerator) {}

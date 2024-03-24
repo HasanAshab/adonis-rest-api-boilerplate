@@ -6,13 +6,12 @@ import InvalidOtpException from '#exceptions/invalid_otp_exception'
 import PhoneNumberRequiredException from '#exceptions/phone_number_required_exception'
 import { authenticator } from 'otplib'
 
-
 @inject()
 export default abstract class OtpMethod extends TwoFactorMethod {
   constructor(protected readonly otp: Otp) {
     super()
   }
-  
+
   protected verificationFailureException() {
     return new InvalidOtpException()
   }
@@ -34,7 +33,7 @@ export default abstract class OtpMethod extends TwoFactorMethod {
   protected cleanup(user: User) {
     user.twoFactorSecret = null
   }
-  
+
   isValid(user: User, token: string) {
     return this.otp.isValid(token, user.twoFactorSecret)
   }

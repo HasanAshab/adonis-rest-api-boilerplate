@@ -22,13 +22,14 @@ export default function authRoutes() {
     })
     .prefix('login')
 
-  router.group(() => {
-    router.post('/', [AuthController, 'logout'])
-    router.post('device/:id', [AuthController, 'logoutOnDevice']).as('v1.logout.device')
-  })
-  .prefix('logout')
-  .use(middleware.auth())
-  
+  router
+    .group(() => {
+      router.post('/', [AuthController, 'logout'])
+      router.post('device/:id', [AuthController, 'logoutOnDevice']).as('v1.logout.device')
+    })
+    .prefix('logout')
+    .use(middleware.auth())
+
   // Two factor authentication
   router
     .group(() => {

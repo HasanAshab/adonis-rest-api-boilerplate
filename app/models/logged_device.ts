@@ -5,10 +5,9 @@ import { DeviceInfo } from '#interfaces/auth'
 import HasFactory from '#models/traits/has_factory/mixin'
 import LoggedDeviceFactory from '#database/factories/logged_device_factory'
 
-
 export default class LoggedDevice extends compose(BaseModel, HasFactory) {
   static factoryClass = LoggedDeviceFactory
-  
+
   @column({ isPrimary: true })
   declare id: string
 
@@ -28,14 +27,14 @@ export default class LoggedDevice extends compose(BaseModel, HasFactory) {
       isTrusted: this.$extras.pivot_is_trusted,
     }
   }
-  
+
   static sync(device: DeviceInfo) {
     return this.firstOrCreate(
       { id: device.id },
       {
         type: device.type,
         vendor: device.vendor,
-        model: device.model
+        model: device.model,
       }
     )
   }

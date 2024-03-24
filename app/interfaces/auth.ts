@@ -14,15 +14,14 @@ export interface LoginCredentials {
   device: DeviceInfo
 }
 
-
 export interface TwoFactorChallengeVerificationOptions {
   trustThisDevice?: boolean
 }
 
 export interface TwoFactorChallengeVerificationData {
-  code: string,
-  device: DeviceInfo,
-  ipAddress: string,
+  code: string
+  device: DeviceInfo
+  ipAddress: string
   options?: TwoFactorChallengeVerificationOptions
 }
 

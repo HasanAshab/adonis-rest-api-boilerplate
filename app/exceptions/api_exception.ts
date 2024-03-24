@@ -2,7 +2,6 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { Exception } from '@adonisjs/core/exceptions'
 import string from '@adonisjs/core/helpers/string'
 
-
 export default class ApiException extends Exception {
   static status = 500
   static get code() {

@@ -20,7 +20,9 @@ export default function settingsRoutes() {
           router.get('/recovery-codes', [SettingsController, 'recoveryCodes'])
           router.post('/recovery-codes', [SettingsController, 'generateRecoveryCodes'])
           router.get('/trusted-devices', [SettingsController, 'trustedDevices'])
-          router.delete('/trusted-devices/:id', [SettingsController, 'removeTrustedDevice']).as('v1.trustedDevices.remove')
+          router
+            .delete('/trusted-devices/:id', [SettingsController, 'removeTrustedDevice'])
+            .as('v1.trustedDevices.remove')
         })
         .prefix('two-factor-auth')
 
@@ -34,8 +36,5 @@ export default function settingsRoutes() {
         })
         .prefix('notification-preferences')
     })
-    .use([
-      middleware.auth(),
-      middleware.verified()
-    ])
+    .use([middleware.auth(), middleware.verified()])
 }
