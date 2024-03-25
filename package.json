@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "reinstall": "rm -rf node_modules/ package-lock.json && npm i"
+    "reinstall": "rm -r --force node_modules/ package-lock.json && npm i"
   },
   "imports": {
     "#controllers/*": "./app/http/controllers/*.js",

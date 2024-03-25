@@ -11,4 +11,32 @@ export default {
   preferredPutPatch: 'PUT',
   persistAuthorization: true,
   showFullPath: false,
+  common: {
+    parameters: {
+      sortable: [
+        {
+          in: "query",
+          name: "sortBy",
+          schema: { type: "string", example: "foo" },
+        },
+        {
+          in: "query",
+          name: "sortType",
+          schema: { type: "string", example: "ASC" },
+        }
+      ],
+      paginatable: [
+        {
+          in: "query",
+          name: "page",
+          schema: { type: "integer", example: 1 },
+        },
+        {
+          in: "query",
+          name: "limit",
+          schema: { type: "integer", example: 10 },
+        }
+      ]
+    }
+  }
 }

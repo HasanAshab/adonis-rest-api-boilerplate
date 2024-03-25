@@ -3,6 +3,9 @@ import path from 'node:path'
 import { ApplicationService } from '@adonisjs/core/types'
 import type { RouteGroup } from '@adonisjs/core/http'
 import { importDefault } from '#app/helpers'
+import { log } from 'node:console'
+
+
 
 export default class RouteProvider {
   constructor(protected app: ApplicationService) {}
@@ -23,7 +26,8 @@ export default class RouteProvider {
           if (!currentPath) break
           const items = fs.readdirSync(currentPath)
           for (const item of items) {
-            const itemPath = path.join(currentPath, item)
+            
+            const itemPath = path.join(currentPath, item).replaceAll('\\', '/')
             const status = fs.statSync(itemPath)
 
             if (status.isFile()) {
@@ -32,7 +36,7 @@ export default class RouteProvider {
                 .split('.')[0]
                 .replace('index', '')
                 .toLowerCase()
-
+               
               const routerPath = '#' + itemPath.split('.')[0]
               const createRoutes = await importDefault(routerPath)
               if (typeof createRoutes !== 'function') continue
