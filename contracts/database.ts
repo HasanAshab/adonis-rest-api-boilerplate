@@ -73,9 +73,10 @@ declare module '@adonisjs/lucid/types/model' {
      * Macro to count the number of records matching the query.
      * @param column - The column or columns to count.
      */
-    getCount<T extends string | object>(
-      column?: T
-    ): Promise<T extends string ? number : { [K in keyof T]: number }>
+    getCount<
+      T extends string | object,
+      R = T extends string ? number : { [K in keyof T]: number }
+    >(column?: T): Promise<R>
 
     /**
      * TS Query setted by search()

@@ -111,7 +111,10 @@ ModelQueryBuilder.macro(
  */
 ModelQueryBuilder.macro(
   'getCount',
-  async function <T extends string | object>(this: ModelQueryBuilder<any, any>, column: T = '*'): Promise<T extends string ? number : Record<string, number>> {
+  async function <
+    T extends string | object,
+    R = T extends string ? number : { [K in keyof T]: number }
+  >(this: ModelQueryBuilder<any, any>, column: T = '*'): Promise<R> {
     const isString = typeof column === 'string'
 
     if (isString) {
@@ -128,7 +131,7 @@ ModelQueryBuilder.macro(
       return Number.parseInt(data.total)
     }
 
-    const result: Record<string, number> = {}
+    const result: R = {}
     forIn(column, (_, alias) => {
       result[alias] = Number.parseInt(data[alias.toLowerCase()])
     })
