@@ -34,7 +34,7 @@ export default class BaseModel extends Model {
    * @param modelOrId - The model or ID to exclude.
    * @returns A new query builder instance.
    */
-  static except(modelOrId: instanceType<typeof Model> | number) {
+  static except(modelOrId: InstanceType<typeof Model> | number) {
     return this.query().except(modelOrId)
   }
 
@@ -169,7 +169,8 @@ export default class BaseModel extends Model {
    * @returns A boolean indicating whether the record exists.
    */
   exists() {
-    const uid = this[this.constructor.primaryKey as keyof this] as string | number
-    return this.constructor.exists(uid)
+    const model = this.constructor as typeof BaseModel
+    const uid = this[model.primaryKey as keyof this] as string | number
+    return model.exists(uid)
   }
 }

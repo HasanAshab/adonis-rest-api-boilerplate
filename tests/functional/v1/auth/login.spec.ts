@@ -79,7 +79,7 @@ test.group('Auth / Login', (group) => {
       password: 'password',
     })
 
-    response.assertStatus(200)
+    response.assertStatus(202)
     response.assertBodyNotHaveProperty('data.token')
     response.assertBodyHaveProperty('twoFactor', true)
   })

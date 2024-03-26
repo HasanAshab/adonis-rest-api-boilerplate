@@ -70,7 +70,7 @@ ModelQueryBuilder.macro('findOrFail', function (this: ModelQueryBuilder, uid: nu
  */
 ModelQueryBuilder.macro('updateOrFail', async function (this: ModelQueryBuilder, data: object) {
   const count = await this.update(data)
-  if (!Number.parseInt(count)) {
+  if (!Number.parseInt(count.toString())) {
     throw new errors.E_ROW_NOT_FOUND()
   }
 })
@@ -130,7 +130,7 @@ ModelQueryBuilder.macro(
  */
 ModelQueryBuilder.macro(
   'getCount',
-  async function (this: ModelQueryBuilder, column: string | object = '*') {
+  async function <T extends string | object>(this: ModelQueryBuilder, column: T = '*'): Promise<T extends string ? number : Record<string, number>> {
     const isString = typeof column === 'string'
 
     if (isString) {

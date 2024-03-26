@@ -1,0 +1,1445 @@
+openapi: "3.0.0"
+info:
+  title: "Adonis Rest Api Boilerplate"
+  version: "1.0.0"
+components:
+  responses:
+    Forbidden:
+      description: "Access token is missing or invalid"
+    Accepted:
+      description: "The request was accepted"
+    Created:
+      description: "The resource has been created"
+    NotFound:
+      description: "The resource has been created"
+    NotAcceptable:
+      description: "The resource has been created"
+  securitySchemes:
+    BearerAuth:
+      type: "http"
+      scheme: "bearer"
+  schemas:
+    Any:
+      description: "Any JSON object not defined as schema"
+    RegistrationData:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          example: "johndoe@example.com"
+          nullable: false
+        username:
+          type: "string"
+          example: null
+          nullable: false
+        password:
+          type: "string"
+          example: "S3cur3P4s5word!"
+          nullable: false
+      description: "Interface"
+    LoginCredentials:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          example: "johndoe@example.com"
+          nullable: false
+        password:
+          type: "string"
+          example: "S3cur3P4s5word!"
+          nullable: false
+        ip_address:
+          type: "string"
+          example: null
+          nullable: false
+        device:
+          $ref: "#/components/schemas/DeviceInfo"
+          example: null
+          nullable: false
+      description: "Interface"
+    TwoFactorChallengeVerificationOptions:
+      type: "object"
+      properties:
+        trust_this_device:
+          type: "boolean"
+          example: null
+          nullable: true
+      description: "Interface"
+    TwoFactorChallengeVerificationData:
+      type: "object"
+      properties:
+        code:
+          type: "string"
+          example: null
+          nullable: false
+        device:
+          $ref: "#/components/schemas/DeviceInfo"
+          example: null
+          nullable: false
+        ip_address:
+          type: "string"
+          example: null
+          nullable: false
+        options:
+          $ref: "#/components/schemas/TwoFactorChallengeVerificationOptions"
+          example: null
+          nullable: true
+      description: "Interface"
+    SocialAuthData extends AllyUserContract<Oauth2AccessToken>:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+          example: null
+          nullable: true
+      description: "Interface"
+    ClientConfig:
+      type: "object"
+      properties:
+        domain:
+          type: "string"
+          example: null
+          nullable: false
+      description: "Interface"
+    TwilioConfig:
+      type: "object"
+      properties:
+        sid:
+          type: "string"
+          example: null
+          nullable: false
+        auth_token:
+          type: "string"
+          example: null
+          nullable: false
+        from:
+          type: "string"
+          example: null
+          nullable: false
+      description: "Interface"
+    TwilioFakedData:
+      type: "object"
+      properties:
+        messages:
+          type: "array"
+          items:
+            type: "string"
+            example: null
+            nullable: false
+        calls:
+          type: "array"
+          items:
+            type: "string"
+            example: null
+            nullable: false
+      description: "Interface"
+    DeviceInfo extends IDevice:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: null
+          nullable: false
+      description: "Interface"
+    PasswordValidationStrategy:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          example: null
+          nullable: false
+        validate_value:
+          $ref: "#/components/schemas/string)"
+          example: null
+          nullable: false
+      description: "Interface"
+    BaseModel:
+      type: "object"
+      properties: {}
+      description: "Model"
+    Contact:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 504
+        email:
+          type: "string"
+          example: "johndoe@example.com"
+          format: "email"
+        subject:
+          type: "string"
+          example: "string"
+        message:
+          type: "string"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    LoggedDevice:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "string"
+        type:
+          type: "string"
+          example: "string"
+        vendor:
+          type: "string"
+          example: "string"
+        model:
+          type: "string"
+          example: "string"
+      description: "Model"
+    LoginSession:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 839
+        user_id:
+          type: "number"
+          example: 378
+        access_token_id:
+          type: "number"
+          example: 214
+        logged_device_id:
+          type: "string"
+          example: "string"
+      description: "Model"
+    NotificationType:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 686
+        name:
+          type: "string"
+          example: "John Doe"
+        display_text:
+          type: "string"
+          example: "string"
+        group_name:
+          type: "string"
+          example: "string"
+        description:
+          type: "string"
+          example: "Lorem ipsum dolor sit amet"
+      description: "Model"
+    Token:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 6
+        type:
+          type: "string"
+          example: "string"
+        one_time:
+          type: "boolean"
+          example: true
+        key:
+          type: "string"
+          example: "string"
+        secret:
+          type: "string"
+          example: "string"
+      description: "Model"
+    User:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 204
+        email:
+          type: "string"
+          example: "johndoe@example.com"
+          format: "email"
+      description: "Model"
+    expirable:
+      type: "object"
+      properties: {}
+      description: "Model"
+    has_role:
+      type: "object"
+      properties: {}
+      description: "Model"
+    has_timestamps:
+      type: "object"
+      properties:
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    opt_in_notifiable:
+      type: "object"
+      properties:
+        notification_preference:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ManyToMany<NotificationType>"
+            example: "string"
+      description: "Model"
+    has_api_tokens:
+      type: "object"
+      properties: {}
+      description: "Model"
+    has_trackable_api_tokens:
+      type: "object"
+      properties:
+        login_sessions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/LoginSession"
+            example: "string"
+        logged_devices:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/LoggedDevice"
+            example: "string"
+      description: "Model"
+    authenticable:
+      type: "object"
+      properties: {}
+      description: "Model"
+    social_authenticable:
+      type: "object"
+      properties:
+        social_avatar_url:
+          type: "string"
+          example: "string"
+        password:
+          type: "string"
+          example: "S3cur3P4s5word!"
+          format: "password"
+      description: "Model"
+    two_factor_authenticable:
+      type: "object"
+      properties: {}
+      description: "Model"
+    factory:
+      type: "object"
+      properties: {}
+      description: "Model"
+    mixin:
+      type: "object"
+      properties: {}
+      description: "Model"
+paths:
+  /api/v1/admin/dashboard:
+    get:
+      summary: " (app/http/controllers/v1/dashboard_controller.ts::admin)"
+      description: ""
+      parameters: []
+      tags:
+        - "ADMIN"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/auth/register:
+    post:
+      summary: "Register a new user (app/http/controllers/v1/auth_controller.ts::register)"
+      description: "Returns a **single** instance of type `User` **without** any _relations_. Take a look at the example for further details."
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+              example:
+                id: 204
+                email: "johndoe@example.com"
+          description: "Returns a **single** instance of type `User` **without** any _relations_. Take a look at the example for further details."
+          headers:
+            Location:
+              schema:
+                type: "string"
+                example: "string"
+              description: "URL of the registered user's profile"
+      security: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: "object"
+              properties:
+                email:
+                  type: "string"
+                username:
+                  type: "string"
+                password:
+                  type: "string"
+                avatar:
+                  type: "string"
+                  format: "binary"
+                recaptchaResponse:
+                  type: "string"
+  /api/v1/auth/login:
+    post:
+      summary: "Login a user (app/http/controllers/v1/auth_controller.ts::login)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: "object"
+              example:
+                message: "Logged in successfully!"
+                data:
+                  token: ""
+          description: "OK: { \"message\": \"Logged in successfully!\", \"data\": { \"token\": \"\"} }"
+        202:
+          content:
+            application/json:
+              schema:
+                type: "object"
+              example:
+                twoFactor: true
+                data:
+                  tokens:
+                    challengeVerification: "xxxx"
+                    resendChallenge: "xxxx"
+          description: "Accepted: { \"twoFactor\": true, \"data\": { \"tokens\": { \"challengeVerification\": \"xxxx\", \"resendChallenge\": \"xxxx\" } } }"
+        401:
+          content:
+            application/json:
+              schema:
+                type: "object"
+              example:
+                message: "Invalid credentials"
+          description: "Unauthorized: { \"message\": \"Invalid credentials\" }"
+      security: []
+  /api/v1/auth/login/social/{provider}:
+    post:
+      summary: " (app/http/controllers/v1/auth_controller.ts::loginWithSocialAuthToken)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "provider"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/auth/logout:
+    post:
+      summary: "Logout a user (app/http/controllers/v1/auth_controller.ts::logout)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        200:
+          description: "OK: { message: \"Logged out successfully\" }"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/auth/logout/device/{id}:
+    post:
+      summary: "Logout a user on specific device (app/http/controllers/v1/auth_controller.ts::logoutOnDevice)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "AUTH"
+      responses:
+        200:
+          description: "OK: { message: \"Logged out successfully\" }"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/auth/two-factor/recover:
+    post:
+      summary: " (app/http/controllers/v1/auth_controller.ts::recoverTwoFactorAccount)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/auth/two-factor/challenges:
+    post:
+      summary: " (app/http/controllers/v1/auth_controller.ts::sendTwoFactorChallenge)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/auth/two-factor/challenges/verification:
+    post:
+      summary: " (app/http/controllers/v1/auth_controller.ts::verifyTwoFactorChallenge)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/auth/password/forgot:
+    post:
+      summary: " (app/http/controllers/v1/auth_controller.ts::forgotPassword)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/auth/password/reset:
+    patch:
+      summary: " (app/http/controllers/v1/auth_controller.ts::resetPassword)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        undefined:
+          description: "Unknown"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/auth/verification:
+    post:
+      summary: " (app/http/controllers/v1/auth_controller.ts::verifyEmail)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/auth/verification/notification:
+    post:
+      summary: " (app/http/controllers/v1/auth_controller.ts::resendEmailVerification)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/contact:
+    post:
+      summary: "Create a new contact form (app/http/controllers/v1/contacts_controller.ts::store)"
+      description: "Returns a **single** instance of type `Contact` **without** any _relations_. Take a look at the example for further details."
+      parameters: []
+      tags:
+        - "CONTACT"
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+              example:
+                id: 504
+                email: "johndoe@example.com"
+                subject: "string"
+                message: "string"
+                created_at: "2021-03-23T16:13:08.489+01:00"
+          description: "Returns a **single** instance of type `Contact` **without** any _relations_. Take a look at the example for further details."
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+            example:
+              subject: "xxxxx"
+              message: "xxxxx"
+              email: "xxxxx"
+  /api/v1/contact/inquiries:
+    get:
+      summary: "List all contact forms (app/http/controllers/v1/contacts_controller.ts::index)"
+      description: "Returns a **list** of type `Contact` **without** any _relations_. Take a look at the example for further details."
+      parameters:
+        - in: "query"
+          name: "page"
+          schema:
+            type: "integer"
+            example: 1
+        - in: "query"
+          name: "limit"
+          schema:
+            type: "integer"
+            example: 10
+      tags:
+        - "CONTACT"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Contact"
+              example:
+                - id: 504
+                  email: "johndoe@example.com"
+                  subject: "string"
+                  message: "string"
+                  created_at: "2021-03-23T16:13:08.489+01:00"
+                  links:
+                    close: "xxxxx"
+                    reopen: "xxxxx"
+                    delete: "xxxxx"
+          description: "Returns a **list** of type `Contact` **without** any _relations_. Take a look at the example for further details."
+      security: []
+  /api/v1/contact/inquiries/suggest:
+    get:
+      summary: "Suggest contact forms (app/http/controllers/v1/contacts_controller.ts::suggest)"
+      description: "Returns a **list** of type `Contact` **without** any _relations_. Take a look at the example for further details."
+      parameters:
+        - in: "query"
+          name: "q"
+          description: "The search query"
+          schema:
+            example: "string"
+            type: "string"
+          required: true
+        - in: "query"
+          name: "status"
+          description: "The status of the contact form"
+          schema:
+            example: "string"
+            type: "string"
+          required: false
+        - in: "query"
+          name: "limit"
+          description: "The number of results to return"
+          schema:
+            example: 1
+            type: "integer"
+          required: false
+      tags:
+        - "CONTACT"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Contact"
+              example:
+                - id: 504
+                  email: "johndoe@example.com"
+                  subject: "string"
+                  message: "string"
+                  created_at: "2021-03-23T16:13:08.489+01:00"
+          description: "Returns a **list** of type `Contact` **without** any _relations_. Take a look at the example for further details."
+      security: []
+  /api/v1/contact/inquiries/search:
+    get:
+      summary: "Search contact forms (app/http/controllers/v1/contacts_controller.ts::search)"
+      description: "Returns a **list** of type `Contact` **without** any _relations_. Take a look at the example for further details."
+      parameters:
+        - in: "query"
+          name: "page"
+          schema:
+            type: "integer"
+            example: 1
+        - in: "query"
+          name: "limit"
+          schema:
+            type: "integer"
+            example: 10
+        - in: "query"
+          name: "q"
+          description: "The search query"
+          schema:
+            example: "string"
+            type: "string"
+          required: true
+        - in: "query"
+          name: "status"
+          description: "The status of the contact form"
+          schema:
+            example: "string"
+            type: "string"
+          required: false
+      tags:
+        - "CONTACT"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Contact"
+              example:
+                - id: 504
+                  email: "johndoe@example.com"
+                  subject: "string"
+                  message: "string"
+                  created_at: "2021-03-23T16:13:08.489+01:00"
+          description: "Returns a **list** of type `Contact` **without** any _relations_. Take a look at the example for further details."
+      security: []
+  /api/v1/contact/inquiries/{id}:
+    get:
+      summary: "Show a contact form (app/http/controllers/v1/contacts_controller.ts::show)"
+      description: "Returns a **single** instance of type `Contact` **without** any _relations_. Take a look at the example for further details."
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CONTACT"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+              example:
+                id: 504
+                email: "johndoe@example.com"
+                subject: "string"
+                message: "string"
+                created_at: "2021-03-23T16:13:08.489+01:00"
+                links:
+                  close: "xxxxx"
+                  reopen: "xxxxx"
+                  delete: "xxxxx"
+          description: "Returns a **single** instance of type `Contact` **without** any _relations_. Take a look at the example for further details."
+      security: []
+    delete:
+      summary: "Delete a contact form (app/http/controllers/v1/contacts_controller.ts::delete)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CONTACT"
+      responses:
+        204:
+          description: "No Content"
+      security: []
+  /api/v1/contact/inquiries/{id}/status:
+    patch:
+      summary: "Update the status of a contact form (app/http/controllers/v1/contacts_controller.ts::updateStatus)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CONTACT"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: "object"
+              example:
+                message: "xxxxx"
+          description: "OK: { \"message\": \"xxxxx\" }"
+      security: []
+  /api/v1/notification-types:
+    get:
+      summary: "Get a list of notification-types (app/http/controllers/v1/notification_types_controller.ts::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOTIFICATION-TYPES"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+    post:
+      summary: " (app/http/controllers/v1/notification_types_controller.ts::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOTIFICATION-TYPES"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/notification-types/{id}:
+    get:
+      summary: "Get a single instance of notification-types (app/http/controllers/v1/notification_types_controller.ts::show)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOTIFICATION-TYPES"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+    patch:
+      summary: "Update notification-types (app/http/controllers/v1/notification_types_controller.ts::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOTIFICATION-TYPES"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: " (app/http/controllers/v1/notification_types_controller.ts::delete)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOTIFICATION-TYPES"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/notifications:
+    get:
+      summary: "Get a list of notifications (app/http/controllers/v1/notifications_controller.ts::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOTIFICATIONS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/notifications/unread-count:
+    get:
+      summary: " (app/http/controllers/v1/notifications_controller.ts::unreadCount)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOTIFICATIONS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/notifications/read:
+    patch:
+      summary: " (app/http/controllers/v1/notifications_controller.ts::markAllAsRead)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOTIFICATIONS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/notifications/{id}/read:
+    patch:
+      summary: " (app/http/controllers/v1/notifications_controller.ts::markAsRead)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOTIFICATIONS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/notifications/{id}:
+    get:
+      summary: "Get a single instance of notifications (app/http/controllers/v1/notifications_controller.ts::show)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOTIFICATIONS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+    delete:
+      summary: " (app/http/controllers/v1/notifications_controller.ts::delete)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOTIFICATIONS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/settings/login-activities:
+    get:
+      summary: " (app/http/controllers/v1/settings_controller.ts::loginActivities)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/settings/two-factor-auth:
+    get:
+      summary: " (app/http/controllers/v1/settings_controller.ts::twoFactorAuth)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+    post:
+      summary: " (app/http/controllers/v1/settings_controller.ts::enableTwoFactorAuth)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: " (app/http/controllers/v1/settings_controller.ts::disableTwoFactorAuth)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/settings/two-factor-auth/method:
+    patch:
+      summary: " (app/http/controllers/v1/settings_controller.ts::updateTwoFactorAuthMethod)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/settings/two-factor-auth/qr-code:
+    get:
+      summary: " (app/http/controllers/v1/settings_controller.ts::twoFactorAuthQrCode)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/settings/two-factor-auth/recovery-codes:
+    get:
+      summary: " (app/http/controllers/v1/settings_controller.ts::recoveryCodes)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+    post:
+      summary: " (app/http/controllers/v1/settings_controller.ts::generateRecoveryCodes)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/settings/two-factor-auth/trusted-devices:
+    get:
+      summary: " (app/http/controllers/v1/settings_controller.ts::trustedDevices)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/settings/two-factor-auth/trusted-devices/{id}:
+    delete:
+      summary: " (app/http/controllers/v1/settings_controller.ts::removeTrustedDevice)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/settings/notification-preferences:
+    get:
+      summary: " (app/http/controllers/v1/settings_controller.ts::notificationPreference)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+    patch:
+      summary: " (app/http/controllers/v1/settings_controller.ts::updateNotificationPreference)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/settings/notification-preferences/email-subscription:
+    delete:
+      summary: " (app/http/controllers/v1/settings_controller.ts::unsubscribeEmailNotification)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+    post:
+      summary: " (app/http/controllers/v1/settings_controller.ts::resubscribeEmailNotification)"
+      description: ""
+      parameters: []
+      tags:
+        - "SETTINGS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/users/me:
+    get:
+      summary: " (app/http/controllers/v1/users_controller.ts::profile)"
+      description: ""
+      parameters: []
+      tags:
+        - "USERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+    delete:
+      summary: " (app/http/controllers/v1/users_controller.ts::delete)"
+      description: ""
+      parameters: []
+      tags:
+        - "USERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+    patch:
+      summary: " (app/http/controllers/v1/users_controller.ts::updateProfile)"
+      description: ""
+      parameters: []
+      tags:
+        - "USERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/users/me/password:
+    patch:
+      summary: " (app/http/controllers/v1/users_controller.ts::changePassword)"
+      description: ""
+      parameters: []
+      tags:
+        - "USERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/users/me/phone-number:
+    patch:
+      summary: " (app/http/controllers/v1/users_controller.ts::changePhoneNumber)"
+      description: ""
+      parameters: []
+      tags:
+        - "USERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: " (app/http/controllers/v1/users_controller.ts::removePhoneNumber)"
+      description: ""
+      parameters: []
+      tags:
+        - "USERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/users/{username}:
+    get:
+      summary: "Get a single instance of users (app/http/controllers/v1/users_controller.ts::show)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "username"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/users:
+    get:
+      summary: "Get a list of users (app/http/controllers/v1/users_controller.ts::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "USERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/users/{id}/admin:
+    patch:
+      summary: " (app/http/controllers/v1/users_controller.ts::makeAdmin)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /api/v1/users/{id}:
+    delete:
+      summary: " (app/http/controllers/v1/users_controller.ts::deleteById)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+tags:
+  - name: "ADMIN"
+    description: "Everything related to ADMIN"
+  - name: "AUTH"
+    description: "Everything related to AUTH"
+  - name: "CONTACT"
+    description: "Everything related to CONTACT"
+  - name: "NOTIFICATION-TYPES"
+    description: "Everything related to NOTIFICATION-TYPES"
+  - name: "NOTIFICATIONS"
+    description: "Everything related to NOTIFICATIONS"
+  - name: "SETTINGS"
+    description: "Everything related to SETTINGS"
+  - name: "USERS"
+    description: "Everything related to USERS"

@@ -2,7 +2,7 @@ import path from 'node:path'
 import url from 'node:url'
 
 export default {
-  path: path.dirname(url.fileURLToPath(import.meta.url)) + '/../', // for AdonisJS v6
+  path: path.dirname(url.fileURLToPath(import.meta.url)) + '/../',
   title: 'Adonis Rest Api Boilerplate',
   version: '1.0.0',
   tagIndex: 3,
@@ -36,7 +36,17 @@ export default {
           name: "limit",
           schema: { type: "integer", example: 10 },
         }
+      ],
+      identifiableDevice: [
+        {
+          in: 'header',
+          required: true,
+          name: "X-Device-Id",
+          description: "ID of client's device",
+          schema: { type: "string" }
+        }
       ]
-    }
+
+    },
   }
 }

@@ -13,9 +13,6 @@ import HasTimestamps from '#models/traits/has_timestamps'
 //import OptInNotifiable from '#models/traits/opt_in_notifiable'
 import HasRole from '#models/traits/has_role'
 
-class User {}
-export default User as any
-/*
 export default class User extends compose(
   BaseModel,
   Authenticable,
@@ -33,22 +30,22 @@ export default class User extends compose(
   declare id: number
 
   @column()
-  name: string | null = null
+  public name: string | null = null
 
   @column()
-  username: string | null = null
+  public username: string | null = null
 
   @column()
   declare email: string
 
   @column()
-  phoneNumber: string | null = null
+  public phoneNumber: string | null = null
 
   @column()
-  verified = false
+  public verified = false
 
   @column({ serializeAs: null })
-  password: string | null = null
+  public password: string | null = null
 
   //@attachment()
   //  declare avatar: AttachmentContract = null
@@ -57,4 +54,3 @@ export default class User extends compose(
     return (await this.avatar?.getUrl()) ?? this.socialAvatarUrl
   }
 }
-*/

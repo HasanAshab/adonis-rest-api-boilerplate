@@ -105,7 +105,7 @@ export default class ContactsController {
   /**
    * @delete
    * @summary Delete a contact form
-   * @responseBody 204
+   * @responseBody 204 - {}
    */
   async delete({ response, params }: HttpContext) {
     await Contact.deleteOrFail(params.id)

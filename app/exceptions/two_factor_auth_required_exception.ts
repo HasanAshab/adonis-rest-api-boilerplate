@@ -3,7 +3,7 @@ import type User from '#models/user'
 import Token from '#models/token'
 
 export default class TwoFactorAuthRequiredException extends ApiException {
-  static status = 200
+  static status = 202
 
   constructor(private user: User) {
     super()
