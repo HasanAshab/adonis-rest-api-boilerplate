@@ -1,6 +1,8 @@
 import { Request } from '@adonisjs/core/http'
 import { UAParser } from 'ua-parser-js'
 import DeviceIdRequiredException from '#exceptions/device_id_required_exception'
+import { DeviceInfo } from '#interfaces/http/request'
+
 
 Request.getter(
   'userAgent',
@@ -19,7 +21,6 @@ Request.macro('deviceId', function (this: Request) {
 })
 
 Request.macro('device', function (this: Request) {
-  const userAgent = this.header('USER-AGENT')
   const device = this.userAgent.getDevice() as DeviceInfo
   device.id = this.deviceId()
   return device

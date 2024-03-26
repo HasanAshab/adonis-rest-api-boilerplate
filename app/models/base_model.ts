@@ -1,13 +1,17 @@
 import { BaseModel as Model } from '@adonisjs/lucid/orm'
 import is from '@adonisjs/core/helpers/is'
-import type { ModelQueryBuilder } from '@adonisjs/lucid/orm'
+import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 import { ExtractModelRelations } from '@adonisjs/lucid/types/relations'
+
+
+
+type QueryBuilder = ModelQueryBuilderContract<typeof BaseModel, BaseModel>
 
 /**
  * Base model class with common utility methods.
  */
 export default class BaseModel extends Model {
-  static where(...args: Parameters<ModelQueryBuilder['where']>) {
+  static where(...args: Parameters<QueryBuilder['where']>) {
     return this.query().where(...args)
   }
 
@@ -103,18 +107,18 @@ export default class BaseModel extends Model {
   /**
    * Implementation of the exists() method.
    */
-  static async exists(uidOrColumnOrData: string | number | object, value?: unknown) {
-    return await this.query()
-      .when(is.object(uidOrColumnOrData), (query) => {
-        query.whereEqual(uidOrColumnOrData)
-      })
-      .when(!is.object(uidOrColumnOrData) && is.undefined(value), (query) => {
-        query.whereUid(uidOrColumnOrData)
-      })
-      .when(!is.object(uidOrColumnOrData) && !is.undefined(value), (query) => {
-        query.where(uidOrColumnOrData, value)
-      })
-      .exists()
+  static exists(uidOrColumnOrData: string | number | object, value?: string | number | boolean) {
+    const query = this.query()
+    if (is.object(uidOrColumnOrData)) {
+      query.whereEqual(uidOrColumnOrData)
+    } 
+    else if(is.string(uidOrColumnOrData) && !is.undefined(value)) {
+      query.where(uidOrColumnOrData, value)
+    }
+    else if (is.number(uidOrColumnOrData)) {
+      query.whereUid(uidOrColumnOrData)
+    }
+    return query.exists()
   }
 
   /**
@@ -132,7 +136,7 @@ export default class BaseModel extends Model {
    * @param args - Parameters for the search method.
    * @returns A new query builder instance.
    */
-  static search(...args: Parameters<ModelQueryBuilder['search']>) {
+  static search(...args: Parameters<QueryBuilder['search']>) {
     return this.query().search(...args)
   }
 
@@ -141,7 +145,7 @@ export default class BaseModel extends Model {
    * @param args - Parameters for pagination.
    * @returns A paginated result.
    */
-  static paginate(...args: Parameters<ModelQueryBuilder['paginate']>) {
+  static paginate(...args: Parameters<QueryBuilder['paginate']>) {
     return this.query().paginate(...args)
   }
 
@@ -150,7 +154,7 @@ export default class BaseModel extends Model {
    * @param args - Parameters for pagination using a custom paginator.
    * @returns A paginated result.
    */
-  static paginateUsing(...args: Parameters<ModelQueryBuilder['paginateUsing']>) {
+  static paginateUsing(...args: Parameters<QueryBuilder['paginateUsing']>) {
     return this.query().paginateUsing(...args)
   }
 
