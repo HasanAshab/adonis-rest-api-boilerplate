@@ -6,7 +6,7 @@ export default {
   title: 'Adonis Rest Api Boilerplate',
   version: '1.0.0',
   tagIndex: 3,
-  snakeCase: true,
+  snakeCase: false,
   ignore: ['/swagger', '/docs'],
   preferredPutPatch: 'PUT',
   persistAuthorization: true,
