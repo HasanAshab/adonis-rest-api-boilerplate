@@ -18,7 +18,7 @@ test.group('Notification Types / List', (group) => {
   })
 
   test('Should get notification types list', async ({ client }) => {
-    const notificationTypes = await NotificationType.factory().createMany(2)
+    const notificationTypes = await NotificationTypeFactory.createMany(2)
 
     const response = await client.get('/api/v1/notification-types').loginAs(user)
 
@@ -27,7 +27,7 @@ test.group('Notification Types / List', (group) => {
   })
 
   test('Should get notification', async ({ client }) => {
-    const notificationType = await NotificationType.factory().create()
+    const notificationType = await NotificationTypeFactory.create()
     const response = await client
       .get('/api/v1/notification-types/' + notificationType.id)
       .loginAs(user)

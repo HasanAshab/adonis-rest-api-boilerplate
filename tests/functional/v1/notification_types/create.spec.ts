@@ -46,7 +46,7 @@ test.group('Notification Types / Create', (group) => {
   })
 
   test('Should create notification type with existing name', async ({ client, expect }) => {
-    const existingNotificationType = await NotificationType.factory().create()
+    const existingNotificationType = await NotificationTypeFactory.create()
     const data = {
       name: existingNotificationType.name,
       displayText: 'Text',

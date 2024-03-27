@@ -21,7 +21,7 @@ test.group('Auth / Logout', (group) => {
 
   test('Should logout on device', async ({ client, expect }) => {
     const user = await UserFactory.create()
-    const loggedDevice = await LoggedDevice.factory().create()
+    const loggedDevice = await LoggedDeviceFactory.create()
     for (const i of range(3)) {
       await user.createTrackableToken(loggedDevice.id, '127.0.0.1')
     }

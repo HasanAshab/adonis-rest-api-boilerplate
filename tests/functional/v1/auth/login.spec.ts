@@ -86,7 +86,7 @@ test.group('Auth / Login', (group) => {
 
   test('Should login with trusted device on 2FA enabled account', async ({ client }) => {
     user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
-    const device = await LoggedDevice.factory().create()
+    const device = await LoggedDeviceFactory.create()
     await user.trustDevice(device, '127.0.0.1')
 
     const response = await client.post('/api/v1/auth/login').usingDevice(device).json({

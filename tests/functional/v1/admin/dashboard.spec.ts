@@ -1,6 +1,5 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
 
 /*
 Run this suits:

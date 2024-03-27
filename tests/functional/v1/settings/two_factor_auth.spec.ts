@@ -171,7 +171,7 @@ test.group('Settings / Two Factor Auth', (group) => {
 
   test('Should get trusted devices', async ({ client }) => {
     const user = await UserFactory.twoFactorAuthEnabled().create()
-    const loggedDevices = await LoggedDevice.factory().createMany(3)
+    const loggedDevices = await LoggedDeviceFactory.createMany(3)
     for (const loggedDevice of loggedDevices) {
       await user.trustDevice(loggedDevice, '127.0.0.1')
     }
@@ -186,7 +186,7 @@ test.group('Settings / Two Factor Auth', (group) => {
 
   test('Should remove trusted device', async ({ client, expect }) => {
     const user = await UserFactory.twoFactorAuthEnabled().create()
-    const loggedDevice = await LoggedDevice.factory().create()
+    const loggedDevice = await LoggedDeviceFactory.create()
     await user.trustDevice(loggedDevice, '127.0.0.1')
 
     const response = await client

@@ -14,7 +14,7 @@ test.group('Notification Types / Update', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    notificationType = await NotificationType.factory().create()
+    notificationType = await NotificationTypeFactory.create()
     admin = await UserFactory.withRole('admin').create()
   })
 
@@ -52,7 +52,7 @@ test.group('Notification Types / Update', (group) => {
 
   test('Should update notification type with existing name', async ({ client, expect }) => {
     const displayText = 'New Text'
-    const existingNotificationType = await NotificationType.factory().create()
+    const existingNotificationType = await NotificationTypeFactory.create()
 
     const response = await client
       .patch('/api/v1/notification-types/' + notificationType.id)
