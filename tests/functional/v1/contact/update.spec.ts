@@ -1,7 +1,9 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
-import Contact from '#models/contact'
+import type Contact from '#models/contact'
+import { UserFactory } from '#factories/user_factory'
+import { ContactFactory } from '#factories/contact_factory'
+
 
 /*
 Run this suits:
@@ -14,7 +16,7 @@ test.group('Contact / Update', (group) => {
 
   test('Should close contact', async ({ client, expect }) => {
     contact = await ContactFactory.create()
-    const admin = await UserFactory.withRole('admin').create()
+    const admin = await UserFactory.apply('admin').create()
 
     const response = await client
       .patch(`/api/v1/contact/inquiries/${contact.id}/status`)
@@ -28,8 +30,8 @@ test.group('Contact / Update', (group) => {
   })
 
   test('Should reopen contact', async ({ client, expect }) => {
-    contact = await ContactFactory.closed().create()
-    const admin = await UserFactory.withRole('admin').create()
+    contact = await ContactFactory.apply('closed').create()
+    const admin = await UserFactory.apply('admin').create()
 
     const response = await client
       .patch(`/api/v1/contact/inquiries/${contact.id}/status`)
@@ -56,7 +58,7 @@ test.group('Contact / Update', (group) => {
   })
 
   test('Users should not reopen contact', async ({ client, expect }) => {
-    contact = await ContactFactory.closed().create()
+    contact = await ContactFactory.apply('closed').create()
     const user = await UserFactory.create()
 
     const response = await client

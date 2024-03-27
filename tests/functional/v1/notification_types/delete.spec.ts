@@ -1,7 +1,9 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
-import NotificationType from '#models/notification_type'
+import type NotificationType from '#models/notification_type'
+import { UserFactory } from '#factories/user_factory'
+import { NotificationTypeFactory } from '#factories/notification_type_factory'
+
 
 /*
 Run this suits:
@@ -16,7 +18,7 @@ test.group('Notification Types / Delete', (group) => {
   })
 
   test('Should delete notification type', async ({ client, expect }) => {
-    const admin = await UserFactory.withRole('admin').create()
+    const admin = await UserFactory.apply('admin').create()
 
     const response = await client
       .delete('/api/v1/notification-types/' + notificationType.id)

@@ -5,7 +5,7 @@ import User from '#models/user'
 
 export default class SendNewUserJoinedNotificationToAdmins {
   async handle(event: Registered) {
-    const admins = await User.withRole('admin')
+    const admins = await User.apply('admin')
       .preload('notificationPreferences')
       .except(event.user)
     await Notification.send(admins, new NewUserJoinedNotification(event.user))

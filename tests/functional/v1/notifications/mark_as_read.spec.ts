@@ -1,23 +1,17 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
-import NotificationFactory from 'database/factories/notification_factory'
+import { UserFactory } from '#factories/user_factory'
 
 /*
 Run this suits:
 node ace test functional --files="v1/notifications/mark_as_read.spec.ts"
 */
 test.group('Notifications / Mark As Read', (group) => {
-  let user: User
-
   refreshDatabase(group)
 
-  group.each.setup(async () => {
-    user = await UserFactory.create()
-  })
-
   test('Should mark notification as read', async ({ client, expect }) => {
-    const notification = await NotificationFactory.new().unread().belongsTo(user).create()
+    const user = await UserFactory.with('notifications', 1, notification => notification.apply('unread')).create()
+    const notification = user.notifications[0]
 
     const response = await client
       .patch(`/api/v1/notifications/${notification.id}/read`)
@@ -29,25 +23,21 @@ test.group('Notifications / Mark As Read', (group) => {
   })
 
   test('Should mark all notifications as read', async ({ client, expect }) => {
-    const notifications = await NotificationFactory.new()
-      .belongsTo(user)
-      .count(3)
-      .unread()
-      .belongsTo(user)
-      .create()
+    const user = await UserFactory.with('notifications', 3, notification => notification.apply('unread')).create()
 
     const response = await client.patch('/api/v1/notifications/read').loginAs(user)
 
     response.assertStatus(200)
-    for (const notification of notifications) {
+    for (const notification of user.notifications) {
       await notification.refresh()
       expect(notification.readAt).not.toBeNull()
     }
   })
 
   test("Shouldn't mark others notification as read", async ({ client, expect }) => {
-    const anotherUser = await UserFactory.create()
-    const notification = await NotificationFactory.new().belongsTo(anotherUser).unread().create()
+    const user = await UserFactory.create()
+    const anotherUser = await UserFactory.with('notifications', 1, notification => notification.apply('unread')).create()
+    const notification = anotherUser.notifications[0]
 
     const response = await client
       .patch(`/api/v1/notifications/${notification.id}/read`)

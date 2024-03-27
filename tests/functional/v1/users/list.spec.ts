@@ -1,7 +1,8 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
 import { extract } from '#app/helpers'
+import { UserFactory } from '#factories/user_factory'
+
 
 /*
 Run this suits:
@@ -11,10 +12,8 @@ test.group('Users / List', (group) => {
   refreshDatabase(group)
 
   test('Should list users', async ({ client }) => {
-    const [admin, users] = await Promise.all([
-      UserFactory.withRole('admin').create(),
-      UserFactory.createMany(2),
-    ])
+    const admin = await UserFactory.apply('admin').create()
+    const users = await UserFactory.createMany(2)
 
     const response = await client.get('/api/v1/users').loginAs(admin)
 

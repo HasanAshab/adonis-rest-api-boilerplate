@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
-import NotificationFactory from 'database/factories/notification_factory'
+import type User from '#models/user'
+import { UserFactory } from '#factories/user_factory'
 
 /*
 Run this suits:
@@ -9,20 +9,18 @@ node ace test functional --files="v1/notifications/delete.spec.ts"
 */
 test.group('Notifications / Delete', (group) => {
   let user: User
-  let notification
 
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await UserFactory.create()
-    notification = await NotificationFactory.new().belongsTo(user).create()
+    user = await UserFactory.with('notifications', 1).create()
   })
 
   test('Should delete notification', async ({ client, expect }) => {
     const response = await client.delete(`/api/v1/notifications/${notification.id}`).loginAs(user)
 
     response.assertStatus(204)
-    await expect(notification.exists()).resolves.toBeFalse()
+    await expect(user.notification[0].exists()).resolves.toBeFalse()
   })
 
   test("Shouldn't delete others notification", async ({ client, expect }) => {
@@ -33,6 +31,6 @@ test.group('Notifications / Delete', (group) => {
       .loginAs(anotherUser)
 
     response.assertStatus(404)
-    await expect(notification.exists()).resolves.toBeTrue()
+    await expect(user.notifications[0].exists()).resolves.toBeTrue()
   })
 })

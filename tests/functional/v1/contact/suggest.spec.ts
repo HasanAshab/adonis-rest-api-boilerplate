@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
-import Contact from '#models/contact'
+import { UserFactory } from '#factories/user_factory'
+import { ContactFactory } from '#factories/contact_factory'
 
 /*
 Run this suits:
@@ -13,7 +13,7 @@ test.group('Contact / Suggest', (group) => {
   refreshDatabase(group)
 
   test('Should suggest contacts', async ({ client }) => {
-    const admin = await UserFactory.withRole('admin').create()
+    const admin = await UserFactory.apply('admin').create()
     const contact = await ContactFactory.create({ message })
 
     const response = await client.get('/api/v1/contact/inquiries/suggest').loginAs(admin).qs({
@@ -39,10 +39,10 @@ test.group('Contact / Suggest', (group) => {
   })
 
   test('Should filter contacts suggestion', async ({ client }) => {
-    const admin = await UserFactory.withRole('admin').create()
+    const admin = await UserFactory.apply('admin').create()
     const [openedContact] = await Promise.all([
       ContactFactory.create({ message }),
-      ContactFactory.closed().create({ message }),
+      ContactFactory.apply('closed').create({ message }),
     ])
     const response = await client.get('/api/v1/contact/inquiries/suggest').loginAs(admin).qs({
       q: 'website bug',

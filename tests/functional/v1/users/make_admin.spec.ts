@@ -1,6 +1,8 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
+import type User from '#models/user'
+import { UserFactory } from '#factories/user_factory'
+
 
 /*
 Run this suits:
@@ -16,7 +18,7 @@ test.group('Users / MakeAdmin', (group) => {
   })
 
   test('Should make admin', async ({ client, expect }) => {
-    const admin = await UserFactory.withRole('admin').create()
+    const admin = await UserFactory.apply('admin').create()
     const response = await client.patch(`/api/v1/users/${user.id}/admin`).loginAs(admin)
     await user.refresh()
 

@@ -1,7 +1,10 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
-import NotificationType from '#models/notification_type'
+import type User from '#models/user'
+import type NotificationType from '#models/notification_type'
+import { UserFactory } from '#factories/user_factory'
+import { NotificationTypeFactory } from '#factories/notification_type_factory'
+
 
 /*
 Run this suits:
@@ -15,7 +18,7 @@ test.group('Notification Types / Update', (group) => {
 
   group.each.setup(async () => {
     notificationType = await NotificationTypeFactory.create()
-    admin = await UserFactory.withRole('admin').create()
+    admin = await UserFactory.apply('admin').create()
   })
 
   test('Should update notification type', async ({ client, expect }) => {

@@ -1,6 +1,7 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
+import type User from '#models/user'
+import { UserFactory } from '#factories/user_factory'
 
 /*
 Run this suits:
@@ -34,7 +35,7 @@ test.group('Users/Delete', (group) => {
   })
 
   test('Admin should delete user', async ({ client, expect }) => {
-    const admin = await UserFactory.withRole('admin').create()
+    const admin = await UserFactory.apply('admin').create()
 
     const response = await client.delete(`/api/v1/users/${user.id}`).loginAs(admin)
 
@@ -43,7 +44,8 @@ test.group('Users/Delete', (group) => {
   })
 
   test("Admins shouldn't delete each other", async ({ client, expect }) => {
-    const [admin, anotherAdmin] = await UserFactory.count(2).withRole('admin').create()
+    const admin = await UserFactory.apply('admin').create()
+    const anotherAdmin = await UserFactory.apply('admin').create()
 
     const response = await client.delete(`/api/v1/users/${anotherAdmin.id}`).loginAs(admin)
 
