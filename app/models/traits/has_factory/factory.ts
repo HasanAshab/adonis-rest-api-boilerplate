@@ -44,7 +44,10 @@ export default abstract class Factory<
   }
 
   static new(options = {}) {
-    return new this(this.Model, options)
+    if(this === Factory) {
+      throw new Error('Can not create instance of abstract class.')
+    }
+    return new (this as any)(this.Model, options)
   }
 
   /**

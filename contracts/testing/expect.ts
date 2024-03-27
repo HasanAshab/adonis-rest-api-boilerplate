@@ -1,6 +1,6 @@
 declare module 'expect' {
-  interface Matchers {
-    toBeFalse(): CustomMatcherResult
-    toBeTrue(): CustomMatcherResult
+  interface Matchers<R, T> {
+    toBeFalse(): R
+    toBeTrue(): R
   }
 }

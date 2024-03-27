@@ -4,8 +4,9 @@ import { DbAccessTokensProvider, AccessToken } from '@adonisjs/auth/access_token
 
 export default function HasApiTokens(Superclass: NormalizeConstructor<typeof BaseModel>) {
   class HasApiTokensModel extends Superclass {
-    static accessTokens = DbAccessTokensProvider.forModel(this)
-    currentAccessToken?: AccessToken
+    //static accessTokens = DbAccessTokensProvider.forModel(this)
+    static accessTokens = DbAccessTokensProvider.forModel(HasApiTokensModel)
+    currentAccessToken: AccessToken | null = null
 
     accessTokens() {
       return this.constructor.accessTokens.all(this)

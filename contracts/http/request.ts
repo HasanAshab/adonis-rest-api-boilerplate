@@ -1,9 +1,9 @@
-import { DeviceInfo } from '#interfaces/http/request'
-import { UAParser } from 'ua-parser-js'
+import type { DeviceInfo } from '#interfaces/http/request'
+import { UAParserInstance } from 'ua-parser-js'
 
 declare module '@adonisjs/core/http' {
-  export interface Request {
-    userAgent: UAParser
+  interface Request {
+    userAgent: UAParserInstance
     device(): DeviceInfo
     deviceId(): string
   }

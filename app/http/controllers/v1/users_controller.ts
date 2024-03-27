@@ -25,7 +25,8 @@ export default class UsersController {
     return UserProfileResource.make(auth.user!)
   }
 
-  async updateProfile({ request, auth: { user } }: HttpContext) {
+  @inject()
+  async updateProfile({ request, auth: { user } }: HttpContext, authService: AuthService) {
     const { avatar, ...data } = await request.validateUsing(updateProfileValidator)
     user.merge(data)
 
@@ -40,7 +41,7 @@ export default class UsersController {
     await user.save()
 
     if (data.email) {
-      await AuthService.sendVerificationMail(user)
+      await authService.sendVerificationMail(user)
       return 'Verification email sent to your new email address!'
     }
 
@@ -70,15 +71,15 @@ export default class UsersController {
     response.noContent()
   }
 
-  async makeAdmin({ response, params }: HttpContext) {
-    return (await User.query().whereUid(params.id).update({ role: 'admin' }))
-      ? 'Admin role granted to the user.'
-      : response.notFound('User not found')
+  async makeAdmin({ params }: HttpContext) {
+    await User.query().whereUid(params.id).updateOrFail({ role: 'admin' })
+    return 'Admin role granted to the user.'
   }
 
-  async changePassword({ request, auth }: HttpContext) {
+  @inject()
+  async changePassword({ request, auth }: HttpContext, authService: AuthService) {
     const { oldPassword, newPassword } = await request.validateUsing(changePasswordValidator)
-    await AuthService.changePassword(auth.user!, oldPassword, newPassword)
+    await authService.changePassword(auth.user!, oldPassword, newPassword)
     await new PasswordChangedMail(auth.user!).sendLater()
     return 'Password changed!'
   }
