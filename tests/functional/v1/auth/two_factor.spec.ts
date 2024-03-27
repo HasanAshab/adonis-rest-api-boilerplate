@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
-import User from '#models/user'
+import { UserFactory } from '#factories/user_factory'
 import Token from '#models/token'
 import twilio from '#ioc/twilio'
 import TwoFactorAuthRequiredException from '#exceptions/two_factor_auth_required_exception'
@@ -23,7 +23,7 @@ test.group('Auth/TwoFactor', (group) => {
   })
 
   test('should recover account with valid recovery code', async ({ client }) => {
-    const user = await UserFactory.twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('twoFactorAuthenticableThroughAuthenticator').create()
     const [code] = await twoFactorAuthService.generateRecoveryCodes(user, 1)
 
     const response = await client.post('/api/v1/auth/two-factor/recover').json({
@@ -36,7 +36,7 @@ test.group('Auth/TwoFactor', (group) => {
   })
 
   test("shouldn't recover account with same recovery code", async ({ client }) => {
-    const user = await UserFactory.twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('twoFactorAuthenticableThroughAuthenticator').create()
     const [code] = await twoFactorAuthService.generateRecoveryCodes(user, 1)
     const data = {
       email: user.email,
@@ -53,7 +53,7 @@ test.group('Auth/TwoFactor', (group) => {
   })
 
   test("shouldn't recover account with invalid recovery code", async ({ client }) => {
-    const user = await UserFactory.twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('twoFactorAuthenticableThroughAuthenticator').create()
     await twoFactorAuthService.generateRecoveryCodes(user, 1)
 
     const response = await client.post('/api/v1/auth/two-factor/recover').json({
@@ -66,7 +66,7 @@ test.group('Auth/TwoFactor', (group) => {
   })
 
   test('Should not send otp without token', async ({ client }) => {
-    const { email } = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
+    const { email } = await UserFactory.apply('hasPhoneNumber').apply('twoFactorAuthenticableThroughAuthenticator').create()
 
     const response = await client.post(`/api/v1/auth/two-factor/challenges`).json({ email })
 
@@ -74,9 +74,9 @@ test.group('Auth/TwoFactor', (group) => {
   })
 
   test('Should send otp through {$self}')
-    .with(['sms', 'call'])
+    .with(['Sms', 'Call'])
     .run(async ({ client }, method) => {
-      const user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled(method).create()
+      const user = await UserFactory.apply('hasPhoneNumber').apply(`twoFactorAuthenticableThrough${method}`).create()
       const token = await new TwoFactorAuthRequiredException(user).challengeToken()
 
       const response = await client.post(`/api/v1/auth/two-factor/challenges`).json({
@@ -85,7 +85,7 @@ test.group('Auth/TwoFactor', (group) => {
       })
 
       response.assertStatus(200)
-      if (method === 'sms') {
+      if (method === 'Sms') {
         twilio.assertMessaged(user.phoneNumber)
       } else {
         twilio.assertCalled(user.phoneNumber)
@@ -93,9 +93,9 @@ test.group('Auth/TwoFactor', (group) => {
     })
 
   test('Should not send otp through {$self} to phone numberless user')
-    .with(['sms', 'call'])
+    .with(['Sms', 'Call'])
     .run(async ({ client }, method) => {
-      const user = await UserFactory.twoFactorAuthEnabled(method).create()
+      const user = await UserFactory.apply(`twoFactorAuthenticableThrough${method}`).create()
       const token = await new TwoFactorAuthRequiredException(user).challengeToken()
 
       const response = await client.post(`/api/v1/auth/two-factor/challenges`).json({
@@ -110,7 +110,7 @@ test.group('Auth/TwoFactor', (group) => {
     })
 
   test('Should not verify challenge without token', async ({ client }) => {
-    const user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('hasPhoneNumber').apply('twoFactorAuthenticableThroughAuthenticator').create()
     const code = authenticator.generate(user.twoFactorSecret)
 
     const response = await client
@@ -126,13 +126,12 @@ test.group('Auth/TwoFactor', (group) => {
   })
 
   test('should verify challenge of method {$self} with valid otp')
-    .with(['authenticator', 'sms', 'call'])
+    .with(['Authenticator', 'Sms', 'Call'])
     .run(async ({ client }, method) => {
-      const user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled(method).create()
+      const user = await UserFactory.apply('hasPhoneNumber').apply(`twoFactorAuthenticableThrough${method}`).create()
       const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
-
       const code =
-        method === 'authenticator'
+        method === 'Authenticator'
           ? authenticator.generate(user.twoFactorSecret)
           : await new Otp().generate(user.twoFactorSecret)
 
@@ -151,9 +150,9 @@ test.group('Auth/TwoFactor', (group) => {
     })
 
   test('should login user of {$self} method with invalid otp')
-    .with(['sms', 'call'])
+    .with(['Sms', 'Call'])
     .run(async ({ client }, method) => {
-      const user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled(method).create()
+      const user = await UserFactory.apply('hasPhoneNumber').apply(`twoFactorAuthenticableThrough${method}`).create()
       const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
 
       const response = await client
@@ -175,7 +174,7 @@ test.group('Auth/TwoFactor', (group) => {
     client,
     expect,
   }) => {
-    const user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('hasPhoneNumber').apply(`twoFactorAuthenticableThrough${method}`).create()
     const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
     const code = authenticator.generate(user.twoFactorSecret)
 
@@ -198,7 +197,7 @@ test.group('Auth/TwoFactor', (group) => {
     client,
     expect,
   }) => {
-    const user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('hasPhoneNumber').apply(`twoFactorAuthenticableThrough${method}`).create()
     const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
     const code = authenticator.generate(user.twoFactorSecret)
 
@@ -221,7 +220,7 @@ test.group('Auth/TwoFactor', (group) => {
     client,
     expect,
   }) => {
-    const user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('hasPhoneNumber').apply(`twoFactorAuthenticableThrough${method}`).create()
     const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
 
     const response = await client

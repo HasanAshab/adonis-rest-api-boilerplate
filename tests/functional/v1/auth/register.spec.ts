@@ -2,7 +2,7 @@ import { test } from '@japa/runner'
 import { refreshDatabase, fakeFilePath } from '#tests/helpers'
 import { omit, pick } from 'lodash-es'
 import emitter from '@adonisjs/core/services/emitter'
-import User from '#models/user'
+import { UserFactory } from '#factories/user_factory'
 import Registered from '#events/registered'
 
 /*

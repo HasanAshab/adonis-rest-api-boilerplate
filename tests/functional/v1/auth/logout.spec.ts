@@ -1,8 +1,9 @@
 import { test } from '@japa/runner'
 import { range } from 'lodash-es'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
-import LoggedDevice from '#models/logged_device'
+import { UserFactory } from '#factories/user_factory'
+import { LoggedDeviceFactory } from '#factories/logged_device_factory'
+
 
 /*
 Run this suits:
@@ -23,7 +24,7 @@ test.group('Auth / Logout', (group) => {
     const user = await UserFactory.create()
     const loggedDevice = await LoggedDeviceFactory.create()
     for (const i of range(3)) {
-      await user.createTrackableToken(loggedDevice.id, '127.0.0.1')
+      await user.createTrackableToken(loggedDevice, '127.0.0.1')
     }
 
     const response = await client

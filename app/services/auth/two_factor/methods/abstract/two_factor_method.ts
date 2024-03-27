@@ -22,8 +22,7 @@ export default abstract class TwoFactorMethod {
     await user.save()
   }
 
-  shouldDisable(user: User) {
-    user
+  shouldDisable(_: User) {
     return false
   }
 
@@ -41,8 +40,7 @@ export default abstract class TwoFactorMethod {
     await user.save()
   }
 
-  challenge(user: User): string | null | Promise<string | null> {
-    user
+  challenge(_: User): string | null | Promise<string | null> {
     return null
   }
 

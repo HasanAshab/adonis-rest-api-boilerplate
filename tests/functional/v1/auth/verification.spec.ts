@@ -1,6 +1,7 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
+import type User from '#models/user'
+import { UserFactory } from '#factories/user_factory'
 import mail from '@adonisjs/mail/services/main'
 import EmailVerificationMail from '#mails/email_verification_mail'
 
@@ -9,12 +10,12 @@ Run this suits:
 node ace test functional --files="v1/auth/verification.spec.ts"
 */
 test.group('Auth / Verification', (group) => {
-  let user
+  let user: User
 
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await UserFactory.unverified().create()
+    user = await UserFactory.apply('unverified').create()
   })
 
   test('should verify email', async ({ client, expect }) => {

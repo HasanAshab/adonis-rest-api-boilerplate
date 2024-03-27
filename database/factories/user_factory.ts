@@ -1,6 +1,6 @@
 import factory from '@adonisjs/lucid/factories'
 import User from '#models/user'
-import { NotificationFactory } from '#factories/notification_factory'
+//import { NotificationFactory } from '#factories/notification_factory'
 import { stringToLuxonDate } from '#app/helpers'
 
 
@@ -18,7 +18,7 @@ export const UserFactory = factory
   .state('hasPhoneNumber', user => (user.phoneNumber = '+15005550006'))
   .state('admin', user => (user.role = 'admin'))
   .state('registeredPreviousWeek', user => {
-    user.createdAt = stringToLuxonDate('-7')
+    user.createdAt = stringToLuxonDate('-1')
   })
   .state('social', user => {
     user.password = null
@@ -40,5 +40,5 @@ export const UserFactory = factory
     user.twoFactorSecret = '2fa-secret'
     user.twoFactorMethod = 'call'
   })
-  .relation('notifications', () => NotificationFactory)
+  //.relation('notifications', () => NotificationFactory)
   .build()

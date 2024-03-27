@@ -1,7 +1,8 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import mail from '@adonisjs/mail/services/main'
-import User from '#models/user'
+import type User from '#models/user'
+import { UserFactory } from '#factories/user_factory'
 import ResetPasswordMail from '#mails/reset_password_mail'
 import PasswordChangedMail from '#mails/password_changed_mail'
 
@@ -44,7 +45,7 @@ test.group('Auth / Password', (group) => {
 
   test("Shouldn't send reset email to unverified account", async ({ client, expect }) => {
     const { mails } = mail.fake()
-    const { email } = await UserFactory.unverified().create()
+    const { email } = await UserFactory.apply('unverified').create()
 
     const response = await client.post('/api/v1/auth/password/forgot').json({ email })
 
@@ -54,7 +55,7 @@ test.group('Auth / Password', (group) => {
 
   test("Shouldn't send reset email to social account", async ({ client, expect }) => {
     const { mails } = mail.fake()
-    const { email } = await UserFactory.social().create()
+    const { email } = await UserFactory.apply('social').create()
 
     const response = await client.post('/api/v1/auth/password/forgot').json({ email })
 

@@ -1,7 +1,8 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
 import Contact from '#models/contact'
+import { UserFactory } from '#factories/user_factory'
+import { ContactFactory } from '#factories/contact_factory'
 import { extract } from '#app/helpers'
 import ListContactResource from '#resources/v1/contact/list_contact_resource'
 import ShowContactResource from '#resources/v1/contact/show_contact_resource'
@@ -16,7 +17,7 @@ test.group('Contact / List', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    admin = await UserFactory.withRole('admin').create()
+    admin = await UserFactory.apply('admin').create()
   })
 
   test('Should list contacts', async ({ client }) => {

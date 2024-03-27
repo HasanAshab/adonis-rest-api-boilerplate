@@ -1,14 +1,15 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
-import LoggedDevice from '#models/logged_device'
+import type User from '#models/user'
+import { UserFactory } from '#factories/user_factory'
+import { LoggedDeviceFactory } from '#factories/logged_device_factory'
 
 /*
 Run this suits:
 node ace test functional --files="v1/auth/login.spec.ts"
 */
 test.group('Auth / Login', (group) => {
-  let user
+  let user: User
 
   refreshDatabase(group)
 
@@ -37,7 +38,7 @@ test.group('Auth / Login', (group) => {
   })
 
   test("shouldn't login manually in social account", async ({ client }) => {
-    user = await UserFactory.social().create()
+    user = await UserFactory.apply('social').create()
     const response = await client.post('/api/v1/auth/login').deviceId('device-id').json({
       email: user.email,
       password: 'password',
@@ -72,7 +73,7 @@ test.group('Auth / Login', (group) => {
   })
 
   test('Login should flag for two factor auth on 2FA enabled account', async ({ client }) => {
-    user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
+    user = await UserFactory.apply('hasPhoneNumber').apply('twoFactorAuthenticableThroughAuthenticator').create()
 
     const response = await client.post('/api/v1/auth/login').deviceId('device-id').json({
       email: user.email,
@@ -85,7 +86,7 @@ test.group('Auth / Login', (group) => {
   })
 
   test('Should login with trusted device on 2FA enabled account', async ({ client }) => {
-    user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
+    user = await UserFactory.apply('hasPhoneNumber').apply('twoFactorAuthenticableThroughAuthenticator').create()
     const device = await LoggedDeviceFactory.create()
     await user.trustDevice(device, '127.0.0.1')
 

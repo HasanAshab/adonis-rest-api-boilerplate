@@ -19,6 +19,7 @@
     "#resources/*": "./app/http/resources/*.js",
     "#exceptions/*": "./app/exceptions/*.js",
     "#models/*": "./app/models/*.js",
+    "#factories/*": "./database/factories/*.js",
     "#mails/*": "./app/mails/*.js",
     "#notifications/*": "./app/notifications/*.js",
     "#services/*": "./app/services/*.js",

@@ -1,7 +1,8 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
 import Contact from '#models/contact'
+import { UserFactory } from '#factories/user_factory'
+import { ContactFactory } from '#factories/contact_factory'
 
 /*
 Run this suits:
@@ -17,7 +18,7 @@ test.group('Contact / Delete', (group) => {
   })
 
   test('Should delete contact', async ({ client, expect }) => {
-    const admin = await UserFactory.withRole('admin').create()
+    const admin = await UserFactory.apply('admin').create()
 
     const response = await client.delete('/api/v1/contact/inquiries/' + contact.id).loginAs(admin)
 
