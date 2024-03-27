@@ -1,6 +1,7 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
 import User from '#models/user'
+import { UserFactory } from '#factories/user_factory'
 import NotificationType from '#models/notification_type'
 import NotificationPreferenceCollection from '#resources/v1/settings/notification_preference_collection'
 import NotificationTypeSeeder from 'database/seeders/notification_type_seeder'
@@ -19,7 +20,8 @@ test.group('Settings / Notification Preference', (group) => {
 
   group.each.setup(async () => {
     await new NotificationTypeSeeder().run()
-    user = await User.factory().hasNotificationPreferences().create()
+    user = await UserFactory.create()
+    await user.initNotificationPreference()
   })
 
   test('Should get notification preference settings', async ({ client }) => {
