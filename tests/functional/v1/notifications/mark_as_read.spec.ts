@@ -13,7 +13,7 @@ test.group('Notifications / Mark As Read', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().create()
+    user = await UserFactory.create()
   })
 
   test('Should mark notification as read', async ({ client, expect }) => {
@@ -46,7 +46,7 @@ test.group('Notifications / Mark As Read', (group) => {
   })
 
   test("Shouldn't mark others notification as read", async ({ client, expect }) => {
-    const anotherUser = await User.factory().create()
+    const anotherUser = await UserFactory.create()
     const notification = await NotificationFactory.new().belongsTo(anotherUser).unread().create()
 
     const response = await client

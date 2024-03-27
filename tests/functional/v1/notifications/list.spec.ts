@@ -15,7 +15,7 @@ test.group('Notifications / List', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().create()
+    user = await UserFactory.create()
   })
 
   test('Should get notifications list', async ({ client }) => {
@@ -28,7 +28,7 @@ test.group('Notifications / List', (group) => {
   })
 
   test("Shouldn't get others notifications list", async ({ client }) => {
-    const anotherUser = await User.factory().create()
+    const anotherUser = await UserFactory.create()
     await NotificationFactory.new().belongsTo(anotherUser).create()
 
     const response = await client.get('/api/v1/notifications').loginAs(user)
@@ -46,7 +46,7 @@ test.group('Notifications / List', (group) => {
   })
 
   test('Should not get others notification', async ({ client }) => {
-    const anotherUser = await User.factory().create()
+    const anotherUser = await UserFactory.create()
     const notification = await NotificationFactory.new().belongsTo(anotherUser).create()
 
     const response = await client.get('/api/v1/notifications/' + notification.id).loginAs(user)

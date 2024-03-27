@@ -14,7 +14,7 @@ test.group('Auth / Verification', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().unverified().create()
+    user = await UserFactory.unverified().create()
   })
 
   test('should verify email', async ({ client, expect }) => {

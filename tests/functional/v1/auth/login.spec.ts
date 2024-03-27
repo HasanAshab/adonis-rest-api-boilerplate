@@ -13,7 +13,7 @@ test.group('Auth / Login', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().create()
+    user = await UserFactory.create()
   })
 
   test('should login a user', async ({ client }) => {
@@ -37,7 +37,7 @@ test.group('Auth / Login', (group) => {
   })
 
   test("shouldn't login manually in social account", async ({ client }) => {
-    user = await User.factory().social().create()
+    user = await UserFactory.social().create()
     const response = await client.post('/api/v1/auth/login').deviceId('device-id').json({
       email: user.email,
       password: 'password',
@@ -72,7 +72,7 @@ test.group('Auth / Login', (group) => {
   })
 
   test('Login should flag for two factor auth on 2FA enabled account', async ({ client }) => {
-    user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+    user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
 
     const response = await client.post('/api/v1/auth/login').deviceId('device-id').json({
       email: user.email,
@@ -85,7 +85,7 @@ test.group('Auth / Login', (group) => {
   })
 
   test('Should login with trusted device on 2FA enabled account', async ({ client }) => {
-    user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+    user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
     const device = await LoggedDevice.factory().create()
     await user.trustDevice(device, '127.0.0.1')
 

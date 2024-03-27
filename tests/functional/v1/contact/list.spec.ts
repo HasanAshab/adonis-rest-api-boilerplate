@@ -16,11 +16,11 @@ test.group('Contact / List', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    admin = await User.factory().withRole('admin').create()
+    admin = await UserFactory.withRole('admin').create()
   })
 
   test('Should list contacts', async ({ client }) => {
-    const contacts = await Contact.factory().count(2).create()
+    const contacts = await ContactFactory.createMany(2)
 
     const response = await client.get('/api/v1/contact/inquiries').loginAs(admin)
 
@@ -29,8 +29,8 @@ test.group('Contact / List', (group) => {
   })
 
   test('Users should not get contacts list', async ({ client }) => {
-    const user = await User.factory().create()
-    const contacts = await Contact.factory().count(2).create()
+    const user = await UserFactory.create()
+    const contacts = await ContactFactory.createMany(2)
 
     const response = await client.get('/api/v1/contact/inquiries').loginAs(user)
 
@@ -39,7 +39,7 @@ test.group('Contact / List', (group) => {
   })
 
   test('Should get contact', async ({ client }) => {
-    const contact = await Contact.factory().create()
+    const contact = await ContactFactory.create()
 
     const response = await client.get('/api/v1/contact/inquiries/' + contact.id).loginAs(admin)
 
@@ -48,8 +48,8 @@ test.group('Contact / List', (group) => {
   })
 
   test('Users should not get contact', async ({ client }) => {
-    const user = await User.factory().create()
-    const contact = await Contact.factory().create()
+    const user = await UserFactory.create()
+    const contact = await ContactFactory.create()
 
     const response = await client.get('/api/v1/contact/inquiries/' + contact.id).loginAs(user)
 

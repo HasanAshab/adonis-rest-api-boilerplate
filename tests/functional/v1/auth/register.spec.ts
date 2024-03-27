@@ -56,7 +56,7 @@ test.group('Auth / Register', (group) => {
 
   test("shouldn't register with existing email", async ({ client }) => {
     const events = emitter.fake()
-    const user = await User.factory().create()
+    const user = await UserFactory.create()
 
     const response = await client.post('/api/v1/auth/register').json({
       username: 'foo',
@@ -70,7 +70,7 @@ test.group('Auth / Register', (group) => {
 
   test("shouldn't register with existing username", async ({ client }) => {
     const events = emitter.fake()
-    const user = await User.factory().create()
+    const user = await UserFactory.create()
 
     const response = await client.post('/api/v1/auth/register').json({
       username: user.username,

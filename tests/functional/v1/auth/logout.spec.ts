@@ -10,7 +10,7 @@ node ace test functional --files="v1/auth/logout.spec.ts"
 */
 test.group('Auth / Logout', (group) => {
   test('API token should be invalid after logout', async ({ client, expect }) => {
-    const user = await User.factory().create()
+    const user = await UserFactory.create()
     const token = await user.createToken()
     const response = await client.post('/api/v1/auth/logout').bearerToken(token.value.release())
     const responseAfterLogout = await client.post('/api/v1/auth/logout').bearerToken(token)
@@ -20,7 +20,7 @@ test.group('Auth / Logout', (group) => {
   })
 
   test('Should logout on device', async ({ client, expect }) => {
-    const user = await User.factory().create()
+    const user = await UserFactory.create()
     const loggedDevice = await LoggedDevice.factory().create()
     for (const i of range(3)) {
       await user.createTrackableToken(loggedDevice.id, '127.0.0.1')

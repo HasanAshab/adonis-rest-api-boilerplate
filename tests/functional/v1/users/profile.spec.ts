@@ -15,7 +15,7 @@ test.group('Users / Profile', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().create()
+    user = await UserFactory.create()
   })
 
   test('should get profile', async ({ client }) => {
@@ -40,7 +40,7 @@ test.group('Users / Profile', (group) => {
   })
 
   test("Shouldn't update profile with existing username", async ({ client, expect }) => {
-    const existingUser = await User.factory().create()
+    const existingUser = await UserFactory.create()
     const oldUsername = user.username
 
     const response = await client
@@ -57,7 +57,7 @@ test.group('Users / Profile', (group) => {
   })
 
   test("Shouldn't update profile with existing email", async ({ client, expect }) => {
-    const existingUser = await User.factory().create()
+    const existingUser = await UserFactory.create()
     const oldEmail = user.email
 
     const response = await client
@@ -88,7 +88,7 @@ test.group('Users / Profile', (group) => {
   })
 
   test("Should get other user's profile", async ({ client }) => {
-    const otherUser = await User.factory().create()
+    const otherUser = await UserFactory.create()
 
     const response = await client.get(`/api/v1/users/${otherUser.username}`).loginAs(user)
 

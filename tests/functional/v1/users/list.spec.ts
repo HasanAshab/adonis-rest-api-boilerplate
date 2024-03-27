@@ -12,8 +12,8 @@ test.group('Users / List', (group) => {
 
   test('Should list users', async ({ client }) => {
     const [admin, users] = await Promise.all([
-      User.factory().withRole('admin').create(),
-      User.factory().count(2).create(),
+      UserFactory.withRole('admin').create(),
+      UserFactory.createMany(2),
     ])
 
     const response = await client.get('/api/v1/users').loginAs(admin)
@@ -23,7 +23,7 @@ test.group('Users / List', (group) => {
   })
 
   test("User shouldn't get users list", async ({ client }) => {
-    const user = await User.factory().create()
+    const user = await UserFactory.create()
 
     const response = await client.get('/api/v1/users').loginAs(user)
 

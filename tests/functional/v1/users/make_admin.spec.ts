@@ -12,11 +12,11 @@ test.group('Users / MakeAdmin', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().create()
+    user = await UserFactory.create()
   })
 
   test('Should make admin', async ({ client, expect }) => {
-    const admin = await User.factory().withRole('admin').create()
+    const admin = await UserFactory.withRole('admin').create()
     const response = await client.patch(`/api/v1/users/${user.id}/admin`).loginAs(admin)
     await user.refresh()
 
@@ -25,7 +25,7 @@ test.group('Users / MakeAdmin', (group) => {
   })
 
   test("User Should't make others admin", async ({ client, expect }) => {
-    const anotherUser = await User.factory().create()
+    const anotherUser = await UserFactory.create()
 
     const response = await client.patch(`/api/v1/users/${anotherUser.id}/admin`).loginAs(user)
     await anotherUser.refresh()

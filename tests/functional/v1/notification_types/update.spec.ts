@@ -15,7 +15,7 @@ test.group('Notification Types / Update', (group) => {
 
   group.each.setup(async () => {
     notificationType = await NotificationType.factory().create()
-    admin = await User.factory().withRole('admin').create()
+    admin = await UserFactory.withRole('admin').create()
   })
 
   test('Should update notification type', async ({ client, expect }) => {
@@ -37,7 +37,7 @@ test.group('Notification Types / Update', (group) => {
   })
 
   test('Users should not update notification type', async ({ client, expect }) => {
-    const user = await User.factory().create()
+    const user = await UserFactory.create()
     const displayText = 'New Text'
 
     const response = await client

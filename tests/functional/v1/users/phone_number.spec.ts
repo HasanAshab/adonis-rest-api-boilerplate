@@ -17,7 +17,7 @@ test.group('Users / Phone Number', (group) => {
 
   group.each.setup(async () => {
     twilio.fake()
-    user = await User.factory().create()
+    user = await UserFactory.create()
   })
 
   test('Should update phone number with valid otp', async ({ client, expect }) => {
@@ -67,7 +67,7 @@ test.group('Users / Phone Number', (group) => {
   test('Updating phone number on 2FA ({$self}) enabled account should disable 2fa')
     .with(['sms', 'call'])
     .run(async ({ client, expect }, method) => {
-      user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
+      user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled(method).create()
       const phoneNumber = '+14155552671'
       const otp = await otpService.generate(phoneNumber)
 
@@ -86,7 +86,7 @@ test.group('Users / Phone Number', (group) => {
     client,
     expect,
   }) => {
-    user = await User.factory().twoFactorAuthEnabled().create()
+    user = await UserFactory.twoFactorAuthEnabled().create()
     const phoneNumber = '+14155552671'
     const otp = await otpService.generate(phoneNumber)
 
@@ -102,7 +102,7 @@ test.group('Users / Phone Number', (group) => {
   })
 
   test('Should remove phone number', async ({ client, expect }) => {
-    user = await User.factory().withPhoneNumber().create()
+    user = await UserFactory.withPhoneNumber().create()
 
     const response = await client.delete('/api/v1/users/me/phone-number').loginAs(user)
     await user.refresh()
@@ -114,7 +114,7 @@ test.group('Users / Phone Number', (group) => {
   test('Removing phone number on 2FA ({$self}) enabled account should disable 2FA')
     .with(['sms', 'call'])
     .run(async ({ client, expect }, method) => {
-      user = await User.factory().withPhoneNumber().twoFactorAuthEnabled(method).create()
+      user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled(method).create()
 
       const response = await client.delete('/api/v1/users/me/phone-number').loginAs(user)
       await user.refresh()
@@ -128,7 +128,7 @@ test.group('Users / Phone Number', (group) => {
     client,
     expect,
   }) => {
-    user = await User.factory().withPhoneNumber().twoFactorAuthEnabled().create()
+    user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
 
     const response = await client.delete('/api/v1/users/me/phone-number').loginAs(user)
     await user.refresh()

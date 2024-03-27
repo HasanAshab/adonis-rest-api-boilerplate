@@ -15,7 +15,7 @@ test.group('Auth / Password', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().create()
+    user = await UserFactory.create()
   })
 
   test('Should send reset email', async ({ client }) => {
@@ -44,7 +44,7 @@ test.group('Auth / Password', (group) => {
 
   test("Shouldn't send reset email to unverified account", async ({ client, expect }) => {
     const { mails } = mail.fake()
-    const { email } = await User.factory().unverified().create()
+    const { email } = await UserFactory.unverified().create()
 
     const response = await client.post('/api/v1/auth/password/forgot').json({ email })
 
@@ -54,7 +54,7 @@ test.group('Auth / Password', (group) => {
 
   test("Shouldn't send reset email to social account", async ({ client, expect }) => {
     const { mails } = mail.fake()
-    const { email } = await User.factory().social().create()
+    const { email } = await UserFactory.social().create()
 
     const response = await client.post('/api/v1/auth/password/forgot').json({ email })
 

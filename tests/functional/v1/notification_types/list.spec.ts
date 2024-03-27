@@ -14,11 +14,11 @@ test.group('Notification Types / List', (group) => {
   refreshDatabase(group)
 
   group.setup(async () => {
-    user = await User.factory().create()
+    user = await UserFactory.create()
   })
 
   test('Should get notification types list', async ({ client }) => {
-    const notificationTypes = await NotificationType.factory().count(2).create()
+    const notificationTypes = await NotificationType.factory().createMany(2)
 
     const response = await client.get('/api/v1/notification-types').loginAs(user)
 

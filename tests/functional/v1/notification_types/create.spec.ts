@@ -13,7 +13,7 @@ test.group('Notification Types / Create', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    admin = await User.factory().withRole('admin').create()
+    admin = await UserFactory.withRole('admin').create()
   })
 
   test('Should create notification type', async ({ client, expect }) => {
@@ -31,7 +31,7 @@ test.group('Notification Types / Create', (group) => {
   })
 
   test('Users should not create notification type', async ({ client, expect }) => {
-    const user = await User.factory().create()
+    const user = await UserFactory.create()
     const data = {
       name: 'name',
       displayText: 'Text',

@@ -9,8 +9,8 @@ node ace test  --files="v1/settings/login_activities.spec.ts"
 */
 test.group('V1 / Settings / Login Activities', () => {
   test('should get login activities', async ({ client }) => {
-    const user = await User.factory().create()
-    const loggedDevices = await LoggedDevice.factory().count(3).create()
+    const user = await UserFactory.create()
+    const loggedDevices = await LoggedDevice.factory().createMany(3)
     for (const device of loggedDevices) {
       await user.createTrackableToken(device, '127.0.0.1')
     }

@@ -10,7 +10,7 @@ test.group('Admin / Dashboard', (group) => {
   refreshDatabase(group)
 
   test("Users shouldn't get admin dashboard", async ({ client, expect }) => {
-    const user = await User.factory().create()
+    const user = await UserFactory.create()
 
     const response = await client.get('/api/v1/admin/dashboard').loginAs(user)
 
@@ -19,9 +19,9 @@ test.group('Admin / Dashboard', (group) => {
   })
 
   test('Admin should get dashboard', async ({ client, expect }) => {
-    const admin = await User.factory().withRole('admin').create()
-    const todayUser = await User.factory().count(2).create()
-    const oldUser = await User.factory().count(3).registeredBefore('1 day').create()
+    const admin = await UserFactory.withRole('admin').create()
+    const todayUser = await UserFactory.createMany(2)
+    const oldUser = await UserFactory.count(3).registeredBefore('1 day').create()
 
     const response = await client.get('/api/v1/admin/dashboard').loginAs(admin)
 

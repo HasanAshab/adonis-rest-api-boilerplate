@@ -14,7 +14,7 @@ test.group('Notifications / Delete', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().create()
+    user = await UserFactory.create()
     notification = await NotificationFactory.new().belongsTo(user).create()
   })
 
@@ -26,7 +26,7 @@ test.group('Notifications / Delete', (group) => {
   })
 
   test("Shouldn't delete others notification", async ({ client, expect }) => {
-    const anotherUser = await User.factory().create()
+    const anotherUser = await UserFactory.create()
 
     const response = await client
       .delete(`/api/v1/notifications/${notification.id}`)

@@ -13,8 +13,8 @@ test.group('Contact / Search', (group) => {
   refreshDatabase(group)
 
   test('Should search contacts', async ({ client }) => {
-    const admin = await User.factory().withRole('admin').create()
-    const contact = await Contact.factory().create({ message })
+    const admin = await UserFactory.withRole('admin').create()
+    const contact = await ContactFactory.create({ message })
 
     const response = await client.get('/api/v1/contact/inquiries/search').loginAs(admin).qs({
       q: 'website bug',
@@ -26,8 +26,8 @@ test.group('Contact / Search', (group) => {
   })
 
   test('Users should not search contacts', async ({ client }) => {
-    const user = await User.factory().create()
-    const contact = await Contact.factory().create({ message })
+    const user = await UserFactory.create()
+    const contact = await ContactFactory.create({ message })
 
     const response = await client.get('/api/v1/contact/inquiries/search').loginAs(user).qs({
       q: 'website bug',
@@ -38,10 +38,10 @@ test.group('Contact / Search', (group) => {
   })
 
   test('Should filter search contacts', async ({ client }) => {
-    const admin = await User.factory().withRole('admin').create()
+    const admin = await UserFactory.withRole('admin').create()
     const [openedContact] = await Promise.all([
-      Contact.factory().create({ message }),
-      Contact.factory().closed().create({ message }),
+      ContactFactory.create({ message }),
+      ContactFactory.closed().create({ message }),
     ])
 
     const response = await client.get('/api/v1/contact/inquiries/search').loginAs(admin).qs({

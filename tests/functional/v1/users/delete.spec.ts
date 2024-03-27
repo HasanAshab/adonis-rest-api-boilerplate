@@ -12,11 +12,11 @@ test.group('Users/Delete', (group) => {
   refreshDatabase(group)
 
   group.each.setup(async () => {
-    user = await User.factory().create()
+    user = await UserFactory.create()
   })
 
   test('Should delete own account', async ({ client, expect }) => {
-    user = await User.factory().create()
+    user = await UserFactory.create()
 
     const response = await client.delete(`/api/v1/users/me`).loginAs(user)
 
@@ -25,7 +25,7 @@ test.group('Users/Delete', (group) => {
   })
 
   test("User shouldn't delete others", async ({ client, expect }) => {
-    const anotherUser = await User.factory().create()
+    const anotherUser = await UserFactory.create()
 
     const response = await client.delete(`/api/v1/users/${anotherUser.id}`).loginAs(user)
 
@@ -34,7 +34,7 @@ test.group('Users/Delete', (group) => {
   })
 
   test('Admin should delete user', async ({ client, expect }) => {
-    const admin = await User.factory().withRole('admin').create()
+    const admin = await UserFactory.withRole('admin').create()
 
     const response = await client.delete(`/api/v1/users/${user.id}`).loginAs(admin)
 
@@ -43,7 +43,7 @@ test.group('Users/Delete', (group) => {
   })
 
   test("Admins shouldn't delete each other", async ({ client, expect }) => {
-    const [admin, anotherAdmin] = await User.factory().count(2).withRole('admin').create()
+    const [admin, anotherAdmin] = await UserFactory.count(2).withRole('admin').create()
 
     const response = await client.delete(`/api/v1/users/${anotherAdmin.id}`).loginAs(admin)
 

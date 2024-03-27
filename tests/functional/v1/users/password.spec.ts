@@ -11,7 +11,7 @@ test.group('Users/Password', (group) => {
   refreshDatabase(group)
 
   test('should change password', async ({ client, expect }) => {
-    const user = await User.factory().create()
+    const user = await UserFactory.create()
     const newPassword = 'Password@1234'
 
     const response = await client.patch('/api/v1/users/me/password').loginAs(user).json({
@@ -25,7 +25,7 @@ test.group('Users/Password', (group) => {
   })
 
   test("shouldn't change password of social account", async ({ client, expect }) => {
-    const user = await User.factory().social().create()
+    const user = await UserFactory.social().create()
 
     const response = await client.patch('/api/v1/users/me/password').loginAs(user).json({
       oldPassword: 'password',

@@ -9,7 +9,7 @@ node ace test functional --files="v1/notifications/unread_count.spec.ts"
 */
 test.group('Notifications / Unread count', (group) => {
   test('Should get unread notifications count', async ({ client, expect }) => {
-    const [user, anotherUser] = await User.factory().count(2).create()
+    const [user, anotherUser] = await UserFactory.createMany(2)
     await Promise.all([
       NotificationFactory.new().belongsTo(user).count(2).unread().belongsTo(user).create(),
       NotificationFactory.new().belongsTo(user).create(),
