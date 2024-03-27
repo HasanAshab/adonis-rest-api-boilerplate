@@ -2,6 +2,7 @@ import { BaseModel as Model } from '@adonisjs/lucid/orm'
 import is from '@adonisjs/core/helpers/is'
 import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 import { ExtractModelRelations } from '@adonisjs/lucid/types/relations'
+import { StrictValues } from '@adonisjs/lucid/types/querybuilder'
 
 
 
@@ -11,8 +12,8 @@ type QueryBuilder = ModelQueryBuilderContract<typeof BaseModel, BaseModel>
  * Base model class with common utility methods.
  */
 export default class BaseModel extends Model {
-  static where(...args: Parameters<QueryBuilder['where']>) {
-    return this.query().where(...args)
+  static where(key: string, value: StrictValues) {
+    return this.query().where(key, value)
   }
 
   static last() {

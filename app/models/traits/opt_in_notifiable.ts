@@ -1,4 +1,5 @@
 import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
+import app from '@adonisjs/core/services/app'
 import { compose } from '@adonisjs/core/helpers'
 import { mapValues, reduce } from 'lodash-es'
 import { DateTime } from 'luxon'
@@ -11,11 +12,13 @@ import { ManyToMany } from '@adonisjs/lucid/types/relations'
 
 export type NotificationPreferences = Record<string, string[] | Record<string, boolean>>
 
+const notificationService = await app.container.make(NotificationService)
+
 export default function OptInNotifiable(
   Superclass: NormalizeConstructor<typeof BaseModel>,
   tableName = 'notifications'
 ) {
-  return class extends compose(Superclass, Notifiable(tableName)) {
+  class OptInNotifiableModel extends compose(Superclass, Notifiable(tableName)) {
     static boot() {
       if (this.booted) return
       super.boot()
@@ -31,7 +34,7 @@ export default function OptInNotifiable(
       })
     }
 
-    declare notificationPreference: ManyToMany<NotificationType>
+    declare notificationPreference: ManyToMany<typeof NotificationType>
 
     unreadNotifications() {
       return this.related('notifications').query().whereNull('readAt')
@@ -60,7 +63,7 @@ export default function OptInNotifiable(
 
     async initNotificationPreference() {
       const ids = await NotificationType.pluck('id')
-      const channels = NotificationService.channels()
+      const channels = notificationService.channels()
       const preferences = ids.reduce((acc, id) => {
         acc[id] = channels
         return acc
@@ -104,4 +107,6 @@ export default function OptInNotifiable(
         })
     }
   }
+
+  return OptInNotifiableModel
 }

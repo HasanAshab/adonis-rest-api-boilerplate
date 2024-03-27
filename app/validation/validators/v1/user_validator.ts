@@ -9,17 +9,18 @@ export const updateProfileValidator = vine.compile(
       .maxLength(config.get('app.constraints.user.name.maxLength'))
       .escape()
       .optional(),
-
     username: vine
       .string()
       .minLength(config.get('app.constraints.user.username.minLength'))
       .maxLength(config.get('app.constraints.user.username.maxLength'))
-      .alphaNumeric()
+      .alphaNumeric({
+        allowUnderscores: true,
+        allowDashes: true
+      })
       .unique('users.username')
       .optional(),
 
     email: vine.string().email().unique('users.email').optional(),
-
     avatar: vine.file(config.get('app.constraints.user.avatar')).optional(),
   })
 )

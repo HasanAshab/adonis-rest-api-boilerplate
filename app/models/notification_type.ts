@@ -2,13 +2,12 @@ import app from '@adonisjs/core/services/app'
 import BaseModel from '#models/base_model'
 import { column } from '@adonisjs/lucid/orm'
 import { compose } from '@adonisjs/core/helpers'
-import HasFactory from '#models/traits/has_factory/mixin'
 import HasTimestamps from '#models/traits/has_timestamps'
 import NotificationService from '#services/notification_service'
 
 const notificationService = await app.container.make(NotificationService)
 
-export default class NotificationType extends compose(BaseModel, HasFactory, HasTimestamps) {
+export default class NotificationType extends compose(BaseModel, HasTimestamps) {
   @column({ isPrimary: true })
   declare id: number
 
@@ -28,7 +27,7 @@ export default class NotificationType extends compose(BaseModel, HasFactory, Has
     const defaultChannelPreferences = notificationService.defaultChannelPreferences(false)
     return {
       channels: this.$extras.pivot_channels.reduce(
-        (channelPreference, channel) => {
+        (channelPreference: Record<string, boolean>, channel: string) => {
           channelPreference[channel] = true
           return channelPreference
         },

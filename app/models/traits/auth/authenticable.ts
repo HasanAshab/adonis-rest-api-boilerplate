@@ -11,7 +11,7 @@ export default function Authenticable(Superclass: NormalizeConstructor<typeof Ba
   })
 
   class AuthenticableModel extends compose(Superclass, AuthFinder) {
-    static findForAuth<T extends typeof UserWithUserFinder>(
+    static findForAuth<T extends typeof AuthenticableModel>(
       this: T,
       uids: string[],
       value: string

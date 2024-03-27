@@ -1,5 +1,6 @@
 import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
+import type User from '#models/user'
 import { BaseModel, column, manyToMany, beforeUpdate } from '@adonisjs/lucid/orm'
 import encryption from '@adonisjs/core/services/encryption'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
@@ -8,10 +9,9 @@ import LoggedDevice from '#models/logged_device'
 import { authenticator } from 'otplib'
 import qrcode from 'qrcode'
 
-type TwoFactorEnabled<T> = Required<Pick<T, 'twoFactorMethod' | 'twoFactorSecret'>>
 
 export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<typeof BaseModel>) {
-  class TwoFactorAuthenticableUser extends Superclass {
+  class TwoFactorAuthenticableModel extends Superclass {
     @column()
     twoFactorEnabled = false
 
@@ -28,18 +28,19 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
       pivotTable: 'trusted_devices',
       pivotColumns: ['ip_address', 'last_logged_at'],
       pivotTimestamps: {
-        updatedAt: 'last_logged_at',
+        createdAt: false,
+        updatedAt: 'last_logged_at'
       },
     })
-    trustedDevices: ManyToMany<typeof LoggedDevice>
+    declare trustedDevices: ManyToMany<typeof LoggedDevice>
 
-    hasEnabledTwoFactorAuth() {
-      return this.twoFactorEnabled
+    hasEnabledTwoFactorAuth(): this is this & { twoFactorMethod: string, twoFactorSecret: string } {
+      return this.twoFactorEnabled && !!this.twoFactorMethod && !!this.twoFactorSecret
     }
 
-    recoveryCodes() {
+    recoveryCodes(): string[] {
       return this.twoFactorRecoveryCodes
-        ? JSON.parse(encryption.decrypt(this.twoFactorRecoveryCodes))
+        ? JSON.parse(encryption.decrypt<string>(this.twoFactorRecoveryCodes)!)
         : []
     }
 
@@ -48,22 +49,23 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
     }
 
     replaceRecoveryCode(code: string) {
+      if(!this.twoFactorRecoveryCodes) return
       this.twoFactorRecoveryCodes = encryption.encrypt(
-        encryption.decrypt(this.twoFactorRecoveryCodes).replace(code, RecoveryCode.generate())
+        encryption.decrypt<string>(this.twoFactorRecoveryCodes)!.replace(code, RecoveryCode.generate())
       )
       return this.save()
     }
 
     twoFactorQrCodeUrl() {
-      return this.twoFactorSecret
+      return this.twoFactorSecret && this.twoFactorMethod
         ? authenticator.keyuri(this.email, this.twoFactorMethod, this.twoFactorSecret)
         : null
     }
 
     async twoFactorQrCodeSvg() {
-      return this.twoFactorSecret
-        ? await qrcode.toString(this.twoFactorQrCodeUrl(), { type: 'svg' })
-        : null
+      const url = this.twoFactorQrCodeUrl()
+      if(!url) return null
+      return await qrcode.toString(url, { type: 'svg' })
     }
 
     isDeviceTrusted(deviceOrId: LoggedDevice | string) {
@@ -84,12 +86,12 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
     }
 
     @beforeUpdate()
-    static async checkWetherToDisableTwoFactorAuth(user: TwoFactorAuthenticableUser) {
+    static async checkWetherToDisableTwoFactorAuth(user: User & TwoFactorAuthenticableModel) {
       if (!user.hasEnabledTwoFactorAuth()) return
       const method = twoFactorMethod.use(user.twoFactorMethod)
       method.shouldDisable(user) && (await method.disable(user))
     }
   }
 
-  return TwoFactorAuthenticableUser
+  return TwoFactorAuthenticableModel
 }

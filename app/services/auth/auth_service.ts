@@ -6,6 +6,7 @@ import User from '#models/user'
 import Token from '#models/token'
 import LoggedDevice from '#models/logged_device'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
+import NameGenerator from '#services/user/name_generator'
 import mail from '@adonisjs/mail/services/main'
 import EmailVerificationMail from '#mails/email_verification_mail'
 import ResetPasswordMail from '#mails/reset_password_mail'
@@ -16,6 +17,7 @@ import OtpRequiredException from '#exceptions/validation/otp_required_exception'
 import PasswordChangeNotAllowedException from '#exceptions/password_change_not_allowed_exception'
 import InvalidPasswordException from '#exceptions/invalid_password_exception'
 import TwoFactorAuthRequiredException from '#exceptions/two_factor_auth_required_exception'
+
 
 @inject()
 export default class AuthService {
@@ -32,11 +34,20 @@ export default class AuthService {
   }
 
   async register(data: RegistrationData) {
-    if (data.avatar) {
-      data.avatar = Attachment.fromFile(data.avatar)
-    }
-
-    const user = await User.create(data)
+    const avatar = data.avatar 
+      ? Attachment.fromFile(data.avatar)
+      : null
+    
+    log(
+      NameGenerator.fromUsername(data.username)
+)
+    const user = await User.create({
+      email: data.email,
+      password: data.password,
+      username: data.username,
+      name: NameGenerator.make(data.username),
+      avatar
+    })
     //await user.initNotificationPreference()
 
     return user

@@ -14,7 +14,10 @@ export const socialAuthTokenLoginValidator = vine.compile(
     email: vine.string().email().optional(),
     username: vine
       .string()
-      .alphaNumeric()
+      .alphaNumeric({
+        allowUnderscores: true,
+        allowDashes: true
+      })
       .minLength(config.get('app.constraints.user.username.minLength'))
       .maxLength(config.get('app.constraints.user.username.maxLength'))
       .optional(),

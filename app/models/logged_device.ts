@@ -1,13 +1,9 @@
 import BaseModel from '#models/base_model'
-import { compose } from '@adonisjs/core/helpers'
 import { column } from '@adonisjs/lucid/orm'
 import { DeviceInfo } from '#interfaces/auth'
-import HasFactory from '#models/traits/has_factory/mixin'
-import LoggedDeviceFactory from '#database/factories/logged_device_factory'
 
-export default class LoggedDevice extends compose(BaseModel, HasFactory) {
-  static factoryClass = LoggedDeviceFactory
 
+export default class LoggedDevice extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
 

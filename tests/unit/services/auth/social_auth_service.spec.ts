@@ -4,7 +4,7 @@ import User from '#models/user'
 import app from '@adonisjs/core/services/app'
 import { SocialAuthData } from '#interfaces/auth'
 import SocialAuthService from '#services/auth/social_auth_service'
-import UsernameGenerator from '#services/username_generator'
+import UsernameGenerator from '#services/user/username_generator'
 import EmailRequiredException from '#exceptions/validation/email_required_exception'
 import UsernameRequiredException from '#exceptions/validation/username_required_exception'
 import DuplicateEmailAndUsernameException from '#exceptions/validation/duplicate_email_and_username_exception'
@@ -15,7 +15,7 @@ import DuplicateEmailException from '#exceptions/validation/duplicate_email_exce
 Run this suits:
 node ace test unit --files="services/auth/social_auth_service.spec.ts"
 */
-test.group('Services/Auth/service', (group) => {
+test.group('Services / Auth / Social Auth Service', (group) => {
   let service: SocialAuthService
 
   group.setup(async () => {
@@ -35,7 +35,6 @@ test.group('Services/Auth/service', (group) => {
     }
 
     const result = await service.sync('google', data as SocialAuthData)
-
     expect(result.user.email).toBe(data.email)
     expect(result.user.username).toBe('test')
     expect(result.user.verified).toBeTrue()

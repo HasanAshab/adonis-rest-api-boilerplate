@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core'
 import { SocialAuthData } from '#interfaces/auth'
 import User from '#models/user'
-import UsernameGenerator from '#services/username_generator'
+import UsernameGenerator from '#services/user/username_generator'
 import EmailRequiredException from '#exceptions/validation/email_required_exception'
 import UsernameRequiredException from '#exceptions/validation/username_required_exception'
 import DuplicateEmailAndUsernameException from '#exceptions/validation/duplicate_email_and_username_exception'
