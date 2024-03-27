@@ -1,12 +1,12 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
+import { UserFactory } from '#factories/user_factory'
+
 
 /*
 Run this suits:
 node ace test functional --files="v1/users/password.spec.ts"
 */
-
 test.group('Users/Password', (group) => {
   refreshDatabase(group)
 
@@ -16,7 +16,7 @@ test.group('Users/Password', (group) => {
 
     const response = await client.patch('/api/v1/users/me/password').loginAs(user).json({
       oldPassword: 'password',
-      newPassword,
+      newPassword
     })
     await user.refresh()
 
@@ -25,7 +25,7 @@ test.group('Users/Password', (group) => {
   })
 
   test("shouldn't change password of social account", async ({ client, expect }) => {
-    const user = await UserFactory.social().create()
+    const user = await UserFactory.apply('social').create()
 
     const response = await client.patch('/api/v1/users/me/password').loginAs(user).json({
       oldPassword: 'password',

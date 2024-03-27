@@ -62,7 +62,7 @@ test.group('Settings / Two Factor Auth', (group) => {
   test('Should enable two factor auth with method {$self} if user has phone-number')
     .with(['sms', 'call'])
     .run(async ({ client, expect }, method) => {
-      const user = await UserFactory.withPhoneNumber().create()
+      const user = await UserFactory.apply('hasPhoneNumber').create()
 
       const response = await client
         .post('/api/v1/settings/two-factor-auth')
@@ -110,7 +110,7 @@ test.group('Settings / Two Factor Auth', (group) => {
   test('Should update two factor auth method to {$self} if user has phone-number')
     .with(['sms', 'call'])
     .run(async ({ client, expect }, method) => {
-      const user = await UserFactory.withPhoneNumber().twoFactorAuthEnabled().create()
+      const user = await UserFactory.apply('hasPhoneNumber').apply('twoFactorAuthenticableThroughAuthenticator').create()
 
       const response = await client
         .patch('/api/v1/settings/two-factor-auth/method')
@@ -123,7 +123,7 @@ test.group('Settings / Two Factor Auth', (group) => {
     })
 
   test('Should disable two factor auth', async ({ client, expect }) => {
-    const user = await UserFactory.twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('twoFactorAuthenticableThroughAuthenticator').create()
 
     const response = await client.delete('/api/v1/settings/two-factor-auth').loginAs(user)
     await user.refresh()
@@ -133,7 +133,7 @@ test.group('Settings / Two Factor Auth', (group) => {
   })
 
   test('Should get two factor auth QR Code SVG', async ({ client }) => {
-    const user = await UserFactory.twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('twoFactorAuthenticableThroughAuthenticator').create()
 
     const response = await client.get('/api/v1/settings/two-factor-auth/qr-code').loginAs(user)
 
@@ -142,7 +142,7 @@ test.group('Settings / Two Factor Auth', (group) => {
   })
 
   test('Should get two factor auth recovery codes', async ({ client }) => {
-    const user = await UserFactory.twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('twoFactorAuthenticableThroughAuthenticator').create()
     await twoFactorAuthService.generateRecoveryCodes(user)
 
     const response = await client
@@ -170,7 +170,7 @@ test.group('Settings / Two Factor Auth', (group) => {
   })
 
   test('Should get trusted devices', async ({ client }) => {
-    const user = await UserFactory.twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('twoFactorAuthenticableThroughAuthenticator').create()
     const loggedDevices = await LoggedDeviceFactory.createMany(3)
     for (const loggedDevice of loggedDevices) {
       await user.trustDevice(loggedDevice, '127.0.0.1')
@@ -185,7 +185,7 @@ test.group('Settings / Two Factor Auth', (group) => {
   })
 
   test('Should remove trusted device', async ({ client, expect }) => {
-    const user = await UserFactory.twoFactorAuthEnabled().create()
+    const user = await UserFactory.apply('twoFactorAuthenticableThroughAuthenticator').create()
     const loggedDevice = await LoggedDeviceFactory.create()
     await user.trustDevice(loggedDevice, '127.0.0.1')
 
