@@ -22,7 +22,7 @@ test.group('Events / Registered', (group) => {
 
   test('should send verification email on internal method', async () => {
     const { mails } = mail.fake()
-    const user = await UserFactory.unverified().create()
+    const user = await UserFactory.apply('unverified').create()
     const event = new Registered(user, 'internal', 'v1')
     const listener = await app.container.make(SendEmailVerificationMail)
 
@@ -45,7 +45,7 @@ test.group('Events / Registered', (group) => {
   })
 
   test('should notify admins about new user', async () => {
-    const user = await UserFactory.unverified().create()
+    const user = await UserFactory.apply('unverified').create()
     const anotherUser = await UserFactory.create()
     const admins = await UserFactory.count(3).apply('admin').create()
     const event = new Registered(user, 'internal', 'v1')

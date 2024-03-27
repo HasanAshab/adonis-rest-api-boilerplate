@@ -114,7 +114,7 @@ test.group('Users / Phone Number', (group) => {
   })
 
   test('Removing phone number on 2FA ({$self}) enabled account should disable 2FA')
-    .with(['sms', 'call'])
+    .with(['Sms', 'Call'])
     .run(async ({ client, expect }, method) => {
       user = await UserFactory.apply('hasPhoneNumber').apply(`twoFactorAuthenticableThrough${method}`).create()
 

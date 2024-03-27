@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import { extract } from '#app/helpers'
-import User from '#models/user'
-import LoggedDevice from '#models/logged_device'
+import { UserFactory } from '#factories/user_factory'
+import { LoggedDeviceFactory } from '#factories/logged_device_factory'
 
 /*
 Run this suits:

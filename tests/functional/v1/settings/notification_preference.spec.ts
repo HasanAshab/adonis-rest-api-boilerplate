@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
+import type User from '#models/user'
 import { UserFactory } from '#factories/user_factory'
 import NotificationType from '#models/notification_type'
 import NotificationPreferenceCollection from '#resources/v1/settings/notification_preference_collection'

@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
 import { extract } from '#app/helpers'
 import { refreshDatabase } from '#tests/helpers'
-import User from '#models/user'
-import LoggedDevice from '#models/logged_device'
+import { UserFactory } from '#factories/user_factory'
+import { LoggedDeviceFactory } from '#factories/logged_device_factory'
 import TwoFactorAuthService from '#services/auth/two_factor/two_factor_auth_service'
 import TwoFactorSettingsResource from '#resources/v1/settings/two_factor_settings_resource'
 import PhoneNumberRequiredException from '#exceptions/phone_number_required_exception'
@@ -41,7 +41,7 @@ test.group('Settings / Two Factor Auth', (group) => {
   })
 
   test('Should not enable two factor auth with method {$self} if user has not phone-number')
-    .with(['sms', 'call'])
+    .with(['Sms', 'Call'])
     .run(async ({ client, expect }, method) => {
       const user = await UserFactory.create()
 
@@ -60,7 +60,7 @@ test.group('Settings / Two Factor Auth', (group) => {
     })
 
   test('Should enable two factor auth with method {$self} if user has phone-number')
-    .with(['sms', 'call'])
+    .with(['Sms', 'Call'])
     .run(async ({ client, expect }, method) => {
       const user = await UserFactory.apply('hasPhoneNumber').create()
 
@@ -76,7 +76,7 @@ test.group('Settings / Two Factor Auth', (group) => {
     })
 
   test('Should update two factor auth method to authenticator', async ({ client, expect }) => {
-    const user = await UserFactory.twoFactorAuthEnabled('sms').create()
+    const user = await UserFactory.apply('twoFactorAuthenticableThroughSms').create()
     const method = 'authenticator'
 
     const response = await client
@@ -90,9 +90,9 @@ test.group('Settings / Two Factor Auth', (group) => {
   })
 
   test('Should not update two factor auth method to {$self} if user has not phone-number')
-    .with(['sms', 'call'])
+    .with(['Sms', 'Call'])
     .run(async ({ client, expect }, method) => {
-      const user = await UserFactory.twoFactorAuthEnabled('authenticator').create()
+      const user = await UserFactory.apply('twoFactorAuthenticableThroughAuthenticator').create()
 
       const response = await client
         .patch('/api/v1/settings/two-factor-auth/method')
@@ -108,7 +108,7 @@ test.group('Settings / Two Factor Auth', (group) => {
     })
 
   test('Should update two factor auth method to {$self} if user has phone-number')
-    .with(['sms', 'call'])
+    .with(['Sms', 'Call'])
     .run(async ({ client, expect }, method) => {
       const user = await UserFactory.apply('hasPhoneNumber').apply('twoFactorAuthenticableThroughAuthenticator').create()
 

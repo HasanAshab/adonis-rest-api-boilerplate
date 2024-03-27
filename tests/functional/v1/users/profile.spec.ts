@@ -1,6 +1,7 @@
 import { test } from '@japa/runner'
 import { refreshDatabase, fakeFilePath } from '#tests/helpers'
-import User from '#models/user'
+import type User from '#models/user'
+import { UserFactory } from '#factories/user_factory'
 import { extract } from '#app/helpers'
 import mail from '@adonisjs/mail/services/main'
 import EmailVerificationMail from '#mails/email_verification_mail'
