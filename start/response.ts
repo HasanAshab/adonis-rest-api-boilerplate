@@ -2,6 +2,7 @@ import is from '@adonisjs/core/helpers/is'
 import { Response } from '@adonisjs/core/http'
 import { BaseModel } from '@adonisjs/lucid/orm'
 import { SimplePaginator } from '@adonisjs/lucid/database'
+import { JsonResource, ResourceCollection } from 'adonis-api-resource'
 import { getStatusText } from 'http-status-codes'
 
 /**

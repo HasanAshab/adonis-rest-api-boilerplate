@@ -1,6 +1,6 @@
-import { JsonResource } from 'adonis-api-resource'
+import BaseJsonResource from '#resources/base_json_resource'
 
-export default abstract class ShowNotificationResource extends JsonResource {
+export default abstract class ShowNotificationResource extends BaseJsonResource {
   serialize() {
     return {
       id: this.resource.id,

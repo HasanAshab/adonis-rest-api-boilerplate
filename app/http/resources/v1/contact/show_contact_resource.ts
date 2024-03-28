@@ -1,8 +1,8 @@
-import { JsonResource } from 'adonis-api-resource'
+import BaseJsonResource from '#resources/base_json_resource'
 import type { Request } from '~/core/express'
 import type { ContactDocument } from '~/app/models/contact'
 
-export default class ShowContactResource extends JsonResource<ContactDocument> {
+export default class ShowContactResource extends BaseJsonResource<ContactDocument> {
   serialize() {
     return {
       id: this.resource.id,

@@ -1,4 +1,4 @@
-import { JsonResource } from 'adonis-api-resource'
+import BaseJsonResource from '#resources/base_json_resource'
 import { groupBy } from 'lodash-es'
 
 export default class NotificationPreferenceCollection extends ResourceCollection {

@@ -1,6 +1,6 @@
-import { JsonResource } from 'adonis-api-resource'
+import BaseJsonResource from '#resources/base_json_resource'
 
-export default class TrustedDeviceResource extends JsonResource {
+export default class TrustedDeviceResource extends BaseJsonResource {
   serialize() {
     return {
       id: this.resource.id,

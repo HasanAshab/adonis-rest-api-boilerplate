@@ -1,6 +1,6 @@
-import { JsonResource } from 'adonis-api-resource'
+import BaseJsonResource from '#resources/base_json_resource'
 
-export default class ShowUserResource extends JsonResource<UserDocument> {
+export default class ShowUserResource extends BaseJsonResource<UserDocument> {
   serialize() {
     return {
       id: this.resource.id,

@@ -1,6 +1,6 @@
-import { JsonResource } from 'adonis-api-resource'
+import BaseJsonResource from '#resources/base_json_resource'
 
-export default class TwoFactorSettingsResource extends JsonResource {
+export default class TwoFactorSettingsResource extends BaseJsonResource {
   serialize() {
     return {
       enabled: this.resource.hasEnabledTwoFactorAuth(),

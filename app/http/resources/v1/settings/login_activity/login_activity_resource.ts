@@ -1,7 +1,7 @@
-import { JsonResource } from 'adonis-api-resource'
+import BaseJsonResource from '#resources/base_json_resource'
 import { DateTime } from 'luxon'
 
-export default class LoginActivityResource extends JsonResource {
+export default class LoginActivityResource extends BaseJsonResource {
   constructor(
     protected resource: Record<string, any>,
     protected deviceId: number
