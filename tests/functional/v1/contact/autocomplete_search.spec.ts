@@ -5,18 +5,18 @@ import { ContactFactory } from '#factories/contact_factory'
 
 /*
 Run this suits:
-node ace test functional --files="v1/contact/suggest.spec.ts"
+node ace test functional --files="v1/contact/autocomplete_search.spec.ts"
 */
-test.group('Contact / Suggest', (group) => {
+test.group('Contact / Autocomplete Search', (group) => {
   const message = 'I discovered a bug in your website'
 
   refreshDatabase(group)
 
-  test('Should suggest contacts', async ({ client }) => {
+  test('Should autocomplete contacts searching', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const contact = await ContactFactory.create({ message })
+    const contact = await ContactFactory.merge({ message }).create()
 
-    const response = await client.get('/api/v1/contact/inquiries/suggest').loginAs(admin).qs({
+    const response = await client.get('/api/v1/contact/inquiries/autocomplete-search').loginAs(admin).qs({
       q: 'website bug',
     })
 
@@ -26,25 +26,25 @@ test.group('Contact / Suggest', (group) => {
     })
   })
 
-  test('Users should not get contacts suggestion', async ({ client }) => {
+  test('Users should not access contacts search autocomplete', async ({ client }) => {
     const user = await UserFactory.create()
-    const contact = await ContactFactory.create({ message })
+    const contact = await ContactFactory.merge({ message }).create()
 
-    const response = await client.get('/api/v1/contact/inquiries/suggest').loginAs(user).qs({
-      q: 'website bug',
+    const response = await client.get('/api/v1/contact/inquiries/autocomplete-search').loginAs(user).qs({
+      q: 'website bug'
     })
 
     response.assertStatus(403)
     response.assertBodyNotHaveProperty('data')
   })
 
-  test('Should filter contacts suggestion', async ({ client }) => {
+  test('Should filter contacts search autocomplete', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
     const [openedContact] = await Promise.all([
-      ContactFactory.create({ message }),
+      ContactFactory.merge({ message }).create(),
       ContactFactory.apply('closed').create({ message }),
     ])
-    const response = await client.get('/api/v1/contact/inquiries/suggest').loginAs(admin).qs({
+    const response = await client.get('/api/v1/contact/inquiries/autocomplete-search').loginAs(admin).qs({
       q: 'website bug',
       status: 'opened',
     })

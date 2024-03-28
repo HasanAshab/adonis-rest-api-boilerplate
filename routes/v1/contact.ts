@@ -11,8 +11,7 @@ export default function contactRoutes() {
     router
       .group(() => {
         router.get('/', [ContactsController, 'index'])
-        router.get('/suggest', [ContactsController, 'suggest'])
-        router.get('/search', [ContactsController, 'search'])
+        router.get('/autocomplete-search', [ContactsController, 'autocompleteSearch'])
         router.get('/:id', [ContactsController, 'show']).as('v1.contact.show')
         router
           .patch('/:id/status', [ContactsController, 'updateStatus'])

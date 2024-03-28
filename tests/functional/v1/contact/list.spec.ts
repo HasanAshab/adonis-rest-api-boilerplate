@@ -57,4 +57,44 @@ test.group('Contact / List', (group) => {
     response.assertStatus(403)
     response.assertBodyNotHaveProperty('data')
   })
+  
+  test('Should search contacts', async ({ client }) => {
+    const message = 'I discovered a bug in your website'
+    const admin = await UserFactory.apply('admin').create()
+    const contact = await ContactFactory.merge({ message }).create()
+
+    const response = await client.get('/api/v1/contact/inquiries').loginAs(admin).qs({
+      q: 'website bug',
+    })
+
+    response.assertStatus(200)
+    response.assertBodyContains(ListContactResource.collection([contact]))
+    response.assertBodyHaveProperty('data[0].id', contact.id)
+  })
+
+  test('Users should not search contacts', async ({ client }) => {
+    const message = 'I discovered a bug in your website'
+    const user = await UserFactory.create()
+    const contact = await ContactFactory.merge({ message }).create()
+
+    const response = await client.get('/api/v1/contact/inquiries').loginAs(user).qs({
+      q: 'website bug',
+    })
+
+    response.assertStatus(403)
+    response.assertBodyNotHaveProperty('data')
+  })
+
+  test('Should filter contacts', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const openedContact = await ContactFactory.create()
+    await ContactFactory.apply('closed').create()
+
+    const response = await client.get('/api/v1/contact/inquiries').loginAs(admin).qs({
+      status: 'opened',
+    })
+
+    response.assertStatus(200)
+    response.assertBodyHaveProperty('data[0].id', openedContact.id)
+  })
 })

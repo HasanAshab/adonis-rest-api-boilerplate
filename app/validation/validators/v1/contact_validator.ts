@@ -1,6 +1,23 @@
 import vine from '@vinejs/vine'
 import config from '@adonisjs/core/services/config'
 
+
+export const listContactValidator = vine.compile(
+  vine.object({
+    q: vine.string().optional(),
+    status: vine.enum(['opened', 'closed']).optional()
+  })
+)
+
+
+export const autocompleteContactSearchingValidator = vine.compile(
+  vine.object({
+    q: vine.string(),
+    status: vine.enum(['opened', 'closed']).optional(),
+    limit: vine.number().optional()
+  })
+)
+
 export const createContactValidator = vine.compile(
   vine.object({
     email: vine.string().email(),
@@ -20,20 +37,5 @@ export const createContactValidator = vine.compile(
 export const updateContactStatusValidator = vine.compile(
   vine.object({
     status: vine.enum(['opened', 'closed']),
-  })
-)
-
-export const suggestContactValidator = vine.compile(
-  vine.object({
-    q: vine.string(),
-    status: vine.enum(['opened', 'closed']).optional(),
-    limit: vine.number().optional(),
-  })
-)
-
-export const searchContactValidator = vine.compile(
-  vine.object({
-    q: vine.string(),
-    status: vine.enum(['opened', 'closed']).optional(),
   })
 )

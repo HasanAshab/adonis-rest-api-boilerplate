@@ -14,7 +14,7 @@ test.group('Contact / Search', (group) => {
 
   test('Should search contacts', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const contact = await ContactFactory.create({ message })
+    const contact = await ContactFactory.merge({ message }).create()
 
     const response = await client.get('/api/v1/contact/inquiries/search').loginAs(admin).qs({
       q: 'website bug',
@@ -27,7 +27,7 @@ test.group('Contact / Search', (group) => {
 
   test('Users should not search contacts', async ({ client }) => {
     const user = await UserFactory.create()
-    const contact = await ContactFactory.create({ message })
+    const contact = await ContactFactory.merge({ message }).create()
 
     const response = await client.get('/api/v1/contact/inquiries/search').loginAs(user).qs({
       q: 'website bug',
@@ -40,7 +40,7 @@ test.group('Contact / Search', (group) => {
   test('Should filter search contacts', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
     const [openedContact] = await Promise.all([
-      ContactFactory.create({ message }),
+      ContactFactory.merge({ message }).create(),
       ContactFactory.apply('closed').create({ message }),
     ])
 
