@@ -1,5 +1,5 @@
 import TwoFactorMethod from './abstract/two_factor_method.js'
-import User from '#models/user'
+import { TwoFactorAuthenticableModelContract } from '#models/traits/auth/two_factor_authenticable'
 import { authenticator } from 'otplib'
 import InvalidOtpException from '#exceptions/invalid_otp_exception'
 
@@ -10,15 +10,15 @@ export default class AuthenticatorMethod extends TwoFactorMethod {
     return new InvalidOtpException()
   }
 
-  protected setup(user: User) {
+  protected setup(user: TwoFactorAuthenticableModelContract) {
     user.twoFactorSecret = authenticator.generateSecret()
   }
 
-  protected cleanup(user: User) {
+  protected cleanup(user: TwoFactorAuthenticableModelContract) {
     user.twoFactorSecret = null
   }
 
-  isValid(user: User, token: string) {
+  isValid(user: TwoFactorAuthenticableModelContract, token: string) {
     return authenticator.check(token, user.twoFactorSecret)
   }
 }

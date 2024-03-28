@@ -2,7 +2,6 @@ import BaseModel from '#models/base_model'
 import { column } from '@adonisjs/lucid/orm'
 //import { attachment, AttachmentContract } from '@ioc:adonis/addons/attachment_lite'
 import { compose } from '@adonisjs/core/helpers'
-import Authenticable from '#models/traits/auth/authenticable'
 import TwoFactorAuthenticable from '#models/traits/auth/two_factor_authenticable'
 import SocialAuthenticable from '#models/traits/auth/social_authenticable'
 import HasTrackableApiTokens from '#models/traits/api_token/has_trackable_api_tokens'
@@ -12,7 +11,6 @@ import HasRole from '#models/traits/has_role'
 
 export default class User extends compose(
   BaseModel,
-  Authenticable,
   TwoFactorAuthenticable,
   SocialAuthenticable,
   HasTrackableApiTokens,
@@ -30,16 +28,7 @@ export default class User extends compose(
   public username: string | null = null
 
   @column()
-  declare email: string
-
-  @column()
   public phoneNumber: string | null = null
-
-  @column()
-  public verified = false
-
-  @column({ serializeAs: null })
-  public password: string | null = null
 
   //@attachment()
   //  declare avatar: AttachmentContract = null

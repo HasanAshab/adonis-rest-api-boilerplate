@@ -1,6 +1,7 @@
 import type { NormalizeConstructor } from '@adonisjs/core/types/helpers'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
-import type User from '#models/user'
+import { compose } from '@adonisjs/core/helpers'
+import Authenticable from '#models/traits/auth/authenticable'
 import { BaseModel, column, manyToMany, beforeUpdate } from '@adonisjs/lucid/orm'
 import encryption from '@adonisjs/core/services/encryption'
 import twoFactorMethod from '#services/auth/two_factor/two_factor_method_manager'
@@ -10,8 +11,10 @@ import { authenticator } from 'otplib'
 import qrcode from 'qrcode'
 
 
+export type TwoFactorAuthenticableModelContract = InstanceType<ReturnType<typeof TwoFactorAuthenticable>>
+
 export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<typeof BaseModel>) {
-  class TwoFactorAuthenticableModel extends Superclass {
+  class TwoFactorAuthenticableModel extends compose(Superclass, Authenticable) {
     @column()
     twoFactorEnabled = false
 
@@ -70,23 +73,23 @@ export default function TwoFactorAuthenticable(Superclass: NormalizeConstructor<
 
     isDeviceTrusted(deviceOrId: LoggedDevice | string) {
       const id = typeof deviceOrId === 'string' ? deviceOrId : deviceOrId.id
-      return this.related('trustedDevices').query().where('logged_device_id', id).exists()
+      return this.related('trustedDevices' as any).query().where('logged_device_id', id).exists()
     }
 
     trustDevice(deviceOrId: LoggedDevice | string, ipAddress: string) {
       const id = typeof deviceOrId === 'string' ? deviceOrId : deviceOrId.id
-      return this.related('trustedDevices').attach({
+      return this.related('trustedDevices' as any).attach({
         [id]: { ip_address: ipAddress },
       })
     }
 
     distrustDevice(deviceOrId: LoggedDevice | string) {
       const id = typeof deviceOrId === 'string' ? deviceOrId : deviceOrId.id
-      return this.related('trustedDevices').detach([id])
+      return this.related('trustedDevices' as any).detach([id])
     }
 
     @beforeUpdate()
-    static async checkWetherToDisableTwoFactorAuth(user: User & TwoFactorAuthenticableModel) {
+    static async checkWetherToDisableTwoFactorAuth(user: TwoFactorAuthenticableModel) {
       if (!user.hasEnabledTwoFactorAuth()) return
       const method = twoFactorMethod.use(user.twoFactorMethod)
       method.shouldDisable(user) && (await method.disable(user))

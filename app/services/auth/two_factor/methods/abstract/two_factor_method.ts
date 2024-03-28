@@ -1,20 +1,18 @@
-import User from '#models/user'
+import { TwoFactorAuthenticableModelContract } from '#models/traits/auth/two_factor_authenticable'
 import { Exception } from '@adonisjs/core/exceptions'
 
 export default abstract class TwoFactorMethod {
   abstract methodName: string
 
-  protected assertAssignable(user: User): void | Promise<void> {
-    user
-  }
+  protected assertAssignable(_: TwoFactorAuthenticableModelContract): void | Promise<void> {}
 
   protected abstract verificationFailureException(): Exception
-  protected abstract verificationFailureException(user: User): Exception
+  protected abstract verificationFailureException(user: TwoFactorAuthenticableModelContract): Exception
 
-  protected abstract setup(user: User): void | Promise<void>
-  protected abstract cleanup(user: User): void | Promise<void>
+  protected abstract setup(user: TwoFactorAuthenticableModelContract): void | Promise<void>
+  protected abstract cleanup(user: TwoFactorAuthenticableModelContract): void | Promise<void>
 
-  async enable(user: User) {
+  async enable(user: TwoFactorAuthenticableModelContract) {
     await this.assertAssignable(user)
     user.twoFactorEnabled = true
     user.twoFactorMethod = this.methodName
@@ -22,11 +20,11 @@ export default abstract class TwoFactorMethod {
     await user.save()
   }
 
-  shouldDisable(_: User) {
+  shouldDisable(_: TwoFactorAuthenticableModelContract) {
     return false
   }
 
-  async disable(user: User) {
+  async disable(user: TwoFactorAuthenticableModelContract) {
     if (user.hasEnabledTwoFactorAuth()) {
       user.twoFactorEnabled = false
       await this.cleanup(user)
@@ -34,19 +32,19 @@ export default abstract class TwoFactorMethod {
     }
   }
 
-  async assign(user: User) {
+  async assign(user: TwoFactorAuthenticableModelContract) {
     await this.assertAssignable(user)
     user.twoFactorMethod = this.methodName
     await user.save()
   }
 
-  challenge(_: User): string | null | Promise<string | null> {
+  challenge(_: TwoFactorAuthenticableModelContract): string | null | Promise<string | null> {
     return null
   }
 
-  abstract isValid(user: User, token: string): boolean | Promise<boolean>
+  abstract isValid(user: TwoFactorAuthenticableModelContract, token: string): boolean | Promise<boolean>
 
-  async verify(user: User, token: string) {
+  async verify(user: TwoFactorAuthenticableModelContract, token: string) {
     if (!(await this.isValid(user, token))) {
       throw this.verificationFailureException(user)
     }
