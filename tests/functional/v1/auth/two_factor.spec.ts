@@ -13,7 +13,7 @@ import { authenticator } from 'otplib'
 Run this suits:
 node ace test functional --files="v1/auth/two_factor.spec.ts"
 */
-test.group('Auth/TwoFactor', (group) => {
+test.group('Auth / TwoFactor', (group) => {
   const twoFactorAuthService = new TwoFactorAuthService()
 
   refreshDatabase(group)
@@ -169,12 +169,11 @@ test.group('Auth/TwoFactor', (group) => {
       response.assertBodyNotHaveProperty('data.token')
     })
 
-  //todo
   test('should mark device as trusted when flagged for and otp is valid', async ({
     client,
     expect,
   }) => {
-    const user = await UserFactory.apply('hasPhoneNumber').apply(`twoFactorAuthenticableThrough${method}`).create()
+    const user = await UserFactory.apply('hasPhoneNumber').apply('twoFactorAuthenticableThroughAuthenticator').create()
     const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
     const code = authenticator.generate(user.twoFactorSecret)
 
@@ -197,7 +196,7 @@ test.group('Auth/TwoFactor', (group) => {
     client,
     expect,
   }) => {
-    const user = await UserFactory.apply('hasPhoneNumber').apply(`twoFactorAuthenticableThrough${method}`).create()
+    const user = await UserFactory.apply('hasPhoneNumber').apply('twoFactorAuthenticableThroughAuthenticator').create()
     const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
     const code = authenticator.generate(user.twoFactorSecret)
 
@@ -220,7 +219,7 @@ test.group('Auth/TwoFactor', (group) => {
     client,
     expect,
   }) => {
-    const user = await UserFactory.apply('hasPhoneNumber').apply(`twoFactorAuthenticableThrough${method}`).create()
+    const user = await UserFactory.apply('hasPhoneNumber').apply('twoFactorAuthenticableThroughAuthenticator').create()
     const token = await new TwoFactorAuthRequiredException(user).challengeVerificationToken()
 
     const response = await client

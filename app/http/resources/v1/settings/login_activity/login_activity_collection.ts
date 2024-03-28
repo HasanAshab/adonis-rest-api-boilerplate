@@ -1,4 +1,4 @@
-//import JsonResource from '@samer/api-resource/resources/json_resource'
+import { JsonResource } from 'adonis-api-resource'
 import LoginActivityResource from '#resources/v1/settings/login_activity/login_activity_resource'
 
 export default class LoginActivityCollection extends ResourceCollection<LoginActivityResource> {

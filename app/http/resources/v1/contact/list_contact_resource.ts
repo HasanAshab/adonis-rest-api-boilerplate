@@ -1,4 +1,4 @@
-//import JsonResource from "@samer/api-resource/resources/json_resource";
+import { JsonResource } from 'adonis-api-resource'
 import string from '@adonisjs/core/helpers/string'
 
 export default class ListContactResource extends JsonResource {

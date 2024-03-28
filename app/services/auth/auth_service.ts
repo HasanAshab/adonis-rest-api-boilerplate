@@ -38,9 +38,6 @@ export default class AuthService {
       ? Attachment.fromFile(data.avatar)
       : null
     
-    log(
-      NameGenerator.fromUsername(data.username)
-)
     const user = await User.create({
       email: data.email,
       password: data.password,

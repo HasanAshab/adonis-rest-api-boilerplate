@@ -1,4 +1,4 @@
-//import JsonResource from '@samer/api-resource/resources/json_resource'
+import { JsonResource } from 'adonis-api-resource'
 import type { Request } from '~/core/express'
 import type { ContactDocument } from '~/app/models/contact'
 

@@ -1,4 +1,4 @@
-//import JsonResource from '@samer/api-resource/resources/json_resource'
+import { JsonResource } from 'adonis-api-resource'
 
 export default class ShowUserResource extends JsonResource<UserDocument> {
   serialize() {
